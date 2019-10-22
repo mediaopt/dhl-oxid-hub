@@ -1,0 +1,14 @@
+{
+    "platform": "Oxid",
+    "projectName": "dhl-oxid",
+    "pathToModule": "copy_this/modules/mo/mo_dhl",
+    "prefix": "mo_",
+    "suffix": "",
+    "version": "1.0.0",
+    "compatibility": {
+        "minimumVersion": "6.0",
+        "maximumVersion": null,
+        "blacklist": [
+        ]
+    }
+}
