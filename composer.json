@@ -1,0 +1,38 @@
+{
+    "name": "mediaopt/dhl-oxid",
+    "type": "oxideshop-module",
+    "keywords": ["oxid", "modules", "eShop"],
+    "license": "proprietary",
+    "config": {
+        "prepend-autoloader": false,
+        "vendor-dir": "src/modules/mo/mo_dhl/vendor"
+    },
+    "require": {
+        "php": ">=7.0",
+        "monolog/monolog": "1.12.*",
+        "mediaopt/wunschpaket-sdk": "~2.0",
+        "roave/security-advisories": "dev-master"
+    },
+    "extra": {
+        "oxideshop": {
+            "source-directory": "src/modules/mo/mo_dhl",
+            "target-directory": "mo/mo_dhl"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Mediaopt\\DHL\\": "../../../source/modules/mo/mo_dhl"
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@bitbucket.org:mediaopt/wunschpaket-sdk.git"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "phpdocumentor/phpdocumentor": "^2.9"
+    }
+}
