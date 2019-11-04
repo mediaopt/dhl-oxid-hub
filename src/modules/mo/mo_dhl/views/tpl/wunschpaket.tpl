@@ -10,9 +10,9 @@
         [{/if}]
     [{/block}]
 
-    [{oxscript include=$oViewConf->getModuleUrl("mo_dhl", "out/src/js/widgets/empfaengerservices__helperFunctions.js") priority=8}]
+    [{oxscript include=$oViewConf->getModuleUrl("mo_dhl", "out/src/js/widgets/mo_dhl__helperFunctions.js") priority=8}]
     [{oxscript include=$oViewConf->getModuleUrl("mo_dhl", "out/src/js/widgets/mo_dhl__wunschpaket.js") priority=8}]
-    [{oxscript include=$oViewConf->getModuleUrl("mo_dhl", "out/src/js/widgets/empfaengerservices__validatorHelper.js") priority=9}]
+    [{oxscript include=$oViewConf->getModuleUrl("mo_dhl", "out/src/js/widgets/mo_dhl__validatorHelper.js") priority=9}]
     [{capture name='initialize' assign='initialize'}]
         $(function() { mo_dhl__wunschpaket.initializeWunschpaket("[{$oView->moDHLGetSelectedWunschzeitId()}]", "[{$oView->moDHLGetSelectedWunschtag()}]"); });
     [{/capture}]

@@ -95,7 +95,7 @@ class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\C
         $desiredBranchTypes = array_map('boolval', array_map([$config, 'getRequestParameter'], ['packstation', 'filiale', 'paketshop']));
         $queries = [];
         foreach (array_unique($addresses) as $address) {
-            $parameters = array_merge(['MoEmpfaengerservicesFinderQuery', $address], $desiredBranchTypes);
+            $parameters = array_merge([\Mediaopt\DHL\EmpfaengerservicesFinderQuery::class, $address], $desiredBranchTypes);
             $queries[] = call_user_func_array('oxNew', $parameters);
         }
         return $queries;
