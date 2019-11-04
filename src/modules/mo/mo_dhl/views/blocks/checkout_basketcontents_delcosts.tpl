@@ -1,3 +1,3 @@
 [{$smarty.block.parent}]
 
-[{include file="mo_empfaengerservices__surcharge.tpl"}]
+[{include file="mo_dhl__surcharge.tpl"}]

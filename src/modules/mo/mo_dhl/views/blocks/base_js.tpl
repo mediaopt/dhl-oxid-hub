@@ -1,6 +1,6 @@
 [{$smarty.block.parent}]
-[{if method_exists($oView,'mo_empfaengerservices__showTrackingPixel') && $oView->mo_empfaengerservices__showTrackingPixel()}]
-    <script language="javascript">
+[{if method_exists($oView,'mo_dhl__showTrackingPixel') && $oView->moDHLShowTrackingPixel()}]
+    <script type="application/javascript">
         <!--
         s_date = new Date();
         s_rdm = s_date.getTime();

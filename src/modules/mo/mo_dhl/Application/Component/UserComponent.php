@@ -3,7 +3,7 @@ namespace Mediaopt\DHL\Application\Component;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
- * 
+ *
  * @copyright 2016 derksen mediaopt GmbH
  */
 
@@ -11,7 +11,7 @@ namespace Mediaopt\DHL\Application\Component;
 
 /**
  * This class extends the user with Wunschpaket functionality.
- * 
+ *
  * @author derksen mediaopt GmbH
  */
 class UserComponent extends UserComponent_parent
@@ -23,34 +23,34 @@ class UserComponent extends UserComponent_parent
     protected function _changeUser_noRedirect()
     {
         $result = parent::_changeUser_noRedirect();
-        $this->mo_empfaengerservices__injectWunschpaketTagsIntoOrderRemark();
+        $this->moDHLInjectWunschpaketTagsIntoOrderRemark();
         return $result;
     }
 
     /**
      */
-    protected function mo_empfaengerservices__injectWunschpaketTagsIntoOrderRemark()
+    protected function moDHLInjectWunschpaketTagsIntoOrderRemark()
     {
         $remark = (string) \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem');
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         $remarkWithoutTags = $wunschpaket->removeWunschpaketTags($remark);
-        $wunschpaketTags = implode('', $this->mo_empfaengerservices__generateWunschpaketTags());
+        $wunschpaketTags = implode('', $this->moDHLGenerateWunschpaketTags());
         \OxidEsales\Eshop\Core\Registry::getSession()->setVariable('ordrem', $wunschpaketTags . $remarkWithoutTags);
     }
 
     /**
      * @return string[]
      */
-    protected function mo_empfaengerservices__generateWunschpaketTags()
+    protected function moDHLGenerateWunschpaketTags()
     {
-        return array_values([$this->mo_empfaengerservices__generatePreferredDayTag(), $this->mo_empfaengerservices__generatePreferredTimeTag(), $this->mo_empfaengerservices__generatePreferredLocationTag()]);
+        return array_values([$this->moDHLGeneratePreferredDayTag(), $this->moDHLGeneratePreferredTimeTag(), $this->moDHLGeneratePreferredLocationTag()]);
     }
 
 
     /**
      * @return string
      */
-    protected function mo_empfaengerservices__generatePreferredLocationTag()
+    protected function moDHLGeneratePreferredLocationTag()
     {
         list($wunschort, $wunschnachbarName, $wunschnachbarAddress) = array_map('strval', array_map([\OxidEsales\Eshop\Core\Registry::getConfig(), 'getRequestParameter'], ['moEmpfaengerservicesWunschort', 'moEmpfaengerservicesWunschnachbarName', 'moEmpfaengerservicesWunschnachbarAddress']));
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
@@ -59,7 +59,7 @@ class UserComponent extends UserComponent_parent
                 return $wunschpaket->generateWunschortTag($wunschort);
             } catch (\InvalidArgumentException $exception) {
                 /** @noinspection PhpParamsInspection */
-                \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_EMPFAENGERSERVICES__WUNSCHORT_INVALID');
+                \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__WUNSCHORT_INVALID');
                 return '';
             }
         }
@@ -68,7 +68,7 @@ class UserComponent extends UserComponent_parent
                 return $wunschpaket->generateWunschnachbarTag($wunschnachbarName, $wunschnachbarAddress);
             } catch (\InvalidArgumentException $exception) {
                 /** @noinspection PhpParamsInspection */
-                \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_EMPFAENGERSERVICES__WUNSCHNACHBAR_INVALID');
+                \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__WUNSCHNACHBAR_INVALID');
                 return '';
             }
         }
@@ -79,7 +79,7 @@ class UserComponent extends UserComponent_parent
     /**
      * @return string
      */
-    protected function mo_empfaengerservices__generatePreferredDayTag()
+    protected function moDHLGeneratePreferredDayTag()
     {
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         $submittedWunschtag = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('moEmpfaengerservicesWunschtag');
@@ -88,7 +88,7 @@ class UserComponent extends UserComponent_parent
             return $submittedWunschtag !== '' && $wunschpaket->canAWunschtagBeSelected($basket) ? $wunschpaket->generateWunschtagTag($submittedWunschtag, $basket) : '';
         } catch (\InvalidArgumentException $exception) {
             /** @noinspection PhpParamsInspection */
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_EMPFAENGERSERVICES__WUNSCHTAG_INVALID');
+            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__WUNSCHTAG_INVALID');
             return '';
         }
     }
@@ -96,7 +96,7 @@ class UserComponent extends UserComponent_parent
     /**
      * @return string
      */
-    protected function mo_empfaengerservices__generatePreferredTimeTag()
+    protected function moDHLGeneratePreferredTimeTag()
     {
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         $submittedTime = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('moEmpfaengerservicesTime');
@@ -107,7 +107,7 @@ class UserComponent extends UserComponent_parent
             return $submittedTime !== '' && $wunschpaket->canAWunschzeitBeSelected($zip) ? $wunschpaket->generateWunschzeitTag($submittedTime, $zip) : '';
         } catch (\InvalidArgumentException $exception) {
             /** @noinspection PhpParamsInspection */
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_EMPFAENGERSERVICES__WUNSCHZEIT_INVALID');
+            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__WUNSCHZEIT_INVALID');
             return '';
         }
     }
@@ -119,7 +119,7 @@ class UserComponent extends UserComponent_parent
     public function createUser()
     {
         $result = parent::createUser();
-        $this->mo_empfaengerservices__injectWunschpaketTagsIntoOrderRemark();
+        $this->moDHLInjectWunschpaketTagsIntoOrderRemark();
         return $result;
     }
 }

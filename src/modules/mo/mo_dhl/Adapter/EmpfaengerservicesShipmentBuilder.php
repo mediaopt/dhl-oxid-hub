@@ -4,7 +4,7 @@ namespace Mediaopt\DHL\Adapter;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
- * 
+ *
  * @copyright 2016 derksen mediaopt GmbH
  */
 
@@ -19,7 +19,7 @@ use Mediaopt\Empfaengerservices\Shipment\Shipment;
 
 /**
  * This class transforms an \oxOrder object into a Shipment object.
- * 
+ *
  * @author derksen mediaopt GmbH
  */
 class EmpfaengerservicesShipmentBuilder
@@ -44,11 +44,11 @@ class EmpfaengerservicesShipmentBuilder
      */
     public function __construct()
     {
-        $this->ekp = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_empfaengerservices__merchant_ekp');
-        $query = ' SELECT OXID, MO_EMPFAENGERSERVICES_PROCESS, MO_EMPFAENGERSERVICES_PARTICIPATION' . ' FROM ' . getViewName('oxdeliveryset');
+        $this->ekp = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__merchant_ekp');
+        $query = ' SELECT OXID, MO_DHL_PROCESS, MO_DHL_PARTICIPATION' . ' FROM ' . getViewName('oxdeliveryset');
         foreach ((array) \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC)->getAll($query) as $row) {
-            $this->deliverySetToProcessIdentifier[$row['OXID']] = $row['MO_EMPFAENGERSERVICES_PROCESS'];
-            $this->deliverySetToParticipationNumber[$row['OXID']] = $row['MO_EMPFAENGERSERVICES_PARTICIPATION'];
+            $this->deliverySetToProcessIdentifier[$row['OXID']] = $row['MO_DHL_PROCESS'];
+            $this->deliverySetToParticipationNumber[$row['OXID']] = $row['MO_DHL_PARTICIPATION'];
         }
     }
 
@@ -89,7 +89,7 @@ class EmpfaengerservicesShipmentBuilder
 
     /**
      * Uses the delivery address in the order to build the receiver.
-     * 
+     *
      * @param \OxidEsales\Eshop\Application\Model\Order $order
      * @return Receiver
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
@@ -103,7 +103,7 @@ class EmpfaengerservicesShipmentBuilder
 
     /**
      * @param \OxidEsales\Eshop\Application\Model\Order $order
-     * @return \OxidEsales\Eshop\Application\Controller\ContactController
+     * @return Contact
      */
     public function buildContact(\OxidEsales\Eshop\Application\Model\Order $order)
     {
@@ -118,20 +118,20 @@ class EmpfaengerservicesShipmentBuilder
 
     /**
      * @param \OxidEsales\Eshop\Application\Model\Order $order
-     * @return \OxidEsales\Eshop\Application\Controller\ContactController
+     * @return Contact
      */
     protected function buildContactFromBillingAddress(\OxidEsales\Eshop\Application\Model\Order $order)
     {
-        return new \OxidEsales\Eshop\Application\Controller\ContactController($order->oxorder__oxbillfname->rawValue . ' ' . $order->oxorder__oxbilllname->rawValue, $order->oxorder__oxbillemail->rawValue, $order->oxorder__oxbillfon->rawValue, $order->oxorder__oxbillcompany->rawValue);
+        return new Contact($order->oxorder__oxbillfname->rawValue . ' ' . $order->oxorder__oxbilllname->rawValue, $order->oxorder__oxbillemail->rawValue, $order->oxorder__oxbillfon->rawValue, $order->oxorder__oxbillcompany->rawValue);
     }
 
     /**
      * @param \OxidEsales\Eshop\Application\Model\Order $order
-     * @return \OxidEsales\Eshop\Application\Controller\ContactController
+     * @return Contact
      */
     protected function buildContactFromDeliveryAddress(\OxidEsales\Eshop\Application\Model\Order $order)
     {
-        return new \OxidEsales\Eshop\Application\Controller\ContactController($order->oxorder__oxdelfname->rawValue . ' ' . $order->oxorder__oxdellname->rawValue, $order->oxorder__oxbillemail->rawValue, $order->oxorder__oxdelfon->rawValue, $order->oxorder__oxdelcompany->rawValue);
+        return new Contact($order->oxorder__oxdelfname->rawValue . ' ' . $order->oxorder__oxdellname->rawValue, $order->oxorder__oxbillemail->rawValue, $order->oxorder__oxdelfon->rawValue, $order->oxorder__oxdelcompany->rawValue);
     }
 
     /**
@@ -185,13 +185,13 @@ class EmpfaengerservicesShipmentBuilder
 
     /**
      * Uses the module configuration to build the sender.
-     * 
+     *
      * @return Sender
      */
     protected function buildSender()
     {
         $config = \OxidEsales\Eshop\Core\Registry::getConfig();
-        return new Sender(new Address($config->getShopConfVar('mo_empfaengerservices__export_street'), $config->getShopConfVar('mo_empfaengerservices__export_street_number'), $config->getShopConfVar('mo_empfaengerservices__export_zip'), $config->getShopConfVar('mo_empfaengerservices__export_city'), '', $config->getShopConfVar('mo_empfaengerservices__export_country')), $config->getShopConfVar('mo_empfaengerservices__export_line1'), $config->getShopConfVar('mo_empfaengerservices__export_line2'), $config->getShopConfVar('mo_empfaengerservices__export_line3'));
+        return new Sender(new Address($config->getShopConfVar('mo_dhl__export_street'), $config->getShopConfVar('mo_dhl__export_street_number'), $config->getShopConfVar('mo_dhl__export_zip'), $config->getShopConfVar('mo_dhl__export_city'), '', $config->getShopConfVar('mo_dhl__export_country')), $config->getShopConfVar('mo_dhl__export_line1'), $config->getShopConfVar('mo_dhl__export_line2'), $config->getShopConfVar('mo_dhl__export_line3'));
     }
 
     /**
@@ -215,7 +215,7 @@ class EmpfaengerservicesShipmentBuilder
     protected function getEkp(\OxidEsales\Eshop\Application\Model\Order $order)
     {
         try {
-            return Ekp::build($order->oxorder__mo_empfaengerservices_ekp->rawValue ?: $this->ekp);
+            return Ekp::build($order->oxorder__mo_dhl_ekp->rawValue ?: $this->ekp);
         } catch (\InvalidArgumentException $exception) {
             return null;
         }
@@ -228,7 +228,7 @@ class EmpfaengerservicesShipmentBuilder
     protected function getProcess(\OxidEsales\Eshop\Application\Model\Order $order)
     {
         try {
-            $identifier = $order->oxorder__mo_empfaengerservices_process->rawValue ?: $this->deliverySetToProcessIdentifier[$order->oxorder__oxdeltype->rawValue];
+            $identifier = $order->oxorder__mo_dhl_process->rawValue ?: $this->deliverySetToProcessIdentifier[$order->oxorder__oxdeltype->rawValue];
             return Process::build($identifier);
         } catch (\InvalidArgumentException $exception) {
             return null;
@@ -242,7 +242,7 @@ class EmpfaengerservicesShipmentBuilder
     protected function getParticipation(\OxidEsales\Eshop\Application\Model\Order $order)
     {
         try {
-            $number = $order->oxorder__mo_empfaengerservices_participation->rawValue ?: $this->deliverySetToParticipationNumber[$order->oxorder__oxdeltype->rawValue];
+            $number = $order->oxorder__mo_dhl_participation->rawValue ?: $this->deliverySetToParticipationNumber[$order->oxorder__oxdeltype->rawValue];
             return Participation::build($number);
         } catch (\InvalidArgumentException $exception) {
             return null;

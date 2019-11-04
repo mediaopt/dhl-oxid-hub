@@ -22,7 +22,7 @@ class OrderOverview extends OrderOverview_parent
         /** @var \OxidEsales\Eshop\Application\Model\Order $order */
         $order = $this->_aViewData['edit'];
         $remark = $order->oxorder__oxremark->value;
-        $remarks = array_filter([$this->moEmpfaengerservicesGetPreferredDay($remark), $this->moEmpfaengerservicesGetPreferredTime($remark), $this->moEmpfaengerservicesGetPreferredLocation($remark), $this->moEmpfaengerservicesGetPreferredNeighbour($remark), $wunschpaket->removeWunschpaketTags($remark)]);
+        $remarks = array_filter([$this->moDHLGetPreferredDay($remark), $this->moDHLGetPreferredTime($remark), $this->moDHLGetPreferredLocation($remark), $this->moDHLGetPreferredNeighbour($remark), $wunschpaket->removeWunschpaketTags($remark)]);
         $order->oxorder__oxremark->value = implode('<br/>', $remarks);
         return $template;
     }
@@ -31,20 +31,20 @@ class OrderOverview extends OrderOverview_parent
      * @param string $remark
      * @return string
      */
-    protected function moEmpfaengerservicesGetPreferredDay($remark)
+    protected function moDHLGetPreferredDay($remark)
     {
         $language = \OxidEsales\Eshop\Core\Registry::getLang();
         $preferredDay = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->extractWunschtag($remark);
-        return $preferredDay !== '' ? "{$language->translateString('MO_EMPFAENGERSERVICES__WUNSCHTAG')}: {$preferredDay}" : '';
+        return $preferredDay !== '' ? "{$language->translateString('MO_DHL__WUNSCHTAG')}: {$preferredDay}" : '';
     }
 
     /**
      * @param string $remark
      * @return string
      */
-    protected function moEmpfaengerservicesGetPreferredTime($remark)
+    protected function moDHLGetPreferredTime($remark)
     {
-        $label = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MO_EMPFAENGERSERVICES__WUNSCHZEIT');
+        $label = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MO_DHL__WUNSCHZEIT');
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         $preferredTime = $wunschpaket->extractTime($remark);
         return $preferredTime !== '' ? "{$label}: " . Wunschpaket::formatPreferredTime($preferredTime) : '';
@@ -54,21 +54,21 @@ class OrderOverview extends OrderOverview_parent
      * @param string $remark
      * @return string
      */
-    protected function moEmpfaengerservicesGetPreferredLocation($remark)
+    protected function moDHLGetPreferredLocation($remark)
     {
         list($type, $location) = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->extractLocation($remark);
         if ($type !== Wunschpaket::WUNSCHORT) {
             return '';
         }
         $lang = \OxidEsales\Eshop\Core\Registry::getLang();
-        return "{$lang->translateString('MO_EMPFAENGERSERVICES__WUNSCHORT')}: {$location}";
+        return "{$lang->translateString('MO_DHL__WUNSCHORT')}: {$location}";
     }
 
     /**
      * @param string $remark
      * @return string
      */
-    protected function moEmpfaengerservicesGetPreferredNeighbour($remark)
+    protected function moDHLGetPreferredNeighbour($remark)
     {
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         list($type, $neighbourAddress, $neighbourName) = $wunschpaket->extractLocation($remark);
@@ -76,6 +76,6 @@ class OrderOverview extends OrderOverview_parent
             return '';
         }
         $lang = \OxidEsales\Eshop\Core\Registry::getLang();
-        return "{$lang->translateString('MO_EMPFAENGERSERVICES__WUNSCHNACHBAR')}: {$neighbourName}, {$neighbourAddress}";
+        return "{$lang->translateString('MO_DHL__WUNSCHNACHBAR')}: {$neighbourName}, {$neighbourAddress}";
     }
 }

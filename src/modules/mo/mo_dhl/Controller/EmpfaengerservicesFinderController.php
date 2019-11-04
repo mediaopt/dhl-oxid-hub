@@ -4,7 +4,7 @@ namespace Mediaopt\DHL\Controller;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
- * 
+ *
  * @copyright 2016 derksen mediaopt GmbH
  */
 
@@ -19,7 +19,7 @@ use Mediaopt\Empfaengerservices\ServiceProvider\Timetable\TimeInfo;
 
 /**
  * This controller is used to call the finder asynchronously and returning the result as JSON object.
- * 
+ *
  * @author derksen mediaopt GmbH
  */
 class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\Controller\FrontendController
@@ -40,7 +40,7 @@ class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\C
             if (!empty($serviceProviders)) {
                 $response = ['status' => 'success', 'payload' => $serviceProviders];
             } else {
-                $message = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MO_EMPFAENGERSERVICES__ERROR_NO_RESULT');
+                $message = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MO_DHL__ERROR_NO_RESULT');
                 $response = ['status' => 'error', 'payload' => $message];
             }
             $this->respond($response);
@@ -56,7 +56,7 @@ class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\C
      * If the supplied string is a valid UTF-8 string, it is returned without changes.
      * If the supplied string is a valid ISO-8859-1 or ISO-8859-15 string, we convert it to UTF-8 and return the
      * converted string. Otherwise, we return the string without changes.
-     * 
+     *
      * @param string $string
      * @return string
      */
@@ -72,7 +72,7 @@ class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\C
 
     /**
      * Turns the supplied response into a JSON object, sends it and exits.
-     * 
+     *
      * @param array $response
      */
     protected function respond(array $response)
@@ -122,7 +122,7 @@ class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\C
 
     /**
      * Finds Packstations, Postfiliales and Paketshops in the vicinity of the given city/zip/street combination.
-     * 
+     *
      * @param \Mediaopt\DHL\EmpfaengerservicesFinderQuery $query
      * @return array
      * @throws \RuntimeException

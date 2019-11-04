@@ -13,7 +13,7 @@ class EmpfaengerservicesYellowBoxController extends \OxidEsales\Eshop\Applicatio
      */
     public static function formatWunschtag($option)
     {
-        $weekDayLabel = \OxidEsales\Eshop\Core\Registry::getLang()->translateString("MO_EMPFAENGERSERVICES__DAY_OF_WEEK_{$option['datetime']->format('w')}");
+        $weekDayLabel = \OxidEsales\Eshop\Core\Registry::getLang()->translateString("MO_DHL__DAY_OF_WEEK_{$option['datetime']->format('w')}");
         return ['label' => "{$weekDayLabel},<br/>{$option['datetime']->format('d.')}", 'excluded' => $option['excluded']];
     }
 

@@ -1,6 +1,6 @@
-[{include file="headitem.tpl" title="MO_EMPFAENGERSERVICES__EXPORT_TITLE"|oxmultilangassign box=" "}]
+[{include file="headitem.tpl" title="MO_DHL__EXPORT_TITLE"|oxmultilangassign box=" "}]
 
-<h1>[{oxmultilang ident="MO_EMPFAENGERSERVICES__EXPORT_TITLE"}]</h1>
+<h1>[{oxmultilang ident="MO_DHL__EXPORT_TITLE"}]</h1>
 
 <form name="exportForm" id="exportForm" action="[{$oViewConf->getSelfLink()}]" method="post" onsubmit="handleSubmit()">
     <input type="hidden" name="cl" value="[{$oViewConf->getActiveClassName()}]">
@@ -84,7 +84,7 @@
         </table>
     </div>
 
-    <input type="submit" class="edittext" id="submitButton" name="submitButton" value="[{oxmultilang ident="MO_EMPFAENGERSERVICES__EXPORT"}]"/>
+    <input type="submit" class="edittext" id="submitButton" name="submitButton" value="[{oxmultilang ident="MO_DHL__EXPORT"}]"/>
 </form>
 
 [{include file="bottomnaviitem.tpl"}]

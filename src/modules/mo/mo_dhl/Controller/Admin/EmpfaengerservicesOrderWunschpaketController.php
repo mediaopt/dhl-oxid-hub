@@ -27,7 +27,7 @@ class EmpfaengerservicesOrderWunschpaketController extends \OxidEsales\Eshop\App
         $this->addTplParam('ekp', $this->getEkp());
         $this->addTplParam('participationNumber', $this->getParticipationNumber());
         $this->addTplParam('processIdentifier', $this->getProcessIdentifier());
-        return 'MoEmpfaengerservicesOrderWunschpaket.tpl';
+        return 'mo_dhl__order_wunschpaket.tpl';
     }
 
     /**
@@ -35,7 +35,7 @@ class EmpfaengerservicesOrderWunschpaketController extends \OxidEsales\Eshop\App
      */
     protected function getEkp()
     {
-        return (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('ekp') ?: (string) $this->getOrder()->oxorder__mo_empfaengerservices_ekp->rawValue ?: (string) \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_empfaengerservices__merchant_ekp');
+        return (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('ekp') ?: (string) $this->getOrder()->oxorder__mo_dhl_ekp->rawValue ?: (string) \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__merchant_ekp');
     }
 
     /**
@@ -57,7 +57,7 @@ class EmpfaengerservicesOrderWunschpaketController extends \OxidEsales\Eshop\App
      */
     protected function getParticipationNumber()
     {
-        return (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('participationNumber') ?: (string) $this->getOrder()->oxorder__mo_empfaengerservices_participation->rawValue;
+        return (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('participationNumber') ?: (string) $this->getOrder()->oxorder__mo_dhl_participation->rawValue;
     }
 
     /**
@@ -65,7 +65,7 @@ class EmpfaengerservicesOrderWunschpaketController extends \OxidEsales\Eshop\App
      */
     protected function getProcessIdentifier()
     {
-        return (string) $this->getOrder()->oxorder__mo_empfaengerservices_process->rawValue;
+        return (string) $this->getOrder()->oxorder__mo_dhl_process->rawValue;
     }
 
     /**
@@ -74,7 +74,7 @@ class EmpfaengerservicesOrderWunschpaketController extends \OxidEsales\Eshop\App
     public function save()
     {
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $information = ['MO_EMPFAENGERSERVICES_EKP' => $this->validateEkp(), 'MO_EMPFAENGERSERVICES_PROCESS' => $this->validateProcessIdentifier(), 'MO_EMPFAENGERSERVICES_PARTICIPATION' => $this->validateParticipationNumber()];
+        $information = ['MO_DHL_EKP' => $this->validateEkp(), 'MO_DHL_PROCESS' => $this->validateProcessIdentifier(), 'MO_DHL_PARTICIPATION' => $this->validateParticipationNumber()];
         $tuples = [];
         foreach ($information as $column => $value) {
             if (empty($value)) {
@@ -101,7 +101,7 @@ class EmpfaengerservicesOrderWunschpaketController extends \OxidEsales\Eshop\App
             return $ekp;
         } catch (\InvalidArgumentException $exception) {
             /** @noinspection PhpParamsInspection */
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_EMPFAENGERSERVICES__EKP_ERROR');
+            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__EKP_ERROR');
             return '';
         }
     }
@@ -117,7 +117,7 @@ class EmpfaengerservicesOrderWunschpaketController extends \OxidEsales\Eshop\App
             return $processIdentifier;
         } catch (\InvalidArgumentException $exception) {
             /** @noinspection PhpParamsInspection */
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_EMPFAENGERSERVICES__PROCESS_IDENTIFIER_ERROR');
+            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PROCESS_IDENTIFIER_ERROR');
             return '';
         }
     }
@@ -133,7 +133,7 @@ class EmpfaengerservicesOrderWunschpaketController extends \OxidEsales\Eshop\App
             return $participationNumber;
         } catch (\InvalidArgumentException $exception) {
             /** @noinspection PhpParamsInspection */
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_EMPFAENGERSERVICES__PARTICIPATION_NUMBER_ERROR');
+            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PARTICIPATION_NUMBER_ERROR');
             return '';
         }
     }

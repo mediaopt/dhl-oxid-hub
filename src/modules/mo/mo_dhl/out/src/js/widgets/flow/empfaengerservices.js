@@ -1,6 +1,6 @@
 (function ($) {
     // noinspection JSUnusedGlobalSymbols
-    mo_empfaengerservices = {
+    mo_dhl = {
         empfaengerservices: null,
         isWunschboxAvailable: null,
         addPostnummer: function () {
@@ -151,7 +151,7 @@
                         break;
                 }
                 if (self.isWunschboxAvailable) {
-                    mo_empfaengerservices__wunschpaket.showOrHideWunschbox();
+                    mo_dhl__wunschpaket.showOrHideWunschbox();
                 }
             });
         },
@@ -167,10 +167,10 @@
             var self = this;
             $("#showShipAddress").change(function () {
                 if ($("#showShipAddress").is(':checked')) {
-                    mo_empfaengerservices.empfaengerservices.state = "regular";
-                    mo_empfaengerservices.empfaengerservices.toRegularAddress();
+                    mo_dhl.empfaengerservices.state = "regular";
+                    mo_dhl.empfaengerservices.toRegularAddress();
                     if (self.isWunschboxAvailable) {
-                        mo_empfaengerservices__wunschpaket.showOrHideWunschbox();
+                        mo_dhl__wunschpaket.showOrHideWunschbox();
                     }
                 } else {
                     $(".dd-add-delivery-address").find('label.btn').click();
@@ -236,7 +236,7 @@
                     var buttons = $(this).find("button");
                     var prefix = buttons.length > 0 ? buttons[0].outerHTML : '';
                     buttons.remove();
-                    return prefix + mo_empfaengerservices__deliveryAddress.reformatAdressString($(this).html());
+                    return prefix + mo_dhl__deliveryAddress.reformatAdressString($(this).html());
                 });
             $('.dd-edit-shipping-address').click(function() {
                 $('#shippingAddressForm').show();
@@ -268,12 +268,12 @@
                 return;
             }
             $('#delCountrySelect').on('change', function () {
-                mo_empfaengerservices__wunschpaket.showOrHideWunschbox();
+                mo_dhl__wunschpaket.showOrHideWunschbox();
             });
             $('#invCountrySelect').on('change', function () {
-                mo_empfaengerservices__wunschpaket.showOrHideWunschbox();
+                mo_dhl__wunschpaket.showOrHideWunschbox();
             });
-            mo_empfaengerservices__wunschpaket.showOrHideWunschbox();
+            mo_dhl__wunschpaket.showOrHideWunschbox();
 
 
             $("#moEmpfaengerservicesWunschnachbarName").focus(function () {
@@ -333,7 +333,7 @@
         },
         initializeFinder: function () {
             this.empfaengerservicesfinder = new EmpfaengerservicesFinder($, this);
-            mo_empfaengerservices__finder.initialize(this);
+            mo_dhl__finder.initialize(this);
         },
         validatePreferredAddress: function ($input, value, callback) {
             var validator = new Empfaengerservices__Validator();

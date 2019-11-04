@@ -27,7 +27,7 @@ class EmpfaengerservicesConfigurator extends \Mediaopt\Empfaengerservices\Config
      */
     public function getMapsApiKey()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_empfaengerservices__standortsuche_googleMapsApiKey');
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__standortsuche_googleMapsApiKey');
     }
 
     /**
@@ -61,7 +61,7 @@ class EmpfaengerservicesConfigurator extends \Mediaopt\Empfaengerservices\Config
     {
         $retentionNumbers = ['UNLIMITED' => 0, 'ONE_DAY' => 1, 'TWO_DAYS' => 2, 'THREE_DAYS' => 3, 'FOUR_DAYS' => 4, 'FIVE_DAYS' => 5, 'SIX_DAYS' => 6, 'ONE_WEEK' => 7, 'TWO_WEEKS' => 14, 'THREE_WEEKS' => 21, 'ONE_MONTH' => 30, 'TWO_MONTHS' => 61, 'QUARTER_YEAR' => 122, 'HALF_YEAR' => 183, 'YEAR' => 365];
         /** @var string|null $retentionPeriod */
-        $retentionPeriod = \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_empfaengerservices__retention');
+        $retentionPeriod = \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__retention');
         return array_key_exists($retentionPeriod, $retentionNumbers) ? $retentionNumbers[$retentionPeriod] : self::DEFAULT_LOG_RETENTION_SIZE;
     }
 
@@ -82,7 +82,7 @@ class EmpfaengerservicesConfigurator extends \Mediaopt\Empfaengerservices\Config
      */
     public function getName()
     {
-        return 'mo_empfaengerservices';
+        return 'mo_dhl';
     }
 
     /**
@@ -90,7 +90,7 @@ class EmpfaengerservicesConfigurator extends \Mediaopt\Empfaengerservices\Config
      */
     protected function getLogLevel()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_empfaengerservices__logLevel');
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__logLevel');
     }
 
     /**
@@ -98,6 +98,6 @@ class EmpfaengerservicesConfigurator extends \Mediaopt\Empfaengerservices\Config
      */
     protected function getEkp()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_empfaengerservices__merchant_ekp');
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__merchant_ekp');
     }
 }

@@ -1,6 +1,6 @@
 (function ($) {
 
-    mo_empfaengerservices = {
+    mo_dhl = {
         empfaengerservices: null,
         isWunschpaketAvailable: null,
         addPostnummer: function () {
@@ -153,7 +153,7 @@
                 $("#shippingAddressForm").show();
             }
             if (self.isWunschboxAvailable) {
-                mo_empfaengerservices__wunschpaket.showOrHideWunschbox();
+                mo_dhl__wunschpaket.showOrHideWunschbox();
             }
         },
         addAddressChangeListener: function () {
@@ -231,10 +231,10 @@
                 return;
             }
             $('#delCountrySelect').on('change', function () {
-                mo_empfaengerservices__wunschpaket.showOrHideWunschbox();
+                mo_dhl__wunschpaket.showOrHideWunschbox();
             });
             $('#invCountrySelect').on('change', function () {
-                mo_empfaengerservices__wunschpaket.showOrHideWunschbox();
+                mo_dhl__wunschpaket.showOrHideWunschbox();
             });
 
             $('#moEmpfaengerservicesWunschort').on('change textInput input', function () {
@@ -249,12 +249,12 @@
                 self.validatePreferredNeighboursName(false);
             });
 
-            mo_empfaengerservices__wunschpaket.showOrHideWunschbox();
+            mo_dhl__wunschpaket.showOrHideWunschbox();
 
         },
         initializeFinder: function () {
             this.empfaengerservicesfinder = new EmpfaengerservicesFinder($, this);
-            mo_empfaengerservices__finder.initialize(this);
+            mo_dhl__finder.initialize(this);
         },
         validatePostnummer: function () {
             var postnummerInput = $("input[name='deladr[oxaddress__oxaddinfo]']");

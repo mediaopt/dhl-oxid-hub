@@ -3,12 +3,12 @@
         <option value="-1">[{oxmultilang ident="NEW_ADDRESS"}]</option>
         [{if $oViewConf->moCanPackstationBeSelected()}]
             <option id="selectPackstation" value="-1">
-                [{oxmultilang ident="MO_EMPFAENGERSERVICES__NEW_PACKSTATION"}]
+                [{oxmultilang ident="MO_DHL__NEW_PACKSTATION"}]
             </option>
         [{/if}]
         [{if $oViewConf->moCanFilialeBeSelected()}]
             <option id="selectFiliale" value="-1">
-                [{oxmultilang ident="MO_EMPFAENGERSERVICES__NEW_FILIALE"}]
+                [{oxmultilang ident="MO_DHL__NEW_FILIALE"}]
             </option>
         [{/if}]
         [{if $oxcmp_user}]

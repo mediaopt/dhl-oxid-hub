@@ -1,11 +1,11 @@
-[{assign var="wunschtagCosts" value=$oxcmp_basket->mo_empfaengerservices__getWunschtagCosts()}]
-[{assign var="wunschzeitCosts" value=$oxcmp_basket->mo_empfaengerservices__getWunschzeitCosts()}]
-[{assign var="combinedCosts" value=$oxcmp_basket->mo_empfaengerservices__getCostsForCombinedWunschtagAndWunschzeit()}]
+[{assign var="wunschtagCosts" value=$oxcmp_basket->moDHLGetWunschtagCosts()}]
+[{assign var="wunschzeitCosts" value=$oxcmp_basket->moDHLGetWunschzeitCosts()}]
+[{assign var="combinedCosts" value=$oxcmp_basket->moDHLGetCostsForCombinedWunschtagAndWunschzeit()}]
 
 [{if $combinedCosts && $combinedCosts->getPrice() >= 0.01}]
     [{if $oViewConf->isFunctionalityEnabled('blShowVATForDelivery')}]
         <tr>
-            <th class="text-right">[{oxmultilang ident="MO_EMPFAENGERSERVICES__COMBINATION_SURCHARGE_NET" suffix="COLON"}]</th class="text-right">
+            <th class="text-right">[{oxmultilang ident="MO_DHL__COMBINATION_SURCHARGE_NET" suffix="COLON"}]</th class="text-right">
             <td id="moEmpfaengerservicesWunschtagCosts" class="text-right">
                 [{oxprice price=$combinedCosts->getNettoPrice() currency=$currency}]
             </td>
@@ -24,7 +24,7 @@
         [{/if}]
     [{else}]
         <tr>
-            <th class="text-right">[{oxmultilang ident="MO_EMPFAENGERSERVICES__COMBINATION_SURCHARGE_GROSS" suffix="COLON"}]</th class="text-right">
+            <th class="text-right">[{oxmultilang ident="MO_DHL__COMBINATION_SURCHARGE_GROSS" suffix="COLON"}]</th class="text-right">
             <td id="moEmpfaengerservicesWunschtagCosts" class="text-right">
                 [{oxprice price=$combinedCosts->getBruttoPrice() currency=$currency}]
             </td>
@@ -33,7 +33,7 @@
 [{elseif $wunschtagCosts && $wunschtagCosts->getPrice() >= 0.01}]
     [{if $oViewConf->isFunctionalityEnabled('blShowVATForDelivery')}]
         <tr>
-            <th class="text-right">[{oxmultilang ident="MO_EMPFAENGERSERVICES__WUNSCHTAG_COSTS_NET" suffix="COLON"}]</th class="text-right">
+            <th class="text-right">[{oxmultilang ident="MO_DHL__WUNSCHTAG_COSTS_NET" suffix="COLON"}]</th class="text-right">
             <td id="moEmpfaengerservicesWunschtagCosts" class="text-right">
                 [{oxprice price=$wunschtagCosts->getNettoPrice() currency=$currency}]
             </td>
@@ -52,7 +52,7 @@
         [{/if}]
     [{else}]
         <tr>
-            <th class="text-right">[{oxmultilang ident="MO_EMPFAENGERSERVICES__WUNSCHTAG_COSTS_GROSS" suffix="COLON"}]</th class="text-right">
+            <th class="text-right">[{oxmultilang ident="MO_DHL__WUNSCHTAG_COSTS_GROSS" suffix="COLON"}]</th class="text-right">
             <td id="moEmpfaengerservicesWunschtagCosts" class="text-right">
                 [{oxprice price=$wunschtagCosts->getBruttoPrice() currency=$currency}]
             </td>
@@ -61,7 +61,7 @@
 [{elseif $wunschzeitCosts && $wunschzeitCosts->getPrice() >= 0.01}]
     [{if $oViewConf->isFunctionalityEnabled('blShowVATForDelivery')}]
         <tr>
-            <th class="text-right">[{oxmultilang ident="MO_EMPFAENGERSERVICES__WUNSCHZEIT_COSTS_NET" suffix="COLON"}]</th class="text-right">
+            <th class="text-right">[{oxmultilang ident="MO_DHL__WUNSCHZEIT_COSTS_NET" suffix="COLON"}]</th class="text-right">
             <td id="moEmpfaengerservicesWunschzeitCosts" class="text-right">
                 [{oxprice price=$wunschzeitCosts->getNettoPrice() currency=$currency}]
             </td>
@@ -80,7 +80,7 @@
         [{/if}]
     [{else}]
         <tr>
-            <th class="text-right">[{oxmultilang ident="MO_EMPFAENGERSERVICES__WUNSCHZEIT_COSTS_GROSS" suffix="COLON"}]</th class="text-right">
+            <th class="text-right">[{oxmultilang ident="MO_DHL__WUNSCHZEIT_COSTS_GROSS" suffix="COLON"}]</th class="text-right">
             <td id="moEmpfaengerservicesWunschzeitCosts" class="text-right">
                 [{oxprice price=$wunschzeitCosts->getBruttoPrice() currency=$currency}]
             </td>

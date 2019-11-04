@@ -22,7 +22,7 @@ class PaymentList extends PaymentList_parent
         }
 
         foreach ($payments as $index => $payment) {
-            if ((int) $payment->oxpayments__mo_empfaengerservices_excluded->rawValue > 0) {
+            if ((int) $payment->oxpayments__mo_dhl_excluded->rawValue > 0) {
                 unset($payments[$index]);
             }
         }

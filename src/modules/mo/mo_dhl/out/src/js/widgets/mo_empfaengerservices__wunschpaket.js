@@ -1,8 +1,8 @@
 (function ($) {
     // noinspection JSUnusedGlobalSymbols
-    mo_empfaengerservices__wunschpaket = {
+    mo_dhl__wunschpaket = {
         initializeWunschpaket: function (selectedTime, selectedDay) {
-            mo_empfaengerservices__wunschpaket.fillInTimeAndDay();
+            mo_dhl__wunschpaket.fillInTimeAndDay();
             var $wunschpaket = $('#moEmpfaengerservicesWunschpaket');
             var $wunschort = $('#moEmpfaengerservicesWunschort');
             var $wunschnachbarName = $('#moEmpfaengerservicesWunschnachbarName');
@@ -67,7 +67,7 @@
                 if ($(this).siblings('input').is(':disabled')) {
                     return;
                 }
-                mo_empfaengerservices__wunschpaket.toggle($(this).siblings("input"));
+                mo_dhl__wunschpaket.toggle($(this).siblings("input"));
             });
             $wunschortCheckbox.change(function () {
                 if (!$wunschortCheckbox.prop('checked')) {
@@ -104,13 +104,13 @@
                     $wunschzeitCheckbox.prop('checked', true);
                 }
             });
-            $('#showShipAddress').change(mo_Empfaengerservices__Helper.debounce(mo_empfaengerservices__wunschpaket.fillInTimeAndDay, 300));
-            $("#addressId").change(mo_Empfaengerservices__Helper.debounce(mo_empfaengerservices__wunschpaket.fillInTimeAndDay, 300));
-            $("input[name='deladr[oxaddress__oxzip]']").on('input', mo_Empfaengerservices__Helper.debounce(mo_empfaengerservices__wunschpaket.fillInTimeAndDay, 300));
-            $("input[name='invadr[oxuser__oxzip]']").on('input', mo_Empfaengerservices__Helper.debounce(mo_empfaengerservices__wunschpaket.fillInTimeAndDay, 300));
+            $('#showShipAddress').change(mo_Empfaengerservices__Helper.debounce(mo_dhl__wunschpaket.fillInTimeAndDay, 300));
+            $("#addressId").change(mo_Empfaengerservices__Helper.debounce(mo_dhl__wunschpaket.fillInTimeAndDay, 300));
+            $("input[name='deladr[oxaddress__oxzip]']").on('input', mo_Empfaengerservices__Helper.debounce(mo_dhl__wunschpaket.fillInTimeAndDay, 300));
+            $("input[name='invadr[oxuser__oxzip]']").on('input', mo_Empfaengerservices__Helper.debounce(mo_dhl__wunschpaket.fillInTimeAndDay, 300));
 
 
-            mo_empfaengerservices__wunschpaket.showOrHideWunschbox();
+            mo_dhl__wunschpaket.showOrHideWunschbox();
         },
         toggle: function (radioButton) {
             var isChecked = radioButton.is(":checked");
@@ -145,8 +145,8 @@
         },
         showOrHideWunschbox: function () {
             var self = this;
-            var isSelectedCountryEligible = $("#germany-oxid").text() === mo_empfaengerservices.getDestinationCountryId();
-            var isSelectedAddressTypeEligible = mo_empfaengerservices.empfaengerservices.getState() === 'regular';
+            var isSelectedCountryEligible = $("#germany-oxid").text() === mo_dhl.getDestinationCountryId();
+            var isSelectedAddressTypeEligible = mo_dhl.empfaengerservices.getState() === 'regular';
             if (isSelectedCountryEligible && isSelectedAddressTypeEligible) {
                 self.showWunschoptions();
             } else {
@@ -240,26 +240,26 @@
             this.preselectWunschtag(selectedDay);
         },
         emptyTimeAndDay: function () {
-            mo_empfaengerservices__wunschpaket.buildTime({});
-            mo_empfaengerservices__wunschpaket.buildDays({});
+            mo_dhl__wunschpaket.buildTime({});
+            mo_dhl__wunschpaket.buildDays({});
         },
         fillInTimeAndDay: function () {
-            var ajaxCall = $('#moEmpfaengerservicesWunschpaket').data('timeanddate') + mo_empfaengerservices__wunschpaket.getCurrentZip();
-            if (mo_empfaengerservices__wunschpaket.getCurrentZip() === '') {
-                mo_empfaengerservices__wunschpaket.emptyTimeAndDay();
+            var ajaxCall = $('#moEmpfaengerservicesWunschpaket').data('timeanddate') + mo_dhl__wunschpaket.getCurrentZip();
+            if (mo_dhl__wunschpaket.getCurrentZip() === '') {
+                mo_dhl__wunschpaket.emptyTimeAndDay();
                 return;
             }
             $.ajax(ajaxCall).done(function (response) {
-                mo_empfaengerservices__wunschpaket.buildTime(response.preferredTimes);
-                mo_empfaengerservices__wunschpaket.buildDays(response.preferredDays);
+                mo_dhl__wunschpaket.buildTime(response.preferredTimes);
+                mo_dhl__wunschpaket.buildDays(response.preferredDays);
                 $('#moEmpfaengerservicesWunschpaket').find("input[type='radio']").siblings("label").click(function () {
                     if ($(this).siblings('input').is(':disabled')) {
                         return;
                     }
-                    mo_empfaengerservices__wunschpaket.toggle($(this).siblings("input"));
+                    mo_dhl__wunschpaket.toggle($(this).siblings("input"));
                 });
             }).fail(function () {
-                mo_empfaengerservices__wunschpaket.emptyTimeAndDay();
+                mo_dhl__wunschpaket.emptyTimeAndDay();
             });
         }
     };

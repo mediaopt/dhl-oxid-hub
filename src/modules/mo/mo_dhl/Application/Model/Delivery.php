@@ -21,14 +21,14 @@ class Delivery extends Delivery_parent
 
     /**
      * A delivery is excluded every associated delivery set is excluded.
-     * 
+     *
      * @return bool
      * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
      */
     public function moIsExcluded()
     {
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $query = ' SELECT MIN(oxdelivery.MO_EMPFAENGERSERVICES_EXCLUDED + COALESCE(oxdeliveryset.MO_EMPFAENGERSERVICES_EXCLUDED, 0))' . ' FROM oxdeliveryset' . ' JOIN oxdel2delset on oxdel2delset.OXDELSETID = oxdeliveryset.OXID' . ' JOIN oxdelivery ON oxdelivery.OXID = OXDELID' . " WHERE oxdelivery.OXID = {$db->quote($this->getId())}";
+        $query = ' SELECT MIN(oxdelivery.MO_DHL_EXCLUDED + COALESCE(oxdeliveryset.MO_DHL_EXCLUDED, 0))' . ' FROM oxdeliveryset' . ' JOIN oxdel2delset on oxdel2delset.OXDELSETID = oxdeliveryset.OXID' . ' JOIN oxdelivery ON oxdelivery.OXID = OXDELID' . " WHERE oxdelivery.OXID = {$db->quote($this->getId())}";
         return (bool) $db->getOne($query);
     }
 }

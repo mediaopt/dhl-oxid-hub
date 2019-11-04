@@ -1,6 +1,6 @@
 (function ($) {
 
-    mo_empfaengerservices__finder = {
+    mo_dhl__finder = {
         addFinderButton: function () {
             var self = this;
             var finderButton = $("#moEmpfaengerservicesButton");
@@ -31,7 +31,7 @@
         addInfoBox: function (provider, marker) {
             var self = this;
             var providerId = "provider_" + provider.id;
-            var headline = this.tailorer.empfaengerservices.fromProviderTypeToLabel(provider.type) + ' ' + mo_empfaengerservices.getProviderId(provider);
+            var headline = this.tailorer.empfaengerservices.fromProviderTypeToLabel(provider.type) + ' ' + mo_dhl.getProviderId(provider);
             var address = (provider.name ? provider.name + "<br/>" : '')
                 + provider.address.street + " " + provider.address.streetNo + "<br/>"
                 + provider.address.zip + " "
@@ -79,7 +79,7 @@
                 self.openInfoBoxes = [info];
                 google.maps.event.addListener(info, 'domready', function() {
                     $('#provider_' + provider.id).click(function () {
-                        mo_empfaengerservices.apply(provider);
+                        mo_dhl.apply(provider);
                         self.openInfoBoxes.forEach(function (box) {
                             box.close();
                         });

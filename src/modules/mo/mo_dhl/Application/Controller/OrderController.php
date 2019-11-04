@@ -4,7 +4,7 @@ namespace Mediaopt\DHL\Application\Controller;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
- * 
+ *
  * @copyright 2016 derksen mediaopt GmbH
  */
 
@@ -14,7 +14,7 @@ use Mediaopt\Empfaengerservices\Api\Wunschpaket;
 
 /**
  * This class extends the order class with Wunschpaket features.
- * 
+ *
  * @author derksen mediaopt GmbH
  */
 class OrderController extends OrderController_parent
@@ -25,16 +25,16 @@ class OrderController extends OrderController_parent
     public function init()
     {
         parent::init();
-        $atLeastOneServiceHasBeenDisabled = $this->mo_empfaengerservices__updateWunschpaketTags();
+        $atLeastOneServiceHasBeenDisabled = $this->moDHLUpdateWunschpaketTags();
         if ($atLeastOneServiceHasBeenDisabled) {
             /** @noinspection PhpParamsInspection */
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_EMPFAENGERSERVICES__DISABLED_SERVICE_ERROR');
+            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__DISABLED_SERVICE_ERROR');
         }
     }
 
     /**
      */
-    protected function mo_empfaengerservices__updateWunschpaketTags()
+    protected function moDHLUpdateWunschpaketTags()
     {
         /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
         $basket = $this->getBasket();
@@ -60,7 +60,7 @@ class OrderController extends OrderController_parent
     /**
      * @return string[]
      */
-    public function mo_empfaengerservices__getLocation()
+    public function moDHLGetLocation()
     {
         return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->extractLocation(parent::getOrderRemark());
     }
@@ -68,7 +68,7 @@ class OrderController extends OrderController_parent
     /**
      * @return string
      */
-    public function mo_empfaengerservices__getTime()
+    public function moDHLGetTime()
     {
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         $preferredTime = $wunschpaket->extractTime(parent::getOrderRemark());
@@ -78,7 +78,7 @@ class OrderController extends OrderController_parent
     /**
      * @return string
      */
-    public function mo_empfaengerservices__getWunschtag()
+    public function moDHLGetWunschtag()
     {
         return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->extractWunschtag(parent::getOrderRemark());
     }
@@ -95,7 +95,7 @@ class OrderController extends OrderController_parent
     /**
      * @return bool
      */
-    public function mo_empfaengerservices__isAWunschpaketServiceSelected()
+    public function moDHLIsAWunschpaketServiceSelected()
     {
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         return $wunschpaket->hasAnyWunschpaketService(parent::getOrderRemark());
@@ -106,7 +106,7 @@ class OrderController extends OrderController_parent
      * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    public function mo_empfaengerservices__canAWunschpaketServiceBeSelected()
+    public function moDHLCanAWunschpaketServiceBeSelected()
     {
         $basket = $this->getBasket();
         $user = $this->getUser();

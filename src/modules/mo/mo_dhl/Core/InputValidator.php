@@ -3,7 +3,7 @@ namespace Mediaopt\DHL\Core;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
- * 
+ *
  * @copyright 2017 derksen mediaopt GmbH
  */
 
@@ -11,7 +11,7 @@ namespace Mediaopt\DHL\Core;
 
 /**
  * Adds validation for a Postnummer.
- * 
+ *
  * @author derksen mediaopt GmbH
  */
 class InputValidator extends InputValidator_parent
@@ -34,7 +34,7 @@ class InputValidator extends InputValidator_parent
             return;
         }
 
-        $message = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MO_EMPFAENGERSERVICES__ERROR_POSTNUMMER_MALFORMED');
+        $message = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MO_DHL__ERROR_POSTNUMMER_MALFORMED');
         $exception = \oxNew(\OxidEsales\Eshop\Core\Exception\InputException::class, $message);
         $this->_addValidationError('oxaddress__oxaddinfo', $exception);
     }

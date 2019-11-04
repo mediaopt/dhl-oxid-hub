@@ -24,7 +24,7 @@ Empfaengerservices = function ($, tailorer) {
     this.toRegularAddress = function () {
         var empty = this.state !== 'regular';
         if (tailorer.isWunschboxAvailable) {
-            mo_empfaengerservices__wunschpaket.showWunschoptions();
+            mo_dhl__wunschpaket.showWunschoptions();
         }
         this.tailorer.showAdditionalInformation();
         this.tailorer.hidePostnummer(empty);
@@ -37,7 +37,7 @@ Empfaengerservices = function ($, tailorer) {
     this.toPackstation = function () {
         var empty = this.state !== 'packstation';
         if (tailorer.isWunschboxAvailable) {
-            mo_empfaengerservices__wunschpaket.hideWunschoptions();
+            mo_dhl__wunschpaket.hideWunschoptions();
         }
         this.tailorer.hideAdditionalInformation();
         this.tailorer.showPostnummer(empty);
@@ -50,7 +50,7 @@ Empfaengerservices = function ($, tailorer) {
     this.toPostfiliale = function () {
         var empty = this.state !== 'postfiliale';
         if (tailorer.isWunschboxAvailable) {
-            mo_empfaengerservices__wunschpaket.hideWunschoptions();
+            mo_dhl__wunschpaket.hideWunschoptions();
         }
         this.tailorer.hideAdditionalInformation();
         this.tailorer.showPostnummer(empty);
@@ -63,7 +63,7 @@ Empfaengerservices = function ($, tailorer) {
     this.toPaketshop = function () {
         var empty = this.state !== 'paketshop';
         if (tailorer.isWunschboxAvailable) {
-            mo_empfaengerservices__wunschpaket.hideWunschoptions();
+            mo_dhl__wunschpaket.hideWunschoptions();
         }
         this.tailorer.hideAdditionalInformation();
         this.tailorer.showPostnummer(empty);

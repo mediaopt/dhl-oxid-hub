@@ -15,11 +15,11 @@
 
     <ul>
         <li>
-            <label for="ekp">[{oxmultilang ident="MO_EMPFAENGERSERVICES__EKP"}]:</label>
+            <label for="ekp">[{oxmultilang ident="MO_DHL__EKP"}]:</label>
             <input id="ekp" name="ekp" value="[{$ekp}]">
         </li>
         <li>
-            <label for="processIdentifier">[{oxmultilang ident="MO_EMPFAENGERSERVICES__PROCESS_IDENTIFIER"}]:</label>
+            <label for="processIdentifier">[{oxmultilang ident="MO_DHL__PROCESS_IDENTIFIER"}]:</label>
             <select id="processIdentifier" name="processIdentifier">
                 <option value="">-</option>
                 [{foreach from=$processes key='identifier' item='label'}]
@@ -30,10 +30,10 @@
             </select>
         </li>
         <li>
-            <label for="participationNumber">[{oxmultilang ident="MO_EMPFAENGERSERVICES__PARTICIPATION_NUMBER"}]
+            <label for="participationNumber">[{oxmultilang ident="MO_DHL__PARTICIPATION_NUMBER"}]
                 :</label>
             <input id="participationNumber" name="participationNumber" maxlength="2"
-                   placeholder="[{oxmultilang ident="MO_EMPFAENGERSERVICES__PARTICIPATION_NUMBER"}]"
+                   placeholder="[{oxmultilang ident="MO_DHL__PARTICIPATION_NUMBER"}]"
                    value="[{$participationNumber}]"
             />
         </li>

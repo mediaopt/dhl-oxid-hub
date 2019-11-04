@@ -4,7 +4,7 @@ namespace Mediaopt\DHL\Adapter;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
- * 
+ *
  * @copyright 2016 derksen mediaopt GmbH
  */
 
@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * This class adapts the OXID shop to the SDK.
- * 
+ *
  * @author derksen mediaopt GmbH
  */
 class EmpfaengerservicesAdapter
@@ -38,7 +38,7 @@ class EmpfaengerservicesAdapter
      */
     public function canPackstationBeSelected()
     {
-        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_empfaengerservices__standortsuche_packstation');
+        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__standortsuche_packstation');
     }
 
     /**
@@ -46,7 +46,7 @@ class EmpfaengerservicesAdapter
      */
     public function canPostfilialeBeSelected()
     {
-        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_empfaengerservices__standortsuche_postfiliale');
+        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__standortsuche_postfiliale');
     }
 
     /**
@@ -54,7 +54,7 @@ class EmpfaengerservicesAdapter
      */
     public function canPaketshopBeSelected()
     {
-        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_empfaengerservices__standortsuche_paketshop');
+        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__standortsuche_paketshop');
     }
 
     /**
@@ -63,9 +63,9 @@ class EmpfaengerservicesAdapter
      */
     public function getMaximumHits()
     {
-        $maximumHits = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_empfaengerservices__standortsuche_maximumHits');
+        $maximumHits = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__standortsuche_maximumHits');
         if (!is_numeric($maximumHits)) {
-            $message = 'Misconfiguration: mo_empfaengerservices__standortsuche_maximumHits is no number.';
+            $message = 'Misconfiguration: mo_dhl__standortsuche_maximumHits is no number.';
             throw new \RuntimeException($message);
         }
 
@@ -174,7 +174,7 @@ class EmpfaengerservicesAdapter
     {
         $excludedDays = [];
         foreach (['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $day) {
-            if (\OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_empfaengerservices__handing_over_' . strtolower($day))) {
+            if (\OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__handing_over_' . strtolower($day))) {
                 $excludedDays[] = $day;
             }
         }
@@ -186,7 +186,7 @@ class EmpfaengerservicesAdapter
      */
     public function getPreparationDays()
     {
-        return (int) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_empfaengerservices__wunschtag_preparation');
+        return (int) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__wunschtag_preparation');
     }
 
     /**

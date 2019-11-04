@@ -4,7 +4,7 @@ namespace Mediaopt\DHL\Controller\Admin;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
- * 
+ *
  * @copyright 2016 derksen mediaopt GmbH
  */
 
@@ -15,7 +15,7 @@ use Mediaopt\Empfaengerservices\Shipment\Shipment;
 
 /**
  * This controller provides functionality to export orders into a CSV that can be imported in the Geschäftskundenportal.
- * 
+ *
  * @author derksen mediaopt GmbH
  */
 class EmpfaengerservicesOrderExportController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
@@ -27,7 +27,7 @@ class EmpfaengerservicesOrderExportController extends \OxidEsales\Eshop\Applicat
 
     /**
      * Prefix of the file that is transmitted to the user.
-     * 
+     *
      * @var string
      */
     const EXPORT_FILE = 'lieferadressen-export';
@@ -44,14 +44,14 @@ class EmpfaengerservicesOrderExportController extends \OxidEsales\Eshop\Applicat
     public function render()
     {
         parent::render();
-        return 'mo_empfaengerservices__order_export.tpl';
+        return 'mo_dhl__order_export.tpl';
     }
 
     /**
      * If at least one order was selected, every selected order is stored in the session.
-     * 
+     *
      * We redirect to the download page to ensure that non-critical notifications to the user are provided.
-     * 
+     *
      * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
@@ -59,7 +59,7 @@ class EmpfaengerservicesOrderExportController extends \OxidEsales\Eshop\Applicat
     {
         $orderIds = (array) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('order');
         if (empty($orderIds)) {
-            $message = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MO_EMPFAENGERSERVICES__EXPORT_ERROR_NO_ORDER_SELECTED');
+            $message = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MO_DHL__EXPORT_ERROR_NO_ORDER_SELECTED');
             \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay(new \OxidEsales\Eshop\Core\Exception\StandardException($message));
             return;
         }
@@ -69,7 +69,7 @@ class EmpfaengerservicesOrderExportController extends \OxidEsales\Eshop\Applicat
     }
 
     /**
-     * 
+     *
      */
     public function download()
     {
@@ -83,7 +83,7 @@ class EmpfaengerservicesOrderExportController extends \OxidEsales\Eshop\Applicat
 
     /**
      * Exports the supplied orders (via their id) as CSV.
-     * 
+     *
      * @param string[] $orderIds
      * @return string
      * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
@@ -148,7 +148,7 @@ class EmpfaengerservicesOrderExportController extends \OxidEsales\Eshop\Applicat
             return false;
         }
 
-        $key = 'MO_EMPFAENGERSERVICES__EXPORT_ORDERS_WITHOUT_BILLING_NUMBER';
+        $key = 'MO_DHL__EXPORT_ORDERS_WITHOUT_BILLING_NUMBER';
         $translation = \OxidEsales\Eshop\Core\Registry::getLang()->translateString($key);
         $message = sprintf($translation, implode(', ', $idsOfOrdersWithoutBillingNumber));
         /** @noinspection PhpParamsInspection */

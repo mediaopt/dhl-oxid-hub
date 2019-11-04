@@ -161,7 +161,7 @@ EmpfaengerservicesFinder = function ($, tailorer) {
             title: title,
             icon: icon
         });
-        mo_empfaengerservices__finder.addInfoBox(provider, marker);
+        mo_dhl__finder.addInfoBox(provider, marker);
         return marker;
     };
 };

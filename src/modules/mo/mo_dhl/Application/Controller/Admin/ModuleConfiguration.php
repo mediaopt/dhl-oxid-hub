@@ -4,7 +4,7 @@ namespace Mediaopt\DHL\Application\Controller\Admin;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
- * 
+ *
  * @copyright 2016 derksen mediaopt GmbH
  */
 
@@ -16,7 +16,7 @@ use Mediaopt\Empfaengerservices\Shipment\Process;
 
 /**
  * Extends the module configuration to allow the user to download logs.
- * 
+ *
  * @author derksen mediaopt GmbH
  */
 class ModuleConfiguration extends ModuleConfiguration_parent
@@ -52,7 +52,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
      */
     public function moGetLogs()
     {
-        $logs = array_reverse(glob(\OxidEsales\Eshop\Core\Registry::getConfig()->getLogsDir() . 'mo_empfaengerservices_*.log'));
+        $logs = array_reverse(glob(\OxidEsales\Eshop\Core\Registry::getConfig()->getLogsDir() . 'mo_dhl_*.log'));
         return array_map('basename', $logs);
     }
 
@@ -64,7 +64,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     {
         parent::saveConfVars();
 
-        if ($this->getEditObjectId() === 'mo_empfaengerservices') {
+        if ($this->getEditObjectId() === 'mo_dhl') {
             $config = \OxidEsales\Eshop\Core\Registry::getConfig();
             $this->moSaveExcludedPaymentOptions((array) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('payment'));
             $this->moSaveExcludedDeliveryOptions((array) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('delivery'));
@@ -87,10 +87,10 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         }
 
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $db->execute('UPDATE `oxpayments` SET mo_empfaengerservices_excluded = 0');
+        $db->execute('UPDATE `oxpayments` SET mo_dhl_excluded = 0');
         if (!empty($excludedPaymentOptions)) {
             $values = implode(', ', array_map([$db, 'quote'], $this->moSanitizeOptions($excludedPaymentOptions)));
-            $db->execute("UPDATE `oxpayments` SET mo_empfaengerservices_excluded = 1 WHERE OXID IN ({$values})");
+            $db->execute("UPDATE `oxpayments` SET mo_dhl_excluded = 1 WHERE OXID IN ({$values})");
         }
     }
 
@@ -118,10 +118,10 @@ class ModuleConfiguration extends ModuleConfiguration_parent
 
         $delivery = \getViewName('oxdelivery');
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $db->execute("UPDATE {$delivery} SET mo_empfaengerservices_excluded = 0");
+        $db->execute("UPDATE {$delivery} SET mo_dhl_excluded = 0");
         if (!empty($excludedDeliveryOptions)) {
             $values = implode(', ', array_map([$db, 'quote'], $this->moSanitizeOptions($excludedDeliveryOptions)));
-            $db->execute("UPDATE {$delivery} SET mo_empfaengerservices_excluded = 1 WHERE OXID IN ({$values})");
+            $db->execute("UPDATE {$delivery} SET mo_dhl_excluded = 1 WHERE OXID IN ({$values})");
         }
     }
 
@@ -138,10 +138,10 @@ class ModuleConfiguration extends ModuleConfiguration_parent
 
         $deliverySet = \getViewName('oxdeliveryset');
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $db->execute("UPDATE {$deliverySet} SET mo_empfaengerservices_excluded = 0");
+        $db->execute("UPDATE {$deliverySet} SET mo_dhl_excluded = 0");
         if (!empty($excludedDeliverySetOptions)) {
             $values = implode(', ', array_map([$db, 'quote'], $this->moSanitizeOptions($excludedDeliverySetOptions)));
-            $db->execute("UPDATE {$deliverySet} SET mo_empfaengerservices_excluded = 1 WHERE OXID IN ({$values})");
+            $db->execute("UPDATE {$deliverySet} SET mo_dhl_excluded = 1 WHERE OXID IN ({$values})");
         }
     }
 
@@ -186,8 +186,8 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     {
         $deliverySet = \getViewName('oxdeliveryset');
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $db->execute("UPDATE {$deliverySet} SET MO_EMPFAENGERSERVICES_PROCESS = NULL");
-        $query = "UPDATE {$deliverySet} SET MO_EMPFAENGERSERVICES_PROCESS = %s WHERE OXID = %s";
+        $db->execute("UPDATE {$deliverySet} SET MO_DHL_PROCESS = NULL");
+        $query = "UPDATE {$deliverySet} SET MO_DHL_PROCESS = %s WHERE OXID = %s";
         foreach ($identifiers as $oxid => $identifier) {
             if (empty($identifier)) {
                 continue;
@@ -198,7 +198,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
                 $db->execute(sprintf($query, $db->quote($identifier), $db->quote($oxid)));
             } catch (\InvalidArgumentException $exception) {
                 /** @noinspection PhpParamsInspection */
-                \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_EMPFAENGERSERVICES__PROCESS_IDENTIFIER_ERROR');
+                \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PROCESS_IDENTIFIER_ERROR');
             }
         }
     }
@@ -211,8 +211,8 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     {
         $deliverySet = \getViewName('oxdeliveryset');
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $db->execute("UPDATE {$deliverySet} SET MO_EMPFAENGERSERVICES_PARTICIPATION = NULL");
-        $query = "UPDATE {$deliverySet} SET MO_EMPFAENGERSERVICES_PARTICIPATION = %s WHERE OXID = %s";
+        $db->execute("UPDATE {$deliverySet} SET MO_DHL_PARTICIPATION = NULL");
+        $query = "UPDATE {$deliverySet} SET MO_DHL_PARTICIPATION = %s WHERE OXID = %s";
         foreach ($numbers as $oxid => $number) {
             if (empty($number)) {
                 continue;
@@ -223,7 +223,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
                 $db->execute(sprintf($query, $db->quote($number), $db->quote($oxid)));
             } catch (\InvalidArgumentException $exception) {
                 /** @noinspection PhpParamsInspection */
-                \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_EMPFAENGERSERVICES__PARTICIPATION_NUMBER_ERROR');
+                \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PARTICIPATION_NUMBER_ERROR');
             }
         }
     }
@@ -232,7 +232,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
      */
     protected function moReviewEkp()
     {
-        $ekpVariable = 'mo_empfaengerservices__merchant_ekp';
+        $ekpVariable = 'mo_dhl__merchant_ekp';
         $ekp = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam($ekpVariable);
         if (empty($ekp)) {
             return;
@@ -241,9 +241,9 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         try {
             Ekp::build($ekp);
         } catch (\InvalidArgumentException $exception) {
-            \OxidEsales\Eshop\Core\Registry::getConfig()->saveShopConfVar('string', $ekpVariable, '', '', 'module:mo_empfaengerservices');
+            \OxidEsales\Eshop\Core\Registry::getConfig()->saveShopConfVar('string', $ekpVariable, '', '', 'module:mo_dhl');
             /** @noinspection PhpParamsInspection */
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_EMPFAENGERSERVICES__EKP_ERROR');
+            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__EKP_ERROR');
         }
     }
 }

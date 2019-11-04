@@ -4,7 +4,7 @@ namespace Mediaopt\DHL;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
- * 
+ *
  * @copyright 2016 derksen mediaopt GmbH
  */
 
@@ -13,7 +13,7 @@ use Mediaopt\Empfaengerservices\ServiceProvider\Branch;
 
 /**
  * This class integrates the Wunschpaket class of the SDK into OXID.
- * 
+ *
  * @author derksen mediaopt GmbH
  */
 class EmpfaengerservicesWunschpaket
@@ -51,22 +51,22 @@ class EmpfaengerservicesWunschpaket
     /**
      * @var string
      */
-    const WUNSCHTAG_ACTIVE_FLAG = 'mo_empfaengerservices__wunschtag_active';
+    const WUNSCHTAG_ACTIVE_FLAG = 'mo_dhl__wunschtag_active';
 
     /**
      * @var string
      */
-    const WUNSCHZEIT_ACTIVE_FLAG = 'mo_empfaengerservices__wunschzeit_active';
+    const WUNSCHZEIT_ACTIVE_FLAG = 'mo_dhl__wunschzeit_active';
 
     /**
      * @var string
      */
-    const WUNSCHORT_ACTIVE_FLAG = 'mo_empfaengerservices__wunschort_active';
+    const WUNSCHORT_ACTIVE_FLAG = 'mo_dhl__wunschort_active';
 
     /**
      * @var string
      */
-    const WUNSCHNACHBAR_ACTIVE_FLAG = 'mo_empfaengerservices__wunschnachbar_active';
+    const WUNSCHNACHBAR_ACTIVE_FLAG = 'mo_dhl__wunschnachbar_active';
 
     /**
      * @var Wunschpaket|null
@@ -79,7 +79,7 @@ class EmpfaengerservicesWunschpaket
     {
         try {
             $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesAdapter::class);
-            $this->wunschpaket = $adapter->buildWunschpaket()->setCutOffTime(\OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_empfaengerservices__wunschtag_cutoff'))->setExcludedDaysForHandingOver($adapter->getDaysExcludedForHandingOver())->setPreparationDays($adapter->getPreparationDays());
+            $this->wunschpaket = $adapter->buildWunschpaket()->setCutOffTime(\OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__wunschtag_cutoff'))->setExcludedDaysForHandingOver($adapter->getDaysExcludedForHandingOver())->setPreparationDays($adapter->getPreparationDays());
         } catch (\RuntimeException $exception) {
         }
     }
@@ -122,7 +122,7 @@ class EmpfaengerservicesWunschpaket
 
     /**
      * Returns the content of the supplied string without any tags injected by the Wunschpaket feature.
-     * 
+     *
      * @param string $remark
      * @return string
      */
@@ -157,7 +157,7 @@ class EmpfaengerservicesWunschpaket
 
     /**
      * Returns the boundaries of the supplied tag, if any.
-     * 
+     *
      * @param string $remark
      * @param string $openingTag
      * @param string $closingTag
@@ -181,7 +181,7 @@ class EmpfaengerservicesWunschpaket
 
     /**
      * Returns the content of the location tag (as array) in the supplied string.
-     * 
+     *
      * The array contains always three values that represent the following information:
      * (1) the type of the location
      * (2a) in case of a preferred location: the location
@@ -191,7 +191,7 @@ class EmpfaengerservicesWunschpaket
      * (3b) in case of a preferred neighbour (< 2.3.0): empty string
      * (3c) in case of a preferred neighbour (>= 2.3.0): the name of the neighbour
      * If the remark did not contain location information, the each element equals the empty string.
-     * 
+     *
      * @param string $remark
      * @return string[]
      */
@@ -208,7 +208,7 @@ class EmpfaengerservicesWunschpaket
 
     /**
      * Returns the content of the supplied tag in the supplied string.
-     * 
+     *
      * @param string $remark
      * @param string $openingTag
      * @param string $closingTag
@@ -247,7 +247,7 @@ class EmpfaengerservicesWunschpaket
 
     /**
      * Returns the content of the time tag in the supplied string.
-     * 
+     *
      * @param string $remark
      * @return string
      */
@@ -267,7 +267,7 @@ class EmpfaengerservicesWunschpaket
 
     /**
      * Returns the content of the wunschtag tag in the supplied string.
-     * 
+     *
      * @param string $remark
      * @return string
      */
@@ -287,7 +287,7 @@ class EmpfaengerservicesWunschpaket
 
     /**
      * Returns a location enclosed in a tag.
-     * 
+     *
      * @param string $location
      * @return string
      */
@@ -298,7 +298,7 @@ class EmpfaengerservicesWunschpaket
 
     /**
      * Returns a time enclosed in a tag.
-     * 
+     *
      * @param string $time
      * @return string
      */
@@ -371,7 +371,7 @@ class EmpfaengerservicesWunschpaket
 
     /**
      * Returns true iff preferred day, time, location or neighbor is activated and can be selected.
-     * 
+     *
      * @param \Mediaopt\DHL\Application\Model\Basket $basket
      * @param \OxidEsales\Eshop\Application\Model\User|null $user
      * @param \OxidEsales\Eshop\Application\Model\Address|null $deliveryAddress
@@ -470,7 +470,7 @@ class EmpfaengerservicesWunschpaket
      */
     protected function isExcludedDueToThePaymentOption($payment)
     {
-        return is_object($payment) && (int) $payment->oxpayments__mo_empfaengerservices_excluded->rawValue > 0;
+        return is_object($payment) && (int) $payment->oxpayments__mo_dhl_excluded->rawValue > 0;
     }
 
     /**
@@ -542,7 +542,7 @@ class EmpfaengerservicesWunschpaket
         }
         $firstWunschtag = clone reset($options)['datetime'];
 
-        $estimation = $basket->mo_empfaengerservices__estimateDeliveryTime();
+        $estimation = $basket->moDHLEstimateDeliveryTime();
         if ($estimation === null) {
             return true;
         }
@@ -557,7 +557,7 @@ class EmpfaengerservicesWunschpaket
      */
     public function getWunschtagSurcharge()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_empfaengerservices__wunschtag_surcharge');
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__wunschtag_surcharge');
     }
 
     /**
@@ -565,7 +565,7 @@ class EmpfaengerservicesWunschpaket
      */
     public function getCombinedWunschtagAndWunschzeitSurcharge()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_empfaengerservices__wunschtag_wunschzeit_surcharge');
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__wunschtag_wunschzeit_surcharge');
     }
 
     /**
@@ -573,6 +573,6 @@ class EmpfaengerservicesWunschpaket
      */
     public function getWunschzeitSurcharge()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_empfaengerservices__wunschzeit_surcharge');
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__wunschzeit_surcharge');
     }
 }

@@ -15,7 +15,7 @@ class Email extends Email_parent
      */
     protected function _addUserInfoOrderEMail($order)
     {
-        return $this->moEmpfaengerservicesProcessRemarks($order);
+        return $this->moDHLProcessRemarks($order);
     }
 
     /**
@@ -23,14 +23,14 @@ class Email extends Email_parent
      * @return \Mediaopt\DHL\Application\Model\Order
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    protected function moEmpfaengerservicesProcessRemarks($order)
+    protected function moDHLProcessRemarks($order)
     {
         $remark = $order->oxorder__oxremark->value;
-        $this->moEmpfaengerservicesAddPreferredDay($remark);
-        $this->moEmpfaengerservicesAddPreferredTime($remark);
-        $this->moEmpfaengerservicesAddPreferredNeighbour($remark);
-        $this->moEmpfaengerservicesAddPreferredLocation($remark);
-        $this->moEmpfaengerservicesAddSurcharge($order, $remark);
+        $this->moDHLAddPreferredDay($remark);
+        $this->moDHLAddPreferredTime($remark);
+        $this->moDHLAddPreferredNeighbour($remark);
+        $this->moDHLAddPreferredLocation($remark);
+        $this->moDHLAddSurcharge($order, $remark);
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         /** @var \Mediaopt\DHL\Application\Model\Order $enrichedOrder */
         $enrichedOrder = clone parent::_addUserInfoOrderEMail($order);
@@ -42,7 +42,7 @@ class Email extends Email_parent
     /**
      * @param string $remark
      */
-    protected function moEmpfaengerservicesAddPreferredDay($remark)
+    protected function moDHLAddPreferredDay($remark)
     {
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         /** @var \Smarty $smarty */
@@ -53,7 +53,7 @@ class Email extends Email_parent
     /**
      * @param string $remark
      */
-    protected function moEmpfaengerservicesAddPreferredTime($remark)
+    protected function moDHLAddPreferredTime($remark)
     {
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         /** @var \Smarty $smarty */
@@ -66,7 +66,7 @@ class Email extends Email_parent
     /**
      * @param string $remark
      */
-    protected function moEmpfaengerservicesAddPreferredNeighbour($remark)
+    protected function moDHLAddPreferredNeighbour($remark)
     {
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         list($type, $neighbourAddress, $neighbourName) = $wunschpaket->extractLocation($remark);
@@ -83,7 +83,7 @@ class Email extends Email_parent
     /**
      * @param string $remark
      */
-    protected function moEmpfaengerservicesAddPreferredLocation($remark)
+    protected function moDHLAddPreferredLocation($remark)
     {
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         list($type, $location) = $wunschpaket->extractLocation($remark);
@@ -97,16 +97,16 @@ class Email extends Email_parent
      * @param string $remark
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    protected function moEmpfaengerservicesAddSurcharge($order, $remark)
+    protected function moDHLAddSurcharge($order, $remark)
     {
-        list($label, $surcharge) = $this->moEmpfaengerservicesDetermineSurcharge($remark);
+        list($label, $surcharge) = $this->moDHLDetermineSurcharge($remark);
         if ($label !== '') {
             $label .= $order->isNettoMode() || \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('blShowVATForDelivery') ? '_NET' : '_GROSS';
         }
         /** @var \Smarty $smarty */
         $smarty = $this->_getSmarty();
         $smarty->assign('moEmpfaengerservicesSurchargeLabel', $label);
-        $smarty->assign('moEmpfaengerservicesSurcharge', $order->moEmpfaengerservicesCalculcateSurcharge($surcharge));
+        $smarty->assign('moEmpfaengerservicesSurcharge', $order->moDHLCalculcateSurcharge($surcharge));
     }
 
     /**
@@ -114,17 +114,17 @@ class Email extends Email_parent
      * @return mixed[] the first element is a label (as language key) and the second is the actual surcharge (as double)
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    protected function moEmpfaengerservicesDetermineSurcharge($remark)
+    protected function moDHLDetermineSurcharge($remark)
     {
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
         if ($wunschpaket->hasWunschtag($remark) && $wunschpaket->hasWunschzeit($remark)) {
-            return ['MO_EMPFAENGERSERVICES__COMBINATION_SURCHARGE', $wunschpaket->getCombinedWunschtagAndWunschzeitSurcharge()];
+            return ['MO_DHL__COMBINATION_SURCHARGE', $wunschpaket->getCombinedWunschtagAndWunschzeitSurcharge()];
         }
         if ($wunschpaket->hasWunschtag($remark)) {
-            return ['MO_EMPFAENGERSERVICES__WUNSCHTAG_COSTS', $wunschpaket->getWunschtagSurcharge()];
+            return ['MO_DHL__WUNSCHTAG_COSTS', $wunschpaket->getWunschtagSurcharge()];
         }
         if ($wunschpaket->hasWunschzeit($remark)) {
-            return ['MO_EMPFAENGERSERVICES__WUNSCHZEIT_COSTS', $wunschpaket->getWunschzeitSurcharge()];
+            return ['MO_DHL__WUNSCHZEIT_COSTS', $wunschpaket->getWunschzeitSurcharge()];
         }
         return ['', 0];
     }

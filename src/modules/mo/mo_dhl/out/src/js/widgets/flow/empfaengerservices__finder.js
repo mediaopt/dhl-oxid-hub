@@ -1,6 +1,6 @@
 (function ($) {
     // noinspection JSUnusedGlobalSymbols
-    mo_empfaengerservices__finder = {
+    mo_dhl__finder = {
         addFinderButton: function () {
             var self = this;
             var finderButton = $('#moEmpfaengerservicesButton');
@@ -48,7 +48,7 @@
                 .clone().removeAttr('id')
                 .find('img').hide().end()
                 .find(providerIcon).show().end()
-                .find('h4').text(providerLabel + ' ' + mo_empfaengerservices.getProviderId(provider)).end()
+                .find('h4').text(providerLabel + ' ' + mo_dhl.getProviderId(provider)).end()
                 .find('address').html(address).end()
                 .find('button').attr('id', providerId).end();
             $(empfaengerservicesWindow.find('address')).addClass('moAddressInformation');
@@ -85,7 +85,7 @@
                 self.openInfoBoxes = [info];
                 google.maps.event.addListener(info, 'domready', function() {
                     $('#provider_' + provider.id).click(function () {
-                        mo_empfaengerservices.apply(provider);
+                        mo_dhl.apply(provider);
                         self.openInfoBoxes.forEach(function (box) {
                             box.close();
                         });

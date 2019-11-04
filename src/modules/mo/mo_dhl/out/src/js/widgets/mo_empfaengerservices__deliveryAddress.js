@@ -1,6 +1,6 @@
 (function () {
     // noinspection JSUnusedGlobalSymbols
-    mo_empfaengerservices__deliveryAddress = {
+    mo_dhl__deliveryAddress = {
         rearrangeAddress: function (addressElement) {
             if (addressElement.length === 0) {
                 return;

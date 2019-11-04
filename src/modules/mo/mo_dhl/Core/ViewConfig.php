@@ -3,7 +3,7 @@ namespace Mediaopt\DHL\Core;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
- * 
+ *
  * @copyright 2016 derksen mediaopt GmbH
  */
 
@@ -11,14 +11,14 @@ namespace Mediaopt\DHL\Core;
 
 /**
  * Grants access to some methods of the adapter and adds functionality to get the country id of Germany.
- * 
+ *
  * @author derksen mediaopt GmbH
  */
 class ViewConfig extends ViewConfig_parent
 {
     /**
      * Returns the OXID of Germany.
-     * 
+     *
      * @return string
      */
     public function getGermanyId()
@@ -51,7 +51,7 @@ class ViewConfig extends ViewConfig_parent
 
     /**
      * Returns true iff the current theme or one of its parents is the supplied theme.
-     * 
+     *
      * @param string $themeName
      * @return bool
      */
@@ -72,7 +72,7 @@ class ViewConfig extends ViewConfig_parent
 
     /**
      * Returns true iff preferred day, time, location or neighbor is activated.
-     * 
+     *
      * @return bool
      * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
      */
@@ -140,7 +140,7 @@ class ViewConfig extends ViewConfig_parent
      */
     public function moGetPrivacyLinkForWunschpaket()
     {
-        $identifier = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_empfaengerservices__privacy_policy');
+        $identifier = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__privacy_policy');
         $languageId = (int) \OxidEsales\Eshop\Core\Registry::getLang()->getTplLanguage();
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
         $query = ' SELECT OXSEOURL' . ' FROM oxcontents' . '   JOIN oxseo ON OXOBJECTID = OXID' . " WHERE OXLOADID = {$db->quote($identifier)} AND OXLANG = {$languageId}";

@@ -9,7 +9,7 @@
     [{if $edit->oxorder__oxdeladdinfo->value }][{$edit->oxorder__oxdeladdinfo->value }]<br>[{/if}]
 [{/capture}]
 
-[{if $edit->oxorder__oxdeladdinfo->value && $edit->mo_empfaengerservices__isDeliveredToBranch()}]
+[{if $edit->oxorder__oxdeladdinfo->value && $edit->moDHLIsDeliveredToBranch()}]
     [{$salutation}]
     [{$additionalLine}]
 [{else}]
