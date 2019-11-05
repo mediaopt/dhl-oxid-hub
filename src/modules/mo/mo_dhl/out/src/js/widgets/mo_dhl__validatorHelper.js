@@ -1,4 +1,4 @@
-Empfaengerservices__Validator = function () {
+DHLValidator = function () {
     this.blacklist = ["<", ">", "\n", "\r", "\\", "'", '"', '\\"', ";", "+", "Paketbox", "Packstation", "Postfach", "Postfiliale", "Filiale", "Postfiliale Direkt", "Filiale Direkt", "Paketkasten", "DHL", "P-A-C-K-S-T-A-T-I-O-N", "Paketstation", "Pack Station", "P.A.C.K.S.T.A.T.I.O.N.", "Pakcstation", "Paackstation", "Pakstation", "Backstation", "Bakstation", "P A C K S T A T I O N", "Wunschfiliale", "Deutsche Post"];
 
     this.validateAgainstBlacklist = function (value) {

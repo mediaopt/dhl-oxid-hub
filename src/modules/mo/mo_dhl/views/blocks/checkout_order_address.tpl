@@ -24,7 +24,7 @@
             </h3>
             <dl>
                 <dd>
-                    <div id="moEmpfaengerservicesWunschpaket">
+                    <div id="moDHLWunschpaket">
                         <img src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
 
                         <h3>[{oxmultilang ident="MO_DHL__WUNSCHPAKET_CHECKOUT"}]</h3>
@@ -78,7 +78,7 @@
                 </a>
             </h3>
             <dl>
-                <div id="moEmpfaengerservicesWunschpaket">
+                <div id="moDHLWunschpaket">
                     <img src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
 
                     <h3>[{oxmultilang ident="MO_DHL__NO_WUNSCHPAKET"}]</h3>
@@ -93,7 +93,7 @@
 [{elseif $oViewConf->moHasAncestorTheme('flow')}]
     [{if $oView->moDHLIsAWunschpaketServiceSelected()}]
         <div class="col-xs-12 col-md-6 moEmpfaengerserviceWunschpaketBox no--padding-left">
-            <div class="panel panel-default" id="moEmpfaengerservicesCheckoutBox">
+            <div class="panel panel-default" id="moDHLCheckoutBox">
                 <div class="panel-heading">
                     <img class="moEmpfaengerserviceWunschpaketBox--image"
                          src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
@@ -160,7 +160,7 @@
         </div>
     [{elseif $oView->moDHLCanAWunschpaketServiceBeSelected()}]
         <div class="col-xs-12 col-md-6 moEmpfaengerserviceWunschpaketBox no--padding-left">
-            <div class="panel panel-default" id="moEmpfaengerservicesCheckoutBox">
+            <div class="panel panel-default" id="moDHLCheckoutBox">
                 <div class="panel-heading">
                     <img class="moEmpfaengerserviceWunschpaketBox--image"
                          src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
@@ -186,7 +186,7 @@
         <div class="row">
             <div class="col-12 col-md-6 moEmpfaengerserviceWunschpaketBox">
                 <div>
-                    <div class="card" id="moEmpfaengerservicesCheckoutBox">
+                    <div class="card" id="moDHLCheckoutBox">
                         <div class="card-header">
                             <img class="moEmpfaengerserviceWunschpaketBox--image"
                                  src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
@@ -256,7 +256,7 @@
         <div class="row">
             <div class="col-12 col-md-6 moEmpfaengerserviceWunschpaketBox">
                 <div>
-                    <div class="card" id="moEmpfaengerservicesCheckoutBox">
+                    <div class="card" id="moDHLCheckoutBox">
                         <div class="card-header">
                             <img class="moEmpfaengerserviceWunschpaketBox--image"
                                  src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>

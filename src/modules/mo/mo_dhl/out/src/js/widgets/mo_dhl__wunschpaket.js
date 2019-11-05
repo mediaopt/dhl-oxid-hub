@@ -3,14 +3,14 @@
     mo_dhl__wunschpaket = {
         initializeWunschpaket: function (selectedTime, selectedDay) {
             mo_dhl__wunschpaket.fillInTimeAndDay();
-            var $wunschpaket = $('#moEmpfaengerservicesWunschpaket');
-            var $wunschort = $('#moEmpfaengerservicesWunschort');
-            var $wunschnachbarName = $('#moEmpfaengerservicesWunschnachbarName');
-            var $wunschnachbarAddress = $('#moEmpfaengerservicesWunschnachbarAddress');
-            var $wunschortCheckbox = $('#moEmpfaengerservicesWunschortCheckbox');
-            var $wunschnachbarCheckbox = $('#moEmpfaengerservicesWunschnachbarCheckbox');
-            var $wunschtagCheckbox = $('#moEmpfaengerservicesWunschtagCheckbox');
-            var $wunschzeitCheckbox = $('#moEmpfaengerservicesTimeCheckbox');
+            var $wunschpaket = $('#moDHLWunschpaket');
+            var $wunschort = $('#moDHLWunschort');
+            var $wunschnachbarName = $('#moDHLWunschnachbarName');
+            var $wunschnachbarAddress = $('#moDHLWunschnachbarAddress');
+            var $wunschortCheckbox = $('#moDHLWunschortCheckbox');
+            var $wunschnachbarCheckbox = $('#moDHLWunschnachbarCheckbox');
+            var $wunschtagCheckbox = $('#moDHLWunschtagCheckbox');
+            var $wunschzeitCheckbox = $('#moDHLTimeCheckbox');
 
             /*
              set null objects if elements did not exist
@@ -62,7 +62,7 @@
             };
             $wunschnachbarName.change(disableWunschort);
             $wunschnachbarAddress.change(disableWunschort);
-            $("#moEmpfaengerservicesTime").show();
+            $("#moDHLTime").show();
             $wunschpaket.find("input[type='radio']").siblings("label").click(function () {
                 if ($(this).siblings('input').is(':disabled')) {
                     return;
@@ -104,10 +104,10 @@
                     $wunschzeitCheckbox.prop('checked', true);
                 }
             });
-            $('#showShipAddress').change(mo_Empfaengerservices__Helper.debounce(mo_dhl__wunschpaket.fillInTimeAndDay, 300));
-            $("#addressId").change(mo_Empfaengerservices__Helper.debounce(mo_dhl__wunschpaket.fillInTimeAndDay, 300));
-            $("input[name='deladr[oxaddress__oxzip]']").on('input', mo_Empfaengerservices__Helper.debounce(mo_dhl__wunschpaket.fillInTimeAndDay, 300));
-            $("input[name='invadr[oxuser__oxzip]']").on('input', mo_Empfaengerservices__Helper.debounce(mo_dhl__wunschpaket.fillInTimeAndDay, 300));
+            $('#showShipAddress').change(mo_DHL__Helper.debounce(mo_dhl__wunschpaket.fillInTimeAndDay, 300));
+            $("#addressId").change(mo_DHL__Helper.debounce(mo_dhl__wunschpaket.fillInTimeAndDay, 300));
+            $("input[name='deladr[oxaddress__oxzip]']").on('input', mo_DHL__Helper.debounce(mo_dhl__wunschpaket.fillInTimeAndDay, 300));
+            $("input[name='invadr[oxuser__oxzip]']").on('input', mo_DHL__Helper.debounce(mo_dhl__wunschpaket.fillInTimeAndDay, 300));
 
 
             mo_dhl__wunschpaket.showOrHideWunschbox();
@@ -123,19 +123,19 @@
             }
         },
         preselectWunschzeit: function (selectedTime) {
-            var $timeInput = $("input[name='moEmpfaengerservicesTime'][value='" + selectedTime + "']");
-            if (selectedTime.length > 0 && $timeInput) {
+            var $timeInput = $("input[name='moDHLTime'][value='" + selectedTime + "']");
+            if (selectedTime && selectedTime.length > 0 && $timeInput) {
                 $timeInput.attr('checked', true);
-                $('#moEmpfaengerservicesTimeCheckbox').prop('checked', true);
+                $('#moDHLTimeCheckbox').prop('checked', true);
             } else {
                 $('#wunschzeit\\:none').prop('checked', true);
             }
         },
         preselectWunschtag: function (selectedDay) {
-            var $dayInput = $("input[name='moEmpfaengerservicesWunschtag'][value='" + selectedDay + "']");
-            if (selectedDay.length > 0 && $dayInput) {
+            var $dayInput = $("input[name='moDHLWunschtag'][value='" + selectedDay + "']");
+            if (selectedDay && selectedDay.length > 0 && $dayInput) {
                 $dayInput.attr('checked', true);
-                $('#moEmpfaengerservicesWunschtagCheckbox').prop('checked', true);
+                $('#moDHLWunschtagCheckbox').prop('checked', true);
             } else {
                 $('#wunschtag\\:none').prop('checked', true);
             }
@@ -146,7 +146,7 @@
         showOrHideWunschbox: function () {
             var self = this;
             var isSelectedCountryEligible = $("#germany-oxid").text() === mo_dhl.getDestinationCountryId();
-            var isSelectedAddressTypeEligible = mo_dhl.empfaengerservices.getState() === 'regular';
+            var isSelectedAddressTypeEligible = mo_dhl.dhl.getState() === 'regular';
             if (isSelectedCountryEligible && isSelectedAddressTypeEligible) {
                 self.showWunschoptions();
             } else {
@@ -154,21 +154,21 @@
             }
         },
         showWunschoptions: function () {
-            $('#moEmpfaengerservicesWunschpaket').show();
+            $('#moDHLWunschpaket').show();
         },
         hideWunschoptions: function () {
-            $('#moEmpfaengerservicesWunschort').val("");
-            $('#moEmpfaengerservicesWunschnachbarName').val("");
-            $('#moEmpfaengerservicesWunschnachbarAddress').val("");
-            $('[name="moEmpfaengerservicesWunschtag"][checked="checked"]').attr('checked', false);
-            $('[name="moEmpfaengerservicesTime"][checked="checked"]').attr('checked', false);
+            $('#moDHLWunschort').val("");
+            $('#moDHLWunschnachbarName').val("");
+            $('#moDHLWunschnachbarAddress').val("");
+            $('[name="moDHLWunschtag"][checked="checked"]').attr('checked', false);
+            $('[name="moDHLTime"][checked="checked"]').attr('checked', false);
 
-            $('#moEmpfaengerservicesWunschnachbarCheckbox').prop('checked', false);
-            $('#moEmpfaengerservicesWunschortCheckbox').prop('checked', false);
+            $('#moDHLWunschnachbarCheckbox').prop('checked', false);
+            $('#moDHLWunschortCheckbox').prop('checked', false);
 
             $('#wunschzeit\\:none').attr('checked', true).next().click();
             $('#wunschtag\\:none').attr('checked', true).next().click();
-            $('#moEmpfaengerservicesWunschpaket').hide();
+            $('#moDHLWunschpaket').hide();
         },
         getCurrentZip: function () {
             if ($('#showShipAddress').prop("checked")) {
@@ -180,26 +180,26 @@
             var labelClass = "wunschzeit--label" + (isNone ? " wunschzeit--none" : "") + " wunschpaket--theme-" + theme;
             var inputValue = isNone ? "" : time;
             return "<li>" +
-                "<input type='radio' name='moEmpfaengerservicesTime' id='wunschzeit:" + time + "' value='" + inputValue + "' >" +
+                "<input type='radio' name='moDHLTime' id='wunschzeit:" + time + "' value='" + inputValue + "' >" +
                 "<label class='" + labelClass + "' for='wunschzeit:" + time + "'>" +
-                (isNone ? $("#moEmpfaengerservicesWunschpaket").data("translatenowunschzeit") : label) +
+                (isNone ? $("#moDHLWunschpaket").data("translatenowunschzeit") : label) +
                 "</label>" +
                 "</li>";
         },
         buildTime: function (timeObject) {
-            var selectedTime = $("input[name='moEmpfaengerservicesTime']:checked").val();
+            var selectedTime = $("input[name='moDHLTime']:checked").val();
             var self = this;
-            var idBase = "#moEmpfaengerservices--wunschzeit-";
-            var $timeList = $("#moEmpfaengerservicesWunschzeit");
-            var theme = $("#moEmpfaengerservicesWunschpaket").data("theme");
+            var idBase = "#moDHL--wunschzeit-";
+            var $timeList = $("#moDHLWunschzeit");
+            var theme = $("#moDHLWunschpaket").data("theme");
             $timeList.find("li").remove();
             if (jQuery.isEmptyObject(timeObject)) {
-                $(idBase + "info").addClass("moEmpfaengerservices--deactivated");
-                $(idBase + "values").addClass("moEmpfaengerservices--deactivated");
+                $(idBase + "info").addClass("moDHL--deactivated");
+                $(idBase + "values").addClass("moDHL--deactivated");
                 return;
             }
-            $(idBase + "info").removeClass("moEmpfaengerservices--deactivated");
-            $(idBase + "values").removeClass("moEmpfaengerservices--deactivated");
+            $(idBase + "info").removeClass("moDHL--deactivated");
+            $(idBase + "values").removeClass("moDHL--deactivated");
             $timeList.append(self.buildTimeElement("none", "", true, theme));
             $.each(timeObject, function (key, value) {
                 $timeList.append(self.buildTimeElement(key, value, false, theme));
@@ -210,26 +210,26 @@
             var labelClass = "wunschtag--label" + (isNone ? " wunschtag--none" : "") + " wunschpaket--theme-" + theme;
             var inputValue = isNone ? "" : day;
             return "<li>" +
-                "<input type='radio' name='moEmpfaengerservicesWunschtag' id='wunschtag:" + day + "' value='" + inputValue + "' >" +
+                "<input type='radio' name='moDHLWunschtag' id='wunschtag:" + day + "' value='" + inputValue + "' >" +
                 "<label class='" + labelClass + "' for='wunschtag:" + day + "'>" +
-                (isNone ? $("#moEmpfaengerservicesWunschpaket").data("translatenowunschtag") : label) +
+                (isNone ? $("#moDHLWunschpaket").data("translatenowunschtag") : label) +
                 "</label>" +
                 "</li>";
         },
         buildDays: function (dayObject) {
-            var selectedDay = $("input[name='moEmpfaengerservicesWunschtag']:checked").val();
+            var selectedDay = $("input[name='moDHLWunschtag']:checked").val();
             var self = this;
-            var idBase = "#moEmpfaengerservices--wunschtag-";
-            var $dayList = $("#moEmpfaengerservicesWunschtag");
-            var theme = $("#moEmpfaengerservicesWunschpaket").data("theme");
+            var idBase = "#moDHL--wunschtag-";
+            var $dayList = $("#moDHLWunschtag");
+            var theme = $("#moDHLWunschpaket").data("theme");
             $dayList.find("li").remove();
             if (jQuery.isEmptyObject(dayObject)) {
-                $(idBase + "info").addClass("moEmpfaengerservices--deactivated");
-                $(idBase + "values").addClass("moEmpfaengerservices--deactivated");
+                $(idBase + "info").addClass("moDHL--deactivated");
+                $(idBase + "values").addClass("moDHL--deactivated");
                 return;
             }
-            $(idBase + "info").removeClass("moEmpfaengerservices--deactivated");
-            $(idBase + "values").removeClass("moEmpfaengerservices--deactivated");
+            $(idBase + "info").removeClass("moDHL--deactivated");
+            $(idBase + "values").removeClass("moDHL--deactivated");
             $dayList.append(self.buildDayElement("none", "", true, theme));
             $.each(dayObject, function (key, values) {
                 if (values.excluded) {
@@ -244,7 +244,7 @@
             mo_dhl__wunschpaket.buildDays({});
         },
         fillInTimeAndDay: function () {
-            var ajaxCall = $('#moEmpfaengerservicesWunschpaket').data('timeanddate') + mo_dhl__wunschpaket.getCurrentZip();
+            var ajaxCall = $('#moDHLWunschpaket').data('timeanddate') + mo_dhl__wunschpaket.getCurrentZip();
             if (mo_dhl__wunschpaket.getCurrentZip() === '') {
                 mo_dhl__wunschpaket.emptyTimeAndDay();
                 return;
@@ -252,7 +252,7 @@
             $.ajax(ajaxCall).done(function (response) {
                 mo_dhl__wunschpaket.buildTime(response.preferredTimes);
                 mo_dhl__wunschpaket.buildDays(response.preferredDays);
-                $('#moEmpfaengerservicesWunschpaket').find("input[type='radio']").siblings("label").click(function () {
+                $('#moDHLWunschpaket').find("input[type='radio']").siblings("label").click(function () {
                     if ($(this).siblings('input').is(':disabled')) {
                         return;
                     }

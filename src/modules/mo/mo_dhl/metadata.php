@@ -40,14 +40,14 @@ $aModule = [
         \OxidEsales\Eshop\Application\Model\DeliverySetList::class                => Application\Model\DeliverySetList::class,
     ],
     'controllers' => [
-        'MoEmpfaengerservicesFinder'           => Controller\EmpfaengerservicesFinderController::class,
-        'MoEmpfaengerservicesOrderExport'      => Controller\Admin\EmpfaengerservicesOrderExportController::class,
-        'MoEmpfaengerservicesOrderWunschpaket' => Controller\Admin\EmpfaengerservicesOrderWunschpaketController::class,
-        'MoEmpfaengerservicesYellowBox'        => Controller\EmpfaengerservicesYellowBoxController::class,
+        'MoDHLFinder'           => Controller\FinderController::class,
+        'MoDHLOrderExport'      => Controller\Admin\OrderExportController::class,
+        'MoDHLOrderWunschpaket' => Controller\Admin\OrderWunschpaketController::class,
+        'MoDHLYellowBox'        => Controller\YellowBoxController::class,
     ],
     'events'      => [
-        'onActivate'   => EmpfaengerservicesInstall::class . '::onActivate',
-        'onDeactivate' => EmpfaengerservicesInstall::class . '::onDeactivate',
+        'onActivate'   => Install::class . '::onActivate',
+        'onDeactivate' => Install::class . '::onDeactivate',
     ],
     'blocks'      => [
         [

@@ -18,12 +18,12 @@ use Mediaopt\Empfaengerservices\Shipment\Shipment;
  *
  * @author derksen mediaopt GmbH
  */
-class EmpfaengerservicesOrderExportController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
+class OrderExportController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
 {
     /**
      * @var string
      */
-    const EXPORTED_CSV = 'moEmpfaengerservicesCsv';
+    const EXPORTED_CSV = 'moDHLCsv';
 
     /**
      * Prefix of the file that is transmitted to the user.
@@ -99,7 +99,7 @@ class EmpfaengerservicesOrderExportController extends \OxidEsales\Eshop\Applicat
         $orderList = \oxNew(\OxidEsales\Eshop\Core\Model\ListModel::class);
         $orderList->init('oxOrder');
         $orderList->selectString($query);
-        $orders = array_map([\oxNew(\Mediaopt\DHL\Adapter\EmpfaengerservicesShipmentBuilder::class), 'build'], $orderList->getArray());
+        $orders = array_map([\oxNew(\Mediaopt\DHL\Adapter\DHLShipmentBuilder::class), 'build'], $orderList->getArray());
         $this->notifyAboutOrdersWithoutBillingNumber($orders);
         $exporter = new CsvExporter(\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('iUtfMode') ? 'UTF-8' : 'ISO-8859-15');
         $exporter->export($orders);

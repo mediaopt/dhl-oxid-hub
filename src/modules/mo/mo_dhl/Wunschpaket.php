@@ -8,7 +8,7 @@ namespace Mediaopt\DHL;
  * @copyright 2016 derksen mediaopt GmbH
  */
 
-use Mediaopt\Empfaengerservices\Api\Wunschpaket;
+use Mediaopt\Empfaengerservices\Api\Wunschpaket as ApiWunschpaket;
 use Mediaopt\Empfaengerservices\ServiceProvider\Branch;
 
 /**
@@ -16,37 +16,37 @@ use Mediaopt\Empfaengerservices\ServiceProvider\Branch;
  *
  * @author derksen mediaopt GmbH
  */
-class EmpfaengerservicesWunschpaket
+class Wunschpaket
 {
     /**
      * @var string
      */
-    const LOCATION_OPENING_TAG = '{empfaengerservices-location}';
+    const LOCATION_OPENING_TAG = '{DHL-location}';
 
     /**
      * @var string
      */
-    const LOCATION_CLOSING_TAG = '{/empfaengerservices-location}';
+    const LOCATION_CLOSING_TAG = '{/DHL-location}';
 
     /**
      * @var string
      */
-    const TIME_OPENING_TAG = '{empfaengerservices-time}';
+    const TIME_OPENING_TAG = '{DHL-time}';
 
     /**
      * @var string
      */
-    const TIME_CLOSING_TAG = '{/empfaengerservices-time}';
+    const TIME_CLOSING_TAG = '{/DHL-time}';
 
     /**
      * @var string
      */
-    const WUNSCHTAG_OPENING_TAG = '{empfaengerservices-wunschtag}';
+    const WUNSCHTAG_OPENING_TAG = '{DHL-wunschtag}';
 
     /**
      * @var string
      */
-    const WUNSCHTAG_CLOSING_TAG = '{/empfaengerservices-wunschtag}';
+    const WUNSCHTAG_CLOSING_TAG = '{/DHL-wunschtag}';
 
     /**
      * @var string
@@ -69,7 +69,7 @@ class EmpfaengerservicesWunschpaket
     const WUNSCHNACHBAR_ACTIVE_FLAG = 'mo_dhl__wunschnachbar_active';
 
     /**
-     * @var Wunschpaket|null
+     * @var ApiWunschpaket|null
      */
     protected $wunschpaket;
 
@@ -78,7 +78,7 @@ class EmpfaengerservicesWunschpaket
     public function __construct()
     {
         try {
-            $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesAdapter::class);
+            $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class);
             $this->wunschpaket = $adapter->buildWunschpaket()->setCutOffTime(\OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__wunschtag_cutoff'))->setExcludedDaysForHandingOver($adapter->getDaysExcludedForHandingOver())->setPreparationDays($adapter->getPreparationDays());
         } catch (\RuntimeException $exception) {
         }
@@ -95,7 +95,7 @@ class EmpfaengerservicesWunschpaket
     }
 
     /**
-     * @return Wunschpaket|null
+     * @return ApiWunschpaket|null
      */
     public function getWunschpaket()
     {
@@ -115,7 +115,7 @@ class EmpfaengerservicesWunschpaket
             $options = $zip !== null && $wunschpaket !== null ? $wunschpaket->getPreferredDays($zip, $wunschpaket->getTransferDay()) : [];
             return $this->isWunschtagCompatibleWithEstimatedDeliveryTime($basket, $options) ? $options : [];
         } catch (\DomainException $exception) {
-            \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesAdapter::class)->getLogger()->error($exception->getMessage());
+            \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class)->getLogger()->error($exception->getMessage());
             return [];
         }
     }
@@ -176,7 +176,7 @@ class EmpfaengerservicesWunschpaket
      */
     public function hasWunschnachbar($remark)
     {
-        return $this->extractLocation($remark)[0] === Wunschpaket::WUNSCHNACHBAR;
+        return $this->extractLocation($remark)[0] === ApiWunschpaket::WUNSCHNACHBAR;
     }
 
     /**
@@ -202,7 +202,7 @@ class EmpfaengerservicesWunschpaket
             return ['', '', ''];
         }
         list($type, $location) = explode(':', $content, 2);
-        $information = $type === Wunschpaket::WUNSCHNACHBAR ? explode(';', $location, 2) : [$location];
+        $information = $type === ApiWunschpaket::WUNSCHNACHBAR ? explode(';', $location, 2) : [$location];
         return $information[0] !== $location ? [$type, $information[0], $information[1]] : [$type, $location, ''];
     }
 
@@ -233,7 +233,7 @@ class EmpfaengerservicesWunschpaket
      */
     public function hasWunschort($remark)
     {
-        return $this->extractLocation($remark)[0] === Wunschpaket::WUNSCHORT;
+        return $this->extractLocation($remark)[0] === ApiWunschpaket::WUNSCHORT;
     }
 
     /**
@@ -346,7 +346,7 @@ class EmpfaengerservicesWunschpaket
      */
     public function removeWunschortTag($remark)
     {
-        $extendedOpeningTag = self::LOCATION_OPENING_TAG . Wunschpaket::WUNSCHORT;
+        $extendedOpeningTag = self::LOCATION_OPENING_TAG . ApiWunschpaket::WUNSCHORT;
         return $this->removeTag($remark, $extendedOpeningTag, self::LOCATION_CLOSING_TAG);
     }
 
@@ -356,7 +356,7 @@ class EmpfaengerservicesWunschpaket
      */
     public function removeWunschnachbarTag($remark)
     {
-        $extendedOpeningTag = self::LOCATION_OPENING_TAG . Wunschpaket::WUNSCHNACHBAR;
+        $extendedOpeningTag = self::LOCATION_OPENING_TAG . ApiWunschpaket::WUNSCHNACHBAR;
         return $this->removeTag($remark, $extendedOpeningTag, self::LOCATION_CLOSING_TAG);
     }
 
@@ -451,7 +451,7 @@ class EmpfaengerservicesWunschpaket
      */
     protected function isAWunschpaketServiceExcluded($basket, $user, $deliveryAddress, $payment)
     {
-        $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesAdapter::class);
+        $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class);
         return $this->isExcludedDueToSendingToADhlBranch($deliveryAddress) || $this->isExcludedDueToThePaymentOption($payment) || $adapter->isExcludedDueToSendingOutsideOfGermany($user, $deliveryAddress) || !$basket->moAllowsDhlDelivery();
     }
 
@@ -483,7 +483,7 @@ class EmpfaengerservicesWunschpaket
         if ($location === '' || strlen($location) > 80 || !$this->isValidAccordingToBlacklist($location)) {
             throw new \InvalidArgumentException('The location is invalid.');
         }
-        return $this->encloseLocation(Wunschpaket::WUNSCHORT . ':' . $location);
+        return $this->encloseLocation(ApiWunschpaket::WUNSCHORT . ':' . $location);
     }
 
     /**
@@ -500,7 +500,7 @@ class EmpfaengerservicesWunschpaket
         if ($address === '' || strlen($address) > 55 || !$this->isValidAccordingToBlacklist($address)) {
             throw new \InvalidArgumentException('The address is invalid.');
         }
-        return $this->encloseLocation(Wunschpaket::WUNSCHNACHBAR . ':' . $address . ';' . $name);
+        return $this->encloseLocation(ApiWunschpaket::WUNSCHNACHBAR . ':' . $address . ';' . $name);
     }
 
     /**

@@ -17,7 +17,7 @@
             return this._super(oInput, blCanSetDefaultState);
         },
         submitValidation: function (oForm) {
-            var $wunschpaket = $('#moEmpfaengerservicesWunschpaket');
+            var $wunschpaket = $('#moDHLWunschpaket');
             var $wunschort = $wunschpaket.find('.js-oxValidate_preferredWunschort');
             var $wunschnachbarAddress = $wunschpaket.find('.js-oxValidate_preferredNeighboursAddress');
             var $wunschnachbarName = $wunschpaket.find('.js-oxValidate_preferredNeighboursName');

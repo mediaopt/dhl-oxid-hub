@@ -30,7 +30,7 @@ class ThankYouController extends ThankYouController_parent
         /** @var Order $order */
         $order = $this->getOrder();
         $remark = $order->getFieldData('oxremark');
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         if (!$order->moDHLIsDeliveredToBranch() && !$wunschpaket->hasAnyWunschpaketService($remark)) {
             return false;
         }

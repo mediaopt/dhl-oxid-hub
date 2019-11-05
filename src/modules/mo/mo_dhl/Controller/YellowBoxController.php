@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Controller;
 /**
  * @author derksen mediaopt GmbH
  */
-class EmpfaengerservicesYellowBoxController extends \OxidEsales\Eshop\Application\Controller\FrontendController
+class YellowBoxController extends \OxidEsales\Eshop\Application\Controller\FrontendController
 {
     /**
      * @param mixed[] $option
@@ -51,7 +51,7 @@ class EmpfaengerservicesYellowBoxController extends \OxidEsales\Eshop\Applicatio
      */
     protected function getPreferredTimes($zip)
     {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         return $wunschpaket->isWunschzeitActive() ? $wunschpaket->getWunschzeitOptions($zip) : [];
     }
 
@@ -63,7 +63,7 @@ class EmpfaengerservicesYellowBoxController extends \OxidEsales\Eshop\Applicatio
     {
         /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
         $basket = \OxidEsales\Eshop\Core\Registry::getSession()->getBasket();
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         return $wunschpaket->isWunschtagActive() ? array_map('self::formatWunschtag', $wunschpaket->getWunschtagOptions($basket, $zip)) : [];
     }
 }

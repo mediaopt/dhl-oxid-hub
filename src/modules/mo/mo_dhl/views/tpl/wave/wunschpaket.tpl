@@ -1,9 +1,9 @@
 <div style="display: none">
     [{if $oViewConf->moIsAnyWunschpaketFeatureActivated()}]
-        <div id="moEmpfaengerservicesWunschpaket" class="moEmpfaengerservicesWunschpaketWave offset-lg-3"
+        <div id="moDHLWunschpaket" class="moDHLWunschpaketWave offset-lg-3"
              data-translatenowunschzeit="[{oxmultilang ident='MO_DHL__NO_WUNSCHZEIT'}]"
              data-translatenowunschtag="[{oxmultilang ident='MO_DHL__NO_WUNSCHTAG'}]"
-             data-theme="wave" data-timeanddate="[{$oViewConf->getSslSelfLink()}]cl=MoEmpfaengerservicesYellowBox&zip=">
+             data-theme="wave" data-timeanddate="[{$oViewConf->getSslSelfLink()}]cl=MoDHLYellowBox&zip=">
             <img src="[{$oViewConf->getModuleURL("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
 
             <h3>[{oxmultilang ident="MO_DHL__WUNSCHPAKET"}]</h3>
@@ -34,10 +34,10 @@
 
 
                 [{assign var="wunschtagCosts" value=$oView->moDHLGetWunschtagCosts()}]
-                <dt id="moEmpfaengerservices--wunschtag-info"
-                    [{if !$oViewConf->moIsWunschtagActivated()}] class="moEmpfaengerservices--deactivated" [{/if}]>
+                <dt id="moDHL--wunschtag-info"
+                    [{if !$oViewConf->moIsWunschtagActivated()}] class="moDHL--deactivated" [{/if}]>
                     <label>
-                        <input type="checkbox" id="moEmpfaengerservicesWunschtagCheckbox" value=""/>
+                        <input type="checkbox" id="moDHLWunschtagCheckbox" value=""/>
                         <strong>[{oxmultilang ident="MO_DHL__WUNSCHTAG_LABEL_HEADLINE"}]
                         [{oxmultilang ident="MO_DHL__WUNSCHTAG_LABEL_CONTENT"}]</strong>
                         <div class="ttip"
@@ -54,11 +54,11 @@
                         [{/if}]
                     </label>
                 </dt>
-                <dd id="moEmpfaengerservices--wunschtag-values"
-                    [{if !$oViewConf->moIsWunschtagActivated()}] class="moEmpfaengerservices--deactivated" [{/if}]>
-                    <ul id="moEmpfaengerservicesWunschtag">
+                <dd id="moDHL--wunschtag-values"
+                    [{if !$oViewConf->moIsWunschtagActivated()}] class="moDHL--deactivated" [{/if}]>
+                    <ul id="moDHLWunschtag">
                         <li>
-                            <input type="radio" name="moEmpfaengerservicesWunschtag" id="wunschtag:none" value=""/>
+                            <input type="radio" name="moDHLWunschtag" id="wunschtag:none" value=""/>
                             <label class="wunschtag--label wunschtag--none wunschpaket--theme-wave"
                                    for="wunschtag:none">[{oxmultilang ident="MO_DHL__NO_WUNSCHTAG"}]</label>
                         </li>
@@ -66,7 +66,7 @@
                             <li>
                                 [{assign var="radioId" value="wunschtag:"|cat:$optionId}]
                                 <input type="radio"
-                                       name="moEmpfaengerservicesWunschtag"
+                                       name="moDHLWunschtag"
                                        id="[{$radioId}]"
                                        value="[{$optionId}]"
                                        [{if $option.excluded}]disabled="disabled"[{/if}]
@@ -80,10 +80,10 @@
                 </dd>
 
                 [{assign var="wunschzeitCosts" value=$oView->moDHLGetWunschzeitCosts()}]
-                <dt id="moEmpfaengerservices--wunschzeit-info"
-                    [{if !$oViewConf->moIsWunschzeitActivated()}] class="moEmpfaengerservices--deactivated" [{/if}]>
+                <dt id="moDHL--wunschzeit-info"
+                    [{if !$oViewConf->moIsWunschzeitActivated()}] class="moDHL--deactivated" [{/if}]>
                     <label>
-                        <input type="checkbox" id="moEmpfaengerservicesTimeCheckbox" value=""/>
+                        <input type="checkbox" id="moDHLTimeCheckbox" value=""/>
                         <strong>[{oxmultilang ident="MO_DHL__WUNSCHZEIT_LABEL_HEADLINE"}]
                         [{oxmultilang ident="MO_DHL__WUNSCHZEIT_LABEL_CONTENT"}]</strong>
                         <div class="ttip"
@@ -100,11 +100,11 @@
                         [{/if}]
                     </label>
                 </dt>
-                <dd id="moEmpfaengerservices--wunschzeit-values"
-                    [{if !$oViewConf->moIsWunschzeitActivated()}] class="moEmpfaengerservices--deactivated" [{/if}]>
-                    <ul id="moEmpfaengerservicesWunschzeit">
+                <dd id="moDHL--wunschzeit-values"
+                    [{if !$oViewConf->moIsWunschzeitActivated()}] class="moDHL--deactivated" [{/if}]>
+                    <ul id="moDHLWunschzeit">
                         <li>
-                            <input type="radio" name="moEmpfaengerservicesTime" id="wunschzeit:none" value=""/>
+                            <input type="radio" name="moDHLTime" id="wunschzeit:none" value=""/>
                             <label class="wunschzeit--label wunschpaket--theme-wave"
                                    for="wunschzeit:none">[{oxmultilang ident="MO_DHL__NO_WUNSCHZEIT"}]</label>
                         </li>
@@ -112,7 +112,7 @@
                             <li>
                                 [{assign var="radioId" value="option:"|cat:$optionId}]
                                 <input type="radio"
-                                       name="moEmpfaengerservicesTime"
+                                       name="moDHLTime"
                                        id="[{$radioId}]"
                                        value="[{$optionId}]"
                                 />
@@ -123,22 +123,22 @@
                 </dd>
 
                 [{assign var="location" value=$oView->moDHLGetLocation()}]
-                <dt [{if !$oViewConf->moIsWunschortActivated()}] class="moEmpfaengerservices--deactivated" [{/if}]>
+                <dt [{if !$oViewConf->moIsWunschortActivated()}] class="moDHL--deactivated" [{/if}]>
                     <label>
-                        <input type="checkbox" id="moEmpfaengerservicesWunschortCheckbox" value=""/>
+                        <input type="checkbox" id="moDHLWunschortCheckbox" value=""/>
                         <strong>[{oxmultilang ident="MO_DHL__WUNSCHORT_LABEL_HEADLINE"}]
                         [{oxmultilang ident="MO_DHL__WUNSCHORT_LABEL_CONTENT"}]</strong>
                         <div class="ttip"
                              data-tooltip="[{oxmultilang ident="MO_DHL__WUNSCHORT_TOOLTIP"}]"></div>
                     </label>
                 </dt>
-                <dd [{if !$oViewConf->moIsWunschortActivated()}] class="moEmpfaengerservices--deactivated" [{/if}]>
+                <dd [{if !$oViewConf->moIsWunschortActivated()}] class="moDHL--deactivated" [{/if}]>
                     <div class="form-group">
                         <input type="text"
                                maxlength="80"
-                               id="moEmpfaengerservicesWunschort"
+                               id="moDHLWunschort"
                                class="form-control"
-                               name="moEmpfaengerservicesWunschort"
+                               name="moDHLWunschort"
                                data-validation-callback-callback="mo_dhl.validatePreferredAddress"
                                placeholder="[{oxmultilang ident="MO_DHL__WUNSCHORT_PLACEHOLDER"}]"
                                value="[{if $location[0] == 'Wunschort'}][{$location[1]}][{/if}]"
@@ -147,22 +147,22 @@
                         <p class="moShowOnError">[{oxmultilang ident="MO_DHL__WRONG_OR_MISSING_INPUT"}]</p>
                     </div>
                 </dd>
-                <dt [{if !$oViewConf->moIsWunschnachbarActivated()}] class="moEmpfaengerservices--deactivated" [{/if}]>
+                <dt [{if !$oViewConf->moIsWunschnachbarActivated()}] class="moDHL--deactivated" [{/if}]>
                     <label>
-                        <input type="checkbox" id="moEmpfaengerservicesWunschnachbarCheckbox" value=""/>
+                        <input type="checkbox" id="moDHLWunschnachbarCheckbox" value=""/>
                         <strong>[{oxmultilang ident="MO_DHL__WUNSCHNACHBAR_LABEL_HEADLINE"}]
                         [{oxmultilang ident="MO_DHL__WUNSCHNACHBAR_LABEL_CONTENT"}]</strong>
                         <div class="ttip"
                              data-tooltip="[{oxmultilang ident="MO_DHL__WUNSCHNACHBAR_TOOLTIP"}]"></div>
                     </label>
                 </dt>
-                <dd [{if !$oViewConf->moIsWunschnachbarActivated()}] class="moEmpfaengerservices--deactivated" [{/if}]>
+                <dd [{if !$oViewConf->moIsWunschnachbarActivated()}] class="moDHL--deactivated" [{/if}]>
                     <div class="form-group">
                         <input type="text"
                                maxlength="25"
-                               id="moEmpfaengerservicesWunschnachbarName"
+                               id="moDHLWunschnachbarName"
                                class="form-control"
-                               name="moEmpfaengerservicesWunschnachbarName"
+                               name="moDHLWunschnachbarName"
                                data-validation-callback-callback="mo_dhl.validatePreferredAddress"
                                placeholder="[{oxmultilang ident="MO_DHL__WUNSCHNACHBAR_NAME_PLACEHOLDER"}]"
                                value="[{if $location[0] == 'Wunschnachbar'}][{$location[2]}][{/if}]"
@@ -173,9 +173,9 @@
                     <div class="form-group">
                         <input type="text" style="margin-top: 5px"
                                maxlength="55"
-                               id="moEmpfaengerservicesWunschnachbarAddress"
+                               id="moDHLWunschnachbarAddress"
                                class="form-control"
-                               name="moEmpfaengerservicesWunschnachbarAddress"
+                               name="moDHLWunschnachbarAddress"
                                data-validation-callback-callback="mo_dhl.validatePreferredAddress"
                                placeholder="[{oxmultilang ident="MO_DHL__WUNSCHNACHBAR_ADDRESS_PLACEHOLDER"}]"
                                value="[{if $location[0] == 'Wunschnachbar'}][{$location[1]}][{/if}]"
@@ -184,7 +184,7 @@
                         <p class="moShowOnError">[{oxmultilang ident="MO_DHL__WRONG_OR_MISSING_INPUT"}]</p>
                         [{assign var="privacyLink" value=$oViewConf->moGetPrivacyLinkForWunschpaket()}]
                         [{if $privacyLink}]
-                            <p class="moEmpfaengerservicesPrivacy">
+                            <p class="moDHLPrivacy">
                                 <a href="[{$privacyLink}]" target="_blank">
                                     [{oxmultilang ident="MO_DHL__PRIVACY_LINK_SHORT"}]
                                 </a>

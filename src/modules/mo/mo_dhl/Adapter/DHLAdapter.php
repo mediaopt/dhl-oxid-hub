@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
  *
  * @author derksen mediaopt GmbH
  */
-class EmpfaengerservicesAdapter
+class DHLAdapter
 {
     /**
      * @var Main
@@ -30,7 +30,7 @@ class EmpfaengerservicesAdapter
      */
     public function __construct(Main $sdk = null)
     {
-        $this->sdk = $sdk ?: new Main(\OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesConfigurator::class));
+        $this->sdk = $sdk ?: new Main(\OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLConfigurator::class));
     }
 
     /**

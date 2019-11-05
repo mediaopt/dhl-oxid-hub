@@ -1,7 +1,7 @@
 (function ($) {
     // noinspection JSUnusedGlobalSymbols
     mo_dhl = {
-        empfaengerservices: null,
+        dhl: null,
         isWunschboxAvailable: null,
         addPostnummer: function () {
             let $addInfoField = $("[name='deladr[oxaddress__oxaddinfo]']");
@@ -13,9 +13,9 @@
             var postnummerLabel = defaultLabel.clone()
                 .attr('id', 'oxaddinfoService')
                 .removeClass('col-lg-3')
-                .addClass('pull-right moEmpfaengerservicesLabel ttip')
+                .addClass('pull-right moDHLLabel ttip')
                 .text('PostNummer: ' + "\u00A0\u00A0\u00A0\u00A0");
-            $("<button type='button' data-toggle='modal' data-target='#moEmpfaengerservicesInfo'></button>")
+            $("<button type='button' data-toggle='modal' data-target='#moDHLInfo'></button>")
                 .attr('id', 'oxaddinfoButton')
                 .addClass('control-label col-lg-3')
                 .append(postnummerLabel)
@@ -74,14 +74,14 @@
         addServiceProviderNumber: function () {
             $("[name='deladr[oxaddress__oxstreet]']")
                 .parent()
-                .before($("<label class='control-label col-12 col-lg-3 moEmpfaengerservicesLabel req'></label>"));
+                .before($("<label class='control-label col-12 col-lg-3 moDHLLabel req'></label>"));
         },
         showServiceProviderNumber: function (type, label, empty) {
             $("[name='deladr[oxaddress__oxstreet]']")
                 .val(type)
                 .parent().hide()
-                .siblings("label:not(.moEmpfaengerservicesLabel)").hide()
-                .siblings("label.moEmpfaengerservicesLabel").text(label).show();
+                .siblings("label:not(.moDHLLabel)").hide()
+                .siblings("label.moDHLLabel").text(label).show();
             if (empty) {
                 $("[name='deladr[oxaddress__oxstreetnr]']").val("");
             }
@@ -90,8 +90,8 @@
             var street = $("[name='deladr[oxaddress__oxstreet]']");
             street
                 .parent().show()
-                .siblings("label:not(.moEmpfaengerservicesLabel)").show()
-                .siblings("label.moEmpfaengerservicesLabel").text("").hide();
+                .siblings("label:not(.moDHLLabel)").show()
+                .siblings("label.moDHLLabel").text("").hide();
             if (empty) {
                 street.val("");
                 $("[name='deladr[oxaddress__oxstreetnr]']").val("");
@@ -138,16 +138,16 @@
             $("#addressId").change(function () {
                 switch ($(this).children(":selected").prop("id")) {
                     case "selectPackstation":
-                        self.empfaengerservices.toPackstation();
+                        self.dhl.toPackstation();
                         break;
                     case "selectFiliale":
-                        self.empfaengerservices.toPostfiliale();
+                        self.dhl.toPostfiliale();
                         break;
                     case "selectPaketshop":
-                        self.empfaengerservices.toPaketshop();
+                        self.dhl.toPaketshop();
                         break;
                     default:
-                        self.empfaengerservices.toRegularAddress();
+                        self.dhl.toRegularAddress();
                         break;
                 }
                 if (self.isWunschboxAvailable) {
@@ -167,8 +167,8 @@
             var self = this;
             $("#showShipAddress").change(function () {
                 if ($("#showShipAddress").is(':checked')) {
-                    mo_dhl.empfaengerservices.state = "regular";
-                    mo_dhl.empfaengerservices.toRegularAddress();
+                    mo_dhl.dhl.state = "regular";
+                    mo_dhl.dhl.toRegularAddress();
                     if (self.isWunschboxAvailable) {
                         mo_dhl__wunschpaket.showOrHideWunschbox();
                     }
@@ -208,26 +208,26 @@
                 .text();
 
             if (shippingAddressText.includes("Postfiliale") || shippingAddressText.includes("Filiale")) {
-                this.empfaengerservices.state = "postfiliale";
-                this.empfaengerservices.toPostfiliale();
+                this.dhl.state = "postfiliale";
+                this.dhl.toPostfiliale();
                 $("select#addressId").find("option#selectFiliale").attr("selected", true);
                 return;
             }
             if (shippingAddressText.includes("Paketshop")) {
-                this.empfaengerservices.state = "paketshop";
-                this.empfaengerservices.toPaketshop();
+                this.dhl.state = "paketshop";
+                this.dhl.toPaketshop();
                 $("select#addressId").find("option#selectFiliale").attr("selected", true);
                 return;
             }
             if (shippingAddressText.includes("Packstation")) {
-                this.empfaengerservices.state = "packstation";
-                this.empfaengerservices.toPackstation();
+                this.dhl.state = "packstation";
+                this.dhl.toPackstation();
                 $("select#addressId").find("option#selectPackstation").attr("selected", true);
                 return;
             }
 
-            this.empfaengerservices.state = "regular";
-            this.empfaengerservices.toRegularAddress();
+            this.dhl.state = "regular";
+            this.dhl.toRegularAddress();
         },
         rearrangeAddresses: function () {
             $("div.dd-available-addresses")
@@ -248,7 +248,7 @@
         initialize: function (isWunschboxAvailable) {
             var self = this;
             self.isWunschboxAvailable = isWunschboxAvailable;
-            self.empfaengerservices = new Empfaengerservices($, self);
+            self.dhl = new Empfaengerservices($, self);
             this.addPostnummer();
             this.addServiceProviderNumber();
             this.addFixedCountry();
@@ -260,7 +260,7 @@
             this.rearrangeAddresses();
             this.integrateAddressDropdown();
             if ($("#addressId").length === 0) {
-                self.empfaengerservices.toRegularAddress();
+                self.dhl.toRegularAddress();
                 return;
             }
 
@@ -276,20 +276,20 @@
             mo_dhl__wunschpaket.showOrHideWunschbox();
 
 
-            $("#moEmpfaengerservicesWunschnachbarName").focus(function () {
+            $("#moDHLWunschnachbarName").focus(function () {
                 $(this).parent().removeClass('has-error custom-error');
             });
 
-            $("#moEmpfaengerservicesWunschnachbarAddress").focus(function () {
+            $("#moDHLWunschnachbarAddress").focus(function () {
                 $(this).parent().removeClass('has-error custom-error');
             });
 
             $("form").submit(function (event) {
-                var wunschName = $("#moEmpfaengerservicesWunschnachbarName");
-                var wunschAddress = $("#moEmpfaengerservicesWunschnachbarAddress");
-                var wunschortCheckbox = $('#moEmpfaengerservicesWunschortCheckbox');
-                var wunschnachbarCheckbox = $('#moEmpfaengerservicesWunschnachbarCheckbox');
-                var wunschort = $('#moEmpfaengerservicesWunschort');
+                var wunschName = $("#moDHLWunschnachbarName");
+                var wunschAddress = $("#moDHLWunschnachbarAddress");
+                var wunschortCheckbox = $('#moDHLWunschortCheckbox');
+                var wunschnachbarCheckbox = $('#moDHLWunschnachbarCheckbox');
+                var wunschort = $('#moDHLWunschort');
 
                 /*
                 set null objects if elements did not exist
@@ -332,11 +332,11 @@
 
         },
         initializeFinder: function () {
-            this.empfaengerservicesfinder = new EmpfaengerservicesFinder($, this);
+            this.dhlfinder = new DHLFinder($, this);
             mo_dhl__finder.initialize(this);
         },
         validatePreferredAddress: function ($input, value, callback) {
-            var validator = new Empfaengerservices__Validator();
+            var validator = new DHLValidator();
             callback({
                 value: value,
                 valid: validator.validateAgainstBlacklist(value),
@@ -360,10 +360,10 @@
             return provider.number;
         },
         apply: function (provider) {
-            $('#select' + this.empfaengerservices.fromProviderTypeToLabel(provider.type)).prop('selected', true);
+            $('#select' + this.dhl.fromProviderTypeToLabel(provider.type)).prop('selected', true);
             $("#showShipAddress").prop('checked', false).change();
             $(".dd-add-delivery-address").find('label.btn').click();
-            var providerIdentifier = this.empfaengerservices.fromProviderTypeToIdentifier(provider.type);
+            var providerIdentifier = this.dhl.fromProviderTypeToIdentifier(provider.type);
             $("[name='deladr[oxaddress__oxstreet]']").val(providerIdentifier).parent().removeClass('oxInValid');
             $("[name='deladr[oxaddress__oxstreetnr]']").val(this.getProviderId(provider));
             $("[name='deladr[oxaddress__oxzip]']").val(provider.address.zip).parent().removeClass('oxInValid');

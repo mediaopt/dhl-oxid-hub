@@ -8,7 +8,7 @@
 
 <form name="myedit" id="myedit" action="[{$oViewConf->getSelfLink()}]" method="post">
     [{$oViewConf->getHiddenSid()}]
-    <input type="hidden" name="cl" value="MoEmpfaengerservicesOrderWunschpaket">
+    <input type="hidden" name="cl" value="MoDHLOrderWunschpaket">
     <input type="hidden" name="fnc" value="save">
     <input type="hidden" name="oxid" value="[{$oxid}]">
     <input type="hidden" name="editval[oxorder__oxid]" value="[{$oxid}]">

@@ -1,18 +1,18 @@
 (function ($) {
 
     mo_dhl = {
-        empfaengerservices: null,
+        dhl: null,
         isWunschpaketAvailable: null,
         addPostnummer: function () {
             var modal = {
-                target: '#moEmpfaengerservicesInfo',
+                target: '#moDHLInfo',
                 width: 293,
                 height: 300,
                 resizable: false,
                 draggable: false
             };
             var postnummerLabel = $('<label></label>')
-                .addClass('moEmpfaengerservicesLabel tooltip')
+                .addClass('moDHLLabel tooltip')
                 .text('PostNummer:')
                 .oxModalPopup(modal);
             $("[name='deladr[oxaddress__oxaddinfo]']")
@@ -28,7 +28,7 @@
                 .parent()
                 .removeClass("oxInValid")
                 .children('label').hide()
-                .filter('.moEmpfaengerservicesLabel').show();
+                .filter('.moDHLLabel').show();
             if (empty) {
                 postnummer.val("");
             }
@@ -39,7 +39,7 @@
                 .removeClass("js-oxValidate js-oxValidate_notEmpty js-oxValidate_postnummer")
                 .parent().removeClass("oxInValid")
                 .children('label').show()
-                .filter('.moEmpfaengerservicesLabel').hide();
+                .filter('.moDHLLabel').hide();
             if (empty) {
                 postnummer.val("")
             }
@@ -48,20 +48,20 @@
             var postnummer = $("[name='deladr[oxaddress__oxaddinfo]']");
             postnummer
                 .addClass("js-oxValidate_notEmpty")
-                .siblings('label.moEmpfaengerservicesLabel')
+                .siblings('label.moDHLLabel')
                 .addClass('req');
         },
         doNotRequirePostnummer: function () {
             var postnummer = $("[name='deladr[oxaddress__oxaddinfo]']");
             postnummer
                 .removeClass("js-oxValidate_notEmpty")
-                .siblings('label.moEmpfaengerservicesLabel')
+                .siblings('label.moDHLLabel')
                 .removeClass('req')
         },
         addServiceProviderNumber: function () {
             var street = $("[name='deladr[oxaddress__oxstreet]']");
             var label = $("<label></label>")
-                .addClass('req moEmpfaengerservicesLabel');
+                .addClass('req moDHLLabel');
             street
                 .siblings("label")
                 .after(label);
@@ -71,7 +71,7 @@
                 .val(type).hide()
                 .parent().removeClass('oxInValid')
                 .children("label").hide()
-                .filter('.moEmpfaengerservicesLabel').text(label)
+                .filter('.moDHLLabel').text(label)
                 .show();
             if (empty) {
                 $("[name='deladr[oxaddress__oxstreetnr]']").val("");
@@ -85,7 +85,7 @@
             street
                 .show()
                 .parent().children('label').show()
-                .filter('.moEmpfaengerservicesLabel').hide();
+                .filter('.moDHLLabel').hide();
             if (empty) {
                 street.val();
                 $("[name='deladr[oxaddress__oxstreetnr]']").val("");
@@ -111,7 +111,7 @@
             var germany = $("#germany-oxid").text();
             var label = $('option[value="' + germany + '"]').last().text();
             $("<span>")
-                .addClass("moEmpfaengerservicesLabel")
+                .addClass("moDHLLabel")
                 .text(label)
                 .insertAfter("[name='deladr[oxaddress__oxcountryid]']");
         },
@@ -120,7 +120,7 @@
             var country = $("[name='deladr[oxaddress__oxcountryid]']");
             country
                 .val(germany).hide()
-                .siblings('.moEmpfaengerservicesLabel').show();
+                .siblings('.moDHLLabel').show();
             country.parent().removeClass('oxInValid');
         },
         loosenFixedCountry: function () {
@@ -136,16 +136,16 @@
             var $element = $('#addressId');
             switch ($element.children(":selected").prop("id")) {
                 case "selectPackstation":
-                    self.empfaengerservices.toPackstation();
+                    self.dhl.toPackstation();
                     break;
                 case "selectFiliale":
-                    self.empfaengerservices.toPostfiliale();
+                    self.dhl.toPostfiliale();
                     break;
                 case "selectPaketshop":
-                    self.empfaengerservices.toPaketshop();
+                    self.dhl.toPaketshop();
                     break;
                 default:
-                    self.empfaengerservices.toRegularAddress();
+                    self.dhl.toRegularAddress();
                     break;
             }
             if ($element.val() === '-1') {
@@ -193,28 +193,28 @@
                 return;
             }
             if (shippingAddressText.text().includes("Postfiliale") || shippingAddressText.text().includes("Filiale")) {
-                this.empfaengerservices.state = "postfiliale";
-                this.empfaengerservices.toPostfiliale();
+                this.dhl.state = "postfiliale";
+                this.dhl.toPostfiliale();
                 return;
             }
             if (shippingAddressText.text().includes("Paketshop")) {
-                this.empfaengerservices.state = "paketshop";
-                this.empfaengerservices.toPaketshop();
+                this.dhl.state = "paketshop";
+                this.dhl.toPaketshop();
                 return;
             }
             if (shippingAddressText.text().includes("Packstation")) {
-                this.empfaengerservices.state = "packstation";
-                this.empfaengerservices.toPackstation();
+                this.dhl.state = "packstation";
+                this.dhl.toPackstation();
                 return;
             }
 
-            this.empfaengerservices.state = "regular";
-            this.empfaengerservices.toRegularAddress();
+            this.dhl.state = "regular";
+            this.dhl.toRegularAddress();
         },
         initialize: function (isWunschboxAvailable) {
             var self = this;
             self.isWunschboxAvailable = isWunschboxAvailable;
-            self.empfaengerservices = new Empfaengerservices($, self);
+            self.dhl = new Empfaengerservices($, self);
             this.addPostnummer();
             this.addServiceProviderNumber();
             this.addFixedCountry();
@@ -223,7 +223,7 @@
             this.setInitialState();
 
             if ($("#addressId").length === 0) {
-                self.empfaengerservices.toRegularAddress();
+                self.dhl.toRegularAddress();
                 return;
             }
 
@@ -237,14 +237,14 @@
                 mo_dhl__wunschpaket.showOrHideWunschbox();
             });
 
-            $('#moEmpfaengerservicesWunschort').on('change textInput input', function () {
+            $('#moDHLWunschort').on('change textInput input', function () {
                 self.validatePreferredWunschort(false);
             });
-            $('#moEmpfaengerservicesWunschnachbarName').on('change textInput input', function () {
+            $('#moDHLWunschnachbarName').on('change textInput input', function () {
                 self.validatePreferredNeighboursName(false);
                 self.validatePreferredNeighboursAddress(false);
             });
-            $('#moEmpfaengerservicesWunschnachbarAddress').on('change textInput input', function () {
+            $('#moDHLWunschnachbarAddress').on('change textInput input', function () {
                 self.validatePreferredNeighboursAddress(false);
                 self.validatePreferredNeighboursName(false);
             });
@@ -253,12 +253,12 @@
 
         },
         initializeFinder: function () {
-            this.empfaengerservicesfinder = new EmpfaengerservicesFinder($, this);
+            this.dhlfinder = new DHLFinder($, this);
             mo_dhl__finder.initialize(this);
         },
         validatePostnummer: function () {
             var postnummerInput = $("input[name='deladr[oxaddress__oxaddinfo]']");
-            if (!this.empfaengerservices.validatePostnummer(postnummerInput.val())) {
+            if (!this.dhl.validatePostnummer(postnummerInput.val())) {
                 return false;
             }
             postnummerInput.closest("li").removeClass("oxInValid");
@@ -266,15 +266,15 @@
         },
         validatePreferredNeighboursName: function (getReturnValue) {
             var validInput = true;
-            var validator = new Empfaengerservices__Validator();
-            var input = $("#moEmpfaengerservicesWunschnachbarName");
-            if ($("#moEmpfaengerservicesWunschnachbarAddress").val().length > 0 && input.val().length === 0) {
+            var validator = new DHLValidator();
+            var input = $("#moDHLWunschnachbarName");
+            if ($("#moDHLWunschnachbarAddress").val().length > 0 && input.val().length === 0) {
                 validInput = false;
             }
             if (!validator.validateAgainstBlacklist(input.val())) {
                 validInput = false;
             }
-            if (input.val().length === 0 && $('#moEmpfaengerservicesWunschnachbarCheckbox').prop('checked')) {
+            if (input.val().length === 0 && $('#moDHLWunschnachbarCheckbox').prop('checked')) {
                 validInput = false;
             }
             if (validInput) {
@@ -288,15 +288,15 @@
         },
         validatePreferredNeighboursAddress: function (getReturnValue) {
             var validInput = true;
-            var validator = new Empfaengerservices__Validator();
-            var input = $("#moEmpfaengerservicesWunschnachbarAddress");
-            if ($("#moEmpfaengerservicesWunschnachbarName").val().length > 0 && input.val().length === 0) {
+            var validator = new DHLValidator();
+            var input = $("#moDHLWunschnachbarAddress");
+            if ($("#moDHLWunschnachbarName").val().length > 0 && input.val().length === 0) {
                 validInput = false;
             }
             if (!validator.validateAgainstBlacklist(input.val())) {
                 validInput = false;
             }
-            if (input.val().length === 0 && $('#moEmpfaengerservicesWunschnachbarCheckbox').prop('checked')) {
+            if (input.val().length === 0 && $('#moDHLWunschnachbarCheckbox').prop('checked')) {
                 validInput = false;
             }
             if (validInput) {
@@ -310,12 +310,12 @@
         },
         validatePreferredWunschort: function (getReturnValue) {
             var validInput = true;
-            var validator = new Empfaengerservices__Validator();
-            var input = $('#moEmpfaengerservicesWunschort');
+            var validator = new DHLValidator();
+            var input = $('#moDHLWunschort');
             if (!validator.validateAgainstBlacklist(input.val())) {
                 validInput = false;
             }
-            if (input.val().length === 0 && $('#moEmpfaengerservicesWunschortCheckbox').prop('checked')) {
+            if (input.val().length === 0 && $('#moDHLWunschortCheckbox').prop('checked')) {
                 validInput = false;
             }
             if (validInput) {
@@ -331,9 +331,9 @@
             return provider.number;
         },
         apply: function (provider) {
-            $('#select' + this.empfaengerservices.fromProviderTypeToLabel(provider.type)).prop('selected', true);
+            $('#select' + this.dhl.fromProviderTypeToLabel(provider.type)).prop('selected', true);
             $("#showShipAddress").attr('checked', false);
-            var providerIdentifier = this.empfaengerservices.fromProviderTypeToIdentifier(provider.type);
+            var providerIdentifier = this.dhl.fromProviderTypeToIdentifier(provider.type);
             $("[name='deladr[oxaddress__oxstreet]']").val(providerIdentifier).parent().removeClass('oxInValid');
             $("[name='deladr[oxaddress__oxstreetnr]']").val(this.getProviderId(provider));
             $("[name='deladr[oxaddress__oxzip]']").val(provider.address.zip).parent().removeClass('oxInValid');

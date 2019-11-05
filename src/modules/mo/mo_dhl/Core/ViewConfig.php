@@ -27,16 +27,16 @@ class ViewConfig extends ViewConfig_parent
     }
 
     /**
-     * @see MoEmpfaengerservicesAdapter::isReady()
+     * @see DHLAdapter::isReady()
      * @return string
      */
     public function getGoogleMapsApiKey()
     {
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesAdapter::class)->getGoogleMapsApiKey();
+        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class)->getGoogleMapsApiKey();
     }
 
     /**
-     * @see MoEmpfaengerservicesAdapter::isReady()
+     * @see DHLAdapter::isReady()
      * @return bool
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
@@ -45,7 +45,7 @@ class ViewConfig extends ViewConfig_parent
     {
         /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
         $basket = \OxidEsales\Eshop\Core\Registry::getConfig()->getSession()->getBasket();
-        $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesAdapter::class);
+        $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class);
         return $adapter->isReady() && $basket->moAllowsDhlDelivery();
     }
 
@@ -79,7 +79,7 @@ class ViewConfig extends ViewConfig_parent
     public function moIsAnyWunschpaketFeatureActivated()
     {
         $basket = \OxidEsales\Eshop\Core\Registry::getConfig()->getSession()->getBasket();
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->canAWunschpaketServiceBeSelected($basket);
+        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->canAWunschpaketServiceBeSelected($basket);
     }
 
     /**
@@ -88,7 +88,7 @@ class ViewConfig extends ViewConfig_parent
     public function moIsWunschtagActivated()
     {
         $basket = \OxidEsales\Eshop\Core\Registry::getConfig()->getSession()->getBasket();
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->canAWunschtagBeSelected($basket);
+        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->canAWunschtagBeSelected($basket);
     }
 
     /**
@@ -99,7 +99,7 @@ class ViewConfig extends ViewConfig_parent
         /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
         $basket = \OxidEsales\Eshop\Core\Registry::getConfig()->getSession()->getBasket();
         $zip = $basket->moEmpfaengeservicesGetAddressedZipCode();
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->canAWunschzeitBeSelected($zip);
+        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->canAWunschzeitBeSelected($zip);
     }
 
     /**
@@ -107,7 +107,7 @@ class ViewConfig extends ViewConfig_parent
      */
     public function moIsWunschortActivated()
     {
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->isWunschortActive();
+        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->isWunschortActive();
     }
 
     /**
@@ -115,7 +115,7 @@ class ViewConfig extends ViewConfig_parent
      */
     public function moIsWunschnachbarActivated()
     {
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->isWunschnachbarActive();
+        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->isWunschnachbarActive();
     }
 
     /**
@@ -123,7 +123,7 @@ class ViewConfig extends ViewConfig_parent
      */
     public function moCanPackstationBeSelected()
     {
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesAdapter::class)->canPackstationBeSelected();
+        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class)->canPackstationBeSelected();
     }
 
     /**
@@ -131,7 +131,7 @@ class ViewConfig extends ViewConfig_parent
      */
     public function moCanFilialeBeSelected()
     {
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesAdapter::class)->canFilialeBeSelected();
+        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class)->canFilialeBeSelected();
     }
 
     /**

@@ -16,9 +16,9 @@ Empfaengerservices = function ($, tailorer) {
     this.state = "regular";
 
     this.openModal = function () {
-        $('#moEmpfaengerservicesFinder').modal();
-        this.tailorer.empfaengerservicesfinder.initializePopup();
-        this.tailorer.empfaengerservicesfinder.preFillInputs();
+        $('#moDHLFinder').modal();
+        this.tailorer.dhlfinder.initializePopup();
+        this.tailorer.dhlfinder.preFillInputs();
     };
 
     this.toRegularAddress = function () {
@@ -84,7 +84,7 @@ Empfaengerservices = function ($, tailorer) {
     };
 
     this.findCall = function (locality, street, packstation, filiale) {
-        var url = $('#moEmpfaengerservicesFind').attr('href') + "&locality=" + locality + "&street=" + street;
+        var url = $('#moDHLFind').attr('href') + "&locality=" + locality + "&street=" + street;
         if (packstation) {
             url += "&packstation=1";
         }

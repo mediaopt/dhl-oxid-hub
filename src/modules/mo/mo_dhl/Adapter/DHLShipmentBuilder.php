@@ -22,7 +22,7 @@ use Mediaopt\Empfaengerservices\Shipment\Shipment;
  *
  * @author derksen mediaopt GmbH
  */
-class EmpfaengerservicesShipmentBuilder
+class DHLShipmentBuilder
 {
     /**
      * @var string
@@ -96,7 +96,7 @@ class EmpfaengerservicesShipmentBuilder
      */
     protected function buildReceiver(\OxidEsales\Eshop\Application\Model\Order $order)
     {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         list($locationType, $location) = $wunschpaket->extractLocation($order->oxorder__oxremark->value);
         return new Receiver($this->buildContact($order), $order->oxorder__oxdeladdinfo->rawValue, $this->buildAddress($order), $locationType, $location, $wunschpaket->extractTime($order->oxorder__oxremark->value), $wunschpaket->extractWunschtag($order->oxorder__oxremark->value));
     }

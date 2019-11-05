@@ -3,7 +3,7 @@
     <span class="js-oxError_postnummer">[{oxmultilang ident="MO_DHL__INVALID_POSTNUMBER"}]</span>
 
     <p>
-        <button id="moEmpfaengerservicesButton" type="button" class="submitButton">
+        <button id="moDHLButton" type="button" class="submitButton">
             [{if $oViewConf->moCanPackstationBeSelected()}]
                 [{if $oViewConf->moCanFilialeBeSelected()}]
                     [{oxmultilang ident="MO_DHL__OPEN_MODAL_SERVICE_PROVIDER"}]
@@ -27,10 +27,10 @@
     <span id="postfiliale-number-label">Filialnr.:</span>
     <span id="paketshop-number-label">Filialnr.:</span>
 
-    <a id="moEmpfaengerservicesFind"
-       href="[{$oViewConf->getSslSelfLink()}]cl=MoEmpfaengerservicesFinder"></a>
+    <a id="moDHLFind"
+       href="[{$oViewConf->getSslSelfLink()}]cl=MoDHLFinder"></a>
 
-    <div id="moEmpfaengerservicesWindow">
+    <div id="moDHLWindow">
         <h4></h4>
         <address></address>
 
@@ -47,9 +47,9 @@
                  src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/icon-parking.png")}]"/>
         </div>
 
-        <h5 class="moEmpfaengerservicesOpeningHours"
+        <h5 class="moDHLOpeningHours"
             style="display: none;">[{oxmultilang ident="MO_DHL__OPENING_HOURS"}]</h5>
-        <ul class="moEmpfaengerservicesOpeningHours" style="display: none;">
+        <ul class="moDHLOpeningHours" style="display: none;">
             <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_1"}]: <span
                         class="opening-hours-day-1">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
             </li>
@@ -78,52 +78,52 @@
 
     </div>
 
-    <p id="moEmpfaengerservicesUnknownError">[{oxmultilang ident="MO_DHL__ERROR_FINDER_UNKNOWN"}]</p>
+    <p id="moDHLUnknownError">[{oxmultilang ident="MO_DHL__ERROR_FINDER_UNKNOWN"}]</p>
 </div>
 
-<div id="moEmpfaengerservicesFinder" class="popupBox corners FXgradGreyLight glowShadow">
+<div id="moDHLFinder" class="popupBox corners FXgradGreyLight glowShadow">
     <img src="[{$oViewConf->getImageUrl('x.png')}]" alt="" class="closePop">
-    <form id="moEmpfaengerservicesFinderForm">
-        <div id="moEmpfaengerservicesAddressInputs">
+    <form id="moDHLFinderForm">
+        <div id="moDHLAddressInputs">
             <input type="text" placeholder="[{oxmultilang ident="MO_DHL__STREET"}]"
-                   id="moEmpfaengerservicesStreet" class="is--azure" name="street"/>
+                   id="moDHLStreet" class="is--azure" name="street"/>
             <input type="text" placeholder="[{oxmultilang ident="MO_DHL__POSTCODE"}] &amp; [{oxmultilang ident="MO_DHL__CITY"}]"
-                   id="moEmpfaengerservicesLocality" class="is--azure" name="locality"/>
+                   id="moDHLLocality" class="is--azure" name="locality"/>
         </div>
-        <div id="moEmpfaengerservicesProviders" class="is--azure">
+        <div id="moDHLProviders" class="is--azure">
         [{if $oViewConf->moCanPackstationBeSelected()}]
             [{if $oViewConf->moCanFilialeBeSelected()}]
-                <input type="checkbox" id="moEmpfaengerservicesPackstation" name="packstation" checked="checked"/>
-                <label for="moEmpfaengerservicesPackstation">Packstation
+                <input type="checkbox" id="moDHLPackstation" name="packstation" checked="checked"/>
+                <label for="moDHLPackstation">Packstation
                     <img class="icon packstation valign--middle"
                          src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/icon-packstation.png")}]"/>
                 </label>
             [{else}]
-                <input type="hidden" id="moEmpfaengerservicesPackstation" name="packstation" value="1"/>
+                <input type="hidden" id="moDHLPackstation" name="packstation" value="1"/>
             [{/if}]
         [{/if}]
         [{if $oViewConf->moCanFilialeBeSelected()}]
             [{if $oViewConf->moCanPackstationBeSelected()}]
-                <input type="checkbox" id="moEmpfaengerservicesFiliale" name="filiale" checked="checked"/>
-                <label for="moEmpfaengerservicesFiliale">Filiale
+                <input type="checkbox" id="moDHLFiliale" name="filiale" checked="checked"/>
+                <label for="moDHLFiliale">Filiale
                     <img class="icon packstation postfiliale valign--middle"
                          src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/icon-postfiliale.png")}]"/>
                     <img class="icon packstation paketshop valign--middle"
                          src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/icon-paketshop.png")}]"/>
                 </label>
             [{else}]
-                <input type="hidden" id="moEmpfaengerservicesFiliale" name="filiale" value="1"/>
+                <input type="hidden" id="moDHLFiliale" name="filiale" value="1"/>
             [{/if}]
         [{/if}]
         <button class="submitButton">[{oxmultilang ident="MO_DHL__SEARCH"}]</button>
         </div>
     </form>
-    <div id="moEmpfaengerservicesErrors" class="status error corners" style="display:none;"></div>
-    <div id="moEmpfaengerservicesMap">
+    <div id="moDHLErrors" class="status error corners" style="display:none;"></div>
+    <div id="moDHLMap">
     </div>
 </div>
 
-<div id="moEmpfaengerservicesInfo" class="popupBox corners FXgradGreyLight glowShadow">
+<div id="moDHLInfo" class="popupBox corners FXgradGreyLight glowShadow">
     <img src="[{$oViewConf->getImageUrl('x.png')}]" alt="" class="closePop">
     <h4>[{oxmultilang ident="MO_DHL__POSTNUMMER_INFO_TITLE"}]</h4>
     <div>

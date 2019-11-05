@@ -1,4 +1,4 @@
-Empfaengerservices__Helper = function () {
+DHLHelper = function () {
 
     /**
      * debounce only executes the last call of a function in a given timeframe
@@ -29,4 +29,4 @@ Empfaengerservices__Helper = function () {
     }
 };
 
-var mo_Empfaengerservices__Helper = new Empfaengerservices__Helper();
+var mo_DHL__Helper = new DHLHelper();

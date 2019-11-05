@@ -1,8 +1,8 @@
 <div style="display: none;">
 
     <p>
-        <button id="moEmpfaengerservicesButton" type="button" class="btn btn-info" data-toggle="modal"
-                data-target="#moEmpfaengerservicesFinder">
+        <button id="moDHLButton" type="button" class="btn btn-info" data-toggle="modal"
+                data-target="#moDHLFinder">
             [{if $oViewConf->moCanPackstationBeSelected()}]
                 [{if $oViewConf->moCanFilialeBeSelected()}]
                     [{oxmultilang ident="MO_DHL__OPEN_MODAL_SERVICE_PROVIDER"}]
@@ -26,12 +26,12 @@
     <span id="postfiliale-number-label">Filialnr.:</span>
     <span id="paketshop-number-label">Filialnr.:</span>
 
-    <a id="moEmpfaengerservicesFind"
-       href="[{$oViewConf->getSslSelfLink()}]cl=MoEmpfaengerservicesFinder"></a>
+    <a id="moDHLFind"
+       href="[{$oViewConf->getSslSelfLink()}]cl=MoDHLFinder"></a>
 
     <span id="moPostnummerErrorMessage">[{oxmultilang ident="MO_DHL__ERROR_POSTNUMMER_MALFORMED"}]</span>
 
-    <div id="moEmpfaengerservicesWindow">
+    <div id="moDHLWindow">
         <h4></h4>
         <address></address>
 
@@ -50,9 +50,9 @@
 
         <br/>
 
-        <h5 class="moEmpfaengerservicesOpeningHours"
+        <h5 class="moDHLOpeningHours"
             style="display: none;">[{oxmultilang ident="MO_DHL__OPENING_HOURS"}]</h5>
-        <ul class="moEmpfaengerservicesOpeningHours" style="display: none;">
+        <ul class="moDHLOpeningHours" style="display: none;">
             <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_1"}]: <span
                         class="opening-hours-day-1">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
             </li>
@@ -81,40 +81,40 @@
 
     </div>
 
-    <p id="moEmpfaengerservicesUnknownError">[{oxmultilang ident="MO_DHL__ERROR_FINDER_UNKNOWN"}]</p>
+    <p id="moDHLUnknownError">[{oxmultilang ident="MO_DHL__ERROR_FINDER_UNKNOWN"}]</p>
 </div>
 
-<div id="moEmpfaengerservicesFinder" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+<div id="moDHLFinder" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" id="modalMap" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <form id="moEmpfaengerservicesFinderForm">
-                    <div id="moEmpfaengerservicesAddressInputs">
+                <form id="moDHLFinderForm">
+                    <div id="moDHLAddressInputs">
                         <input type="text" placeholder="[{oxmultilang ident="MO_DHL__STREET"}]"
-                               id="moEmpfaengerservicesStreet" name="street"/>
+                               id="moDHLStreet" name="street"/>
                         <input type="text" placeholder="[{oxmultilang ident="MO_DHL__POSTCODE"}] &amp; [{oxmultilang ident="MO_DHL__CITY"}]"
-                               id="moEmpfaengerservicesLocality" name="locality"/>
+                               id="moDHLLocality" name="locality"/>
                     </div>
-                    <div id="moEmpfaengerservicesProviders">
+                    <div id="moDHLProviders">
                     [{if $oViewConf->moCanPackstationBeSelected()}]
                         [{if $oViewConf->moCanFilialeBeSelected()}]
-                            <label for="moEmpfaengerservicesPackstation">
-                                <input type="checkbox" id="moEmpfaengerservicesPackstation" name="packstation" checked/>
+                            <label for="moDHLPackstation">
+                                <input type="checkbox" id="moDHLPackstation" name="packstation" checked/>
                                 Packstation
                                 <img class="icon packstation"
                                      src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/icon-packstation.png")}]"/>
                             </label>
                         [{else}]
-                            <input type="hidden" id="moEmpfaengerservicesPackstation" name="packstation" value="on"/>
+                            <input type="hidden" id="moDHLPackstation" name="packstation" value="on"/>
                         [{/if}]
                     [{/if}]
                     [{if $oViewConf->moCanFilialeBeSelected()}]
                         [{if $oViewConf->moCanPackstationBeSelected()}]
-                            <label for="moEmpfaengerservicesFiliale">
-                                <input type="checkbox" id="moEmpfaengerservicesFiliale" name="filiale" checked/>
+                            <label for="moDHLFiliale">
+                                <input type="checkbox" id="moDHLFiliale" name="filiale" checked/>
                                 Filiale
                                 <img class="icon packstation postfiliale"
                                      src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/icon-postfiliale.png")}]"/>
@@ -122,7 +122,7 @@
                                      src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/icon-paketshop.png")}]"/>
                             </label>
                         [{else}]
-                            <input type="hidden" id="moEmpfaengerservicesFiliale" name="filiale" value="1"/>
+                            <input type="hidden" id="moDHLFiliale" name="filiale" value="1"/>
                         [{/if}]
                     [{/if}]
                     <button class="btn btn-primary submitButton">[{oxmultilang ident="MO_DHL__SEARCH"}]</button>
@@ -131,14 +131,14 @@
             </div>
 
             <div class="modal-body">
-                <div id="moEmpfaengerservicesErrors" class="status error corners" style="display:none;"></div>
-                <div id="moEmpfaengerservicesMap"></div>
+                <div id="moDHLErrors" class="status error corners" style="display:none;"></div>
+                <div id="moDHLMap"></div>
             </div>
         </div>
     </div>
 </div>
 
-<div id="moEmpfaengerservicesInfo" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+<div id="moDHLInfo" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header text-center">

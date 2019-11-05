@@ -12,7 +12,7 @@ namespace Mediaopt\DHL;
  *
  * @author derksen mediaopt GmbH
  */
-class EmpfaengerservicesInstall
+class Install
 {
     /**
      * @throws \Exception

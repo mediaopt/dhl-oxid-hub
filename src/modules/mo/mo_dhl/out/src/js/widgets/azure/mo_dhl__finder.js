@@ -3,13 +3,13 @@
     mo_dhl__finder = {
         addFinderButton: function () {
             var self = this;
-            var finderButton = $("#moEmpfaengerservicesButton");
+            var finderButton = $("#moDHLButton");
             finderButton.parent().show();
             finderButton
-                .oxModalPopup({target: '#moEmpfaengerservicesFinder'})
+                .oxModalPopup({target: '#moDHLFinder'})
                 .click(function () {
-                    self.tailorer.empfaengerservicesfinder.initializePopup();
-                    self.tailorer.empfaengerservicesfinder.preFillInputs();
+                    self.tailorer.dhlfinder.initializePopup();
+                    self.tailorer.dhlfinder.preFillInputs();
                 });
             $("#showShipAddress").parent().after(finderButton.parent());
         },
@@ -19,9 +19,9 @@
             self.addFinderButton();
             self.tailorer = tailorer;
             busyFinder = false;
-            $('#moEmpfaengerservicesFinderForm').submit(function () {
-                self.tailorer.empfaengerservicesfinder.find(new self.tailorer.empfaengerservicesfinder.addressObject(
-                    $('#moEmpfaengerservicesLocality').val(), $('#moEmpfaengerservicesStreet').val()
+            $('#moDHLFinderForm').submit(function () {
+                self.tailorer.dhlfinder.find(new self.tailorer.dhlfinder.addressObject(
+                    $('#moDHLLocality').val(), $('#moDHLStreet').val()
                 ), true);
                 return false;
             });
@@ -31,14 +31,14 @@
         addInfoBox: function (provider, marker) {
             var self = this;
             var providerId = "provider_" + provider.id;
-            var headline = this.tailorer.empfaengerservices.fromProviderTypeToLabel(provider.type) + ' ' + mo_dhl.getProviderId(provider);
+            var headline = this.tailorer.dhl.fromProviderTypeToLabel(provider.type) + ' ' + mo_dhl.getProviderId(provider);
             var address = (provider.name ? provider.name + "<br/>" : '')
                 + provider.address.street + " " + provider.address.streetNo + "<br/>"
                 + provider.address.zip + " "
                 + provider.address.city + (provider.address.district !== null ? "-" + provider.address.district : '')
                 + (provider.remark.length ? "<br/><br/>" + provider.remark : '');
             var providerIcon = 'img.' + provider.type.toLowerCase();
-            var informationWindow = $("#moEmpfaengerservicesWindow")
+            var informationWindow = $("#moDHLWindow")
                 .clone().removeAttr('id')
                 .find('img').hide().end()
                 .find(providerIcon).show().end()
@@ -84,7 +84,7 @@
                             box.close();
                         });
                         self.openInfoBoxes = [];
-                        $("#moEmpfaengerservicesFinder").dialog("close");
+                        $("#moDHLFinder").dialog("close");
                     });
                 });
             });

@@ -38,7 +38,7 @@ class Basket extends Basket_parent
     public function moDHLGetDeliverySurcharges()
     {
         $remark = \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem');
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         if ($wunschpaket->hasWunschzeit($remark) && $wunschpaket->hasWunschtag($remark)) {
             return $this->moDHLGetCostsForCombinedWunschtagAndWunschzeit();
         }
@@ -103,7 +103,7 @@ class Basket extends Basket_parent
      */
     public function moDHLGetWunschtagCosts()
     {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         return $wunschpaket->hasWunschtag(\OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem')) ? $this->moDHLCalculateSurcharge($wunschpaket->getWunschtagSurcharge()) : \oxNew(\OxidEsales\Eshop\Core\Price::class, 0.0);
     }
 
@@ -113,7 +113,7 @@ class Basket extends Basket_parent
      */
     public function moDHLGetWunschzeitCosts()
     {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         return $wunschpaket->hasWunschzeit(\OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem')) ? $this->moDHLCalculateSurcharge($wunschpaket->getWunschzeitSurcharge()) : \oxNew(\OxidEsales\Eshop\Core\Price::class, 0.0);
     }
 
@@ -123,7 +123,7 @@ class Basket extends Basket_parent
      */
     public function moDHLGetCostsForCombinedWunschtagAndWunschzeit()
     {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         $remark = \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem');
         return $wunschpaket->hasWunschtag($remark) && $wunschpaket->hasWunschzeit($remark) ? $this->moDHLCalculateSurcharge($wunschpaket->getCombinedWunschtagAndWunschzeitSurcharge()) : \oxNew(\OxidEsales\Eshop\Core\Price::class, 0.0);
     }

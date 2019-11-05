@@ -3,7 +3,7 @@
     mo_dhl__finder = {
         addFinderButton: function () {
             var self = this;
-            var finderButton = $('#moEmpfaengerservicesButton');
+            var finderButton = $('#moDHLButton');
             finderButton.parent().show();
             finderButton
                 .parents(':nth-child(4)')
@@ -11,14 +11,14 @@
                 .css('margin-right', '0');
             finderButton
                 .click(function () {
-                    self.tailorer.empfaengerservicesfinder.initializePopup();
-                    self.tailorer.empfaengerservicesfinder.preFillInputs();
+                    self.tailorer.dhlfinder.initializePopup();
+                    self.tailorer.dhlfinder.preFillInputs();
                 });
             $("#showShipAddress")
                 .parent()
                 .after(finderButton.parent());
-            $('#moEmpfaengerservicesFinder').on('shown.bs.modal', function () {
-                self.tailorer.empfaengerservicesfinder.resizeMap();
+            $('#moDHLFinder').on('shown.bs.modal', function () {
+                self.tailorer.dhlfinder.resizeMap();
             });
         },
         initialize: function (tailorer) {
@@ -26,9 +26,9 @@
             self.addFinderButton();
             self.tailorer = tailorer;
             busyFinder = false;
-            $('#moEmpfaengerservicesFinderForm').submit(function () {
-                self.tailorer.empfaengerservicesfinder.find(new self.tailorer.empfaengerservicesfinder.addressObject(
-                    $('#moEmpfaengerservicesLocality').val(), $('#moEmpfaengerservicesStreet').val()
+            $('#moDHLFinderForm').submit(function () {
+                self.tailorer.dhlfinder.find(new self.tailorer.dhlfinder.addressObject(
+                    $('#moDHLLocality').val(), $('#moDHLStreet').val()
                 ), true);
                 return false;
             });
@@ -42,16 +42,16 @@
                 + provider.address.city + (provider.address.district !== null ? "-" + provider.address.district : '')
                 + (provider.remark.length ? "<br/><br/>" + provider.remark : '');
             var providerIcon = 'img.' + provider.type.toLowerCase();
-            var providerLabel = this.tailorer.empfaengerservices.fromProviderTypeToLabel(provider.type);
-            var empfaengerservicesWindow = $("#moEmpfaengerservicesWindow");
-            var window = empfaengerservicesWindow
+            var providerLabel = this.tailorer.dhl.fromProviderTypeToLabel(provider.type);
+            var dhlWindow = $("#moDHLWindow");
+            var window = dhlWindow
                 .clone().removeAttr('id')
                 .find('img').hide().end()
                 .find(providerIcon).show().end()
                 .find('h4').text(providerLabel + ' ' + mo_dhl.getProviderId(provider)).end()
                 .find('address').html(address).end()
                 .find('button').attr('id', providerId).end();
-            $(empfaengerservicesWindow.find('address')).addClass('moAddressInformation');
+            $(dhlWindow.find('address')).addClass('moAddressInformation');
 
             provider.services.forEach(function (service) {
                 if (service === 'PARKING') {
@@ -90,7 +90,7 @@
                             box.close();
                         });
                         self.openInfoBoxes = [];
-                        $('#moEmpfaengerservicesFinder').modal('hide');
+                        $('#moDHLFinder').modal('hide');
                     });
                 });
             });

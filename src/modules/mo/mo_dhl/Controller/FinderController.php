@@ -22,7 +22,7 @@ use Mediaopt\Empfaengerservices\ServiceProvider\Timetable\TimeInfo;
  *
  * @author derksen mediaopt GmbH
  */
-class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\Controller\FrontendController
+class FinderController extends \OxidEsales\Eshop\Application\Controller\FrontendController
 {
     /**
      * @var Standortsuche
@@ -47,7 +47,7 @@ class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\C
         } catch (\RuntimeException $ex) {
             $this->respond(['status' => 'error', 'payload' => $ex->getMessage()]);
         } catch (\Exception $ex) {
-            \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesAdapter::class)->getLogger()->error('Exception encountered: ' . $ex->getMessage(), ['exception' => $ex]);
+            \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class)->getLogger()->error('Exception encountered: ' . $ex->getMessage(), ['exception' => $ex]);
             $this->respond(['status' => 'error', 'payload' => 'Unable to process request.']);
         }
     }
@@ -84,7 +84,7 @@ class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\C
     }
 
     /**
-     * @return \Mediaopt\DHL\EmpfaengerservicesFinderQuery[]
+     * @return \Mediaopt\DHL\FinderQuery[]
      */
     protected function buildQueries()
     {
@@ -95,14 +95,14 @@ class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\C
         $desiredBranchTypes = array_map('boolval', array_map([$config, 'getRequestParameter'], ['packstation', 'filiale', 'paketshop']));
         $queries = [];
         foreach (array_unique($addresses) as $address) {
-            $parameters = array_merge([\Mediaopt\DHL\EmpfaengerservicesFinderQuery::class, $address], $desiredBranchTypes);
+            $parameters = array_merge([\Mediaopt\DHL\FinderQuery::class, $address], $desiredBranchTypes);
             $queries[] = call_user_func_array('oxNew', $parameters);
         }
         return $queries;
     }
 
     /**
-     * @param \Mediaopt\DHL\EmpfaengerservicesFinderQuery[] $queries
+     * @param \Mediaopt\DHL\FinderQuery[] $queries
      * @return array
      */
     protected function resolveQuerySet($queries)
@@ -123,22 +123,22 @@ class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\C
     /**
      * Finds Packstations, Postfiliales and Paketshops in the vicinity of the given city/zip/street combination.
      *
-     * @param \Mediaopt\DHL\EmpfaengerservicesFinderQuery $query
+     * @param \Mediaopt\DHL\FinderQuery $query
      * @return array
      * @throws \RuntimeException
      */
-    protected function resolveQuery(\Mediaopt\DHL\EmpfaengerservicesFinderQuery $query)
+    protected function resolveQuery(\Mediaopt\DHL\FinderQuery $query)
     {
-        $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesAdapter::class);
+        $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class);
         return array_map([$this, 'prepareServiceProvider'], array_slice($this->restrictTimetables($this->findServiceProviders($query)), 0, $adapter->getMaximumHits()));
     }
 
     /**
-     * @param \Mediaopt\DHL\EmpfaengerservicesFinderQuery $query
+     * @param \Mediaopt\DHL\FinderQuery $query
      * @return ServiceProviderList
      * @throws \Mediaopt\Empfaengerservices\Exception\WebserviceException
      */
-    protected function findServiceProviders(\Mediaopt\DHL\EmpfaengerservicesFinderQuery $query)
+    protected function findServiceProviders(\Mediaopt\DHL\FinderQuery $query)
     {
         $standortsuche = $this->getStandortsuche();
         $pickup = ServiceType::create(ServiceType::PARCEL_PICKUP);
@@ -147,13 +147,13 @@ class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\C
     }
 
     /**
-     * @param BasicServiceProvider[] $serviceProviders
-     * @param \Mediaopt\DHL\EmpfaengerservicesFinderQuery $query
+     * @param BasicServiceProvider[]    $serviceProviders
+     * @param \Mediaopt\DHL\FinderQuery $query
      * @return ServiceProviderList
      */
-    protected function filterServiceProviders($serviceProviders, \Mediaopt\DHL\EmpfaengerservicesFinderQuery $query)
+    protected function filterServiceProviders($serviceProviders, \Mediaopt\DHL\FinderQuery $query)
     {
-        $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesAdapter::class);
+        $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class);
         $serviceProviderList = new ServiceProviderList($serviceProviders);
         $packstation = $query->searchesForPackstation() && $adapter->canPackstationBeSelected();
         $filiale = $query->searchesForPostfiliale() && $adapter->canPostfilialeBeSelected();
@@ -195,7 +195,7 @@ class EmpfaengerservicesFinderController extends \OxidEsales\Eshop\Application\C
             return $this->standortsuche;
         }
 
-        $this->standortsuche = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\EmpfaengerservicesAdapter::class)->buildStandortsuche();
+        $this->standortsuche = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class)->buildStandortsuche();
         return $this->standortsuche;
     }
 }

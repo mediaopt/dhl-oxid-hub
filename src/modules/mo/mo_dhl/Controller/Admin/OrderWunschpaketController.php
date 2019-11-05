@@ -9,7 +9,7 @@ use Mediaopt\Empfaengerservices\Shipment\Process;
 /**
  * @author derksen mediaopt GmbH
  */
-class EmpfaengerservicesOrderWunschpaketController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
+class OrderWunschpaketController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
 {
     /**
      * @var \OxidEsales\Eshop\Application\Model\Order|null

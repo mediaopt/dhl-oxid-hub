@@ -32,7 +32,7 @@ class UserComponent extends UserComponent_parent
     protected function moDHLInjectWunschpaketTagsIntoOrderRemark()
     {
         $remark = (string) \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem');
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         $remarkWithoutTags = $wunschpaket->removeWunschpaketTags($remark);
         $wunschpaketTags = implode('', $this->moDHLGenerateWunschpaketTags());
         \OxidEsales\Eshop\Core\Registry::getSession()->setVariable('ordrem', $wunschpaketTags . $remarkWithoutTags);
@@ -52,8 +52,8 @@ class UserComponent extends UserComponent_parent
      */
     protected function moDHLGeneratePreferredLocationTag()
     {
-        list($wunschort, $wunschnachbarName, $wunschnachbarAddress) = array_map('strval', array_map([\OxidEsales\Eshop\Core\Registry::getConfig(), 'getRequestParameter'], ['moEmpfaengerservicesWunschort', 'moEmpfaengerservicesWunschnachbarName', 'moEmpfaengerservicesWunschnachbarAddress']));
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        list($wunschort, $wunschnachbarName, $wunschnachbarAddress) = array_map('strval', array_map([\OxidEsales\Eshop\Core\Registry::getConfig(), 'getRequestParameter'], ['moDHLWunschort', 'moDHLWunschnachbarName', 'moDHLWunschnachbarAddress']));
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         if ($wunschort !== '' && $wunschpaket->isWunschortActive()) {
             try {
                 return $wunschpaket->generateWunschortTag($wunschort);
@@ -81,8 +81,8 @@ class UserComponent extends UserComponent_parent
      */
     protected function moDHLGeneratePreferredDayTag()
     {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
-        $submittedWunschtag = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('moEmpfaengerservicesWunschtag');
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
+        $submittedWunschtag = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('moDHLWunschtag');
         try {
             $basket = $this->getSession()->getBasket();
             return $submittedWunschtag !== '' && $wunschpaket->canAWunschtagBeSelected($basket) ? $wunschpaket->generateWunschtagTag($submittedWunschtag, $basket) : '';
@@ -98,8 +98,8 @@ class UserComponent extends UserComponent_parent
      */
     protected function moDHLGeneratePreferredTimeTag()
     {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
-        $submittedTime = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('moEmpfaengerservicesTime');
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
+        $submittedTime = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('moDHLTime');
         try {
             /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
             $basket = $this->getSession()->getBasket();

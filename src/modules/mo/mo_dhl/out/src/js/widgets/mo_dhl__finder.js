@@ -1,4 +1,4 @@
-EmpfaengerservicesFinder = function ($, tailorer) {
+DHLFinder = function ($, tailorer) {
     this.tailorer = tailorer;
 
     this.addressObject = function (locality, street) {
@@ -53,7 +53,7 @@ EmpfaengerservicesFinder = function ($, tailorer) {
 
     this.initializePopup = function () {
         var self = this;
-        var mapDiv = document.getElementById('moEmpfaengerservicesMap');
+        var mapDiv = document.getElementById('moDHLMap');
         var mapZoomThreshold = 14;
         self.map = new google.maps.Map(mapDiv, {
             center: {lat: 51.16591, lng: 10.451526},
@@ -87,11 +87,11 @@ EmpfaengerservicesFinder = function ($, tailorer) {
             street = "";
         }
 
-        $("#moEmpfaengerservicesLocality").val(locality);
-        $("#moEmpfaengerservicesStreet").val(street);
+        $("#moDHLLocality").val(locality);
+        $("#moDHLStreet").val(street);
         if (street && locality) {
-            var address = new self.tailorer.empfaengerservicesfinder.addressObject(locality, street);
-            self.tailorer.empfaengerservicesfinder.find(address, true);
+            var address = new self.tailorer.dhlfinder.addressObject(locality, street);
+            self.tailorer.dhlfinder.find(address, true);
         }
     };
 
@@ -111,10 +111,10 @@ EmpfaengerservicesFinder = function ($, tailorer) {
         locality = addressObject.locality;
         street = addressObject.street;
 
-        var packstationInput = $("#moEmpfaengerservicesPackstation");
+        var packstationInput = $("#moDHLPackstation");
         var packstation = packstationInput.length !== 0 && packstationInput.attr('type') === 'hidden'
             || packstationInput.prop('checked');
-        var filialeInput = $("#moEmpfaengerservicesFiliale");
+        var filialeInput = $("#moDHLFiliale");
         var filiale = filialeInput.length !== 0 && filialeInput.attr('type') === 'hidden'
             || filialeInput.prop('checked');
 
@@ -123,9 +123,9 @@ EmpfaengerservicesFinder = function ($, tailorer) {
         }
 
         self.tailorer.busyFinder = true;
-        $.ajax(self.tailorer.empfaengerservices.findCall(locality, street, packstation, filiale)).done(function (response) {
+        $.ajax(self.tailorer.dhl.findCall(locality, street, packstation, filiale)).done(function (response) {
             if (response.status === 'success') {
-                $("#moEmpfaengerservicesErrors").hide();
+                $("#moDHLErrors").hide();
                 self.clearMarkers(self.markers);
 
                 var providers = response.payload;
@@ -139,21 +139,21 @@ EmpfaengerservicesFinder = function ($, tailorer) {
                     self.map.fitBounds(bounds);
                 }
             } else if (response.status === 'error') {
-                $("#moEmpfaengerservicesErrors").show().text(response.payload);
+                $("#moDHLErrors").show().text(response.payload);
             }
             self.tailorer.busyFinder = false;
         }).fail(function () {
-            $("#moEmpfaengerservicesErrors").show().text($("#moEmpfaengerservicesUnknownError").text());
+            $("#moDHLErrors").show().text($("#moDHLUnknownError").text());
             self.tailorer.busyFinder = false;
         });
     };
     this.mark = function (provider) {
-        var title = this.tailorer.empfaengerservices.fromProviderTypeToLabel(provider.type) + ' ' + this.tailorer.getProviderId(provider);
-        var icon = this.tailorer.empfaengerservices.thumbs.postfiliale;
+        var title = this.tailorer.dhl.fromProviderTypeToLabel(provider.type) + ' ' + this.tailorer.getProviderId(provider);
+        var icon = this.tailorer.dhl.thumbs.postfiliale;
         if (provider.type === 'Packstation') {
-            icon = this.tailorer.empfaengerservices.thumbs.packstation;
+            icon = this.tailorer.dhl.thumbs.packstation;
         } else if (provider.type === 'Paketshop') {
-            icon = this.tailorer.empfaengerservices.thumbs.paketshop;
+            icon = this.tailorer.dhl.thumbs.paketshop;
         }
         var marker = new google.maps.Marker({
             position: {lat: provider.location.latitude, lng: provider.location.longitude},

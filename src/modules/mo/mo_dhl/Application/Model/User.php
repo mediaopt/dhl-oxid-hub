@@ -4,7 +4,7 @@ namespace Mediaopt\DHL\Application\Model;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
- * 
+ *
  * @copyright 2017 derksen mediaopt GmbH
  */
 
@@ -14,7 +14,7 @@ use Mediaopt\Empfaengerservices\ServiceProvider\Branch;
 
 /**
  * Adds validation for the PostNummer and contains the logic for checking whether to use a DHL delivery set.
- * 
+ *
  * @author derksen mediaopt GmbH
  */
 class User extends User_parent
@@ -69,7 +69,7 @@ class User extends User_parent
     protected function moRemoveWunschpaketOptions()
     {
         $remark = \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem');
-        $taglessRemark = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->removeWunschpaketTags($remark);
+        $taglessRemark = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->removeWunschpaketTags($remark);
         \OxidEsales\Eshop\Core\Registry::getSession()->setVariable('ordrem', $taglessRemark);
     }
 
@@ -94,7 +94,7 @@ class User extends User_parent
     public function moHasSelectedAnyWunschpaketService()
     {
         $remark = \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem');
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->hasAnyWunschpaketService($remark);
+        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->hasAnyWunschpaketService($remark);
     }
 
     /**

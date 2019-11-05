@@ -18,7 +18,7 @@ class OrderOverview extends OrderOverview_parent
             return $template;
         }
 
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         /** @var \OxidEsales\Eshop\Application\Model\Order $order */
         $order = $this->_aViewData['edit'];
         $remark = $order->oxorder__oxremark->value;
@@ -34,7 +34,7 @@ class OrderOverview extends OrderOverview_parent
     protected function moDHLGetPreferredDay($remark)
     {
         $language = \OxidEsales\Eshop\Core\Registry::getLang();
-        $preferredDay = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->extractWunschtag($remark);
+        $preferredDay = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->extractWunschtag($remark);
         return $preferredDay !== '' ? "{$language->translateString('MO_DHL__WUNSCHTAG')}: {$preferredDay}" : '';
     }
 
@@ -45,7 +45,7 @@ class OrderOverview extends OrderOverview_parent
     protected function moDHLGetPreferredTime($remark)
     {
         $label = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MO_DHL__WUNSCHZEIT');
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         $preferredTime = $wunschpaket->extractTime($remark);
         return $preferredTime !== '' ? "{$label}: " . Wunschpaket::formatPreferredTime($preferredTime) : '';
     }
@@ -56,7 +56,7 @@ class OrderOverview extends OrderOverview_parent
      */
     protected function moDHLGetPreferredLocation($remark)
     {
-        list($type, $location) = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class)->extractLocation($remark);
+        list($type, $location) = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->extractLocation($remark);
         if ($type !== Wunschpaket::WUNSCHORT) {
             return '';
         }
@@ -70,7 +70,7 @@ class OrderOverview extends OrderOverview_parent
      */
     protected function moDHLGetPreferredNeighbour($remark)
     {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\EmpfaengerservicesWunschpaket::class);
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         list($type, $neighbourAddress, $neighbourName) = $wunschpaket->extractLocation($remark);
         if ($type !== Wunschpaket::WUNSCHNACHBAR) {
             return '';
