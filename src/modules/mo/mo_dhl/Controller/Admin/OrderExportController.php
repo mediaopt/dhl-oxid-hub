@@ -8,8 +8,8 @@ namespace Mediaopt\DHL\Controller\Admin;
  * @copyright 2016 derksen mediaopt GmbH
  */
 
-use Mediaopt\Empfaengerservices\Export\CsvExporter;
-use Mediaopt\Empfaengerservices\Shipment\Shipment;
+use Mediaopt\DHL\Export\CsvExporter;
+use Mediaopt\DHL\Shipment\Shipment;
 
 /** @noinspection LongInheritanceChainInspection */
 

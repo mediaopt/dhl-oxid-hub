@@ -8,9 +8,9 @@ namespace Mediaopt\DHL\Adapter;
  * @copyright 2016 derksen mediaopt GmbH
  */
 
-use Mediaopt\Empfaengerservices\Api\Standortsuche;
-use Mediaopt\Empfaengerservices\Api\Wunschpaket;
-use Mediaopt\Empfaengerservices\Main;
+use Mediaopt\DHL\Api\Standortsuche;
+use Mediaopt\DHL\Api\Wunschpaket;
+use Mediaopt\DHL\Main;
 use Psr\Log\LoggerInterface;
 
 /**

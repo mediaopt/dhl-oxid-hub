@@ -8,8 +8,8 @@ namespace Mediaopt\DHL;
  * @copyright 2016 derksen mediaopt GmbH
  */
 
-use Mediaopt\Empfaengerservices\Api\Wunschpaket as ApiWunschpaket;
-use Mediaopt\Empfaengerservices\ServiceProvider\Branch;
+use Mediaopt\DHL\Api\Wunschpaket as ApiWunschpaket;
+use Mediaopt\DHL\ServiceProvider\Branch;
 
 /**
  * This class integrates the Wunschpaket class of the SDK into OXID.

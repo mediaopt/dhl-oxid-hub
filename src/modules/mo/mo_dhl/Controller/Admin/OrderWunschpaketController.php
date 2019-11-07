@@ -2,9 +2,9 @@
 
 namespace Mediaopt\DHL\Controller\Admin;
 
-use Mediaopt\Empfaengerservices\Merchant\Ekp;
-use Mediaopt\Empfaengerservices\Shipment\Participation;
-use Mediaopt\Empfaengerservices\Shipment\Process;
+use Mediaopt\DHL\Merchant\Ekp;
+use Mediaopt\DHL\Shipment\Participation;
+use Mediaopt\DHL\Shipment\Process;
 
 /**
  * @author derksen mediaopt GmbH

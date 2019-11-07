@@ -8,12 +8,12 @@ namespace Mediaopt\DHL\Controller;
  * @copyright 2016 derksen mediaopt GmbH
  */
 
-use Mediaopt\Empfaengerservices\Api\Standortsuche;
-use Mediaopt\Empfaengerservices\Exception\WebserviceException;
-use Mediaopt\Empfaengerservices\ServiceProvider\BasicServiceProvider;
-use Mediaopt\Empfaengerservices\ServiceProvider\ServiceProviderList;
-use Mediaopt\Empfaengerservices\ServiceProvider\ServiceType;
-use Mediaopt\Empfaengerservices\ServiceProvider\Timetable\TimeInfo;
+use Mediaopt\DHL\Api\Standortsuche;
+use Mediaopt\DHL\Exception\WebserviceException;
+use Mediaopt\DHL\ServiceProvider\BasicServiceProvider;
+use Mediaopt\DHL\ServiceProvider\ServiceProviderList;
+use Mediaopt\DHL\ServiceProvider\ServiceType;
+use Mediaopt\DHL\ServiceProvider\Timetable\TimeInfo;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -136,7 +136,7 @@ class FinderController extends \OxidEsales\Eshop\Application\Controller\Frontend
     /**
      * @param \Mediaopt\DHL\FinderQuery $query
      * @return ServiceProviderList
-     * @throws \Mediaopt\Empfaengerservices\Exception\WebserviceException
+     * @throws \Mediaopt\DHL\Exception\WebserviceException
      */
     protected function findServiceProviders(\Mediaopt\DHL\FinderQuery $query)
     {

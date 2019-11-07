@@ -8,9 +8,9 @@ namespace Mediaopt\DHL\Application\Controller\Admin;
  * @copyright 2016 derksen mediaopt GmbH
  */
 
-use Mediaopt\Empfaengerservices\Merchant\Ekp;
-use Mediaopt\Empfaengerservices\Shipment\Participation;
-use Mediaopt\Empfaengerservices\Shipment\Process;
+use Mediaopt\DHL\Merchant\Ekp;
+use Mediaopt\DHL\Shipment\Participation;
+use Mediaopt\DHL\Shipment\Process;
 
 /** @noinspection LongInheritanceChainInspection */
 

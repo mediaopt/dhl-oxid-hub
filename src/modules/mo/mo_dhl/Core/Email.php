@@ -2,7 +2,7 @@
 
 namespace Mediaopt\DHL\Core;
 
-use Mediaopt\Empfaengerservices\Api\Wunschpaket;
+use Mediaopt\DHL\Api\Wunschpaket;
 /**
  * @author derksen mediaopt GmbH
  */

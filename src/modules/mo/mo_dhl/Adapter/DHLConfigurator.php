@@ -15,7 +15,7 @@ use Monolog\Handler\RotatingFileHandler;
  *
  * @author derksen mediaopt GmbH
  */
-class DHLConfigurator extends \Mediaopt\Empfaengerservices\Configurator
+class DHLConfigurator extends \Mediaopt\DHL\Configurator
 {
     /**
      * @var int

@@ -8,7 +8,7 @@ namespace Mediaopt\DHL\Application\Model;
  * @copyright 2016 derksen mediaopt GmbH
  */
 
-use Mediaopt\Empfaengerservices\ServiceProvider\Branch;
+use Mediaopt\DHL\ServiceProvider\Branch;
 
 /** @noinspection LongInheritanceChainInspection */
 

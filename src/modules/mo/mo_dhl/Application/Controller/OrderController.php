@@ -8,7 +8,7 @@ namespace Mediaopt\DHL\Application\Controller;
  * @copyright 2016 derksen mediaopt GmbH
  */
 
-use Mediaopt\Empfaengerservices\Api\Wunschpaket;
+use Mediaopt\DHL\Api\Wunschpaket;
 
 /** @noinspection LongInheritanceChainInspection */
 

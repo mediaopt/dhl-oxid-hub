@@ -8,14 +8,14 @@ namespace Mediaopt\DHL\Adapter;
  * @copyright 2016 derksen mediaopt GmbH
  */
 
-use Mediaopt\Empfaengerservices\Address\Address;
-use Mediaopt\Empfaengerservices\Address\Receiver;
-use Mediaopt\Empfaengerservices\Address\Sender;
-use Mediaopt\Empfaengerservices\Merchant\Ekp;
-use Mediaopt\Empfaengerservices\Shipment\Contact;
-use Mediaopt\Empfaengerservices\Shipment\Participation;
-use Mediaopt\Empfaengerservices\Shipment\Process;
-use Mediaopt\Empfaengerservices\Shipment\Shipment;
+use Mediaopt\DHL\Address\Address;
+use Mediaopt\DHL\Address\Receiver;
+use Mediaopt\DHL\Address\Sender;
+use Mediaopt\DHL\Merchant\Ekp;
+use Mediaopt\DHL\Shipment\Contact;
+use Mediaopt\DHL\Shipment\Participation;
+use Mediaopt\DHL\Shipment\Process;
+use Mediaopt\DHL\Shipment\Shipment;
 
 /**
  * This class transforms an \oxOrder object into a Shipment object.
