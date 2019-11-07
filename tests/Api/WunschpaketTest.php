@@ -14,6 +14,10 @@ use Psr\Log\NullLogger;
 
 class WunschpaketTest extends \PHPUnit_Framework_TestCase
 {
+
+    private $beforeChristmas;
+    private $afterChristmas;
+
     /**
      * @param int $days
      * @return \Generator
@@ -168,6 +172,9 @@ class WunschpaketTest extends \PHPUnit_Framework_TestCase
         foreach ($this->getDays() as $day) {
             $preferredDays = $wunschpaket->getPreferredDays('12045', $wunschpaket->getTransferDay($day));
             foreach ($preferredDays as $preferredDay) {
+                if ($this->isAroundChristmas($preferredDay['datetime'])) {
+                    continue;
+                }
                 $this->assertEquals($preferredDay['excluded'], !$wunschpaket->isValidPreferredDay('12045', $preferredDay['datetime']));
             }
         }
@@ -209,6 +216,9 @@ class WunschpaketTest extends \PHPUnit_Framework_TestCase
         foreach ($this->getDays() as $day) {
             $preferredDays = $wunschpaket->getPreferredDays('12045', $wunschpaket->getTransferDay($day), false);
             foreach ($preferredDays as $preferredDay) {
+                if ($this->isAroundChristmas($preferredDay['datetime'])) {
+                    continue;
+                }
                 $this->assertTrue($wunschpaket->isValidPreferredDay('12045', $preferredDay['datetime']));
             }
         }
@@ -420,4 +430,17 @@ class WunschpaketTest extends \PHPUnit_Framework_TestCase
         return (new \TestConfigurator())->buildWunschpaket();
     }
 
+    protected function isAroundChristmas($date)
+    {
+        if (!$this->beforeChristmas) {
+            $this->beforeChristmas = new \DateTime('23.12.' . date('Y'));
+            if ($this->beforeChristmas->getTimestamp() < time()) {
+                $this->beforeChristmas->modify('+1 year');
+            }
+            $this->afterChristmas = clone $this->beforeChristmas;
+            $this->afterChristmas->modify('+14 days');
+        }
+        $this->buildWunschpaket()->getLogger()->debug($this->beforeChristmas->format('Y.m.d'). ' - '. $this->afterChristmas->format('Y.m.d'));
+        return $this->beforeChristmas <= $date && $date <= $this->afterChristmas;
+    }
 }
