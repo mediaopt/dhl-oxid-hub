@@ -13,6 +13,7 @@
         "guzzlehttp/guzzle": "^6.0",
         "roave/security-advisories": "dev-master",
         "ext-json": "*",
+        "ext-calendar": "*",
         "ext-iconv": "*"
     },
     "require-dev": {
