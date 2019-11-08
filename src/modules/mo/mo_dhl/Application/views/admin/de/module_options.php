@@ -113,9 +113,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__export_country_DEU'   => 'Deutschland',
     'SHOP_MODULE_mo_dhl__export_country_AUT'   => 'Österreich',
 
-    'SHOP_MODULE_GROUP_mo_dhl__processAndParticipation' => 'Verfahrens- und Teilnahmenummern',
-    'SHOP_MODULE_mo_dhl__processAndParticipation'       => '',
-
     'SHOP_MODULE_GROUP_mo_dhl__logs'             => 'Logging',
     'SHOP_MODULE_mo_dhl__logLevel'               => 'Loglevel',
     'SHOP_MODULE_mo_dhl__logLevel_ERROR'         => 'ERROR',
@@ -138,11 +135,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retention_YEAR'         => 'ein Jahr',
     'SHOP_MODULE_mo_dhl__retention_UNLIMITED'    => 'unbegrenzt',
     'SHOP_MODULE_mo_dhl__logfiles'               => 'Logdateien',
-
-    'SHOP_MODULE_GROUP_mo_dhl__exclusionOptions'     => 'Ausschluss von Versand- und Zahlarten',
-    'SHOP_MODULE_mo_dhl__excludedPaymentOptions'     => 'Zahlarten',
-    'SHOP_MODULE_mo_dhl__excludedDeliverySetOptions' => 'Versandarten',
-    'SHOP_MODULE_mo_dhl__excludedDeliveryOptions'    => 'Versandkostenregeln',
 
     'SHOP_MODULE_GROUP_mo_dhl__privacy'       => 'Datenschutz',
     'SHOP_MODULE_mo_dhl__privacy_policy'      => 'Datenschutzerklärung',

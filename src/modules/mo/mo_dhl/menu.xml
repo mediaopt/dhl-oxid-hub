@@ -7,5 +7,16 @@
             </SUBMENU>
             <SUBMENU id="moOrderExport" cl="MoDHLOrderExport"/>
         </MAINMENU>
+        <MAINMENU id="mxshopsett">
+            <SUBMENU id="mxshippingset" cl="deliveryset" list="deliveryset_list">
+                <TAB id="MO_DHL__DELIVERYSET_DHL" cl="MoDHLDeliverySetDHL"/>
+            </SUBMENU>
+            <SUBMENU id="mxshipping" cl="delivery" list="delivery_list">
+                <TAB id="MO_DHL__DELIVERY_DHL" cl="MoDHLDeliveryDHL"/>
+            </SUBMENU>
+            <SUBMENU id="mxpaymeth" cl="admin_payment" list="payment_list">
+                <TAB id="MO_DHL__PAYMENTS_DHL" cl="MoDHLPaymentsDHL"/>
+            </SUBMENU>
+        </MAINMENU>
     </OXMENU>
 </OX>

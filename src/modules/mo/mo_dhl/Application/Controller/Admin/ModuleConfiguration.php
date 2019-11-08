@@ -65,12 +65,12 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         parent::saveConfVars();
 
         if ($this->getEditObjectId() === 'mo_dhl') {
-            $config = \OxidEsales\Eshop\Core\Registry::getConfig();
-            $this->moSaveExcludedPaymentOptions((array) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('payment'));
-            $this->moSaveExcludedDeliveryOptions((array) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('delivery'));
-            $this->moSaveExcludedDeliverySetOptions((array) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('deliveryset'));
-            $this->moSaveProcessIdentifiers((array) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('processIdentifier'));
-            $this->moSaveParticipationNumbers((array) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('participationNumber'));
+            $request = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class);
+            $this->moSaveExcludedPaymentOptions((array)$request->getRequestParameter('payment'));
+            $this->moSaveExcludedDeliveryOptions((array)$request->getRequestParameter('delivery'));
+            $this->moSaveExcludedDeliverySetOptions((array)$request->getRequestParameter('deliveryset'));
+            $this->moSaveProcessIdentifiers((array)$request->getRequestParameter('processIdentifier'));
+            $this->moSaveParticipationNumbers((array)$request->getRequestParameter('participationNumber'));
             $this->moReviewEkp();
         }
     }
@@ -143,39 +143,6 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             $values = implode(', ', array_map([$db, 'quote'], $this->moSanitizeOptions($excludedDeliverySetOptions)));
             $db->execute("UPDATE {$deliverySet} SET mo_dhl_excluded = 1 WHERE OXID IN ({$values})");
         }
-    }
-
-    /**
-     * @return \OxidEsales\Eshop\Application\Model\Payment[]
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
-     */
-    public function moGetPaymentOptions()
-    {
-        $paymentList = \oxNew(\OxidEsales\Eshop\Application\Model\PaymentList::class);
-        $paymentList->getList();
-        return $paymentList->getArray();
-    }
-
-    /**
-     * @return \OxidEsales\Eshop\Application\Model\DeliverySet[]
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
-     */
-    public function moGetDeliveryOptions()
-    {
-        $deliverySetList = \oxNew(\OxidEsales\Eshop\Application\Model\DeliveryList::class);
-        $deliverySetList->getList();
-        return $deliverySetList->getArray();
-    }
-
-    /**
-     * @return \OxidEsales\Eshop\Application\Model\DeliverySet[]
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
-     */
-    public function moGetDeliverySetOptions()
-    {
-        $deliverySetList = \oxNew(\OxidEsales\Eshop\Application\Model\DeliverySetList::class);
-        $deliverySetList->getList();
-        return $deliverySetList->getArray();
     }
 
     /**
