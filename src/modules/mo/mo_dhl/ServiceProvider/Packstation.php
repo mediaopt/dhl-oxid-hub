@@ -6,7 +6,7 @@ namespace Mediaopt\DHL\ServiceProvider;
 /**
  * Represents a Packstation.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  * @package Mediaopt\DHL\ServiceProvider
  */
 class Packstation extends BasicServiceProvider

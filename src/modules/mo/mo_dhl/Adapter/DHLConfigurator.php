@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Adapter;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 use Monolog\Handler\RotatingFileHandler;
@@ -13,7 +13,7 @@ use Monolog\Handler\RotatingFileHandler;
 /**
  * This class retrieves the configuration from the OXID shop.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class DHLConfigurator extends \Mediaopt\DHL\Configurator
 {

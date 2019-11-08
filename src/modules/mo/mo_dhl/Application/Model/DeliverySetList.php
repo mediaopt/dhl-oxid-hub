@@ -3,16 +3,16 @@
 namespace Mediaopt\DHL\Application\Model;
 
 /**
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class DeliverySetList extends DeliverySetList_parent
 {
     /**
      * This method is used to avoid the case that a preselected shipping set is unavailable.
-     * 
+     *
      * This case occurs if the customer has selected a Wunschpaket service such that the delivery must be carried out
      * by DHL. Consequently, some shipping sets are excluded in this cases.
-     * 
+     *
      * @param string $shippingSetId
      * @param \OxidEsales\Eshop\Application\Model\User|null $user
      * @param \OxidEsales\Eshop\Application\Model\Basket $basket

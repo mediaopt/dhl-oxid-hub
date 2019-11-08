@@ -4,7 +4,7 @@ namespace Mediaopt\DHL\Core;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2017 derksen mediaopt GmbH
+ * @copyright 2017 Mediaopt GmbH
  */
 
 /** @noinspection LongInheritanceChainInspection */
@@ -12,7 +12,7 @@ namespace Mediaopt\DHL\Core;
 /**
  * Adds validation for a Postnummer.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class InputValidator extends InputValidator_parent
 {

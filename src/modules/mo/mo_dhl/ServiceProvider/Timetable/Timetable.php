@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\ServiceProvider\Timetable;
 /**
  * This class contains information like opening hours, closing time about a service provider.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  * @package Mediaopt\DHL\ServiceProvider\Timetable
  */
 class Timetable

@@ -3,7 +3,7 @@
 namespace Mediaopt\DHL\Controller;
 
 /**
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class YellowBoxController extends \OxidEsales\Eshop\Application\Controller\FrontendController
 {

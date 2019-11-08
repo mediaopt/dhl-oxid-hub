@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Address;
 /**
  * This class represents an address.
  *
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @package Mediaopt\DHL
  */
 class Address

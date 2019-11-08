@@ -15,7 +15,7 @@ use Mediaopt\DHL\Shipment\Shipment;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 class CsvExporterTest extends PHPUnit_Framework_TestCase
 {
@@ -35,7 +35,7 @@ class CsvExporterTest extends PHPUnit_Framework_TestCase
     const EXPECTED_ROW = [
         'Sendungsreferenz'                            => 'OXID-42',
         'Sendungsdatum'                               => '15.08.2016',
-        'Absender Name 1'                             => 'derksen mediaopt GmbH',
+        'Absender Name 1'                             => 'Mediaopt GmbH',
         'Absender Name 2'                             => '1234567890',
         'Absender Name 3'                             => 'Armin Admin',
         'Absender Straße'                             => 'Elbestr.',
@@ -186,7 +186,7 @@ class CsvExporterTest extends PHPUnit_Framework_TestCase
     protected function buildSampleSender()
     {
         $address = new Address('Elbestr.', '28', '12045', 'Berlin-Neukölln');
-        return new Sender($address, 'derksen mediaopt GmbH', '1234567890', 'Armin Admin');
+        return new Sender($address, 'Mediaopt GmbH', '1234567890', 'Armin Admin');
     }
 
     protected function buildSampleOrder($locationType)

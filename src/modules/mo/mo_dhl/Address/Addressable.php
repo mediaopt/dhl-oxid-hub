@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Address;
 /**
  * This interface abstracts from addressable entities.
  *
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @version ${VERSION}, ${REVISION}
  * @package Mediaopt\DHL
  */

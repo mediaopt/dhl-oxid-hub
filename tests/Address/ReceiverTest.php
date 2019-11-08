@@ -2,7 +2,7 @@
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 use Mediaopt\DHL\Address\Address;
@@ -13,7 +13,7 @@ use Mediaopt\DHL\Shipment\Contact;
 /**
  *
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class ReceiverTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,7 +27,7 @@ class ReceiverTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructorInjection()
     {
-        $contact = new Contact('Arno Nühm', 'arno@nue.hm', '007', 'derksen mediopt GmbH');
+        $contact = new Contact('Arno Nühm', 'arno@nue.hm', '007', 'Mediaopt GmbH');
         $postnummer = '123456789';
         $address = $this->buildSampleAddress();
         $locationType = 'Wunschnachbar';

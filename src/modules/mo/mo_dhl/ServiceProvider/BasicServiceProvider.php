@@ -9,7 +9,7 @@ use Mediaopt\DHL\ServiceProvider\Timetable\Timetable;
 /**
  * Represents the functionality shared by all service providers.
  *
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @package Mediaopt\DHL\ServiceProvider
  */
 class BasicServiceProvider

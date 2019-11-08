@@ -2,7 +2,7 @@
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2017 derksen mediaopt GmbH
+ * @copyright 2017 Mediaopt GmbH
  */
 
 namespace Mediaopt\DHL\ServiceProvider;
@@ -10,7 +10,7 @@ namespace Mediaopt\DHL\ServiceProvider;
 /**
  * Class encapsulating coordinates.
  *
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @version ${VERSION}, ${REVISION}
  * @package Mediaopt\DHL
  */

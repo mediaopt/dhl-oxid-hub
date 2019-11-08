@@ -3,7 +3,7 @@
 namespace Mediaopt\DHL\Merchant;
 
 /**
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @package Mediaopt\DHL\Merchant
  */
 class Ekp

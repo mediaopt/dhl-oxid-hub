@@ -5,7 +5,7 @@ namespace sdk\ServiceProvider;
 use Mediaopt\DHL\ServiceProvider\Branch;
 
 /**
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  */
 class BranchTest extends \PHPUnit_Framework_TestCase
 {

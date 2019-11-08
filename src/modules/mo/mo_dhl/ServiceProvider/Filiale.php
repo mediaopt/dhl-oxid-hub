@@ -7,7 +7,7 @@ use Mediaopt\DHL\Address\Address;
 /**
  * Represents a Filiale.
  *
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @package Mediaopt\DHL\ServiceProvider
  */
 class Filiale extends BasicServiceProvider

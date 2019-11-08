@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\ServiceProvider\Timetable;
 /**
  * This class represents information about a period of time (e.g., 9:00-17:00).
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  * @package Mediaopt\DHL\ServiceProvider\Timetable
  */
 class PeriodOfTime extends TimeInfo

@@ -4,7 +4,7 @@ namespace Mediaopt\DHL\Core;
 
 use Mediaopt\DHL\Api\Wunschpaket;
 /**
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class Email extends Email_parent
 {

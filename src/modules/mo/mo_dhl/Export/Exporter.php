@@ -2,7 +2,7 @@
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 namespace Mediaopt\DHL\Export;
@@ -10,7 +10,7 @@ namespace Mediaopt\DHL\Export;
 /**
  * Each class that implements this interface is able to export.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  * @version ${VERSION}, ${REVISION}
  * @package ${NAMESPACE}
  */

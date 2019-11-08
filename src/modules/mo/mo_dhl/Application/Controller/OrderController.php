@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Application\Controller;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 use Mediaopt\DHL\Api\Wunschpaket;
@@ -15,7 +15,7 @@ use Mediaopt\DHL\Api\Wunschpaket;
 /**
  * This class extends the order class with Wunschpaket features.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class OrderController extends OrderController_parent
 {

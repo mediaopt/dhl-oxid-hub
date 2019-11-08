@@ -4,7 +4,7 @@ namespace Mediaopt\DHL\Application\Model;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 /** @noinspection LongInheritanceChainInspection */
@@ -12,7 +12,7 @@ namespace Mediaopt\DHL\Application\Model;
 /**
  * Adds functionality to integrate surcharges in case a Wunschtag or Wunschzeit is selected.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class Basket extends Basket_parent
 {

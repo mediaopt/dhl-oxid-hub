@@ -3,7 +3,7 @@
 namespace Mediaopt\DHL\Application\Model;
 
 /**
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class PaymentList extends PaymentList_parent
 {

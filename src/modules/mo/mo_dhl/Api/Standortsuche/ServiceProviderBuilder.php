@@ -17,7 +17,7 @@ use Mediaopt\DHL\ServiceProvider\Timetable\Timetable;
 /**
  * This class provides functionality to build a service provider.
  *
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @package Mediaopt\DHL\Standortsuche
  */
 class ServiceProviderBuilder

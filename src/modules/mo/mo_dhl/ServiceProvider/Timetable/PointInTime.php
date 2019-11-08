@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\ServiceProvider\Timetable;
 /**
  * This class represents information about a point in time (e.g. 16:05).
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  * @package Mediaopt\DHL\ServiceProvider\Timetable
  */
 class PointInTime extends TimeInfo

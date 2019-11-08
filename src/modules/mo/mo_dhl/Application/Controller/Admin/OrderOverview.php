@@ -4,7 +4,7 @@ namespace Mediaopt\DHL\Application\Controller\Admin;
 
 use Mediaopt\DHL\Api\Wunschpaket;
 /**
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class OrderOverview extends OrderOverview_parent
 {

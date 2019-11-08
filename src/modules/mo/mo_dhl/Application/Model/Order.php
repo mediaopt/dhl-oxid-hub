@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Application\Model;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 use Mediaopt\DHL\ServiceProvider\Branch;
@@ -18,7 +18,7 @@ use Mediaopt\DHL\ServiceProvider\Branch;
  * - ... exclude payment options in case the destination is a Packstation or Postfiliale.
  * - ... add surcharges in case Wunschtag or Wunschzeit is selected.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class Order extends Order_parent
 {

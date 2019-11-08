@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Adapter;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 use Mediaopt\DHL\Api\Standortsuche;
@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
 /**
  * This class adapts the OXID shop to the SDK.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class DHLAdapter
 {

@@ -8,7 +8,7 @@ use Mediaopt\DHL\Exception\WebserviceException;
 use Psr\Log\LoggerInterface;
 
 /**
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @package Mediaopt\DHL
  */
 abstract class Base

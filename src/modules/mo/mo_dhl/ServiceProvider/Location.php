@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\ServiceProvider;
 /**
  * This class represents a location and its distance to a zip/city combination.
  *
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @package Mediaopt\DHL
  */
 class Location

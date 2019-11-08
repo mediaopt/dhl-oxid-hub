@@ -4,7 +4,7 @@ namespace Mediaopt\DHL\Core;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 /** @noinspection LongInheritanceChainInspection */
@@ -12,7 +12,7 @@ namespace Mediaopt\DHL\Core;
 /**
  * Grants access to some methods of the adapter and adds functionality to get the country id of Germany.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class ViewConfig extends ViewConfig_parent
 {

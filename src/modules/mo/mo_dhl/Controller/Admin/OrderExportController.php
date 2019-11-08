@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Controller\Admin;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 use Mediaopt\DHL\Export\CsvExporter;
@@ -16,7 +16,7 @@ use Mediaopt\DHL\Shipment\Shipment;
 /**
  * This controller provides functionality to export orders into a CSV that can be imported in the Geschäftskundenportal.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class OrderExportController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
 {

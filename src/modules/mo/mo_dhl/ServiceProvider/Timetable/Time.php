@@ -6,7 +6,7 @@ namespace Mediaopt\DHL\ServiceProvider\Timetable;
  * This class is essentially a point in time that is used to express information about that point in time or a period
  * of time.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  * @package Mediaopt\DHL\ServiceProvider\Timetable
  */
 class Time

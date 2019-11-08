@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Exception;
 /**
  * An exception being thrown when dealing with service providers.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  * @package Mediaopt\DHL\Exception
  */
 class ServiceProviderException extends \RuntimeException

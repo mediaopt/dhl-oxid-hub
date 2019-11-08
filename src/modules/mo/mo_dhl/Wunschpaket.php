@@ -5,7 +5,7 @@ namespace Mediaopt\DHL;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 use Mediaopt\DHL\Api\Wunschpaket as ApiWunschpaket;
@@ -14,7 +14,7 @@ use Mediaopt\DHL\ServiceProvider\Branch;
 /**
  * This class integrates the Wunschpaket class of the SDK into OXID.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class Wunschpaket
 {

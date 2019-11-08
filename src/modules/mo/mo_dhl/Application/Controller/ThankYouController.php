@@ -6,7 +6,7 @@ use Mediaopt\DHL\Application\Model\Order;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 
@@ -15,7 +15,7 @@ use Mediaopt\DHL\Application\Model\Order;
 /**
  * This class extends the thankyou controller with Wunschpaket functionality.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class ThankYouController extends ThankYouController_parent
 {

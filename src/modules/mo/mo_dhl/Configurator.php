@@ -14,7 +14,7 @@ use Psr\Log\LoggerInterface;
 /**
  * This class is used to configure the SDK.
  *
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @package Mediaopt\DHL
  */
 abstract class Configurator

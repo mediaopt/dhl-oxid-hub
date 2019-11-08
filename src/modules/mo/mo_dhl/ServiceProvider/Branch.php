@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\ServiceProvider;
 /**
  * This class is used to distinguish branches.
  *
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @version ${VERSION}, ${REVISION}
  * @package Mediaopt\DHL\ServiceProvider
  */

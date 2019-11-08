@@ -7,7 +7,7 @@ use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 
 /**
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class OrderWunschpaketController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
 {

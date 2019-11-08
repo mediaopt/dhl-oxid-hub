@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Controller;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 use Mediaopt\DHL\Api\Standortsuche;
@@ -20,7 +20,7 @@ use Mediaopt\DHL\ServiceProvider\Timetable\TimeInfo;
 /**
  * This controller is used to call the finder asynchronously and returning the result as JSON object.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class FinderController extends \OxidEsales\Eshop\Application\Controller\FrontendController
 {

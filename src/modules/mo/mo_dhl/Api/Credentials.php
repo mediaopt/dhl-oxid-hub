@@ -2,7 +2,7 @@
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2017 derksen mediaopt GmbH
+ * @copyright 2017 Mediaopt GmbH
  */
 
 namespace Mediaopt\DHL\Api;
@@ -10,7 +10,7 @@ namespace Mediaopt\DHL\Api;
 /**
  * Encapsulates credentials for REST APIs of DHL.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  * @version ${VERSION}, ${REVISION}
  * @package Mediaopt\DHL\Standortsuche
  */

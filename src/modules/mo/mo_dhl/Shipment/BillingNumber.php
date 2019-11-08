@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Shipment;
 use Mediaopt\DHL\Merchant\Ekp;
 
 /**
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @package Mediaopt\DHL\Export\Order
  */
 class BillingNumber

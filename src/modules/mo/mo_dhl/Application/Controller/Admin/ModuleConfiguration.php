@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Application\Controller\Admin;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 use Mediaopt\DHL\Merchant\Ekp;
@@ -17,7 +17,7 @@ use Mediaopt\DHL\Shipment\Process;
 /**
  * Extends the module configuration to allow the user to download logs.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class ModuleConfiguration extends ModuleConfiguration_parent
 {

@@ -2,13 +2,13 @@
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 use Mediaopt\DHL\Shipment\Contact;
 
 /**
- * @author  derksen mediaopt GmbH
+ * @author  Mediaopt GmbH
  */
 class ContactTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,7 +17,7 @@ class ContactTest extends \PHPUnit_Framework_TestCase
         $name = 'Arno Nühm';
         $email = 'arno@nue.hm';
         $phone = '007';
-        $company = 'derksen mediaopt GmbH';
+        $company = 'Mediaopt GmbH';
         $contact = new Contact($name, $email, $phone, $company);
         $this->assertEquals($name, $contact->getName());
         $this->assertEquals($email, $contact->getEmail());

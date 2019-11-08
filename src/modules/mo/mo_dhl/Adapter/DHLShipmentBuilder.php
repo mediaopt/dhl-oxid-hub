@@ -5,7 +5,7 @@ namespace Mediaopt\DHL\Adapter;
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
- * @copyright 2016 derksen mediaopt GmbH
+ * @copyright 2016 Mediaopt GmbH
  */
 
 use Mediaopt\DHL\Address\Address;
@@ -20,7 +20,7 @@ use Mediaopt\DHL\Shipment\Shipment;
 /**
  * This class transforms an \oxOrder object into a Shipment object.
  *
- * @author derksen mediaopt GmbH
+ * @author Mediaopt GmbH
  */
 class DHLShipmentBuilder
 {
