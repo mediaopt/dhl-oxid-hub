@@ -137,11 +137,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retention_UNLIMITED'    => 'unlimited',
     'SHOP_MODULE_mo_dhl__logfiles'               => 'Log files',
 
-    'SHOP_MODULE_GROUP_mo_dhl__exclusionOptions'     => 'Exclusion of payment and delivery options',
-    'SHOP_MODULE_mo_dhl__excludedPaymentOptions'     => 'Payment Methods',
-    'SHOP_MODULE_mo_dhl__excludedDeliverySetOptions' => 'Shipping Methods',
-    'SHOP_MODULE_mo_dhl__excludedDeliveryOptions'    => 'Shipping Cost Rules',
-
     'SHOP_MODULE_GROUP_mo_dhl__privacy'       => 'Privacy',
     'SHOP_MODULE_mo_dhl__privacy_policy'      => 'Privacy Policy',
     'HELP_SHOP_MODULE_mo_dhl__privacy_policy' => 'We expect an idenifier of a CMS page',

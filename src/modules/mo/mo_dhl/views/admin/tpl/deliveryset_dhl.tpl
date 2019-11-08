@@ -10,14 +10,14 @@
     [{$oViewConf->getHiddenSid()}]
     <input type="hidden" name="oxid" value="[{$oxid}]">
     <input type="hidden" name="oxidCopy" value="[{$oxid}]">
-    <input type="hidden" name="cl" value="MoDHLDeliverySetDHL">
+    <input type="hidden" name="cl" value="[{$oView->getClassName()}]">
     <input type="hidden" name="language" value="[{$actlang}]">
 </form>
 
 
 <form name="myedit" id="myedit" action="[{$oViewConf->getSelfLink()}]" method="post">
 [{$oViewConf->getHiddenSid()}]
-<input type="hidden" name="cl" value="MoDHLDeliverySetDHL">
+    <input type="hidden" name="cl" value="[{$oView->getClassName()}]">
 <input type="hidden" name="fnc" value="">
 <input type="hidden" name="oxid" value="[{$oxid}]">
 <input type="hidden" name="editval[oxdeliveryset__oxid]" value="[{$oxid}]">
@@ -35,8 +35,9 @@
                     [{oxmultilang ident="MO_DHL__EXCLUDED"}]
                 </td>
                 <td class="edittext">
+                    <input type="hidden" name="editval[oxdeliveryset__mo_dhl_excluded]" value="0">
                     <input class="edittext" type="checkbox" name="editval[oxdeliveryset__mo_dhl_excluded]" value='1' [{if $edit->oxdeliveryset__mo_dhl_excluded->value == 1}]checked[{/if}] [{$readonly}]>
-                    [{oxinputhelp ident="HELP_GENERAL_ACTIVE"}]
+                    [{oxinputhelp ident="HELP_MO_DHL__EXCLUDED"}]
                 </td>
             </tr>
             <tr>
