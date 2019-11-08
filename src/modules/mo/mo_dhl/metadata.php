@@ -1,0 +1,378 @@
+<?php
+
+namespace Mediaopt\DHL;
+
+/**
+ * Metadata version
+ */
+$sMetadataVersion = '2.1';
+/**
+ * Module information
+ */
+$aModule = [
+    'id'          => 'mo_dhl',
+    'title'       => 'DHL Services',
+    'description' => [
+        'de' => '<p>Erweitern Sie Ihren Shop um DHL Services.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-hmj/wiki/Dokumentation" target="_blank">Handbuch</a></p>',
+        'en' => '<p>Enable features providing DHL services to your OXID shop.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-hmj/wiki/Dokumentation" target="_blank">Handbook</a></p>',
+    ],
+    'thumbnail'   => 'logo.png',
+    'version'     => '1.0.0',
+    'author'      => '<a href="http://www.mediaopt.de" target="_blank">mediaopt.</a>',
+    'url'         => 'http://www.mediaopt.de',
+    'email'       => 'shopsoftware@deutschepost.de',
+    'extend'      => [
+        \OxidEsales\Eshop\Core\ViewConfig::class                                  => Core\ViewConfig::class,
+        \OxidEsales\Eshop\Core\InputValidator::class                              => Core\InputValidator::class,
+        \OxidEsales\Eshop\Core\Email::class                                       => Core\Email::class,
+        \OxidEsales\Eshop\Application\Controller\Admin\ModuleConfiguration::class => Application\Controller\Admin\ModuleConfiguration::class,
+        \OxidEsales\Eshop\Application\Controller\Admin\OrderOverview::class       => Application\Controller\Admin\OrderOverview::class,
+        \OxidEsales\Eshop\Application\Controller\UserController::class            => Application\Controller\UserController::class,
+        \OxidEsales\Eshop\Application\Controller\ThankYouController::class        => Application\Controller\ThankYouController::class,
+        \OxidEsales\Eshop\Application\Controller\OrderController::class           => Application\Controller\OrderController::class,
+        \OxidEsales\Eshop\Application\Component\UserComponent::class              => Application\Component\UserComponent::class,
+        \OxidEsales\Eshop\Application\Model\Basket::class                         => Application\Model\Basket::class,
+        \OxidEsales\Eshop\Application\Model\Order::class                          => Application\Model\Order::class,
+        \OxidEsales\Eshop\Application\Model\User::class                           => Application\Model\User::class,
+        \OxidEsales\Eshop\Application\Model\Delivery::class                       => Application\Model\Delivery::class,
+        \OxidEsales\Eshop\Application\Model\PaymentList::class                    => Application\Model\PaymentList::class,
+        \OxidEsales\Eshop\Application\Model\DeliveryList::class                   => Application\Model\DeliveryList::class,
+        \OxidEsales\Eshop\Application\Model\DeliverySetList::class                => Application\Model\DeliverySetList::class,
+    ],
+    'controllers' => [
+        'MoDHLFinder'           => Controller\FinderController::class,
+        'MoDHLOrderExport'      => Controller\Admin\OrderExportController::class,
+        'MoDHLOrderWunschpaket' => Controller\Admin\OrderWunschpaketController::class,
+        'MoDHLYellowBox'        => Controller\YellowBoxController::class,
+    ],
+    'events'      => [
+        'onActivate'   => Install::class . '::onActivate',
+        'onDeactivate' => Install::class . '::onDeactivate',
+    ],
+    'blocks'      => [
+        [
+            'template' => 'order_overview.tpl',
+            'block'    => 'admin_order_overview_deliveryaddress',
+            'file'     => 'views/admin/blocks/admin_order_overview_deliveryaddress.tpl',
+        ],
+        [
+            'template' => 'form/user.tpl',
+            'block'    => 'user',
+            'file'     => 'views/blocks/user.tpl',
+        ],
+        [
+            'template' => 'page/checkout/order.tpl',
+            'block'    => 'checkout_order_address',
+            'file'     => 'views/blocks/checkout_order_address.tpl',
+        ],
+        [
+            'template' => 'form/user_checkout_change.tpl',
+            'block'    => 'user_checkout_change',
+            'file'     => 'views/blocks/user_checkout_change.tpl',
+        ],
+        [
+            'template' => 'form/user_checkout_noregistration.tpl',
+            'block'    => 'user_checkout_noregistration',
+            'file'     => 'views/blocks/user_checkout_noregistration.tpl',
+        ],
+        [
+            'template' => 'form/user_checkout_registration.tpl',
+            'block'    => 'user_checkout_registration',
+            'file'     => 'views/blocks/user_checkout_registration.tpl',
+        ],
+        [
+            'template' => 'module_config.tpl',
+            'block'    => 'admin_module_config_var_types',
+            'file'     => 'views/admin/blocks/module_config_admin_module_config_var_types.tpl',
+        ],
+        [
+            'template' => 'form/fieldset/user_shipping.tpl',
+            'block'    => 'form_user_shipping_address_select',
+            'file'     => 'views/blocks/form_user_shipping_address_select.tpl',
+        ],
+        [
+            'template' => 'page/checkout/inc/basketcontents.tpl',
+            'block'    => 'checkout_basketcontents_delcosts',
+            'file'     => 'views/blocks/checkout_basketcontents_delcosts.tpl',
+        ],
+        [
+            'template' => 'form/fieldset/user_shipping.tpl',
+            'block'    => 'form_user_shipping_country',
+            'file'     => 'views/blocks/form_user_shipping_country.tpl',
+        ],
+        [
+            'template' => 'layout/base.tpl',
+            'block'    => 'base_js',
+            'file'     => 'views/blocks/base_js.tpl',
+        ],
+        [
+            'template' => 'layout/base.tpl',
+            'block'    => 'head_meta_robots',
+            'file'     => 'views/blocks/head_meta_robots.tpl',
+        ],
+        [
+            'template' => 'email/plain/order_owner.tpl',
+            'block'    => 'email_plain_order_ownerdelcosts',
+            'file'     => 'views/blocks/email_plain_order_ownerdelcosts.tpl',
+        ],
+        [
+            'template' => 'email/plain/order_cust.tpl',
+            'block'    => 'email_plain_order_cust_delcosts',
+            'file'     => 'views/blocks/email_plain_order_cust_delcosts.tpl',
+        ],
+        [
+            'template' => 'email/html/order_owner.tpl',
+            'block'    => 'email_html_order_owner_delcosts',
+            'file'     => 'views/blocks/email_html_order_owner_delcosts.tpl',
+        ],
+        [
+            'template' => 'email/html/order_cust.tpl',
+            'block'    => 'email_html_order_cust_delcosts',
+            'file'     => 'views/blocks/email_html_order_cust_delcosts.tpl',
+        ],
+    ],
+    'templates'   => [
+        'mo_dhl__main.tpl'              => 'mo/mo_dhl/views/tpl/main.tpl',
+        'mo_dhl__finder.tpl'            => 'mo/mo_dhl/views/tpl/finder.tpl',
+        'mo_dhl__finder_azure.tpl'      => 'mo/mo_dhl/views/tpl/azure/finder.tpl',
+        'mo_dhl__finder_flow.tpl'       => 'mo/mo_dhl/views/tpl/flow/finder.tpl',
+        'mo_dhl__finder_wave.tpl'       => 'mo/mo_dhl/views/tpl/wave/finder.tpl',
+        'mo_dhl__order_export.tpl'      => 'mo/mo_dhl/views/admin/tpl/order_export.tpl',
+        'mo_dhl__wunschpaket.tpl'       => 'mo/mo_dhl/views/tpl/wunschpaket.tpl',
+        'mo_dhl__wunschpaket_azure.tpl' => 'mo/mo_dhl/views/tpl/azure/wunschpaket.tpl',
+        'mo_dhl__wunschpaket_flow.tpl'  => 'mo/mo_dhl/views/tpl/flow/wunschpaket.tpl',
+        'mo_dhl__wunschpaket_wave.tpl'  => 'mo/mo_dhl/views/tpl/wave/wunschpaket.tpl',
+        'mo_dhl__order_wunschpaket.tpl'     => 'mo/mo_dhl/views/admin/tpl/order_wunschpaket.tpl',
+        'mo_dhl__surcharge.tpl'         => 'mo/mo_dhl/views/tpl/surcharge.tpl',
+        'mo_dhl__email_order_html.tpl'       => 'mo/mo_dhl/views/tpl/email/order_html.tpl',
+        'mo_dhl__email_order_plain.tpl'      => 'mo/mo_dhl/views/tpl/email/order_plain.tpl',
+    ],
+    'settings'    => [
+        [
+            'group' => 'mo_dhl__merchant',
+            'name'  => 'mo_dhl__merchant_ekp',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group'       => 'mo_dhl__standortsuche',
+            'name'        => 'mo_dhl__standortsuche_maximumHits',
+            'type'        => 'select',
+            'value'       => '20',
+            'constraints' => '1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|40|41|42|43|44|45|46|47|48|49|50',
+        ],
+        [
+            'group' => 'mo_dhl__standortsuche',
+            'name'  => 'mo_dhl__standortsuche_googleMapsApiKey',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__standortsuche',
+            'name'  => 'mo_dhl__standortsuche_packstation',
+            'type'  => 'bool',
+        ],
+        [
+            'group' => 'mo_dhl__standortsuche',
+            'name'  => 'mo_dhl__standortsuche_postfiliale',
+            'type'  => 'bool',
+        ],
+        [
+            'group' => 'mo_dhl__standortsuche',
+            'name'  => 'mo_dhl__standortsuche_paketshop',
+            'type'  => 'bool',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag',
+            'name'  => 'mo_dhl__wunschtag_active',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag',
+            'name'  => 'mo_dhl__wunschtag_surcharge',
+            'type'  => 'str',
+            'value' => '1.20',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag',
+            'name'  => 'mo_dhl__wunschtag_cutoff',
+            'type'  => 'str',
+            'value' => '12:00',
+        ],
+        [
+            'group'       => 'mo_dhl__wunschtag',
+            'name'        => 'mo_dhl__wunschtag_preparation',
+            'type'        => 'select',
+            'value'       => '0',
+            'constraints' => '0|1|2|3',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag',
+            'name'  => 'mo_dhl__handing_over_help',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag',
+            'name'  => 'mo_dhl__handing_over_mon',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag',
+            'name'  => 'mo_dhl__handing_over_tue',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag',
+            'name'  => 'mo_dhl__handing_over_wed',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag',
+            'name'  => 'mo_dhl__handing_over_thu',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag',
+            'name'  => 'mo_dhl__handing_over_fri',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag',
+            'name'  => 'mo_dhl__handing_over_sat',
+            'type'  => 'bool',
+            'value' => 'true',
+        ],
+        [
+            'group' => 'mo_dhl__wunschzeit',
+            'name'  => 'mo_dhl__wunschzeit_active',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__wunschzeit',
+            'name'  => 'mo_dhl__wunschzeit_surcharge',
+            'type'  => 'str',
+            'value' => '4.80',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag_wunschzeit',
+            'name'  => 'mo_dhl__wunschtag_wunschzeit_surcharge',
+            'type'  => 'str',
+            'value' => '4.80',
+        ],
+        [
+            'group' => 'mo_dhl__wunschort',
+            'name'  => 'mo_dhl__wunschort_active',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__wunschnachbar',
+            'name'  => 'mo_dhl__wunschnachbar_active',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__export',
+            'name'  => 'mo_dhl__export_line1',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__export',
+            'name'  => 'mo_dhl__export_line2',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__export',
+            'name'  => 'mo_dhl__export_line3',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__export',
+            'name'  => 'mo_dhl__export_street',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__export',
+            'name'  => 'mo_dhl__export_street_number',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__export',
+            'name'  => 'mo_dhl__export_zip',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__export',
+            'name'  => 'mo_dhl__export_city',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group'       => 'mo_dhl__export',
+            'name'        => 'mo_dhl__export_country',
+            'type'        => 'select',
+            'value'       => 'DEU',
+            'constraints' => 'DEU|AUT',
+        ],
+        [
+            'group' => 'mo_dhl__processAndParticipation',
+            'name'  => 'mo_dhl__processAndParticipation',
+            'type'  => 'bool',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__exclusionOptions',
+            'name'  => 'mo_dhl__excludedPaymentOptions',
+            'type'  => 'bool',
+        ],
+        [
+            'group' => 'mo_dhl__exclusionOptions',
+            'name'  => 'mo_dhl__excludedDeliverySetOptions',
+            'type'  => 'bool',
+        ],
+        [
+            'group' => 'mo_dhl__exclusionOptions',
+            'name'  => 'mo_dhl__excludedDeliveryOptions',
+            'type'  => 'bool',
+        ],
+        [
+            'group'       => 'mo_dhl__logs',
+            'name'        => 'mo_dhl__logLevel',
+            'type'        => 'select',
+            'value'       => 'ERROR',
+            'constraints' => 'ERROR|INFO|DEBUG',
+        ],
+        [
+            'group'       => 'mo_dhl__logs',
+            'name'        => 'mo_dhl__retention',
+            'type'        => 'select',
+            'value'       => 'ONE_MONTH',
+            'constraints' => 'ONE_DAY|TWO_DAYS|THREE_DAYS|FOUR_DAYS|FIVE_DAYS|SIX_DAYS|ONE_WEEK|TWO_WEEKS|THREE_WEEKS|ONE_MONTH|TWO_MONTHS|QUARTER_YEAR|HALF_YEAR|YEAR|UNLIMITED',
+        ],
+        [
+            'group' => 'mo_dhl__logs',
+            'name'  => 'mo_dhl__logfiles',
+            'type'  => 'bool',
+        ],
+        [
+            'group' => 'mo_dhl__privacy',
+            'name'  => 'mo_dhl__privacy_policy',
+            'type'  => 'str',
+            'value' => 'oxsecurityinfo',
+        ],
+    ],
+];
