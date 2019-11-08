@@ -113,9 +113,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__export_country_DEU'   => 'Deutschland',
     'SHOP_MODULE_mo_dhl__export_country_AUT'   => 'Österreich',
 
-    'SHOP_MODULE_GROUP_mo_dhl__processAndParticipation' => 'Verfahrens- und Teilnahmenummern',
-    'SHOP_MODULE_mo_dhl__processAndParticipation'       => '',
-
     'SHOP_MODULE_GROUP_mo_dhl__logs'             => 'Logging',
     'SHOP_MODULE_mo_dhl__logLevel'               => 'Loglevel',
     'SHOP_MODULE_mo_dhl__logLevel_ERROR'         => 'ERROR',

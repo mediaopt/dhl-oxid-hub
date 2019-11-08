@@ -3,7 +3,7 @@ $sLangName = 'English';
 $aLang = [
     'charset' => 'UTF-8',
 
-    'moOrderExport'                                               => 'DHL Delivery Addresses export',
+    'moOrderExport'                                => 'DHL Delivery Addresses export',
     'MO_DHL__EXPORT_TITLE'                         => 'DHL Lieferadressen: CSV export',
     'MO_DHL__EXPORT'                               => 'Export',
     'MO_DHL__EXPORT_ERROR_NO_ORDER_SELECTED'       => 'Please select at least one order.',
@@ -19,4 +19,7 @@ $aLang = [
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'A participation number is exactly two characters long and consists solely of letters and digits',
     'MO_DHL__PROCESS_IDENTIFIER'                   => 'Process number',
     'MO_DHL__PROCESS_IDENTIFIER_ERROR'             => 'Please choose a process number from the list.',
+    'MO_DHL__DELIVERYSET_DHL'                      => 'DHL',
+    'MO_DHL__EXCLUDED'                             => 'Excluded',
+    'MO_DHL__EXCLUDED_DELIVERYSETOPTIONS_MOVED'    => 'The Exclusion of shipping Methods is done in the tab DHL at Shop Settings > Shipping Methods.',
 ];

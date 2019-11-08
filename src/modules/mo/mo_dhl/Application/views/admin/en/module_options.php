@@ -114,10 +114,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__export_country_DEU'   => 'Germany',
     'SHOP_MODULE_mo_dhl__export_country_AUT'   => 'Austria',
 
-    'SHOP_MODULE_GROUP_mo_dhl__processAndParticipation' => 'Process and Participation numbers',
-    'SHOP_MODULE_mo_dhl__processAndParticipation'       => '',
-
-
     'SHOP_MODULE_GROUP_mo_dhl__logs'             => 'Logging',
     'SHOP_MODULE_mo_dhl__logLevel'               => 'Log level',
     'SHOP_MODULE_mo_dhl__logLevel_ERROR'         => 'ERROR',

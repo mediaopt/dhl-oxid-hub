@@ -19,4 +19,7 @@ $aLang = [
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'Eine Teilnahmenummer besteht aus genau zwei Zeichen und enthält nur Buchstaben und Ziffern.',
     'MO_DHL__PROCESS_IDENTIFIER'                   => 'Verfahrensnummer',
     'MO_DHL__PROCESS_IDENTIFIER_ERROR'             => 'Bitte wählen Sie eine Verfahrensnummer aus der Liste.',
+    'MO_DHL__DELIVERYSET_DHL'                      => 'DHL',
+    'MO_DHL__EXCLUDED'                             => 'Ausschließen',
+    'MO_DHL__EXCLUDED_DELIVERYSETOPTIONS_MOVED'    => 'Der Ausschluss von Versandarten wird im Tab DHL unter Shopeinstellungen > Versandarten eingestellt.',
 ];

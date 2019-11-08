@@ -41,6 +41,7 @@ $aModule = [
     ],
     'controllers' => [
         'MoDHLFinder'           => Controller\FinderController::class,
+        'MoDHLDeliverySetDHL'   => Controller\Admin\DeliverySetDHLController::class,
         'MoDHLOrderExport'      => Controller\Admin\OrderExportController::class,
         'MoDHLOrderWunschpaket' => Controller\Admin\OrderWunschpaketController::class,
         'MoDHLYellowBox'        => Controller\YellowBoxController::class,
@@ -143,6 +144,7 @@ $aModule = [
         'mo_dhl__wunschpaket_flow.tpl'  => 'mo/mo_dhl/views/tpl/flow/wunschpaket.tpl',
         'mo_dhl__wunschpaket_wave.tpl'  => 'mo/mo_dhl/views/tpl/wave/wunschpaket.tpl',
         'mo_dhl__order_wunschpaket.tpl'     => 'mo/mo_dhl/views/admin/tpl/order_wunschpaket.tpl',
+        'mo_dhl__deliveryset_dhl.tpl'   => 'mo/mo_dhl/views/admin/tpl/deliveryset_dhl.tpl',
         'mo_dhl__surcharge.tpl'         => 'mo/mo_dhl/views/tpl/surcharge.tpl',
         'mo_dhl__email_order_html.tpl'       => 'mo/mo_dhl/views/tpl/email/order_html.tpl',
         'mo_dhl__email_order_plain.tpl'      => 'mo/mo_dhl/views/tpl/email/order_plain.tpl',
@@ -327,12 +329,6 @@ $aModule = [
             'type'        => 'select',
             'value'       => 'DEU',
             'constraints' => 'DEU|AUT',
-        ],
-        [
-            'group' => 'mo_dhl__processAndParticipation',
-            'name'  => 'mo_dhl__processAndParticipation',
-            'type'  => 'bool',
-            'value' => '',
         ],
         [
             'group' => 'mo_dhl__exclusionOptions',

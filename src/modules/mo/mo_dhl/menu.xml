@@ -7,5 +7,10 @@
             </SUBMENU>
             <SUBMENU id="moOrderExport" cl="MoDHLOrderExport"/>
         </MAINMENU>
+        <MAINMENU id="mxshopsett">
+            <SUBMENU id="mxshippingset" cl="deliveryset" list="deliveryset_list">
+                <TAB id="MO_DHL__DELIVERYSET_DHL" cl="MoDHLDeliverySetDHL"/>
+            </SUBMENU>
+        </MAINMENU>
     </OXMENU>
 </OX>

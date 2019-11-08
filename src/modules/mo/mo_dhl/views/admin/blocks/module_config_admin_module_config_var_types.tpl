@@ -17,15 +17,7 @@
         [{/foreach}]
     </ul>
 [{elseif $module_var == 'mo_dhl__excludedDeliverySetOptions'}]
-    <ul>
-        [{foreach from=$oView->moGetDeliverySetOptions() key='oxid' item='delivery'}]
-            <li>
-                <input type="checkbox" id="deliveryset-[{$oxid}]" name="deliveryset[]"
-                       value="[{$oxid}]"[{if $delivery->oxdeliveryset__mo_dhl_excluded->rawValue}] checked="checked"[{/if}]>
-                <label for="deliveryset-[{$oxid}]">[{$delivery->oxdeliveryset__oxtitle}]</label>
-            </li>
-        [{/foreach}]
-    </ul>
+    [{oxmultilang ident="MO_DHL__EXCLUDED_DELIVERYSETOPTIONS_MOVED"}]
 [{elseif $module_var == 'mo_dhl__excludedDeliveryOptions'}]
     <ul>
         [{foreach from=$oView->moGetDeliveryOptions() key='oxid' item='delivery'}]
@@ -37,28 +29,6 @@
         [{/foreach}]
     </ul>
 [{elseif $module_var == 'mo_dhl__handing_over_help'}]
-[{elseif $module_var == 'mo_dhl__processAndParticipation'}]
-    <ul>
-        [{foreach from=$oView->moGetDeliverySetOptions() key='oxid' item='delivery'}]
-            <li>
-                <label for="processIdentifier-[{$oxid}]">[{$delivery->oxdeliveryset__oxtitle}]:</label>
-                <br/>
-                <select id="processIdentifier-[{$oxid}]" name="processIdentifier[[{$oxid}]]">
-                    <option selected disabled>[{oxmultilang ident="MO_DHL__PROCESS_IDENTIFIER"}]</option>
-                    <option value="">-</option>
-                    [{foreach from=$processes key='identifier' item='label'}]
-                        <option value="[{$identifier}]"[{if $identifier === $delivery->oxdeliveryset__mo_dhl_process->rawValue}] selected[{/if}]>
-                            [{$label}]
-                        </option>
-                    [{/foreach}]
-                </select>
-                <input name="participationNumber[[{$oxid}]]" maxlength="2"
-                       placeholder="[{oxmultilang ident="MO_DHL__PARTICIPATION_NUMBER"}]"
-                       value="[{$delivery->oxdeliveryset__mo_dhl_participation->rawValue}]"
-                />
-            </li>
-        [{/foreach}]
-    </ul>
 [{else}]
     [{$smarty.block.parent}]
 [{/if}]
