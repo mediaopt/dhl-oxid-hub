@@ -40,11 +40,11 @@ $aModule = [
         \OxidEsales\Eshop\Application\Model\DeliverySetList::class                => Application\Model\DeliverySetList::class,
     ],
     'controllers' => [
-        'MoDHLFinder'           => Controller\FinderController::class,
-        'MoDHLDeliverySetDHL'   => Controller\Admin\DeliverySetDHLController::class,
-        'MoDHLOrderExport'      => Controller\Admin\OrderExportController::class,
-        'MoDHLOrderWunschpaket' => Controller\Admin\OrderWunschpaketController::class,
-        'MoDHLYellowBox'        => Controller\YellowBoxController::class,
+        'MoDHLFinder'         => Controller\FinderController::class,
+        'MoDHLDeliverySetDHL' => Controller\Admin\DeliverySetDHLController::class,
+        'MoDHLOrderExport'    => Controller\Admin\OrderExportController::class,
+        'MoDHLOrderDHL'       => Controller\Admin\OrderDHLController::class,
+        'MoDHLYellowBox'      => Controller\YellowBoxController::class,
     ],
     'events'      => [
         'onActivate'   => Install::class . '::onActivate',
@@ -143,11 +143,11 @@ $aModule = [
         'mo_dhl__wunschpaket_azure.tpl' => 'mo/mo_dhl/views/tpl/azure/wunschpaket.tpl',
         'mo_dhl__wunschpaket_flow.tpl'  => 'mo/mo_dhl/views/tpl/flow/wunschpaket.tpl',
         'mo_dhl__wunschpaket_wave.tpl'  => 'mo/mo_dhl/views/tpl/wave/wunschpaket.tpl',
-        'mo_dhl__order_wunschpaket.tpl'     => 'mo/mo_dhl/views/admin/tpl/order_wunschpaket.tpl',
+        'mo_dhl__order_dhl.tpl'         => 'mo/mo_dhl/views/admin/tpl/order_dhl.tpl',
         'mo_dhl__deliveryset_dhl.tpl'   => 'mo/mo_dhl/views/admin/tpl/deliveryset_dhl.tpl',
         'mo_dhl__surcharge.tpl'         => 'mo/mo_dhl/views/tpl/surcharge.tpl',
-        'mo_dhl__email_order_html.tpl'       => 'mo/mo_dhl/views/tpl/email/order_html.tpl',
-        'mo_dhl__email_order_plain.tpl'      => 'mo/mo_dhl/views/tpl/email/order_plain.tpl',
+        'mo_dhl__email_order_html.tpl'  => 'mo/mo_dhl/views/tpl/email/order_html.tpl',
+        'mo_dhl__email_order_plain.tpl' => 'mo/mo_dhl/views/tpl/email/order_plain.tpl',
     ],
     'settings'    => [
         [
