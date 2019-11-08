@@ -3,12 +3,14 @@ $sLangName = 'Deutsch';
 $aLang = [
     'charset' => 'UTF-8',
 
-    'moOrderExport'                                               => 'DHL Lieferadressen-Export',
+    'moOrderExport'                                => 'DHL Lieferadressen-Export',
     'MO_DHL__EXPORT_TITLE'                         => 'DHL Lieferadressen: CSV-Export',
     'MO_DHL__EXPORT'                               => 'Exportieren',
     'MO_DHL__EXPORT_ERROR_NO_ORDER_SELECTED'       => 'Bitte wählen Sie mindestens eine Bestellung aus.',
     'MO_DHL__EXPORT_ORDERS_WITHOUT_BILLING_NUMBER' => 'Für die Sendungen mit einer der folgenden Referenzen konnte keine Abrechnungsnummer erzeugt werden: %s',
-    'MO_DHL__ORDER_WUNSCHPAKET'                    => 'DHL Wunschpaket',
+    'MO_DHL__ORDER_DHL'                            => 'DHL',
+    'MO_DHL__PROCESS_AND_PARTICIPATION'            => 'Verfahrens- und Teilnahmenummern',
+    'MO_DHL__WUNSCHPAKET'                          => 'Wunschpaket Optionen',
     'MO_DHL__WUNSCHTAG'                            => 'Wunschtag',
     'MO_DHL__WUNSCHZEIT'                           => 'Wunschzeit',
     'MO_DHL__WUNSCHORT'                            => 'Wunschort',
