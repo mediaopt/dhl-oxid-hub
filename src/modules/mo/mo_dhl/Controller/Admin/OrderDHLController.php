@@ -2,6 +2,7 @@
 
 namespace Mediaopt\DHL\Controller\Admin;
 
+use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
@@ -9,12 +10,17 @@ use Mediaopt\DHL\Shipment\Process;
 /**
  * @author Mediaopt GmbH
  */
-class OrderWunschpaketController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
+class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
 {
     /**
      * @var \OxidEsales\Eshop\Application\Model\Order|null
      */
     protected $order;
+
+    /**
+     * @var \Mediaopt\DHL\Wunschpaket
+     */
+    protected $wunschpaket;
 
     /**
      * @extend
@@ -27,7 +33,8 @@ class OrderWunschpaketController extends \OxidEsales\Eshop\Application\Controlle
         $this->addTplParam('ekp', $this->getEkp());
         $this->addTplParam('participationNumber', $this->getParticipationNumber());
         $this->addTplParam('processIdentifier', $this->getProcessIdentifier());
-        return 'mo_dhl__order_wunschpaket.tpl';
+        $this->addTplParam('remarks', $this->getRemarks());
+        return 'mo_dhl__order_dhl.tpl';
     }
 
     /**
@@ -137,4 +144,72 @@ class OrderWunschpaketController extends \OxidEsales\Eshop\Application\Controlle
             return '';
         }
     }
+
+    /**
+     * @return string[]
+     */
+    protected function getRemarks()
+    {
+        $remark = $this->getOrder()->oxorder__oxremark->value;
+        return array_merge($this->moDHLGetPreferredDay($remark), $this->moDHLGetPreferredTime($remark), $this->moDHLGetPreferredLocation($remark));
+    }
+
+    /**
+     * @param string $remark
+     * @return string[]
+     */
+    protected function moDHLGetPreferredDay($remark)
+    {
+        $preferredDay = $this->getWunschpaket()->extractWunschtag($remark);
+        return $preferredDay !== '' ? [$this->translateString('MO_DHL__WUNSCHTAG') => $preferredDay] : [];
+    }
+
+    /**
+     * @param string $remark
+     * @return string[]
+     */
+    protected function moDHLGetPreferredTime($remark)
+    {
+        $preferredTime = $this->getWunschpaket()->extractTime($remark);
+        return $preferredTime !== '' ? [$this->translateString('MO_DHL__WUNSCHZEIT') => Wunschpaket::formatPreferredTime($preferredTime)] : [];
+    }
+
+    /**
+     * @param string $remark
+     * @return string[]
+     */
+    protected function moDHLGetPreferredLocation($remark)
+    {
+        list($type, $locationPart1, $locationPart2) = $this->getWunschpaket()->extractLocation($remark);
+        switch ($type) {
+            case Wunschpaket::WUNSCHNACHBAR:
+                return [$this->translateString('MO_DHL__WUNSCHNACHBAR') => "{$locationPart2}, {$locationPart1}"];
+            case Wunschpaket::WUNSCHORT:
+                return [$this->translateString('MO_DHL__WUNSCHORT') => $locationPart1];
+            default:
+                return [];
+        }
+    }
+
+    /**
+     * @return \Mediaopt\DHL\Wunschpaket
+     */
+    protected function getWunschpaket()
+    {
+        if (!$this->wunschpaket) {
+            $this->wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
+        }
+        return $this->wunschpaket;
+    }
+
+    /**
+     * @param string $text
+     * @return string
+     */
+    protected function translateString(string $text)
+    {
+        $lang = \OxidEsales\Eshop\Core\Registry::getLang();
+        return $lang->translateString($text);
+    }
+
 }

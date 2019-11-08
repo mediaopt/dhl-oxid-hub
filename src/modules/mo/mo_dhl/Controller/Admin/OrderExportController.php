@@ -128,7 +128,7 @@ class OrderExportController extends \OxidEsales\Eshop\Application\Controller\Adm
             $order->assign($row);
             $orders[] = $order;
         }
-        return ['orders' => $orders, 'page' => max(1, (int) $sanitizedPage), 'pages' => ceil($foundRows / $maximum)];
+        return ['orders' => $orders, 'page' => max(1, (int)$sanitizedPage), 'pages' => max(1, ceil($foundRows / $maximum))];
     }
 
     /**
