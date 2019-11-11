@@ -214,6 +214,8 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         }
     }
 
+    /**
+     */
     public function moSaveAndCheckLogin()
     {
         $this->save();

@@ -6,7 +6,7 @@ $aLang = [
 
     'SHOP_MODULE_GROUP_mo_dhl__account'         => 'DHL Business Customer Login',
     'SHOP_MODULE_mo_dhl__account_sandbox'       => 'Use Testing-Webservice',
-    'HELP_SHOP_MODULE_mo_dhl__account_sandbox'  => 'Use the Testing-Webservice of DHL instead of the Productive-Webservice. In this case you have to fill in the credentials of your DHL Develop Portal Account below.',
+    'HELP_SHOP_MODULE_mo_dhl__account_sandbox'  => 'Use the testing webservice of DHL instead of the productive webservice. In this case you have to fill in the credentials of your <a href="https://entwickler.dhl.de">DHL Developer Portal</a> account below.',
     'SHOP_MODULE_mo_dhl__account_user'          => 'Username',
     'HELP_SHOP_MODULE_mo_dhl__account_user'     => 'Your Username for the <a href="http://www.dhl-geschaeftskundenportal.de">DHL Business Customer Portal</a>. Please pay attention that the username is case sensitive.',
     'SHOP_MODULE_mo_dhl__account_password'      => 'Password',
