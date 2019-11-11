@@ -4,9 +4,18 @@ $sLangName = 'English';
 $aLang = [
     'charset' => 'UTF-8',
 
-    'SHOP_MODULE_GROUP_mo_dhl__merchant' => 'Merchant Information',
-    'SHOP_MODULE_mo_dhl__merchant_ekp'   => 'EKP',
-    'HELP_SHOP_MODULE_mo_dhl__merchant_ekp'   => 'The EKP is your DHL customer number',
+    'SHOP_MODULE_GROUP_mo_dhl__account'         => 'DHL Business Customer Login',
+    'SHOP_MODULE_mo_dhl__account_sandbox'       => 'Use Testing-Webservice',
+    'HELP_SHOP_MODULE_mo_dhl__account_sandbox'  => 'Use the Testing-Webservice of DHL instead of the Productive-Webservice. In this case you have to fill in the credentials of your DHL Develop Portal Account below.',
+    'SHOP_MODULE_mo_dhl__account_user'          => 'Username',
+    'HELP_SHOP_MODULE_mo_dhl__account_user'     => 'Your Username for the <a href="http://www.dhl-geschaeftskundenportal.de">DHL Business Customer Portal</a>. Please pay attention that the username is case sensitive.',
+    'SHOP_MODULE_mo_dhl__account_password'      => 'Password',
+    'HELP_SHOP_MODULE_mo_dhl__account_password' => 'Your Password for the <a href="http://www.dhl-geschaeftskundenportal.de">DHL Business Customer Portal</a>.',
+    'SHOP_MODULE_mo_dhl__account_check'         => '',
+
+    'SHOP_MODULE_GROUP_mo_dhl__merchant'    => 'Merchant Information',
+    'SHOP_MODULE_mo_dhl__merchant_ekp'      => 'EKP',
+    'HELP_SHOP_MODULE_mo_dhl__merchant_ekp' => 'The EKP is your DHL customer number',
 
     'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Parcel shop finder',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximum number of hits',

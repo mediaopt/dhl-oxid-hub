@@ -25,4 +25,7 @@ $aLang = [
     'MO_DHL__DELIVERY_DHL'               => 'DHL',
     'MO_DHL__PAYMENTS_DHL'               => 'DHL',
     'MO_DHL__EXCLUDED'                   => 'Excluded',
+    'MO_DHL_SAVE_AND_CHECK'              => 'Save and check credentials',
+    'MO_DHL__CORRECT_CREDENTIALS'        => 'Credentials are corrent',
+    'MO_DHL__INCORRECT_CREDENTIALS'      => 'Credentials are incorrect. Please review your credentials.',
 ];

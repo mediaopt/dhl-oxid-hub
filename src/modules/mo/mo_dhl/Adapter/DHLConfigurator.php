@@ -35,7 +35,11 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getLogin()
     {
-        return 'DhlEmpfaengerservicesOxid_3';
+        if ($user = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user')) {
+            return $user;
+        }
+        return $this->isProductionEnvironment() ? 'DhlEmpfaengerservicesOxid_3' : 'moptrandom-temp-string-1455964747901';
+
     }
 
     /**
@@ -43,7 +47,10 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getPassword()
     {
-        return 'sLS0vunhKg47u6JyVTL0ZUDCG18Mh8';
+        if ($password = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password')) {
+            return $password;
+        }
+        return $this->isProductionEnvironment() ? 'sLS0vunhKg47u6JyVTL0ZUDCG18Mh8' : 'J+-G_s6+3Ik1NX3f_mx9';
     }
 
     /**
@@ -51,7 +58,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function isProductionEnvironment()
     {
-        return true;
+        return !\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_sandbox');
     }
 
     /**
