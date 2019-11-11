@@ -155,6 +155,27 @@ $aModule = [
     ],
     'settings'    => [
         [
+            'group' => 'mo_dhl__account',
+            'name'  => 'mo_dhl__account_sandbox',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__account',
+            'name'  => 'mo_dhl__account_user',
+            'type'  => 'str',
+        ],
+        [
+            'group' => 'mo_dhl__account',
+            'name'  => 'mo_dhl__account_password',
+            'type'  => 'password',
+        ],
+        [
+            'group' => 'mo_dhl__account',
+            'name'  => 'mo_dhl__account_check',
+            'type'  => 'bool',
+        ],
+        [
             'group' => 'mo_dhl__merchant',
             'name'  => 'mo_dhl__merchant_ekp',
             'type'  => 'str',

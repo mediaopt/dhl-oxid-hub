@@ -213,4 +213,24 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__EKP_ERROR');
         }
     }
+
+    /**
+     */
+    public function moSaveAndCheckLogin()
+    {
+        $this->save();
+        $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
+
+        try {
+            $days = $adapter->buildWunschpaket()->getPreferredDays('12045');
+        } catch (\RuntimeException $e) {
+            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($e->getMessage());
+            return;
+        }
+        if (empty($days)) {
+            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__INCORRECT_CREDENTIALS');
+            return;
+        }
+        \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__CORRECT_CREDENTIALS');
+    }
 }
