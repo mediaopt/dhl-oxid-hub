@@ -37,17 +37,31 @@ class Credentials
     protected $ekp;
 
     /**
+     * @var bool
+     */
+    protected $isSandBox;
+
+    /**
      * @param string      $endpoint
      * @param string      $username
      * @param string      $password
      * @param string|null $ekp
      */
-    public function __construct($endpoint, $username, $password, $ekp = null)
+    public function __construct($endpoint, $username, $password, $ekp = null, $isSandbox = false)
     {
         $this->endpoint = $endpoint;
         $this->username = $username;
         $this->password = $password;
         $this->ekp = $ekp;
+        $this->isSandBox = $isSandbox;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSandBox(): bool
+    {
+        return $this->isSandBox;
     }
 
     /**
@@ -88,9 +102,9 @@ class Credentials
      * @param string|null $ekp
      * @return self
      */
-    public static function createSandboxEndpoint($username, $password, $ekp)
+    public static function createSandboxRestEndpoint($username, $password, $ekp)
     {
-        return new static('https://cig.dhl.de/services/sandbox/rest', $username, $password, $ekp);
+        return new static('https://cig.dhl.de/services/sandbox/rest', $username, $password, $ekp, true);
     }
 
     /**
@@ -99,8 +113,30 @@ class Credentials
      * @param string|null $ekp
      * @return self
      */
-    public static function createProductionEndpoint($username, $password, $ekp)
+    public static function createProductionRestEndpoint($username, $password, $ekp)
     {
-        return new static('https://cig.dhl.de/services/production/rest', $username, $password, $ekp);
+        return new static('https://cig.dhl.de/services/production/rest', $username, $password, $ekp, false);
+    }
+
+    /**
+     * @param string      $username
+     * @param string      $password
+     * @param string|null $ekp
+     * @return self
+     */
+    public static function createSandboxSoapEndpoint($username, $password, $ekp)
+    {
+        return new static('https://cig.dhl.de/services/sandbox/soap', $username, $password, $ekp, true);
+    }
+
+    /**
+     * @param string      $username
+     * @param string      $password
+     * @param string|null $ekp
+     * @return self
+     */
+    public static function createProductionSoapEndpoint($username, $password, $ekp)
+    {
+        return new static('https://cig.dhl.de/services/production/soap', $username, $password, $ekp, false);
     }
 }

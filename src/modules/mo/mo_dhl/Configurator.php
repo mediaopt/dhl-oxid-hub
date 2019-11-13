@@ -8,6 +8,7 @@ use Mediaopt\DHL\Api\Credentials;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
 use Mediaopt\DHL\Api\Wunschpaket;
+use Mediaopt\DHL\Api\GKV;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
@@ -29,11 +30,21 @@ abstract class Configurator
     /**
      * @return Credentials
      */
-    protected function buildCredentials()
+    protected function buildRestCredentials()
     {
         return $this->isProductionEnvironment()
-            ? Credentials::createProductionEndpoint($this->getLogin(), $this->getPassword(), $this->getEkp())
-            : Credentials::createSandboxEndpoint($this->getLogin(), $this->getPassword(), $this->getEkp());
+            ? Credentials::createProductionRestEndpoint($this->getLogin(), $this->getPassword(), $this->getEkp())
+            : Credentials::createSandboxRestEndpoint($this->getLogin(), $this->getPassword(), $this->getEkp());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildSoapCredentials()
+    {
+        return $this->isProductionEnvironment()
+            ? Credentials::createProductionSoapEndpoint($this->getLogin(), $this->getPassword(), $this->getEkp())
+            : Credentials::createSandboxSoapEndpoint($this->getLogin(), $this->getPassword(), $this->getEkp());
     }
 
     /**
@@ -63,7 +74,7 @@ abstract class Configurator
         ServiceProviderBuilder $serviceProviderBuilder = null
     ) {
         return new Standortsuche(
-            $this->buildCredentials(),
+            $this->buildRestCredentials(),
             $logger ?: $this->buildLogger(),
             $client ?: $this->buildClient(),
             $serviceProviderBuilder
@@ -78,9 +89,21 @@ abstract class Configurator
     public function buildWunschpaket(LoggerInterface $logger = null, ClientInterface $client = null)
     {
         return new Wunschpaket(
-            $this->buildCredentials(),
+            $this->buildRestCredentials(),
             $logger ?: $this->buildLogger(),
             $client ?: $this->buildClient()
+        );
+    }
+
+    /**
+     * @param LoggerInterface|null $logger
+     * @return GKV
+     */
+    public function buildGKV(LoggerInterface $logger = null)
+    {
+        return new GKV(
+            $this->buildSoapCredentials(),
+            $logger ?: $this->buildLogger()
         );
     }
 
