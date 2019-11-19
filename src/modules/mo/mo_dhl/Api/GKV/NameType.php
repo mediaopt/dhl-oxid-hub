@@ -25,7 +25,7 @@ class NameType
      * @param string $name2
      * @param string $name3
      */
-    public function __construct($name1, $name2, $name3)
+    public function __construct($name1, $name2 = null, $name3 = null)
     {
         $this->name1 = $name1;
         $this->name2 = $name2;

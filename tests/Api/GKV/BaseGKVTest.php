@@ -13,10 +13,14 @@ use Mediaopt\DHL\Api\GKV\NativeAddressType;
 use Mediaopt\DHL\Api\GKV\ReceiverNativeAddressType;
 use Mediaopt\DHL\Api\GKV\ReceiverType;
 use Mediaopt\DHL\Api\GKV\Shipment;
-use Mediaopt\DHL\Api\GKV\ShipmentDetailsTypeType;
+use Mediaopt\DHL\Api\GKV\ShipmentDetailsType;
 use Mediaopt\DHL\Api\GKV\ShipmentItemType;
 use Mediaopt\DHL\Api\GKV\ShipperType;
 use Mediaopt\DHL\Api\GKV\Version;
+use Mediaopt\DHL\Shipment\BillingNumber;
+use Mediaopt\DHL\Merchant\Ekp;
+use Mediaopt\DHL\Shipment\Participation;
+use Mediaopt\DHL\Shipment\Process;
 
 /**
  * @author Mediaopt GmbH
@@ -46,7 +50,7 @@ class BaseGKVTest extends \PHPUnit_Framework_TestCase
      */
     protected function createShipmentToGermany($product = 'V01PAK'): Shipment
     {
-        $ShipmentDetails = new ShipmentDetailsTypeType($product, '22222222220101', (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
+        $ShipmentDetails = new ShipmentDetailsType($product, new BillingNumber(Ekp::build('2222222222'), Process::build(Process::PAKET), Participation::build('01')), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
         $Receiver = (new ReceiverType('a b'))->setAddress(new ReceiverNativeAddressType(null, null, 'Elbestr.', '28/29', '12045', 'Berlin', null, new CountryType('DE')));
         $Shipper = (new ShipperType(new NameType('a b', null, null), new NativeAddressType('Elbestr.', '28', '12045', 'Berlin', null, new CountryType('DE'))));
         $shipment = new Shipment($ShipmentDetails, $Shipper, $Receiver);
@@ -59,7 +63,7 @@ class BaseGKVTest extends \PHPUnit_Framework_TestCase
      */
     protected function createShipmentToAustria($product = 'V01PAK'): Shipment
     {
-        $ShipmentDetails = new ShipmentDetailsTypeType($product, '22222222220101', (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
+        $ShipmentDetails = new ShipmentDetailsType($product, '22222222220101', (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
         $Receiver = (new ReceiverType('a b'))->setAddress(new ReceiverNativeAddressType(null, null, 'Dr.-Rudolf-Tyrolt-Gasse', '124-122', '8786', 'Rottenmann', null, new CountryType('AT')));
         $Shipper = (new ShipperType(new NameType('a b', null, null), new NativeAddressType('Elbestr.', '28', '12045', 'Berlin', null, new CountryType('DE'))));
         $shipment = new Shipment($ShipmentDetails, $Shipper, $Receiver);

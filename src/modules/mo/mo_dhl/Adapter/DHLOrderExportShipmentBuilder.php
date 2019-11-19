@@ -22,35 +22,8 @@ use Mediaopt\DHL\Shipment\Shipment;
  *
  * @author Mediaopt GmbH
  */
-class DHLShipmentBuilder
+class DHLOrderExportShipmentBuilder extends DHLBaseShipmentBuilder
 {
-    /**
-     * @var string
-     */
-    protected $ekp;
-
-    /**
-     * @var string[]
-     */
-    protected $deliverySetToProcessIdentifier = [];
-
-    /**
-     * @var string[]
-     */
-    protected $deliverySetToParticipationNumber = [];
-
-    /**
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
-     */
-    public function __construct()
-    {
-        $this->ekp = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__merchant_ekp');
-        $query = ' SELECT OXID, MO_DHL_PROCESS, MO_DHL_PARTICIPATION' . ' FROM ' . getViewName('oxdeliveryset');
-        foreach ((array) \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC)->getAll($query) as $row) {
-            $this->deliverySetToProcessIdentifier[$row['OXID']] = $row['MO_DHL_PROCESS'];
-            $this->deliverySetToParticipationNumber[$row['OXID']] = $row['MO_DHL_PARTICIPATION'];
-        }
-    }
 
     /**
      * @param \OxidEsales\Eshop\Application\Model\Order $oxOrder
@@ -203,7 +176,7 @@ class DHLShipmentBuilder
         $weight = 0;
         foreach ($order->getOrderArticles() as $orderArticle) {
             /** @var \OxidEsales\Eshop\Application\Model\OrderArticle $orderArticle */
-            $weight += (float) $orderArticle->getArticle()->getWeight();
+            $weight += (float)$orderArticle->getArticle()->getWeight() * $orderArticle->getFieldData('oxamount');
         }
         return $weight;
     }

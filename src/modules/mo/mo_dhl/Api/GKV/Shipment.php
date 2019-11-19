@@ -6,7 +6,7 @@ class Shipment
 {
 
     /**
-     * @var ShipmentDetailsTypeType $ShipmentDetails
+     * @var ShipmentDetailsType $ShipmentDetails
      */
     protected $ShipmentDetails = null;
 
@@ -31,11 +31,11 @@ class Shipment
     protected $ExportDocument = null;
 
     /**
-     * @param ShipmentDetailsTypeType $ShipmentDetails
-     * @param ShipperType             $Shipper
-     * @param ReceiverType            $Receiver
+     * @param ShipmentDetailsType $ShipmentDetails
+     * @param ShipperType         $Shipper
+     * @param ReceiverType        $Receiver
      */
-    public function __construct(ShipmentDetailsTypeType $ShipmentDetails, ShipperType $Shipper, ReceiverType $Receiver)
+    public function __construct(ShipmentDetailsType $ShipmentDetails, ShipperType $Shipper, ReceiverType $Receiver)
     {
         $this->ShipmentDetails = $ShipmentDetails;
         $this->Shipper = $Shipper;
@@ -43,7 +43,7 @@ class Shipment
     }
 
     /**
-     * @return ShipmentDetailsTypeType
+     * @return ShipmentDetailsType
      */
     public function getShipmentDetails()
     {
@@ -51,8 +51,8 @@ class Shipment
     }
 
     /**
-     * @param ShipmentDetailsTypeType $ShipmentDetails
-     * @return \Mediaopt\DHL\Api\GKV\Shipment
+     * @param ShipmentDetailsType $ShipmentDetails
+     * @return Shipment
      */
     public function setShipmentDetails($ShipmentDetails)
     {
@@ -70,7 +70,7 @@ class Shipment
 
     /**
      * @param ShipperType $Shipper
-     * @return \Mediaopt\DHL\Api\GKV\Shipment
+     * @return Shipment
      */
     public function setShipper($Shipper)
     {
@@ -88,7 +88,7 @@ class Shipment
 
     /**
      * @param ReceiverType $Receiver
-     * @return \Mediaopt\DHL\Api\GKV\Shipment
+     * @return Shipment
      */
     public function setReceiver($Receiver)
     {
@@ -106,7 +106,7 @@ class Shipment
 
     /**
      * @param ShipperType $ReturnReceiver
-     * @return \Mediaopt\DHL\Api\GKV\Shipment
+     * @return Shipment
      */
     public function setReturnReceiver($ReturnReceiver)
     {
@@ -124,7 +124,7 @@ class Shipment
 
     /**
      * @param ExportDocumentType $ExportDocument
-     * @return \Mediaopt\DHL\Api\GKV\Shipment
+     * @return Shipment
      */
     public function setExportDocument($ExportDocument)
     {

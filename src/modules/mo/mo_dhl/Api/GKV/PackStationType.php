@@ -36,14 +36,16 @@ class PackStationType
     protected $Origin = null;
 
     /**
+     * @param string      $postNumber
      * @param string      $packstationNumber
      * @param string      $zip
      * @param string      $city
      * @param string      $province
      * @param CountryType $Origin
      */
-    public function __construct($packstationNumber, $zip, $city, $province, $Origin)
+    public function __construct($postNumber, $packstationNumber, $zip, $city, $province = null, $Origin = null)
     {
+        $this->postNumber = $postNumber;
         $this->packstationNumber = $packstationNumber;
         $this->zip = $zip;
         $this->city = $city;

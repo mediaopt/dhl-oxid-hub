@@ -24,10 +24,22 @@ class Process
     const PAKET_TAGGLEICH = 'PAKET_TAGGLEICH';
 
     /**
-     * @var string DHL Retoure
+     * @var string DHL Retoure für DHL Paket
      */
-    const RETOURE = 'RETOURE';
+    const RETOURE_FUER_PAKET = 'RETOURE_FUER_PAKET';
 
+    /**
+     * @var string DHL Retoure für DHL Paket Taggleich
+     */
+    const RETOURE_FUER_PAKET_TAGGLEICH = 'RETOURE_FUER_PAKET_TAGGLEICH';
+    /**
+     * @var string DHL Retoure für DHL Paket Austria
+     */
+    const RETOURE_FUER_PAKET_AT = 'RETOURE_FUER_PAKET_AT';
+    /**
+     * @var string DHL Retoure für DHL Paket Connect
+     */
+    const RETOURE_FUER_PAKET_CONNECT = 'RETOURE_FUER_PAKET_CONNECT';
     /**
      * @var string DHL Paket International
      */
@@ -87,22 +99,41 @@ class Process
     }
 
     /**
+     * @param string $identifier
+     * @return Process
+     * @throws \InvalidArgumentException
+     */
+    public static function buildForRetoure($identifier)
+    {
+        $constant = __CLASS__ . '::RETOURE_FUER_' . $identifier;
+        if (!defined($constant) || constant($constant) !== 'RETOURE_FUER_' . $identifier) {
+            throw new \InvalidArgumentException('Invalid process identifier');
+        }
+
+
+        return new self('RETOURE_FUER_' . $identifier);
+    }
+
+    /**
      * @return string
      */
     public function __toString()
     {
         /** @var string[] $identifierToNumber */
         $identifierToNumber = [
-            self::PAKET                  => '01',
-            self::PAKET_PRIO             => '01',
-            self::PAKET_TAGGLEICH        => '06',
-            self::PAKET_INTERNATIONAL    => '53',
-            self::EUROPAKET              => '54',
-            self::PAKET_CONNECT          => '55',
-            self::PAKET_AT               => '86',
-            self::PAKET_CONNECT_AT       => '87',
-            self::PAKET_INTERNATIONAL_AT => '82',
-            self::RETOURE                => '06',
+            self::PAKET                        => '01',
+            self::PAKET_PRIO                   => '01',
+            self::PAKET_TAGGLEICH              => '06',
+            self::PAKET_INTERNATIONAL          => '53',
+            self::EUROPAKET                    => '54',
+            self::PAKET_CONNECT                => '55',
+            self::PAKET_AT                     => '86',
+            self::PAKET_CONNECT_AT             => '87',
+            self::PAKET_INTERNATIONAL_AT       => '82',
+            self::RETOURE_FUER_PAKET           => '07',
+            self::RETOURE_FUER_PAKET_TAGGLEICH => '07',
+            self::RETOURE_FUER_PAKET_CONNECT   => '85',
+            self::RETOURE_FUER_PAKET_AT        => '85',
         ];
 
         return $identifierToNumber[$this->identifier];
@@ -114,16 +145,19 @@ class Process
     public function getServiceIdentifier()
     {
         $identifierToService = [
-            self::PAKET                  => 'V01PAK',
-            self::PAKET_PRIO             => 'V01PRIO',
-            self::PAKET_TAGGLEICH        => 'V06PAK',
-            self::PAKET_INTERNATIONAL    => 'V53WPAK',
-            self::EUROPAKET              => 'V54EPAK',
-            self::PAKET_CONNECT          => 'V55PAK',
-            self::PAKET_AT               => 'V86PARCEL',
-            self::PAKET_CONNECT_AT       => 'V87PARCEL',
-            self::PAKET_INTERNATIONAL_AT => 'V82PARCEL',
-            self::RETOURE                => 'V01PAK',
+            self::PAKET                        => 'V01PAK',
+            self::PAKET_PRIO                   => 'V01PRIO',
+            self::PAKET_TAGGLEICH              => 'V06PAK',
+            self::PAKET_INTERNATIONAL          => 'V53WPAK',
+            self::EUROPAKET                    => 'V54EPAK',
+            self::PAKET_CONNECT                => 'V55PAK',
+            self::PAKET_AT                     => 'V86PARCEL',
+            self::PAKET_CONNECT_AT             => 'V87PARCEL',
+            self::PAKET_INTERNATIONAL_AT       => 'V82PARCEL',
+            self::RETOURE_FUER_PAKET           => 'V01PAK',
+            self::RETOURE_FUER_PAKET_TAGGLEICH => 'V06PAK',
+            self::RETOURE_FUER_PAKET_CONNECT   => 'V87PARCEL',
+            self::RETOURE_FUER_PAKET_AT        => 'V86PARCEL',
         ];
 
         return $identifierToService[$this->identifier];
@@ -138,7 +172,6 @@ class Process
             'PAKET'                  => 'DHL Paket',
             'PAKET_PRIO'             => 'DHL Paket PRIO',
             'PAKET_TAGGLEICH'        => 'DHL Paket Taggleich',
-            'RETOURE'                => 'DHL Retoure',
             'PAKET_INTERNATIONAL'    => 'DHL Paket International',
             'EUROPAKET'              => 'DHL Europaket (B2B)',
             'PAKET_CONNECT'          => 'DHL Paket Connect',
