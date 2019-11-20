@@ -13,7 +13,8 @@ pipelines:
             - composer
           script:
             - docker-php-ext-install calendar
-            - apt-get update && apt-get install -y unzip
+            - apt-get update && apt-get install -y unzip libxml2-dev
+            - docker-php-ext-install soap
             - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
             - composer install
             - src/modules/mo/mo_dhl/vendor/bin/phpunit -c tests/phpunit.xml tests
@@ -23,7 +24,8 @@ pipelines:
             - composer
           script:
             - docker-php-ext-install calendar
-            - apt-get update && apt-get install -y unzip
+            - apt-get update && apt-get install -y unzip libxml2-dev
+            - docker-php-ext-install soap
             - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
             - composer install
             - src/modules/mo/mo_dhl/vendor/bin/phpunit -c tests/phpunit.xml tests
@@ -34,7 +36,8 @@ pipelines:
             - composer
           script:
             - docker-php-ext-install calendar
-            - apt-get update && apt-get install -y unzip
+            - apt-get update && apt-get install -y unzip libxml2-dev
+            - docker-php-ext-install soap
             - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
             - composer install
             - src/modules/mo/mo_dhl/vendor/bin/phpunit -c tests/phpunit.xml tests
