@@ -39,13 +39,14 @@ class Credentials
     /**
      * @var bool
      */
-    protected $isSandBox;
+    protected $isSandbox;
 
     /**
      * @param string      $endpoint
      * @param string      $username
      * @param string      $password
      * @param string|null $ekp
+     * @param bool        $isSandbox
      */
     public function __construct($endpoint, $username, $password, $ekp = null, $isSandbox = false)
     {
@@ -53,15 +54,15 @@ class Credentials
         $this->username = $username;
         $this->password = $password;
         $this->ekp = $ekp;
-        $this->isSandBox = $isSandbox;
+        $this->isSandbox = $isSandbox;
     }
 
     /**
      * @return bool
      */
-    public function isSandBox(): bool
+    public function isSandbox(): bool
     {
-        return $this->isSandBox;
+        return $this->isSandbox;
     }
 
     /**

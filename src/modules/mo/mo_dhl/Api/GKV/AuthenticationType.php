@@ -2,7 +2,7 @@
 
 namespace Mediaopt\DHL\Api\GKV;
 
-class AuthentificationType
+class AuthenticationType
 {
 
     /**
@@ -35,7 +35,7 @@ class AuthentificationType
 
     /**
      * @param string $user
-     * @return AuthentificationType
+     * @return AuthenticationType
      */
     public function setUser($user)
     {
@@ -53,7 +53,7 @@ class AuthentificationType
 
     /**
      * @param string $signature
-     * @return AuthentificationType
+     * @return AuthenticationType
      */
     public function setSignature($signature)
     {

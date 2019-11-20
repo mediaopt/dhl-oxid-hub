@@ -9,12 +9,12 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
 
     protected function getPassword()
     {
-        return 'J+-G_s6+3Ik1NX3f_mx9';
+        return 'H#R#__!w4-dt-9++9Z-r7-9';
     }
 
     protected function getEkp()
     {
-        return '5222500948';
+        return '2222222222';
     }
 
     protected function isProductionEnvironment()

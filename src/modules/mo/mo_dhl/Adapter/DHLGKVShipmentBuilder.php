@@ -106,11 +106,10 @@ class DHLGKVShipmentBuilder extends DHLBaseShipmentBuilder
      */
     protected function buildCommunication($deliveryAddress)
     {
-        $communication = new CommunicationType();
-        $communication->setContactPerson($deliveryAddress->getFieldData('oxfname') . ' ' . $deliveryAddress->getFieldData('oxlname'))
+        return (new CommunicationType())
+            ->setContactPerson($deliveryAddress->getFieldData('oxfname') . ' ' . $deliveryAddress->getFieldData('oxlname'))
             ->setEmail($deliveryAddress->getFieldData('oxusername'))
             ->setPhone($deliveryAddress->getFieldData('oxfon'));
-        return $communication;
     }
 
     /**
@@ -275,7 +274,7 @@ class DHLGKVShipmentBuilder extends DHLBaseShipmentBuilder
         $config = \OxidEsales\Eshop\Core\Registry::getConfig();
 
         $name = new NameType($config->getShopConfVar('mo_dhl__export_line1'), $config->getShopConfVar('mo_dhl__export_line2'), $config->getShopConfVar('mo_dhl__export_line3'));
-        $iso2 = \oxDb::getDb()->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$config->getShopConfVar('mo_dhl__export_country')]);
+        $iso2 = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$config->getShopConfVar('mo_dhl__export_country')]);
         $country = new CountryType($iso2);
         $address = new NativeAddressType($config->getShopConfVar('mo_dhl__export_street'), $config->getShopConfVar('mo_dhl__export_street_number'), $config->getShopConfVar('mo_dhl__export_zip'), $config->getShopConfVar('mo_dhl__export_city'), null, $country);
         return new ShipperType($name, $address);

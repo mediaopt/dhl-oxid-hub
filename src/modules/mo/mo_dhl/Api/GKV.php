@@ -2,7 +2,7 @@
 
 namespace Mediaopt\DHL\Api;
 
-use Mediaopt\DHL\Api\GKV\AuthentificationType;
+use Mediaopt\DHL\Api\GKV\AuthenticationType;
 use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Request\DoManifestRequest;
@@ -31,17 +31,17 @@ class GKV extends \SoapClient
      * @var array $classmap The defined classes
      */
     private static $classmap = [
-        'AuthentificationType'                    => 'Mediaopt\\DHL\\Api\\GKV\\AuthentificationType',
-        'CreateShipmentOrderRequest'              => 'Mediaopt\\DHL\\Api\\GKV\\Request\\CreateShipmentOrderRequest',
-        'CreateShipmentOrderResponse'             => 'Mediaopt\\DHL\\Api\\GKV\\Response\\CreateShipmentOrderResponse',
-        'Version'                                 => 'Mediaopt\\DHL\\Api\\GKV\\Version',
-        'ShipmentOrderType'                       => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentOrderType',
-        'Shipment'                                => 'Mediaopt\\DHL\\Api\\GKV\\Shipment',
-        'ShipmentDetailsType'                     => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentDetailsTypeType',
-        'ShipmentItemType'                        => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentItemType',
-        'ShipmentService'                         => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentService',
-        'ServiceconfigurationDateOfDelivery'      => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDateOfDelivery',
-        'ServiceconfigurationDeliveryTimeframe'   => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDeliveryTimeframe',
+        'AuthentificationType'                  => 'Mediaopt\\DHL\\Api\\GKV\\AuthenticationType',
+        'CreateShipmentOrderRequest'            => 'Mediaopt\\DHL\\Api\\GKV\\Request\\CreateShipmentOrderRequest',
+        'CreateShipmentOrderResponse'           => 'Mediaopt\\DHL\\Api\\GKV\\Response\\CreateShipmentOrderResponse',
+        'Version'                               => 'Mediaopt\\DHL\\Api\\GKV\\Version',
+        'ShipmentOrderType'                     => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentOrderType',
+        'Shipment'                              => 'Mediaopt\\DHL\\Api\\GKV\\Shipment',
+        'ShipmentDetailsType'                   => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentDetailsTypeType',
+        'ShipmentItemType'                      => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentItemType',
+        'ShipmentService'                       => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentService',
+        'ServiceconfigurationDateOfDelivery'    => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDateOfDelivery',
+        'ServiceconfigurationDeliveryTimeframe' => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDeliveryTimeframe',
         'ServiceconfigurationISR'                 => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationISR',
         'Serviceconfiguration'                    => 'Mediaopt\\DHL\\Api\\GKV\\Serviceconfiguration',
         'ServiceconfigurationShipmentHandling'    => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationShipmentHandling',
@@ -147,9 +147,9 @@ class GKV extends \SoapClient
     {
         $this->getLogger()->debug(__METHOD__ . " - SOAP API call for function  $functionName", ['options' => $request]);
         try {
-            $auth = $this->getCredentials()->isSandBox()
-                ? new AuthentificationType('2222222222_01', 'pass')
-                : new AuthentificationType($this->getCredentials()->getUsername(), $this->getCredentials()->getPassword());
+            $auth = $this->getCredentials()->isSandbox()
+                ? new AuthenticationType('2222222222_01', 'pass')
+                : new AuthenticationType($this->getCredentials()->getUsername(), $this->getCredentials()->getPassword());
             $header = new \SoapHeader('http://dhl.de/webservice/cisbase', 'Authentification', $auth);
             return $this->__soapCall($functionName, [$request], null, $header);
         } catch (\SoapFault $exception) {
