@@ -50,7 +50,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
         if ($password = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password')) {
             return $password;
         }
-        return $this->isProductionEnvironment() ? 'sLS0vunhKg47u6JyVTL0ZUDCG18Mh8' : 'J+-G_s6+3Ik1NX3f_mx9';
+        return $this->isProductionEnvironment() ? 'sLS0vunhKg47u6JyVTL0ZUDCG18Mh8' : 'H#R#__!w4-dt-9++9Z-r7-9';
     }
 
     /**
