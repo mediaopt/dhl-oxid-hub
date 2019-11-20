@@ -23,7 +23,6 @@ class CsvExporterTest extends PHPUnit_Framework_TestCase
         Process::PAKET,
         Process::PAKET_PRIO,
         Process::PAKET_TAGGLEICH,
-        Process::RETOURE,
         Process::PAKET_INTERNATIONAL,
         Process::EUROPAKET,
         Process::PAKET_CONNECT,

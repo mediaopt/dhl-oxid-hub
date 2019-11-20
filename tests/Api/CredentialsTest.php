@@ -13,22 +13,39 @@ use Mediaopt\DHL\Api\Credentials;
 class CredentialsTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testSandboxEndpoint()
+    public function testSandboxRestEndpoint()
     {
-        $credentials = Credentials::createSandboxEndpoint('foo', 'bar', '1234567890');
+        $credentials = Credentials::createSandboxRestEndpoint('foo', 'bar', '1234567890');
         $this->assertEquals('foo', $credentials->getUsername());
         $this->assertEquals('bar', $credentials->getPassword());
         $this->assertEquals('1234567890', $credentials->getEkp());
         $this->assertEquals('https://cig.dhl.de/services/sandbox/rest', $credentials->getEndpoint());
     }
 
-    public function testProductionEndpoint()
+    public function testProductionRestEndpoint()
     {
-        $credentials = Credentials::createProductionEndpoint('bar', 'foo', '1234567890');
+        $credentials = Credentials::createProductionRestEndpoint('bar', 'foo', '1234567890');
         $this->assertEquals('bar', $credentials->getUsername());
         $this->assertEquals('foo', $credentials->getPassword());
         $this->assertEquals('1234567890', $credentials->getEkp());
         $this->assertEquals('https://cig.dhl.de/services/production/rest', $credentials->getEndpoint());
     }
 
+    public function testSandboxSoapEndpoint()
+    {
+        $credentials = Credentials::createSandboxSoapEndpoint('foo', 'bar', '1234567890');
+        $this->assertEquals('foo', $credentials->getUsername());
+        $this->assertEquals('bar', $credentials->getPassword());
+        $this->assertEquals('1234567890', $credentials->getEkp());
+        $this->assertEquals('https://cig.dhl.de/services/sandbox/soap', $credentials->getEndpoint());
+    }
+
+    public function testProductionSoapEndpoint()
+    {
+        $credentials = Credentials::createProductionSoapEndpoint('bar', 'foo', '1234567890');
+        $this->assertEquals('bar', $credentials->getUsername());
+        $this->assertEquals('foo', $credentials->getPassword());
+        $this->assertEquals('1234567890', $credentials->getEkp());
+        $this->assertEquals('https://cig.dhl.de/services/production/soap', $credentials->getEndpoint());
+    }
 }

@@ -3,6 +3,7 @@
 namespace Mediaopt\DHL;
 
 use GuzzleHttp\ClientInterface;
+use Mediaopt\DHL\Api\GKV;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Psr\Log\LoggerInterface;
@@ -110,5 +111,13 @@ class Main
     public function buildWunschpaket()
     {
         return $this->getConfigurator()->buildWunschpaket($this->getLogger(), $this->getClient());
+    }
+
+    /**
+     * @return GKV
+     */
+    public function buildGKV()
+    {
+        return $this->getConfigurator()->buildGKV($this->getLogger());
     }
 }

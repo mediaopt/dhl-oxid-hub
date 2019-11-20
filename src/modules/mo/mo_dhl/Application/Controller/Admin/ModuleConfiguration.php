@@ -9,7 +9,6 @@ namespace Mediaopt\DHL\Application\Controller\Admin;
  */
 
 use Mediaopt\DHL\Merchant\Ekp;
-use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -58,140 +57,13 @@ class ModuleConfiguration extends ModuleConfiguration_parent
 
     /**
      * @extend
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
      */
     public function saveConfVars()
     {
         parent::saveConfVars();
 
         if ($this->getEditObjectId() === 'mo_dhl') {
-            $request = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class);
-            $this->moSaveExcludedPaymentOptions((array)$request->getRequestParameter('payment'));
-            $this->moSaveExcludedDeliveryOptions((array)$request->getRequestParameter('delivery'));
-            $this->moSaveExcludedDeliverySetOptions((array)$request->getRequestParameter('deliveryset'));
-            $this->moSaveProcessIdentifiers((array)$request->getRequestParameter('processIdentifier'));
-            $this->moSaveParticipationNumbers((array)$request->getRequestParameter('participationNumber'));
             $this->moReviewEkp();
-        }
-    }
-
-    /**
-     * @param string[] $excludedPaymentOptions
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
-     */
-    protected function moSaveExcludedPaymentOptions($excludedPaymentOptions)
-    {
-        if (!is_array($excludedPaymentOptions)) {
-            $this->moSaveExcludedPaymentOptions([]);
-            return;
-        }
-
-        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $db->execute('UPDATE `oxpayments` SET mo_dhl_excluded = 0');
-        if (!empty($excludedPaymentOptions)) {
-            $values = implode(', ', array_map([$db, 'quote'], $this->moSanitizeOptions($excludedPaymentOptions)));
-            $db->execute("UPDATE `oxpayments` SET mo_dhl_excluded = 1 WHERE OXID IN ({$values})");
-        }
-    }
-
-    /**
-     * @param string[] $options
-     * @return string[]
-     */
-    protected function moSanitizeOptions(array $options)
-    {
-        return array_map(function ($option) {
-            return filter_var($option, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
-        }, $options);
-    }
-
-    /**
-     * @param string[] $excludedDeliveryOptions
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
-     */
-    protected function moSaveExcludedDeliveryOptions($excludedDeliveryOptions)
-    {
-        if (!is_array($excludedDeliveryOptions)) {
-            $this->moSaveExcludedDeliveryOptions([]);
-            return;
-        }
-
-        $delivery = \getViewName('oxdelivery');
-        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $db->execute("UPDATE {$delivery} SET mo_dhl_excluded = 0");
-        if (!empty($excludedDeliveryOptions)) {
-            $values = implode(', ', array_map([$db, 'quote'], $this->moSanitizeOptions($excludedDeliveryOptions)));
-            $db->execute("UPDATE {$delivery} SET mo_dhl_excluded = 1 WHERE OXID IN ({$values})");
-        }
-    }
-
-    /**
-     * @param string[] $excludedDeliverySetOptions
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
-     */
-    protected function moSaveExcludedDeliverySetOptions($excludedDeliverySetOptions)
-    {
-        if (!is_array($excludedDeliverySetOptions)) {
-            $this->moSaveExcludedDeliverySetOptions([]);
-            return;
-        }
-
-        $deliverySet = \getViewName('oxdeliveryset');
-        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $db->execute("UPDATE {$deliverySet} SET mo_dhl_excluded = 0");
-        if (!empty($excludedDeliverySetOptions)) {
-            $values = implode(', ', array_map([$db, 'quote'], $this->moSanitizeOptions($excludedDeliverySetOptions)));
-            $db->execute("UPDATE {$deliverySet} SET mo_dhl_excluded = 1 WHERE OXID IN ({$values})");
-        }
-    }
-
-    /**
-     * @param string[] $identifiers
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
-     */
-    protected function moSaveProcessIdentifiers($identifiers)
-    {
-        $deliverySet = \getViewName('oxdeliveryset');
-        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $db->execute("UPDATE {$deliverySet} SET MO_DHL_PROCESS = NULL");
-        $query = "UPDATE {$deliverySet} SET MO_DHL_PROCESS = %s WHERE OXID = %s";
-        foreach ($identifiers as $oxid => $identifier) {
-            if (empty($identifier)) {
-                continue;
-            }
-
-            try {
-                Process::build($identifier);
-                $db->execute(sprintf($query, $db->quote($identifier), $db->quote($oxid)));
-            } catch (\InvalidArgumentException $exception) {
-                /** @noinspection PhpParamsInspection */
-                \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PROCESS_IDENTIFIER_ERROR');
-            }
-        }
-    }
-
-    /**
-     * @param string[] $numbers
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
-     */
-    protected function moSaveParticipationNumbers($numbers)
-    {
-        $deliverySet = \getViewName('oxdeliveryset');
-        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $db->execute("UPDATE {$deliverySet} SET MO_DHL_PARTICIPATION = NULL");
-        $query = "UPDATE {$deliverySet} SET MO_DHL_PARTICIPATION = %s WHERE OXID = %s";
-        foreach ($numbers as $oxid => $number) {
-            if (empty($number)) {
-                continue;
-            }
-
-            try {
-                Participation::build($number);
-                $db->execute(sprintf($query, $db->quote($number), $db->quote($oxid)));
-            } catch (\InvalidArgumentException $exception) {
-                /** @noinspection PhpParamsInspection */
-                \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PARTICIPATION_NUMBER_ERROR');
-            }
         }
     }
 

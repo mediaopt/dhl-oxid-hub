@@ -162,7 +162,7 @@ class WunschpaketTest extends \PHPUnit_Framework_TestCase
             if ($date->getTimestamp() < time()) {
                 $date->modify('+1 year');
             }
-            $this->assertNotEmpty($wunschpaket->getPreferredTimes('12045', $date));
+            $this->assertNotEmpty($wunschpaket->getPreferredTimes('12045', $date), 'There are no preferredTimes for ' . $date->format('d.m.Y'));
         }
     }
 
@@ -175,7 +175,7 @@ class WunschpaketTest extends \PHPUnit_Framework_TestCase
                 if ($this->isAroundChristmas($preferredDay['datetime'])) {
                     continue;
                 }
-                $this->assertEquals($preferredDay['excluded'], !$wunschpaket->isValidPreferredDay('12045', $preferredDay['datetime']));
+                $this->assertEquals($preferredDay['excluded'], !$wunschpaket->isValidPreferredDay('12045', $preferredDay['datetime']), $preferredDay['datetime']->format('d.m.Y') . ' excluded flag false ');
             }
         }
     }
@@ -219,7 +219,7 @@ class WunschpaketTest extends \PHPUnit_Framework_TestCase
                 if ($this->isAroundChristmas($preferredDay['datetime'])) {
                     continue;
                 }
-                $this->assertTrue($wunschpaket->isValidPreferredDay('12045', $preferredDay['datetime']));
+                $this->assertTrue($wunschpaket->isValidPreferredDay('12045', $preferredDay['datetime']), $preferredDay['datetime']->format('d.m.Y') . ' should be a preferredDay for ' . $wunschpaket->getTransferDay($day)->format('d.m.Y'));
             }
         }
     }
@@ -240,7 +240,7 @@ class WunschpaketTest extends \PHPUnit_Framework_TestCase
     {
         $wunschpaket = $this->buildWunschpaket();
         foreach ($this->getDays() as $day) {
-            $this->assertCount(Wunschpaket::WUNSCHTAG_COUNT, $wunschpaket->getPreferredDays('12045', $day));
+            $this->assertCount(Wunschpaket::WUNSCHTAG_COUNT, $wunschpaket->getPreferredDays('12045', $day), "Check for " . $day->format('d.m.Y') . " failed");
         }
     }
 
@@ -253,7 +253,7 @@ class WunschpaketTest extends \PHPUnit_Framework_TestCase
         $mondayBeforeEaster->modify('last Monday');
         $wunschpaket->setCutOffTime('16:00');
         foreach ($wunschpaket->getPreferredDays('12045', $mondayBeforeEaster, false) as $preferredDay) {
-            $this->assertTrue($wunschpaket->isValidPreferredDay('12045', $preferredDay['datetime']));
+            $this->assertTrue($wunschpaket->isValidPreferredDay('12045', $preferredDay['datetime']), $preferredDay['datetime']->format('d.m.Y') . ' is not a valid preferredDay for ' . $mondayBeforeEaster->format('d.m.Y'));
         }
     }
 
