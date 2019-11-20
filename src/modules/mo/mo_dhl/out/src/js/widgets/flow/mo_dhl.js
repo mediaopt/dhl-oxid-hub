@@ -4,7 +4,7 @@
         dhl: null,
         isWunschboxAvailable: null,
         addPostnummer: function () {
-            let $addInfoField = $("[name='deladr[oxaddress__oxaddinfo]']");
+            var $addInfoField = $("[name='deladr[oxaddress__oxaddinfo]']");
             $addInfoField.after($('<div></div>').addClass('help-block'));
             var addressInformation = $addInfoField.closest('div.form-group');
             var defaultLabel = addressInformation
@@ -245,6 +245,20 @@
                 }, 600 );
             });
         },
+        handleInvoiceAddresses: function() {
+            var $fName = $('input[name="invadr[oxuser__oxfname]"]');
+            var $lName = $('input[name="invadr[oxuser__oxlname]"]');
+            var $street = $('input[name="invadr[oxuser__oxstreet]"]');
+            var $city = $('input[name="invadr[oxuser__oxcity]"]');
+            var $translationHelper = $('#moDHLWunschpaket');
+            var translationError = $translationHelper.data('translatefailedblacklist');
+
+            [$fName, $lName, $street, $city].map(function (value) {
+                value.data('validation-callback-callback', 'mo_dhl.validatePreferredAddress');
+                value.data('validation-callback-message', translationError);
+                value.jqBootstrapValidation();
+            });
+        },
         initialize: function (isWunschboxAvailable) {
             var self = this;
             self.isWunschboxAvailable = isWunschboxAvailable;
@@ -256,6 +270,7 @@
             this.addNewAddressTypeSelectionListener();
             this.addShippingAddressListener();
             this.setInitialState();
+            this.handleInvoiceAddresses();
 
             this.rearrangeAddresses();
             this.integrateAddressDropdown();

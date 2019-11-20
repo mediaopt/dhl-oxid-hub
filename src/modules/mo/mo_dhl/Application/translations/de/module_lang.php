@@ -103,4 +103,5 @@ $aLang = [
     'MO_DHL__INVALID_POSTNUMBER'                 => 'Ungültige Postnummer',
     'MO_DHL__PRIVACY_LINK'                       => 'Bitte beachten Sie die Datenschutzerklärung',
     'MO_DHL__PRIVACY_LINK_SHORT'                 => 'Datenschutz',
+    'MO_DHL__FAILED_BLACKLIST'                   => 'Eingabe nicht erlaubt',
 ];

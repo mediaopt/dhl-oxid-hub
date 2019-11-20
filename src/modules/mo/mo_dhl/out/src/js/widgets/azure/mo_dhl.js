@@ -211,6 +211,17 @@
             this.dhl.state = "regular";
             this.dhl.toRegularAddress();
         },
+        handleInvoiceAddresses: function() {
+            var $fName = $('input[name="invadr[oxuser__oxfname]"]');
+            var $lName = $('input[name="invadr[oxuser__oxlname]"]');
+            var $street = $('input[name="invadr[oxuser__oxstreet]"]');
+            var $city = $('input[name="invadr[oxuser__oxcity]"]');
+
+            [$fName, $lName, $street, $city].map(function (value) {
+                $(value).addClass('mo_js-oxValidate_checkBlacklist');
+                $(value).oxInputValidator();
+            });
+        },
         initialize: function (isWunschboxAvailable) {
             var self = this;
             self.isWunschboxAvailable = isWunschboxAvailable;
@@ -221,6 +232,7 @@
             this.addAddressChangeListener();
             this.addShippingAddressListener();
             this.setInitialState();
+            this.handleInvoiceAddresses();
 
             if ($("#addressId").length === 0) {
                 self.dhl.toRegularAddress();

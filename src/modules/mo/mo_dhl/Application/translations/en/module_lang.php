@@ -103,4 +103,5 @@ $aLang = [
     'MO_DHL__INVALID_POSTNUMBER'                 => 'Invalid postnumber',
     'MO_DHL__PRIVACY_LINK'                       => 'Please note our Privacy Policy',
     'MO_DHL__PRIVACY_LINK_SHORT'                 => 'Privacy Policy',
+    'MO_DHL__FAILED_BLACKLIST'                   => 'Input is not allowed',
 ];

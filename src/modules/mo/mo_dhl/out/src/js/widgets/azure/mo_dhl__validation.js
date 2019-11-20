@@ -14,6 +14,13 @@
             if ($(oInput).hasClass('js-oxValidate_preferredNeighboursName') && !mo_dhl.validatePreferredNeighboursName(true)) {
                 return "js-oxError_preferredNeighboursName";
             }
+            if ($(oInput).hasClass('mo_js-oxValidate_checkBlacklist')) {
+                var validator = new DHLValidator();
+                if (!validator.validateAgainstBlacklist($(oInput).val())) {
+                    return "mo_js-oxValidate_checkBlacklist";
+                }
+            }
+
             return this._super(oInput, blCanSetDefaultState);
         },
         submitValidation: function (oForm) {

@@ -4,6 +4,7 @@
              class="theme--is-azure"
              data-translatenowunschzeit="[{oxmultilang ident='MO_DHL__NO_WUNSCHZEIT'}]"
              data-translatenowunschtag="[{oxmultilang ident='MO_DHL__NO_WUNSCHTAG'}]"
+             data-translatefailedblacklist="[{oxmultilang ident='MO_DHL__FAILED_BLACKLIST'}]"
              data-theme="azure" data-timeanddate="[{$oViewConf->getSslSelfLink()}]cl=MoDHLYellowBox&zip=">
             <img src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
 
