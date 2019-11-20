@@ -212,6 +212,7 @@
             this.dhl.toRegularAddress();
         },
         handleInvoiceAddresses: function() {
+            if (!this.isWunschboxAvailable) return;
             var $fName = $('input[name="invadr[oxuser__oxfname]"]');
             var $lName = $('input[name="invadr[oxuser__oxlname]"]');
             var $street = $('input[name="invadr[oxuser__oxstreet]"]');
