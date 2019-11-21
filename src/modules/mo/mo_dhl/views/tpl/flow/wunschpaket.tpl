@@ -3,6 +3,7 @@
         <div id="moDHLWunschpaket" class="moDHLWunschpaketFlow col-lg-offset-3"
              data-translatenowunschzeit="[{oxmultilang ident='MO_DHL__NO_WUNSCHZEIT'}]"
              data-translatenowunschtag="[{oxmultilang ident='MO_DHL__NO_WUNSCHTAG'}]"
+             data-translatefailedblacklist="[{oxmultilang ident='MO_DHL__FAILED_BLACKLIST'}]"
              data-theme="flow" data-timeanddate="[{$oViewConf->getSslSelfLink()}]cl=MoDHLYellowBox&zip=">
             <img src="[{$oViewConf->getModuleURL("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
 
