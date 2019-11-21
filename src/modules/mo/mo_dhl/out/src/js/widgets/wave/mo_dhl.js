@@ -247,14 +247,12 @@
         },
         handleInvoiceAddresses: function() {
             if (!this.isWunschboxAvailable) return;
-            var $fName = $('input[name="invadr[oxuser__oxfname]"]');
-            var $lName = $('input[name="invadr[oxuser__oxlname]"]');
             var $street = $('input[name="invadr[oxuser__oxstreet]"]');
             var $city = $('input[name="invadr[oxuser__oxcity]"]');
             var $translationHelper = $('#moDHLWunschpaket');
             var translationError = $translationHelper.data('translatefailedblacklist');
 
-            [$fName, $lName, $street, $city].map(function (value) {
+            [$street, $city].map(function (value) {
                 value.data('validation-callback-callback', 'mo_dhl.validatePreferredAddress');
                 value.data('validation-callback-message', translationError);
                 value.jqBootstrapValidation();

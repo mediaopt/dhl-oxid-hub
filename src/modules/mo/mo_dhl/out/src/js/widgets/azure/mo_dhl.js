@@ -213,15 +213,13 @@
         },
         handleInvoiceAddresses: function() {
             if (!this.isWunschboxAvailable) return;
-            var $fName = $('input[name="invadr[oxuser__oxfname]"]');
-            var $lName = $('input[name="invadr[oxuser__oxlname]"]');
             var $street = $('input[name="invadr[oxuser__oxstreet]"]');
             var $city = $('input[name="invadr[oxuser__oxcity]"]');
 
             var $translationHelper = $('#moDHLWunschpaket');
             var translationError = $translationHelper.data('translatefailedblacklist');
 
-            [$fName, $lName, $street, $city].map(function (value) {
+            [$street, $city].map(function (value) {
                 var $element = $(value);
                 $element.addClass('mo_js-oxValidate_checkBlacklist');
                 $element.oxInputValidator();
