@@ -16,6 +16,10 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__merchant_ekp'      => 'EKP',
     'HELP_SHOP_MODULE_mo_dhl__merchant_ekp' => 'Die EKP ist Ihre DHL Kundennummer',
 
+    'SHOP_MODULE_GROUP_mo_dhl__label'             => 'Labelerzeugung',
+    'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Nur leitcodierbare Adressen zulassen',
+    'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => 'Aktivieren Sie die Checkbox, wenn Versandetiketten nur für Adressen erstellt werden sollen, die seitens DHL als leitcodierbar gelten. Für nicht-leitcodierbare Adressen berechnet DHL in der Regel einen Aufschlag.',
+
     'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Standortsuche',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximale Trefferanzahl',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_1'         => '1',
