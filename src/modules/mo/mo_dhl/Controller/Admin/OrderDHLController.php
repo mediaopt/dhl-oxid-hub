@@ -14,6 +14,7 @@ use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
+use OxidEsales\Eshop\Core\Registry;
 
 /**
  * @author Mediaopt GmbH
@@ -65,8 +66,10 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $shipmentBuilder = \oxNew(GKVShipmentBuilder::class);
         $shipment = $shipmentBuilder->build($this->getOrder());
         $shipmentOrder = new ShipmentOrderType($this->getOrder()->getId(), $shipment);
-        $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration(true));
-        $gkvClient = \OxidEsales\Eshop\Core\Registry::get(DHLAdapter::class)->buildGKV();
+        if (Registry::getConfig()->getShopConfVar('mo_dhl__only_with_leitcode')) {
+            $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration(true));
+        }
+        $gkvClient = Registry::get(DHLAdapter::class)->buildGKV();
         $request = new CreateShipmentOrderRequest(new Version(3, 0), $shipmentOrder);
         return $gkvClient->createShipmentOrder($request->setCombinedPrinting(0));
     }
@@ -76,7 +79,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     protected function getEkp()
     {
-        return (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('ekp') ?: (string) $this->getOrder()->oxorder__mo_dhl_ekp->rawValue ?: (string) \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__merchant_ekp');
+        return (string)Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('ekp') ?: (string)$this->getOrder()->oxorder__mo_dhl_ekp->rawValue ?: (string)Registry::getConfig()->getConfigParam('mo_dhl__merchant_ekp');
     }
 
     /**
@@ -98,7 +101,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     protected function getParticipationNumber()
     {
-        return (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('participationNumber') ?: (string) $this->getOrder()->oxorder__mo_dhl_participation->rawValue;
+        return (string)Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('participationNumber') ?: (string)$this->getOrder()->oxorder__mo_dhl_participation->rawValue;
     }
 
     /**
@@ -136,12 +139,12 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     protected function validateEkp()
     {
         try {
-            $ekp = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('ekp');
+            $ekp = Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('ekp');
             Ekp::build($ekp);
             return $ekp;
         } catch (\InvalidArgumentException $exception) {
             /** @noinspection PhpParamsInspection */
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__EKP_ERROR');
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__EKP_ERROR');
             return '';
         }
     }
@@ -152,12 +155,12 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     protected function validateProcessIdentifier()
     {
         try {
-            $processIdentifier = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('processIdentifier');
+            $processIdentifier = Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('processIdentifier');
             Process::build($processIdentifier);
             return $processIdentifier;
         } catch (\InvalidArgumentException $exception) {
             /** @noinspection PhpParamsInspection */
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PROCESS_IDENTIFIER_ERROR');
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PROCESS_IDENTIFIER_ERROR');
             return '';
         }
     }
@@ -168,12 +171,12 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     protected function validateParticipationNumber()
     {
         try {
-            $participationNumber = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('participationNumber');
+            $participationNumber = Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('participationNumber');
             Participation::build($participationNumber);
             return $participationNumber;
         } catch (\InvalidArgumentException $exception) {
             /** @noinspection PhpParamsInspection */
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PARTICIPATION_NUMBER_ERROR');
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PARTICIPATION_NUMBER_ERROR');
             return '';
         }
     }
@@ -230,7 +233,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     protected function getWunschpaket()
     {
         if (!$this->wunschpaket) {
-            $this->wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
+            $this->wunschpaket = Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         }
         return $this->wunschpaket;
     }
@@ -241,7 +244,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     protected function translateString(string $text)
     {
-        $lang = \OxidEsales\Eshop\Core\Registry::getLang();
+        $lang = Registry::getLang();
         return $lang->translateString($text);
     }
 
@@ -254,7 +257,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $creationState = $response->getCreationState()[0];
         $statusInformation = $creationState->getLabelData()->getStatus();
         if ($statusInformation->getStatusCode() !== StatusCode::GKV_STATUS_OK) {
-            $utilsView = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class);
+            $utilsView = Registry::get(\OxidEsales\Eshop\Core\UtilsView::class);
             foreach ($statusInformation->getStatusMessage() as $error) {
                 $utilsView->addErrorToDisplay($error);
             }

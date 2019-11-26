@@ -182,6 +182,11 @@ $aModule = [
             'value' => '',
         ],
         [
+            'group' => 'mo_dhl__label',
+            'name'  => 'mo_dhl__only_with_leitcode',
+            'type'  => 'bool',
+        ],
+        [
             'group'       => 'mo_dhl__standortsuche',
             'name'        => 'mo_dhl__standortsuche_maximumHits',
             'type'        => 'select',
