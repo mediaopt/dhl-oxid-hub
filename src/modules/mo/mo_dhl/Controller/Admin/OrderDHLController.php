@@ -2,8 +2,16 @@
 
 namespace Mediaopt\DHL\Controller\Admin;
 
+use Mediaopt\DHL\Adapter\DHLAdapter;
+use Mediaopt\DHL\Adapter\DHLGKVShipmentBuilder;
+use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\Response\StatusCode;
+use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
+use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
+use Mediaopt\DHL\Api\GKV\Version;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Merchant\Ekp;
+use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 
@@ -34,7 +42,33 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $this->addTplParam('participationNumber', $this->getParticipationNumber());
         $this->addTplParam('processIdentifier', $this->getProcessIdentifier());
         $this->addTplParam('remarks', $this->getRemarks());
+        $this->addTplParam('labels', $this->getOrder()->moDHLGetLabels());
         return 'mo_dhl__order_dhl.tpl';
+    }
+
+    /**
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    public function createLabel()
+    {
+        $this->handleResponse($this->moDHLCallCreation());
+    }
+
+    /**
+     * @return \Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    protected function moDHLCallCreation()
+    {
+        $shipmentBuilder = \oxNew(DHLGKVShipmentBuilder::class);
+        $shipment = $shipmentBuilder->build($this->getOrder());
+        $shipmentOrder = new ShipmentOrderType($this->getOrder()->getId(), $shipment);
+        $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration(true));
+        $gkvClient = \OxidEsales\Eshop\Core\Registry::get(DHLAdapter::class)->buildGKV();
+        $request = new CreateShipmentOrderRequest(new Version(3, 0), $shipmentOrder);
+        return $gkvClient->createShipmentOrder($request->setCombinedPrinting(0));
     }
 
     /**
@@ -76,7 +110,6 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
      */
     public function save()
     {
@@ -210,6 +243,25 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     {
         $lang = \OxidEsales\Eshop\Core\Registry::getLang();
         return $lang->translateString($text);
+    }
+
+    /**
+     * @param \Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse $response
+     * @throws \Exception
+     */
+    protected function handleResponse(\Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse $response)
+    {
+        $creationState = $response->getCreationState()[0];
+        $statusInformation = $creationState->getLabelData()->getStatus();
+        if ($statusInformation->getStatusCode() !== StatusCode::GKV_STATUS_OK) {
+            $utilsView = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class);
+            foreach ($statusInformation->getStatusMessage() as $error) {
+                $utilsView->addErrorToDisplay($error);
+            }
+            return;
+        }
+        $label = MoDHLLabel::fromOrderAndCreationState($this->getOrder(), $creationState);
+        $label->save();
     }
 
 }

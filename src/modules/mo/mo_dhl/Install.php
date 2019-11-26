@@ -21,6 +21,7 @@ class Install
     {
         static::addBootstrapLoader();
         static::ensureConfigVariableNameLength();
+        static::addTables();
         static::addColumns();
         static::cleanUp();
     }
@@ -129,6 +130,31 @@ class Install
     /**
      * @throws \Exception
      */
+    protected static function addTables()
+    {
+        $tables = self::addTable('mo_dhl_labels', "(
+        `OXID` CHAR(32) COLLATE latin1_general_ci NOT NULL,
+        `OXSHOPID` INT DEFAULT 1 NOT NULL,
+        `orderId` CHAR(32) COLLATE latin1_general_ci,
+        `shipmentNumber` VARCHAR(39),
+        `returnShipmentNumber` VARCHAR(39),
+        `labelUrl` VARCHAR(512),
+        `returnLabelUrl` VARCHAR(512),
+        `exportLabelUrl` VARCHAR(512),
+        `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        PRIMARY KEY (OXID)
+        )");
+
+        if ($tables === 0) {
+            return;
+        }
+
+        \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\DbMetaDataHandler::class)->updateViews();
+    }
+
+    /**
+     * @throws \Exception
+     */
     protected static function addColumns()
     {
         $payments = self::addColumn('oxpayments', 'MO_DHL_EXCLUDED', 'TINYINT(1) NOT NULL DEFAULT 0');
@@ -152,8 +178,6 @@ class Install
 
     /**
      * This method ensures that the OXVARNAME column is large enough for our configuration variable names.
-     *
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
      */
     protected static function ensureConfigVariableNameLength()
     {
@@ -163,5 +187,35 @@ class Install
         if ($length < 100) {
             $db->execute("ALTER TABLE oxconfig MODIFY OXVARNAME VARCHAR(100) DEFAULT '' NOT NULL");
         }
+    }
+
+    /**
+     * @param string $table
+     * @param string $params
+     * @return int
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseErrorException
+     */
+    protected static function addTable($table, $params)
+    {
+        if (self::tableExists($table)) {
+            return 0;
+        }
+        \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute("CREATE TABLE {$table} $params");
+        return 1;
+    }
+
+    /**
+     * check if table already exists
+     *
+     * @param string $tableName
+     * @return bool
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     */
+    private static function tableExists(string $tableName)
+    {
+        $dbName = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('dbName');
+        $sQuery = 'SELECT 1 FROM information_schema.tables WHERE table_schema = ? AND table_name = ?';
+        return (bool)\OxidEsales\Eshop\Core\DatabaseProvider::getDb()->getOne($sQuery, [$dbName, $tableName]);
     }
 }

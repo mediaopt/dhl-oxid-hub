@@ -8,6 +8,7 @@ namespace Mediaopt\DHL\Application\Model;
  * @copyright 2016 Mediaopt GmbH
  */
 
+use Mediaopt\DHL\Model\MoDHLLabelList;
 use Mediaopt\DHL\ServiceProvider\Branch;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -168,5 +169,29 @@ class Order extends Order_parent
         /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
         $basket = $this->getBasket();
         return $basket->moDHLCalculateSurcharge($amount);
+    }
+
+    /**
+     * @param string $field
+     * @return mixed
+     */
+    public function moDHLGetAddressData($field)
+    {
+        foreach (['oxdelfname', 'oxdellname'] as $check) {
+            if (empty($this->getFieldData($check))) {
+                return $this->getFieldData("oxbill$field");
+            }
+        }
+        return $this->getFieldData("oxdel$field");
+    }
+
+    /**
+     * @return MoDHLLabelList
+     */
+    public function moDHLGetLabels()
+    {
+        $labels = \oxNew(MoDHLLabelList::class);
+        $labels->loadOrderLabels($this->getId());
+        return $labels;
     }
 }

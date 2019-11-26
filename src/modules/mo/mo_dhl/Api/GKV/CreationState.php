@@ -21,13 +21,13 @@ class CreationState
     protected $returnShipmentNumber = null;
 
     /**
-     * @var LabelData[] $LabelData
+     * @var LabelData $LabelData
      */
     protected $LabelData = null;
 
     /**
-     * @param string      $sequenceNumber
-     * @param LabelData[] $LabelData
+     * @param string    $sequenceNumber
+     * @param LabelData $LabelData
      */
     public function __construct($sequenceNumber, $LabelData)
     {
@@ -90,7 +90,7 @@ class CreationState
     }
 
     /**
-     * @return LabelData[]
+     * @return LabelData
      */
     public function getLabelData()
     {
@@ -98,7 +98,7 @@ class CreationState
     }
 
     /**
-     * @param LabelData[] $LabelData
+     * @param LabelData $LabelData
      * @return CreationState
      */
     public function setLabelData($LabelData)

@@ -89,11 +89,43 @@
                             </td>
                         </tr>
                     [{/if}]
+                    [{if $labels}]
+                        <tr>
+                            <td class="edittext" colspan="2">
+                                <br>
+                                <table style="border : 1px #A9A9A9; border-style : solid solid solid solid; padding-top: 5px; padding-bottom: 5px; padding-right: 5px; padding-left: 5px; width: 600px;">
+                                    <tr>
+                                        <td class="edittext" colspan="3">
+                                            <b>[{oxmultilang ident="MO_DHL__LABELS"}]</b>
+                                        </td>
+                                    </tr>
+                                    [{foreach from=$labels  item='label'}]
+                                        <tr>
+                                            <td>[{oxmultilang ident="MO_DHL__LABEL"}]</td>
+                                            <td>
+                                                <a target="_blank"
+                                                   href="[{$label->getFieldData('labelUrl')}]">[{$label->getFieldData('shipmentNumber')}]</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>[{oxmultilang ident="MO_DHL__RETOURE_LABEL"}]</td>
+                                            <td>
+                                                <a target="_blank"
+                                                   href="[{$label->getFieldData('returnLabelUrl')}]">[{$label->getFieldData('returnShipmentNumber')}]</a>
+                                            </td>
+                                        </tr>
+                                    [{/foreach}]
+                                </table>
+                            </td>
+                        </tr>
+                    [{/if}]
                 </table>
             </td>
         </tr>
     </table>
     <input type="submit" value="[{oxmultilang ident="GENERAL_SAVE"}]"/>
+    <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CREATE_LABEL"}]"
+           onClick="Javascript:document.myedit.fnc.value='createLabel'">
 </form>
 
 [{include file="bottomnaviitem.tpl"}]

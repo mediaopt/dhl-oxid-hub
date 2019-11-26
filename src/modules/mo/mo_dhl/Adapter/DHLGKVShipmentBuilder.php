@@ -18,14 +18,9 @@ use Mediaopt\DHL\Api\GKV\ShipmentItemType;
 use Mediaopt\DHL\Api\GKV\ShipmentNotificationType;
 use Mediaopt\DHL\Api\GKV\ShipmentService;
 use Mediaopt\DHL\Api\GKV\ShipperType;
-use Mediaopt\DHL\Merchant\Ekp;
+use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\ServiceProvider\Branch;
 use Mediaopt\DHL\Shipment\BillingNumber;
-use Mediaopt\DHL\Shipment\Participation;
-use Mediaopt\DHL\Shipment\Process;
-use OxidEsales\Eshop\Application\Model\Address as Address;
-use OxidEsales\Eshop\Application\Model\Basket;
-use OxidEsales\Eshop\Application\Model\User;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
@@ -34,7 +29,7 @@ use OxidEsales\Eshop\Application\Model\User;
  */
 
 /**
- * This class transforms an \oxBasket object into a Shipment object.
+ * This class transforms an Order object into a Shipment object.
  *
  * @author Mediaopt GmbH
  */
@@ -42,74 +37,62 @@ class DHLGKVShipmentBuilder extends DHLBaseShipmentBuilder
 {
 
     /**
-     * @param Basket       $oxBasket
-     * @param Address|User $deliveryAddress
+     * @param Order $order
      * @return Shipment
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      */
-    public function build(Basket $oxBasket, $deliveryAddress)
+    public function build(Order $order)
     {
-        $shipment = new Shipment($this->buildShipmentDetails($oxBasket), $this->buildShipper(), $this->buildReceiver($deliveryAddress));
+        $shipment = new Shipment($this->buildShipmentDetails($order), $this->buildShipper(), $this->buildReceiver($order));
         $shipment->setReturnReceiver($this->buildReturnReceiver());
         return $shipment;
     }
 
     /**
-     * @param Basket       $oxBasket
-     * @param Address|User $deliveryAddress
-     * @return string
-     */
-    public function buildHash(Basket $oxBasket, $deliveryAddress)
-    {
-        return 'mo_dhl__' . $this->calculateWeight($oxBasket) . '_' . $deliveryAddress->getEncodedDeliveryAddress();
-    }
-
-
-    /**
-     * @param Basket $oxBasket
+     * @param Order $order
      * @return ShipmentDetailsType
      */
-    protected function buildShipmentDetails(Basket $oxBasket): ShipmentDetailsType
+    protected function buildShipmentDetails(Order $order): ShipmentDetailsType
     {
-        $details = new ShipmentDetailsType($this->getProcess($oxBasket)->getServiceIdentifier(), $this->buildAccountNumber($oxBasket), $this->buildShipmentDate(), $this->buildShipmentItem($oxBasket));
-        if ($returnBookingNumber = $this->buildReturnAccountNumber($oxBasket)) {
+        $details = new ShipmentDetailsType($this->getProcess($order)->getServiceIdentifier(), $this->buildAccountNumber($order), $this->buildShipmentDate(), $this->buildShipmentItem($order));
+        if ($returnBookingNumber = $this->buildReturnAccountNumber($order)) {
             $details->setReturnShipmentAccountNumber($returnBookingNumber);
         }
-        $details->setNotification(new ShipmentNotificationType($oxBasket->getUser()->getFieldData('oxusername')));
+        $details->setNotification(new ShipmentNotificationType($order->getFieldData('oxbillemail')));
         $details->setService($this->buildService());
         return $details;
     }
 
     /**
-     * @param Address|User $deliveryAddress
+     * @param Order $order
      * @return ReceiverType
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    protected function buildReceiver($deliveryAddress): ReceiverType
+    protected function buildReceiver($order): ReceiverType
     {
-        $receiver = new ReceiverType($deliveryAddress->getFieldData('oxfname') . ' ' . $deliveryAddress->getFieldData('oxlname'));
-        if (Branch::isPackstation($deliveryAddress->getFieldData('oxstreet'))) {
-            $receiver->setPackstation($this->buildPackstation($deliveryAddress));
-        } else if (Branch::isFiliale($deliveryAddress->getFieldData('oxstreet'))) {
-            $receiver->setPostfiliale($this->buildPostfiliale($deliveryAddress));
+        $receiver = new ReceiverType($order->moDHLGetAddressData('fname') . ' ' . $order->moDHLGetAddressData('lname'));
+        if (Branch::isPackstation($order->moDHLGetAddressData('street'))) {
+            $receiver->setPackstation($this->buildPackstation($order));
+        } else if (Branch::isFiliale($order->moDHLGetAddressData('street'))) {
+            $receiver->setPostfiliale($this->buildPostfiliale($order));
         } else {
-            $receiver->setAddress($this->buildAddress($deliveryAddress));
-            $receiver->setCommunication($this->buildCommunication($deliveryAddress));
+            $receiver->setAddress($this->buildAddress($order));
+            $receiver->setCommunication($this->buildCommunication($order));
         }
         return $receiver;
     }
 
     /**
-     * @param Address|User $deliveryAddress
+     * @param Order $order
      * @return CommunicationType
      */
-    protected function buildCommunication($deliveryAddress)
+    protected function buildCommunication($order)
     {
         return (new CommunicationType())
-            ->setContactPerson($deliveryAddress->getFieldData('oxfname') . ' ' . $deliveryAddress->getFieldData('oxlname'))
-            ->setEmail($deliveryAddress->getFieldData('oxusername'))
-            ->setPhone($deliveryAddress->getFieldData('oxfon'));
+            ->setContactPerson($order->moDHLGetAddressData('fname') . ' ' . $order->moDHLGetAddressData('lname'))
+            ->setEmail($order->getFieldData('oxbillemail'))
+            ->setPhone($order->moDHLGetAddressData('fon'));
     }
 
     /**
@@ -125,92 +108,24 @@ class DHLGKVShipmentBuilder extends DHLBaseShipmentBuilder
     }
 
     /**
-     * @param Basket $basket
-     * @return float
-     */
-    protected function calculateWeight(Basket $basket): float
-    {
-        $weight = 0;
-        foreach ($basket->getContents() as $basketArticle) {
-            /** @var \OxidEsales\Eshop\Application\Model\BasketItem $basketArticle */
-            $weight += (float)$basketArticle->getArticle()->getWeight() * $basketArticle->getAmount();
-        }
-        return $weight;
-    }
-
-    /**
-     * @return Ekp|null
-     */
-    protected function getEkp()
-    {
-        try {
-            return Ekp::build($this->ekp);
-        } catch (\InvalidArgumentException $exception) {
-            return null;
-        }
-    }
-
-    /**
-     * @param Basket $basket
-     * @return Process|null
-     */
-    protected function getProcess(Basket $basket)
-    {
-        try {
-            $identifier = $this->deliverySetToProcessIdentifier[$basket->getShippingId()];
-            return Process::build($identifier);
-        } catch (\InvalidArgumentException $exception) {
-            return null;
-        }
-    }
-
-    /**
-     * @param Basket $basket
-     * @return Process|null
-     */
-    protected function getReturnProcess(Basket $basket)
-    {
-        try {
-            $identifier = $this->deliverySetToProcessIdentifier[$basket->getShippingId()];
-            return Process::buildForRetoure($identifier);
-        } catch (\InvalidArgumentException $exception) {
-            return null;
-        }
-    }
-
-    /**
-     * @param Basket $basket
-     * @return Participation|null
-     */
-    protected function getParticipation(Basket $basket)
-    {
-        try {
-            $number = $this->deliverySetToParticipationNumber[$basket->getShippingId()];
-            return Participation::build($number);
-        } catch (\InvalidArgumentException $exception) {
-            return null;
-        }
-    }
-
-    /**
-     * @param Basket $oxBasket
+     * @param Order $order
      * @return BillingNumber
      */
-    protected function buildAccountNumber(Basket $oxBasket): BillingNumber
+    protected function buildAccountNumber(Order $order): BillingNumber
     {
-        return new BillingNumber($this->getEkp(), $this->getProcess($oxBasket), $this->getParticipation($oxBasket));
+        return new BillingNumber($this->getEkp($order), $this->getProcess($order), $this->getParticipation($order));
     }
 
     /**
-     * @param Basket $oxBasket
+     * @param Order $order
      * @return BillingNumber|null
      */
-    protected function buildReturnAccountNumber(Basket $oxBasket)
+    protected function buildReturnAccountNumber(Order $order)
     {
-        if (!$this->getReturnProcess($oxBasket)) {
+        if (!$this->getReturnProcess($order)) {
             return null;
         }
-        return new BillingNumber($this->getEkp(), $this->getReturnProcess($oxBasket), $this->getParticipation($oxBasket));
+        return new BillingNumber($this->getEkp($order), $this->getReturnProcess($order), $this->getParticipation($order));
     }
 
     /**
@@ -224,12 +139,12 @@ class DHLGKVShipmentBuilder extends DHLBaseShipmentBuilder
     }
 
     /**
-     * @param Basket $oxBasket
+     * @param Order $order
      * @return ShipmentItemType
      */
-    protected function buildShipmentItem(Basket $oxBasket): ShipmentItemType
+    protected function buildShipmentItem(Order $order): ShipmentItemType
     {
-        return new ShipmentItemType($this->calculateWeight($oxBasket));
+        return new ShipmentItemType($this->calculateWeight($order));
     }
 
     /**
@@ -281,32 +196,33 @@ class DHLGKVShipmentBuilder extends DHLBaseShipmentBuilder
     }
 
     /**
-     * @param Address $deliveryAddress
+     * @param Order $order
      * @return PostfilialeType
      */
-    private function buildPostfiliale(Address $deliveryAddress): PostfilialeType
+    private function buildPostfiliale(Order $order): PostfilialeType
     {
-        return new PostfilialeType($deliveryAddress->getFieldData('oxstreetnr'), $deliveryAddress->getFieldData('oxaddinfo'), $deliveryAddress->getFieldData('oxzip'), $deliveryAddress->getFieldData('oxcity'));
+        return new PostfilialeType($order->moDHLGetAddressData('streetnr'), $order->moDHLGetAddressData('addinfo'), $order->moDHLGetAddressData('zip'), $order->moDHLGetAddressData('city'));
     }
 
     /**
-     * @param Address $deliveryAddress
+     * @param Order $order
      * @return PackStationType
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    protected function buildPackstation(Address $deliveryAddress): PackStationType
+    protected function buildPackstation(Order $order): PackStationType
     {
-        return new PackStationType($deliveryAddress->getFieldData('oxstreetnr'), $deliveryAddress->getFieldData('oxaddinfo'), $deliveryAddress->getFieldData('oxzip'), $deliveryAddress->getFieldData('oxcity'), null, $this->buildCountry($deliveryAddress->getFieldData('oxcountryid')));
+        return new PackStationType($order->moDHLGetAddressData('streetnr'), $order->moDHLGetAddressData('addinfo'), $order->moDHLGetAddressData('zip'), $order->moDHLGetAddressData('city'), null, $this->buildCountry($order->moDHLGetAddressData('countryid')));
     }
 
     /**
-     * @param Address|User $deliveryAddress
+     * @param Order $order
      * @return ReceiverNativeAddressType
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    protected function buildAddress($deliveryAddress): ReceiverNativeAddressType
+    protected function buildAddress(Order $order): ReceiverNativeAddressType
     {
-        $address = new ReceiverNativeAddressType($deliveryAddress->getFieldData('oxcompany') ?: null, null, $deliveryAddress->getFieldData('oxstreet'), $deliveryAddress->getFieldData('oxstreetnr'), $deliveryAddress->getFieldData('oxzip'), $deliveryAddress->getFieldData('oxcity'), null, $this->buildCountry($deliveryAddress->getFieldData('oxcountryid')));
-        if ($addInfo = $deliveryAddress->getFieldData('oxaddinfo')) {
+        $address = new ReceiverNativeAddressType($order->moDHLGetAddressData('company') ?: null, null, $order->moDHLGetAddressData('street'), $order->moDHLGetAddressData('streetnr'), $order->moDHLGetAddressData('zip'), $order->moDHLGetAddressData('city'), null, $this->buildCountry($order->moDHLGetAddressData('countryid')));
+        if ($addInfo = $order->moDHLGetAddressData('addinfo')) {
             $address->setAddressAddition([$addInfo]);
         }
         return $address;
