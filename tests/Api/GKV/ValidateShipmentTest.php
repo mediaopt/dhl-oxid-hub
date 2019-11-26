@@ -20,14 +20,6 @@ use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderType;
 class ValidateShipmentTest extends BaseGKVTest
 {
 
-    /**
-     * @return \Mediaopt\DHL\Api\GKV
-     */
-    protected function buildGKV()
-    {
-        return (new \TestConfigurator())->buildGKV();
-    }
-
     public function testValidateShipment()
     {
         $shipment = $this->createShipmentToGermany();

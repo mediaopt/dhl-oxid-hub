@@ -1,25 +1,25 @@
 <?php
 
-class TestConfigurator extends \Mediaopt\DHL\Configurator
+class GKVTestConfigurator extends \Mediaopt\DHL\Configurator
 {
     protected function getLogin()
     {
-        return 'DhlEmpfaengerservicesOxid_3';
+        return 'moptrandom-temp-string-1455964747901';
     }
 
     protected function getPassword()
     {
-        return 'sLS0vunhKg47u6JyVTL0ZUDCG18Mh8';
+        return 'H#R#__!w4-dt-9++9Z-r7-9';
     }
 
     protected function getEkp()
     {
-        return '5222500948';
+        return '2222222222';
     }
 
     protected function isProductionEnvironment()
     {
-        return true;
+        return false;
     }
 
     public function getMapsApiKey()
