@@ -99,7 +99,7 @@ class OrderExportController extends \OxidEsales\Eshop\Application\Controller\Adm
         $orderList = \oxNew(\OxidEsales\Eshop\Core\Model\ListModel::class);
         $orderList->init('oxOrder');
         $orderList->selectString($query);
-        $orders = array_map([\oxNew(\Mediaopt\DHL\Adapter\DHLOrderExportShipmentBuilder::class), 'build'], $orderList->getArray());
+        $orders = array_map([\oxNew(\Mediaopt\DHL\Export\ShipmentBuilder::class), 'build'], $orderList->getArray());
         $this->notifyAboutOrdersWithoutBillingNumber($orders);
         $exporter = new CsvExporter(\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('iUtfMode') ? 'UTF-8' : 'ISO-8859-15');
         $exporter->export($orders);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mediaopt\DHL\Adapter;
+namespace Mediaopt\DHL\Export;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
@@ -8,13 +8,12 @@ namespace Mediaopt\DHL\Adapter;
  * @copyright 2016 Mediaopt GmbH
  */
 
+use Mediaopt\DHL\Adapter\BaseShipmentBuilder;
 use Mediaopt\DHL\Address\Address;
 use Mediaopt\DHL\Address\Receiver;
 use Mediaopt\DHL\Address\Sender;
-use Mediaopt\DHL\Merchant\Ekp;
+use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Shipment\Contact;
-use Mediaopt\DHL\Shipment\Participation;
-use Mediaopt\DHL\Shipment\Process;
 use Mediaopt\DHL\Shipment\Shipment;
 
 /**
@@ -22,15 +21,15 @@ use Mediaopt\DHL\Shipment\Shipment;
  *
  * @author Mediaopt GmbH
  */
-class DHLOrderExportShipmentBuilder extends DHLBaseShipmentBuilder
+class ShipmentBuilder extends BaseShipmentBuilder
 {
 
     /**
-     * @param \OxidEsales\Eshop\Application\Model\Order $oxOrder
+     * @param Order $oxOrder
      * @return Shipment
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    public function build(\OxidEsales\Eshop\Application\Model\Order $oxOrder)
+    public function build(Order $oxOrder)
     {
         $order = new Shipment($this->determineReference($oxOrder), $this->buildReceiver($oxOrder), $this->buildSender(), $this->calculateWeight($oxOrder), $oxOrder->oxorder__oxsenddate->rawValue !== '-' ? $oxOrder->oxorder__oxsenddate->rawValue : '');
         $ekp = $this->getEkp($oxOrder);
@@ -167,58 +166,4 @@ class DHLOrderExportShipmentBuilder extends DHLBaseShipmentBuilder
         return new Sender(new Address($config->getShopConfVar('mo_dhl__export_street'), $config->getShopConfVar('mo_dhl__export_street_number'), $config->getShopConfVar('mo_dhl__export_zip'), $config->getShopConfVar('mo_dhl__export_city'), '', $config->getShopConfVar('mo_dhl__export_country')), $config->getShopConfVar('mo_dhl__export_line1'), $config->getShopConfVar('mo_dhl__export_line2'), $config->getShopConfVar('mo_dhl__export_line3'));
     }
 
-    /**
-     * @param \OxidEsales\Eshop\Application\Model\Order $order
-     * @return float
-     */
-    protected function calculateWeight(\OxidEsales\Eshop\Application\Model\Order $order)
-    {
-        $weight = 0;
-        foreach ($order->getOrderArticles() as $orderArticle) {
-            /** @var \OxidEsales\Eshop\Application\Model\OrderArticle $orderArticle */
-            $weight += (float)$orderArticle->getArticle()->getWeight() * $orderArticle->getFieldData('oxamount');
-        }
-        return $weight;
-    }
-
-    /**
-     * @param \OxidEsales\Eshop\Application\Model\Order $order
-     * @return Ekp|null
-     */
-    protected function getEkp(\OxidEsales\Eshop\Application\Model\Order $order)
-    {
-        try {
-            return Ekp::build($order->oxorder__mo_dhl_ekp->rawValue ?: $this->ekp);
-        } catch (\InvalidArgumentException $exception) {
-            return null;
-        }
-    }
-
-    /**
-     * @param \OxidEsales\Eshop\Application\Model\Order $order
-     * @return Process|null
-     */
-    protected function getProcess(\OxidEsales\Eshop\Application\Model\Order $order)
-    {
-        try {
-            $identifier = $order->oxorder__mo_dhl_process->rawValue ?: $this->deliverySetToProcessIdentifier[$order->oxorder__oxdeltype->rawValue];
-            return Process::build($identifier);
-        } catch (\InvalidArgumentException $exception) {
-            return null;
-        }
-    }
-
-    /**
-     * @param \OxidEsales\Eshop\Application\Model\Order $order
-     * @return Participation|null
-     */
-    protected function getParticipation(\OxidEsales\Eshop\Application\Model\Order $order)
-    {
-        try {
-            $number = $order->oxorder__mo_dhl_participation->rawValue ?: $this->deliverySetToParticipationNumber[$order->oxorder__oxdeltype->rawValue];
-            return Participation::build($number);
-        } catch (\InvalidArgumentException $exception) {
-            return null;
-        }
-    }
 }

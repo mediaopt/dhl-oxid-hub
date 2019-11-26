@@ -28,4 +28,8 @@ $aLang = [
     'MO_DHL_SAVE_AND_CHECK'              => 'Speichern und Zugangsdaten prüfen',
     'MO_DHL__CORRECT_CREDENTIALS'        => 'Zugangsdaten korrekt',
     'MO_DHL__INCORRECT_CREDENTIALS'      => 'Zugangsdaten inkorrekt. Bitte überprüfen Sie ihre Zugangsdaten.',
+    'MO_DHL__LABELS'                     => 'Labels',
+    'MO_DHL__LABEL'                      => 'Versandlabel',
+    'MO_DHL__RETOURE_LABEL'              => 'Retourelabel',
+    'MO_DHL__CREATE_LABEL'               => 'Neues Label erstellen',
 ];
