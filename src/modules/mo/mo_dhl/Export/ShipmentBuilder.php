@@ -1,6 +1,6 @@
 <?php
 
-namespace Mediaopt\DHL\Adapter;
+namespace Mediaopt\DHL\Export;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
@@ -8,9 +8,11 @@ namespace Mediaopt\DHL\Adapter;
  * @copyright 2016 Mediaopt GmbH
  */
 
+use Mediaopt\DHL\Adapter\BaseShipmentBuilder;
 use Mediaopt\DHL\Address\Address;
 use Mediaopt\DHL\Address\Receiver;
 use Mediaopt\DHL\Address\Sender;
+use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Shipment\Contact;
 use Mediaopt\DHL\Shipment\Shipment;
 
@@ -19,7 +21,7 @@ use Mediaopt\DHL\Shipment\Shipment;
  *
  * @author Mediaopt GmbH
  */
-class DHLOrderExportShipmentBuilder extends DHLBaseShipmentBuilder
+class ShipmentBuilder extends BaseShipmentBuilder
 {
 
     /**

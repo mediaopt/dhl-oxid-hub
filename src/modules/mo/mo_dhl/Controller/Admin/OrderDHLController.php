@@ -3,7 +3,7 @@
 namespace Mediaopt\DHL\Controller\Admin;
 
 use Mediaopt\DHL\Adapter\DHLAdapter;
-use Mediaopt\DHL\Adapter\DHLGKVShipmentBuilder;
+use Mediaopt\DHL\Adapter\GKVShipmentBuilder;
 use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Response\StatusCode;
 use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
@@ -62,7 +62,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     protected function moDHLCallCreation()
     {
-        $shipmentBuilder = \oxNew(DHLGKVShipmentBuilder::class);
+        $shipmentBuilder = \oxNew(GKVShipmentBuilder::class);
         $shipment = $shipmentBuilder->build($this->getOrder());
         $shipmentOrder = new ShipmentOrderType($this->getOrder()->getId(), $shipment);
         $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration(true));

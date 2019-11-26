@@ -30,7 +30,7 @@ class MoDHLLabel extends BaseModel
      *
      * @var string
      */
-    protected $_sClassName = 'MoDHLLabel';
+    protected $_sClassName = self::class;
 
     /**
      * @param Order         $order

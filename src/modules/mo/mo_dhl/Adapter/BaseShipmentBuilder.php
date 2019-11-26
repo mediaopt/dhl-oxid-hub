@@ -17,7 +17,7 @@ use Mediaopt\DHL\Shipment\Process;
  *
  * @author Mediaopt GmbH
  */
-class DHLBaseShipmentBuilder
+class BaseShipmentBuilder
 {
     /**
      * @var string

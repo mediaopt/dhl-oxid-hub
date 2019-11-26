@@ -103,14 +103,14 @@
                                         <tr>
                                             <td>[{oxmultilang ident="MO_DHL__LABEL"}]</td>
                                             <td>
-                                                <a target="_blank"
+                                                <a target="_blank" rel="noopener noreferrer"
                                                    href="[{$label->getFieldData('labelUrl')}]">[{$label->getFieldData('shipmentNumber')}]</a>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>[{oxmultilang ident="MO_DHL__RETOURE_LABEL"}]</td>
                                             <td>
-                                                <a target="_blank"
+                                                <a target="_blank" rel="noopener noreferrer"
                                                    href="[{$label->getFieldData('returnLabelUrl')}]">[{$label->getFieldData('returnShipmentNumber')}]</a>
                                             </td>
                                         </tr>

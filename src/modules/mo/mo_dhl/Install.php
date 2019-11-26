@@ -132,7 +132,7 @@ class Install
      */
     protected static function addTables()
     {
-        $tables = self::addTable('mo_dhl_labels', "(
+        self::addTable('mo_dhl_labels', "(
         `OXID` CHAR(32) COLLATE latin1_general_ci NOT NULL,
         `OXSHOPID` INT DEFAULT 1 NOT NULL,
         `orderId` CHAR(32) COLLATE latin1_general_ci,
@@ -143,13 +143,8 @@ class Install
         `exportLabelUrl` VARCHAR(512),
         `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         PRIMARY KEY (OXID)
-        )");
-
-        if ($tables === 0) {
-            return;
-        }
-
-        \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\DbMetaDataHandler::class)->updateViews();
+        );
+        CREATE INDEX MoDhlLabelIndex ON mo_dhl_labels (OXSHOPID, orderId);");
     }
 
     /**
@@ -201,7 +196,7 @@ class Install
         if (self::tableExists($table)) {
             return 0;
         }
-        \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute("CREATE TABLE {$table} $params");
+        \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute("CREATE TABLE $table $params");
         return 1;
     }
 

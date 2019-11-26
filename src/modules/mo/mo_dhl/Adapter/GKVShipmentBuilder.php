@@ -33,7 +33,7 @@ use Mediaopt\DHL\Shipment\BillingNumber;
  *
  * @author Mediaopt GmbH
  */
-class DHLGKVShipmentBuilder extends DHLBaseShipmentBuilder
+class GKVShipmentBuilder extends BaseShipmentBuilder
 {
 
     /**
