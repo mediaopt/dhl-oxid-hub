@@ -2,6 +2,8 @@
 
 namespace Mediaopt\DHL\Api\GKV;
 
+use Mediaopt\DHL\Api\GKV\Response\StatusCode;
+
 class Statusinformation
 {
 
@@ -84,4 +86,16 @@ class Statusinformation
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getErrors(): array
+    {
+        if ($this->getStatusCode() === StatusCode::GKV_STATUS_OK) {
+            return [];
+        }
+        $errors = $this->getStatusMessage();
+        array_unshift($errors, $this->getStatusText());
+        return array_unique($errors);
+    }
 }

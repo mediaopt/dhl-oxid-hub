@@ -8,8 +8,17 @@ namespace Mediaopt\DHL\Controller\Admin;
  * @copyright 2016 Mediaopt GmbH
  */
 
+use Mediaopt\DHL\Adapter\DHLAdapter;
+use Mediaopt\DHL\Adapter\GKVShipmentBuilder;
+use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
+use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
+use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Export\CsvExporter;
+use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Shipment\Shipment;
+use OxidEsales\Eshop\Core\Registry;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -18,7 +27,7 @@ use Mediaopt\DHL\Shipment\Shipment;
  *
  * @author Mediaopt GmbH
  */
-class OrderExportController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
+class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
 {
     /**
      * @var string
@@ -44,7 +53,7 @@ class OrderExportController extends \OxidEsales\Eshop\Application\Controller\Adm
     public function render()
     {
         parent::render();
-        return 'mo_dhl__order_export.tpl';
+        return 'mo_dhl__order_batch.tpl';
     }
 
     /**
@@ -57,15 +66,75 @@ class OrderExportController extends \OxidEsales\Eshop\Application\Controller\Adm
      */
     public function export()
     {
-        $orderIds = (array) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('order');
+        $orderIds = (array)Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('order');
         if (empty($orderIds)) {
-            $message = \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MO_DHL__EXPORT_ERROR_NO_ORDER_SELECTED');
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay(new \OxidEsales\Eshop\Core\Exception\StandardException($message));
+            $message = Registry::getLang()->translateString('MO_DHL__BATCH_ERROR_NO_ORDER_SELECTED');
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay(new \OxidEsales\Eshop\Core\Exception\StandardException($message));
             return;
         }
 
-        \OxidEsales\Eshop\Core\Registry::getSession()->setVariable(self::EXPORTED_CSV, $this->exportOrders($orderIds));
+        Registry::getSession()->setVariable(self::EXPORTED_CSV, $this->exportOrders($orderIds));
         header('Refresh: 0; url=' . $this->getDownloadUrl());
+    }
+
+    /**
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    public function createLabels()
+    {
+        $orderIds = (array)Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('order');
+        if (empty($orderIds)) {
+            $message = Registry::getLang()->translateString('MO_DHL__BATCH_ERROR_NO_ORDER_SELECTED');
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay(new \OxidEsales\Eshop\Core\Exception\StandardException($message));
+            return;
+        }
+        $this->handleCreationResponse($this->callCreation($orderIds));
+    }
+
+    /**
+     * @param string[] $orderIds
+     * @return CreateShipmentOrderResponse
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    protected function callCreation(array $orderIds)
+    {
+        $shipmentBuilder = \oxNew(GKVShipmentBuilder::class);
+        $orders = [];
+        foreach ($orderIds as $orderId) {
+            $order = \oxNew(Order::class);
+            $order->load($orderId);
+            $shipmentOrder = new ShipmentOrderType($orderId, $shipmentBuilder->build($order));
+            if (Registry::getConfig()->getShopConfVar('mo_dhl__only_with_leitcode')) {
+                $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration(true));
+            }
+            $orders[] = $shipmentOrder;
+        }
+        $gkvClient = Registry::get(DHLAdapter::class)->buildGKV();
+        $request = new CreateShipmentOrderRequest($gkvClient->buildVersion(), $orders);
+        return $gkvClient->createShipmentOrder($request->setCombinedPrinting(0));
+    }
+
+    /**
+     * @param CreateShipmentOrderResponse $response
+     * @throws \Exception
+     */
+    protected function handleCreationResponse(CreateShipmentOrderResponse $response)
+    {
+        foreach ($response->getCreationState() as $creationState) {
+            $statusInformation = $creationState->getLabelData()->getStatus();
+            $order = \oxNew(Order::class);
+            $order->load($creationState->getSequenceNumber());
+            if ($errors = $statusInformation->getErrors()) {
+                $message = Registry::getLang()->translateString('MO_DHL__BATCH_ERROR_CREATION_ERROR');
+                $message = sprintf($message, $order->getFieldData('oxordernr'), implode(' ', $errors));
+                Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($message);
+                continue;
+            }
+            $label = MoDHLLabel::fromOrderAndCreationState($order, $creationState);
+            $label->save();
+        }
     }
 
     /**
@@ -73,12 +142,12 @@ class OrderExportController extends \OxidEsales\Eshop\Application\Controller\Adm
      */
     public function download()
     {
-        $session = \OxidEsales\Eshop\Core\Registry::getSession();
+        $session = Registry::getSession();
         $csv = $session->getVariable(self::EXPORTED_CSV);
         $session->deleteVariable(self::EXPORTED_CSV);
         header('Content-Type: text/plain; charset=ISO-8859-1');
         header('Content-Disposition: attachment; filename=' . static::EXPORT_FILE . '-' . date('Ymd') . '.csv');
-        \OxidEsales\Eshop\Core\Registry::getUtils()->showMessageAndExit($csv);
+        Registry::getUtils()->showMessageAndExit($csv);
     }
 
     /**
@@ -101,7 +170,7 @@ class OrderExportController extends \OxidEsales\Eshop\Application\Controller\Adm
         $orderList->selectString($query);
         $orders = array_map([\oxNew(\Mediaopt\DHL\Export\ShipmentBuilder::class), 'build'], $orderList->getArray());
         $this->notifyAboutOrdersWithoutBillingNumber($orders);
-        $exporter = new CsvExporter(\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('iUtfMode') ? 'UTF-8' : 'ISO-8859-15');
+        $exporter = new CsvExporter(Registry::getConfig()->getConfigParam('iUtfMode') ? 'UTF-8' : 'ISO-8859-15');
         $exporter->export($orders);
         return $exporter->save();
     }
@@ -114,7 +183,7 @@ class OrderExportController extends \OxidEsales\Eshop\Application\Controller\Adm
     public function loadOrders()
     {
         $maximum = self::ORDERS_PER_PAGE;
-        $unsanitizedPage = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('page');
+        $unsanitizedPage = Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('page');
         $sanitizedPage = max(1, (int) filter_var($unsanitizedPage, FILTER_SANITIZE_NUMBER_INT));
         $offset = $maximum * ($sanitizedPage - 1);
 
@@ -149,10 +218,10 @@ class OrderExportController extends \OxidEsales\Eshop\Application\Controller\Adm
         }
 
         $key = 'MO_DHL__EXPORT_ORDERS_WITHOUT_BILLING_NUMBER';
-        $translation = \OxidEsales\Eshop\Core\Registry::getLang()->translateString($key);
+        $translation = Registry::getLang()->translateString($key);
         $message = sprintf($translation, implode(', ', $idsOfOrdersWithoutBillingNumber));
         /** @noinspection PhpParamsInspection */
-        \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($message);
+        Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($message);
         return true;
     }
 
@@ -166,7 +235,7 @@ class OrderExportController extends \OxidEsales\Eshop\Application\Controller\Adm
         if ($config->getConfigParam('sAdminSSLURL')) {
             $prefix = $config->getConfigParam('sAdminSSLURL');
         }
-        $url = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsUrl::class)->processUrl($prefix . 'index.php?cl=' . __CLASS__ . '&fnc=download');
+        $url = Registry::get(\OxidEsales\Eshop\Core\UtilsUrl::class)->processUrl($prefix . 'index.php?cl=' . __CLASS__ . '&fnc=download');
         return str_replace('&amp;', '&', $url);
     }
 }
