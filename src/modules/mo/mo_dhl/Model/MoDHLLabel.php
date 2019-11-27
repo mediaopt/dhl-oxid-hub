@@ -33,6 +33,14 @@ class MoDHLLabel extends BaseModel
     protected $_sClassName = self::class;
 
     /**
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->init();
+    }
+
+    /**
      * @param Order         $order
      * @param CreationState $creationState
      * @return MoDHLLabel
