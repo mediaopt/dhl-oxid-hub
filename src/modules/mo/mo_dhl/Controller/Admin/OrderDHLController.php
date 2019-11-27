@@ -58,6 +58,8 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $this->handleCreationResponse($this->callCreation());
     }
 
+    /**
+     */
     public function deleteShipment()
     {
         $label = \oxNew(MoDHLLabel::class);
@@ -275,18 +277,24 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     {
         $creationState = $response->getCreationState()[0];
         $statusInformation = $creationState->getLabelData()->getStatus();
-        if ($this->handleErrors($statusInformation)) {
+        if ($errors = $this->getErrors($statusInformation)) {
+            $this->displayErrors($errors);
             return;
         }
         $label = MoDHLLabel::fromOrderAndCreationState($this->getOrder(), $creationState);
         $label->save();
     }
 
+    /**
+     * @param MoDHLLabel                  $label
+     * @param DeleteShipmentOrderResponse $response
+     */
     protected function handleDeletionResponse(MoDHLLabel $label, DeleteShipmentOrderResponse $response)
     {
         $deletionState = $response->getDeletionState()[0];
         $statusInformation = $deletionState->getStatus();
-        if ($this->handleErrors($statusInformation)) {
+        if ($errors = $this->getErrors($statusInformation)) {
+            $this->displayErrors($errors);
             return;
         }
         $label->delete();
@@ -294,17 +302,26 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
 
     /**
      * @param Statusinformation $statusInformation
-     * @return bool returns true if there where errors
+     * @return string[]
      */
-    protected function handleErrors(Statusinformation $statusInformation): bool
+    protected function getErrors(Statusinformation $statusInformation): array
     {
-        if ($hasErrors = $statusInformation->getStatusCode() !== StatusCode::GKV_STATUS_OK) {
-            $utilsView = Registry::get(\OxidEsales\Eshop\Core\UtilsView::class);
-            $utilsView->addErrorToDisplay($statusInformation->getStatusText());
-            foreach ($statusInformation->getStatusMessage() as $error) {
-                $utilsView->addErrorToDisplay($error);
-            }
+        if ($statusInformation->getStatusCode() === StatusCode::GKV_STATUS_OK) {
+            return [];
         }
-        return $hasErrors;
+        $errors = $statusInformation->getStatusMessage();
+        array_unshift($errors, $statusInformation->getStatusText());
+        return $errors;
+    }
+
+    /**
+     * @param string[] $errors
+     */
+    protected function displayErrors(array $errors)
+    {
+        $utilsView = Registry::get(\OxidEsales\Eshop\Core\UtilsView::class);
+        foreach ($errors as $error) {
+            $utilsView->addErrorToDisplay($error);
+        }
     }
 }
