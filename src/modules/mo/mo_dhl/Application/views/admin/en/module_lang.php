@@ -17,6 +17,7 @@ $aLang = [
     'MO_DHL__WUNSCHNACHBAR'              => 'Preferred neighbour',
     'MO_DHL__EKP'                        => 'EKP',
     'MO_DHL__EKP_ERROR'                  => 'An EKP consists of exactly ten digits.',
+    'MO_DHL__FILIALROUTING_EMAIL_ERROR'  => 'The alternative e-mail address for Filialrouting was not valid and therefor was reset.',
     'MO_DHL__PARTICIPATION_NUMBER'       => 'Participation number',
     'MO_DHL__PARTICIPATION_NUMBER_ERROR' => 'A participation number is exactly two characters long and consists solely of letters and digits',
     'MO_DHL__PROCESS_IDENTIFIER'         => 'Process number',
@@ -28,4 +29,8 @@ $aLang = [
     'MO_DHL_SAVE_AND_CHECK'              => 'Save and check credentials',
     'MO_DHL__CORRECT_CREDENTIALS'        => 'Credentials are corrent',
     'MO_DHL__INCORRECT_CREDENTIALS'      => 'Credentials are incorrect. Please review your credentials.',
+    'MO_DHL__LABELS'                     => 'Labels',
+    'MO_DHL__LABEL'                      => 'Delivery label',
+    'MO_DHL__RETOURE_LABEL'              => 'Retoure label',
+    'MO_DHL__CREATE_LABEL'               => 'Create a new label',
 ];

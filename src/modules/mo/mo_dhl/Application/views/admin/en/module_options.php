@@ -17,6 +17,16 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__merchant_ekp'      => 'EKP',
     'HELP_SHOP_MODULE_mo_dhl__merchant_ekp' => 'The EKP is your DHL customer number',
 
+    'SHOP_MODULE_GROUP_mo_dhl__label'             => '?',
+    'SHOP_MODULE_mo_dhl__only_with_leitcode'      => '?',
+    'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => '?',
+
+    'SHOP_MODULE_GROUP_mo_dhl__services'                       => '?',
+    'SHOP_MODULE_mo_dhl__filialrouting_active'                 => '?',
+    'HELP_SHOP_MODULE_mo_dhl__filialrouting_active'            => '?',
+    'SHOP_MODULE_mo_dhl__filialrouting_alternative_email'      => '?',
+    'HELP_SHOP_MODULE_mo_dhl__filialrouting_alternative_email' => '?',
+
     'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Parcel shop finder',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximum number of hits',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_1'         => '1',

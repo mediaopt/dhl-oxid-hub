@@ -187,6 +187,17 @@ $aModule = [
             'type'  => 'bool',
         ],
         [
+            'group' => 'mo_dhl__services',
+            'name'  => 'mo_dhl__filialrouting_active',
+            'type'  => 'bool',
+        ],
+        [
+            'group' => 'mo_dhl__services',
+            'name'  => 'mo_dhl__filialrouting_alternative_email',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
             'group'       => 'mo_dhl__standortsuche',
             'name'        => 'mo_dhl__standortsuche_maximumHits',
             'type'        => 'select',
