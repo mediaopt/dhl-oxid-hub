@@ -5,10 +5,12 @@ namespace Mediaopt\DHL\Controller\Admin;
 use Mediaopt\DHL\Adapter\DHLAdapter;
 use Mediaopt\DHL\Adapter\GKVShipmentBuilder;
 use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\Response\DeleteShipmentOrderResponse;
 use Mediaopt\DHL\Api\GKV\Response\StatusCode;
 use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
-use Mediaopt\DHL\Api\GKV\Version;
+use Mediaopt\DHL\Api\GKV\Statusinformation;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Model\MoDHLLabel;
@@ -53,7 +55,24 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     public function createLabel()
     {
-        $this->handleResponse($this->moDHLCallCreation());
+        $this->handleCreationResponse($this->callCreation());
+    }
+
+    public function deleteShipment()
+    {
+        $label = \oxNew(MoDHLLabel::class);
+        $label->load(Registry::getConfig()->getRequestParameter('labelId'));
+        $this->handleDeletionResponse($label, $this->callDeleteShipment($label->getFieldData('shipmentNumber')));
+    }
+
+    /**
+     * @param string $shipmentNumber
+     * @return DeleteShipmentOrderResponse
+     */
+    public function callDeleteShipment(string $shipmentNumber): DeleteShipmentOrderResponse
+    {
+        $gkvClient = Registry::get(DHLAdapter::class)->buildGKV();
+        return $gkvClient->deleteShipmentOrder(new DeleteShipmentOrderRequest($gkvClient->buildVersion(), $shipmentNumber));
     }
 
     /**
@@ -61,7 +80,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    protected function moDHLCallCreation()
+    protected function callCreation()
     {
         $shipmentBuilder = \oxNew(GKVShipmentBuilder::class);
         $shipment = $shipmentBuilder->build($this->getOrder());
@@ -70,7 +89,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration(true));
         }
         $gkvClient = Registry::get(DHLAdapter::class)->buildGKV();
-        $request = new CreateShipmentOrderRequest(new Version(3, 0), $shipmentOrder);
+        $request = new CreateShipmentOrderRequest($gkvClient->buildVersion(), $shipmentOrder);
         return $gkvClient->createShipmentOrder($request->setCombinedPrinting(0));
     }
 
@@ -252,19 +271,40 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      * @param \Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse $response
      * @throws \Exception
      */
-    protected function handleResponse(\Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse $response)
+    protected function handleCreationResponse(\Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse $response)
     {
         $creationState = $response->getCreationState()[0];
         $statusInformation = $creationState->getLabelData()->getStatus();
-        if ($statusInformation->getStatusCode() !== StatusCode::GKV_STATUS_OK) {
-            $utilsView = Registry::get(\OxidEsales\Eshop\Core\UtilsView::class);
-            foreach ($statusInformation->getStatusMessage() as $error) {
-                $utilsView->addErrorToDisplay($error);
-            }
+        if ($this->handleErrors($statusInformation)) {
             return;
         }
         $label = MoDHLLabel::fromOrderAndCreationState($this->getOrder(), $creationState);
         $label->save();
     }
 
+    protected function handleDeletionResponse(MoDHLLabel $label, DeleteShipmentOrderResponse $response)
+    {
+        $deletionState = $response->getDeletionState()[0];
+        $statusInformation = $deletionState->getStatus();
+        if ($this->handleErrors($statusInformation)) {
+            return;
+        }
+        $label->delete();
+    }
+
+    /**
+     * @param Statusinformation $statusInformation
+     * @return bool returns true if there where errors
+     */
+    protected function handleErrors(Statusinformation $statusInformation): bool
+    {
+        if ($hasErrors = $statusInformation->getStatusCode() !== StatusCode::GKV_STATUS_OK) {
+            $utilsView = Registry::get(\OxidEsales\Eshop\Core\UtilsView::class);
+            $utilsView->addErrorToDisplay($statusInformation->getStatusText());
+            foreach ($statusInformation->getStatusMessage() as $error) {
+                $utilsView->addErrorToDisplay($error);
+            }
+        }
+        return $hasErrors;
+    }
 }

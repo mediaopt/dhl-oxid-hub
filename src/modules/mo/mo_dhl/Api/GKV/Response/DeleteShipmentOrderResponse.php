@@ -20,14 +20,14 @@ class DeleteShipmentOrderResponse
     protected $Status = null;
 
     /**
-     * @var DeletionState $DeletionState
+     * @var DeletionState[] $DeletionState
      */
     protected $DeletionState = null;
 
     /**
      * @param Version           $Version
      * @param Statusinformation $Status
-     * @param DeletionState     $DeletionState
+     * @param DeletionState[]   $DeletionState
      */
     public function __construct($Version, $Status, $DeletionState)
     {
@@ -73,7 +73,7 @@ class DeleteShipmentOrderResponse
     }
 
     /**
-     * @return DeletionState
+     * @return DeletionState[]
      */
     public function getDeletionState()
     {
@@ -81,7 +81,7 @@ class DeleteShipmentOrderResponse
     }
 
     /**
-     * @param DeletionState $DeletionState
+     * @param DeletionState[] $DeletionState
      * @return DeleteShipmentOrderResponse
      */
     public function setDeletionState($DeletionState)
