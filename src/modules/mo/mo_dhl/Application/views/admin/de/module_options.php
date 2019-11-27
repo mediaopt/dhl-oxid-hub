@@ -22,7 +22,7 @@ $aLang = [
 
     'SHOP_MODULE_GROUP_mo_dhl__services'                       => 'Versand-Services',
     'SHOP_MODULE_mo_dhl__filialrouting_active'                 => 'Filialrouting',
-    'HELP_SHOP_MODULE_mo_dhl__filialrouting_active'            => 'Durch Aktivierung wird eine Sendung bei Unzustellbarkeit (z.B. Empfänger nicht ermittelbar) automatisch in die nächstgelegene Post Filiale weitergeleitet.',
+    'HELP_SHOP_MODULE_mo_dhl__filialrouting_active'            => 'Durch Aktivierung wird eine Sendung bei Unzustellbarkeit (z.B. Empfänger nicht ermittelbar) automatisch in die nächstgelegene Postfiliale weitergeleitet.',
     'SHOP_MODULE_mo_dhl__filialrouting_alternative_email'      => 'Alternative E-Mail-Adresse für das Filialrouting (optional)',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_alternative_email' => 'Geben Sie hier Ihre E-Mail-Adresse an, wenn Sie als Versender die Abholinformation erhalten möchten.',
 
