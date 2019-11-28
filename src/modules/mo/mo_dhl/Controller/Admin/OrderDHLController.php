@@ -7,10 +7,8 @@ use Mediaopt\DHL\Adapter\GKVShipmentBuilder;
 use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Response\DeleteShipmentOrderResponse;
-use Mediaopt\DHL\Api\GKV\Response\StatusCode;
 use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
-use Mediaopt\DHL\Api\GKV\Statusinformation;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Model\MoDHLLabel;
@@ -277,7 +275,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     {
         $creationState = $response->getCreationState()[0];
         $statusInformation = $creationState->getLabelData()->getStatus();
-        if ($errors = $this->getErrors($statusInformation)) {
+        if ($errors = $statusInformation->getErrors()) {
             $this->displayErrors($errors);
             return;
         }
@@ -293,25 +291,11 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     {
         $deletionState = $response->getDeletionState()[0];
         $statusInformation = $deletionState->getStatus();
-        if ($errors = $this->getErrors($statusInformation)) {
+        if ($errors = $statusInformation->getErrors()) {
             $this->displayErrors($errors);
             return;
         }
         $label->delete();
-    }
-
-    /**
-     * @param Statusinformation $statusInformation
-     * @return string[]
-     */
-    protected function getErrors(Statusinformation $statusInformation): array
-    {
-        if ($statusInformation->getStatusCode() === StatusCode::GKV_STATUS_OK) {
-            return [];
-        }
-        $errors = $statusInformation->getStatusMessage();
-        array_unshift($errors, $statusInformation->getStatusText());
-        return $errors;
     }
 
     /**

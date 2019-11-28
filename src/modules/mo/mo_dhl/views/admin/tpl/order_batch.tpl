@@ -1,8 +1,8 @@
-[{include file="headitem.tpl" title="MO_DHL__EXPORT_TITLE"|oxmultilangassign box=" "}]
+[{include file="headitem.tpl" title="MO_DHL__BATCH_TITLE"|oxmultilangassign box=" "}]
 
-<h1>[{oxmultilang ident="MO_DHL__EXPORT_TITLE"}]</h1>
+<h1>[{oxmultilang ident="MO_DHL__BATCH_TITLE"}]</h1>
 
-<form name="exportForm" id="exportForm" action="[{$oViewConf->getSelfLink()}]" method="post" onsubmit="handleSubmit()">
+<form name="batchForm" id="batchForm" action="[{$oViewConf->getSelfLink()}]" method="post" onsubmit="handleSubmit()">
     <input type="hidden" name="cl" value="[{$oViewConf->getActiveClassName()}]">
     <input type="hidden" name="fnc" value="export">
     [{$oViewConf->getHiddenSid()}]
@@ -85,6 +85,9 @@
     </div>
 
     <input type="submit" class="edittext" id="submitButton" name="submitButton" value="[{oxmultilang ident="MO_DHL__EXPORT"}]"/>
+    <input type="submit" class="edittext" id="createLabelsButton" name="createLabelsButton"
+           value="[{oxmultilang ident="MO_DHL__CREATE_LABELS"}]"
+           onClick="Javascript:document.batchForm.fnc.value='createLabels'"/>
 </form>
 
 [{include file="bottomnaviitem.tpl"}]

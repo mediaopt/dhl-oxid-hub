@@ -5,7 +5,7 @@
             <SUBMENU id="mxdisplayorders" cl="admin_order" list="order_list">
                 <TAB id="MO_DHL__ORDER_DHL" cl="MoDHLOrderDhl"/>
             </SUBMENU>
-            <SUBMENU id="moOrderExport" cl="MoDHLOrderExport"/>
+            <SUBMENU id="moOrderBatch" cl="MoDHLOrderBatch"/>
         </MAINMENU>
         <MAINMENU id="mxshopsett">
             <SUBMENU id="mxshippingset" cl="deliveryset" list="deliveryset_list">
