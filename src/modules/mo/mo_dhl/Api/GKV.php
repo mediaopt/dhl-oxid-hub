@@ -260,4 +260,11 @@ class GKV extends \SoapClient
         return $this->callSoap('updateShipmentOrder', $request);
     }
 
+    /**
+     * @return Version
+     */
+    public function buildVersion(): Version
+    {
+        return new Version(3, 0);
+    }
 }

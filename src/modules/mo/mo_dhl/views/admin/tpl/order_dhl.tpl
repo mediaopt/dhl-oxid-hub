@@ -12,6 +12,7 @@
     <input type="hidden" name="fnc" value="save">
     <input type="hidden" name="oxid" value="[{$oxid}]">
     <input type="hidden" name="editval[oxorder__oxid]" value="[{$oxid}]">
+    <input type="hidden" name="labelId" value="">
 
     <table cellspacing="0" cellpadding="0" border="0" width="100%">
         <tr>
@@ -112,6 +113,13 @@
                                             <td>
                                                 <a target="_blank" rel="noopener noreferrer"
                                                    href="[{$label->getFieldData('returnLabelUrl')}]">[{$label->getFieldData('returnShipmentNumber')}]</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="submit" class="confinput" name="check"
+                                                       value="[{oxmultilang ident="MO_DHL__DELETE_SHIPMENT"}]"
+                                                       onClick="Javascript:document.myedit.labelId.value='[{$label->getId()}]';document.myedit.fnc.value='deleteShipment'">
                                             </td>
                                         </tr>
                                     [{/foreach}]

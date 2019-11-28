@@ -14,7 +14,7 @@ class CreateShipmentOrderRequest
     protected $Version = null;
 
     /**
-     * @var ShipmentOrderType $ShipmentOrder
+     * @var ShipmentOrderType[] $ShipmentOrder
      */
     protected $ShipmentOrder = null;
 
@@ -49,13 +49,13 @@ class CreateShipmentOrderRequest
     protected $feederSystem = null;
 
     /**
-     * @param Version           $Version
-     * @param ShipmentOrderType $ShipmentOrder
+     * @param Version                               $Version
+     * @param ShipmentOrderType|ShipmentOrderType[] $ShipmentOrder
      */
-    public function __construct(Version $Version, ShipmentOrderType $ShipmentOrder)
+    public function __construct(Version $Version, $ShipmentOrder)
     {
         $this->Version = $Version;
-        $this->ShipmentOrder = $ShipmentOrder;
+        $this->ShipmentOrder = is_array($ShipmentOrder) ? $ShipmentOrder : [$ShipmentOrder];
     }
 
     /**
@@ -77,7 +77,7 @@ class CreateShipmentOrderRequest
     }
 
     /**
-     * @return ShipmentOrderType
+     * @return ShipmentOrderType[]
      */
     public function getShipmentOrder()
     {
@@ -85,7 +85,7 @@ class CreateShipmentOrderRequest
     }
 
     /**
-     * @param ShipmentOrderType $ShipmentOrder
+     * @param ShipmentOrderType[] $ShipmentOrder
      * @return CreateShipmentOrderRequest
      */
     public function setShipmentOrder($ShipmentOrder)
