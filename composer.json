@@ -15,7 +15,8 @@
         "ext-json": "*",
         "ext-calendar": "*",
         "ext-iconv": "*",
-        "ext-soap": "*"
+        "ext-soap": "*",
+        "symfony/console": "^3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.5",
