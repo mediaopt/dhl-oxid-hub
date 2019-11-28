@@ -12,6 +12,7 @@ use Mediaopt\DHL\Api\GKV\ReceiverNativeAddressType;
 use Mediaopt\DHL\Api\GKV\ReceiverType;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDeliveryTimeframe;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetails;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
 use Mediaopt\DHL\Api\GKV\Shipment;
 use Mediaopt\DHL\Api\GKV\ShipmentDetailsType;
 use Mediaopt\DHL\Api\GKV\ShipmentItemType;
@@ -21,6 +22,7 @@ use Mediaopt\DHL\Api\GKV\ShipperType;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\ServiceProvider\Branch;
 use Mediaopt\DHL\Shipment\BillingNumber;
+use OxidEsales\Eshop\Core\Registry;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
@@ -167,6 +169,9 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         }
         if ($wunschpaket->hasWunschort($remark)) {
             $service->setPreferredNeighbour(new ServiceconfigurationDetails(1, $locationPart1));
+        }
+        if (Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active')) {
+            $service->setParcelOutletRouting(new ServiceconfigurationDetailsOptional(1, Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null));
         }
         return $service;
     }

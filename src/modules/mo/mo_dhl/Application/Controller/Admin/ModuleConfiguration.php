@@ -64,7 +64,21 @@ class ModuleConfiguration extends ModuleConfiguration_parent
 
         if ($this->getEditObjectId() === 'mo_dhl') {
             $this->moReviewEkp();
+            $this->moReviewFilialroutingAlternativeEmail();
         }
+    }
+
+    /**
+     */
+    protected function moReviewFilialroutingAlternativeEmail()
+    {
+        $mailVariable = 'mo_dhl__filialrouting_alternative_email';
+        $email = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam($mailVariable);
+        if (empty($email) || filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return;
+        }
+        \OxidEsales\Eshop\Core\Registry::getConfig()->saveShopConfVar('str', $mailVariable, '', '', 'module:mo_dhl');
+        \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__FILIALROUTING_EMAIL_ERROR');
     }
 
     /**
@@ -80,7 +94,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         try {
             Ekp::build($ekp);
         } catch (\InvalidArgumentException $exception) {
-            \OxidEsales\Eshop\Core\Registry::getConfig()->saveShopConfVar('string', $ekpVariable, '', '', 'module:mo_dhl');
+            \OxidEsales\Eshop\Core\Registry::getConfig()->saveShopConfVar('str', $ekpVariable, '', '', 'module:mo_dhl');
             /** @noinspection PhpParamsInspection */
             \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__EKP_ERROR');
         }
