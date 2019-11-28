@@ -100,19 +100,9 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
      */
     protected function callCreation(array $orderIds)
     {
-        $shipmentBuilder = \oxNew(GKVShipmentBuilder::class);
-        $orders = [];
-        foreach ($orderIds as $orderId) {
-            $order = \oxNew(Order::class);
-            $order->load($orderId);
-            $shipmentOrder = new ShipmentOrderType($orderId, $shipmentBuilder->build($order));
-            if (Registry::getConfig()->getShopConfVar('mo_dhl__only_with_leitcode')) {
-                $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration(true));
-            }
-            $orders[] = $shipmentOrder;
-        }
+        $shipmentOrders = array_map([$this, 'buildShipmentOrder'], $orderIds);
         $gkvClient = Registry::get(DHLAdapter::class)->buildGKV();
-        $request = new CreateShipmentOrderRequest($gkvClient->buildVersion(), $orders);
+        $request = new CreateShipmentOrderRequest($gkvClient->buildVersion(), $shipmentOrders);
         return $gkvClient->createShipmentOrder($request->setCombinedPrinting(0));
     }
 
@@ -237,5 +227,22 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         }
         $url = Registry::get(\OxidEsales\Eshop\Core\UtilsUrl::class)->processUrl($prefix . 'index.php?cl=' . __CLASS__ . '&fnc=download');
         return str_replace('&amp;', '&', $url);
+    }
+
+    /**
+     * @param string $orderId
+     * @return ShipmentOrderType
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    protected function buildShipmentOrder(string $orderId): ShipmentOrderType
+    {
+        $order = \oxNew(Order::class);
+        $order->load($orderId);
+        $shipmentOrder = new ShipmentOrderType($orderId, Registry::get(GKVShipmentBuilder::class)->build($order));
+        if (Registry::getConfig()->getShopConfVar('mo_dhl__only_with_leitcode')) {
+            $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration(true));
+        }
+        return $shipmentOrder;
     }
 }

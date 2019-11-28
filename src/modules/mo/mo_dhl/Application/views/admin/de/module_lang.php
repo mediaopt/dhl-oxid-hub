@@ -3,8 +3,8 @@ $sLangName = 'Deutsch';
 $aLang = [
     'charset' => 'UTF-8',
 
-    'moOrderBatch'                                 => 'DHL Batch Processing',
-    'MO_DHL__BATCH_TITLE'                          => 'DHL Batch Processing',
+    'moOrderBatch'                                 => 'DHL Stapelverarbeitung',
+    'MO_DHL__BATCH_TITLE'                          => 'DHL Stapelverarbeitung',
     'MO_DHL__EXPORT'                               => 'Exportieren',
     'MO_DHL__BATCH_ERROR_NO_ORDER_SELECTED'        => 'Bitte wählen Sie mindestens eine Bestellung aus.',
     'MO_DHL__EXPORT_ORDERS_WITHOUT_BILLING_NUMBER' => 'Für die Sendungen mit einer der folgenden Referenzen konnte keine Abrechnungsnummer erzeugt werden: %s',
