@@ -10,6 +10,7 @@ namespace Mediaopt\DHL\Application\Controller\Admin;
 
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Shipment\Process;
+use OxidEsales\Eshop\Core\Registry;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -118,5 +119,59 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             return;
         }
         \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__CORRECT_CREDENTIALS');
+    }
+
+    /**
+     * @param string $textVarName
+     * @return string[]
+     */
+    public function moDHLGetSurchargeTexts($textVarName)
+    {
+        $texts = Registry::getConfig()->getShopConfVar($textVarName) ?: [];
+        foreach (array_keys($this->moDHLGetLanguages()) as $lang) {
+            if (!isset($texts[$lang])) {
+                $texts[$lang] = '';
+            }
+        }
+        return $texts;
+    }
+
+    /**
+     * @param int $langId
+     * @return string
+     */
+    public function moDHLGetLanguageName($langId)
+    {
+        return $this->moDHLGetLanguages()[$langId]->name;
+    }
+
+    /**
+     * @return \stdClass[]
+     */
+    public function moDHLGetLanguages()
+    {
+        return Registry::getLang()->getLanguageArray();
+    }
+
+    /**
+     * @param string $textVarName
+     * @param int    $langId
+     * @return string
+     */
+    public function moDHLGetPlaceholder($textVarName, $langId)
+    {
+        switch ($textVarName) {
+            case 'mo_dhl__wunschtag_surcharge_text':
+                $snippet = 'MO_DHL__WUNSCHTAG_COSTS';
+                break;
+            case 'mo_dhl__wunschzeit_surcharge_text':
+                $snippet = 'MO_DHL__WUNSCHZEIT_COSTS';
+                break;
+            default:
+                $snippet = 'MO_DHL__COMBINATION_SURCHARGE';
+        }
+        $snippet .= Registry::getConfig()->getConfigParam('blShowVATForDelivery') ? '_NET' : '_GROSS';
+        $translation = Registry::getLang()->translateString($snippet, $langId, false);
+        return $translation !== $snippet ? $translation : '';
     }
 }

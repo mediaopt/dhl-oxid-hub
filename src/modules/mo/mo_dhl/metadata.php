@@ -239,6 +239,11 @@ $aModule = [
         ],
         [
             'group' => 'mo_dhl__wunschtag',
+            'name'  => 'mo_dhl__wunschtag_surcharge_text',
+            'type'  => 'arr',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag',
             'name'  => 'mo_dhl__wunschtag_cutoff',
             'type'  => 'str',
             'value' => '12:00',
@@ -305,10 +310,20 @@ $aModule = [
             'value' => '4.80',
         ],
         [
+            'group' => 'mo_dhl__wunschzeit',
+            'name'  => 'mo_dhl__wunschzeit_surcharge_text',
+            'type'  => 'arr',
+        ],
+        [
             'group' => 'mo_dhl__wunschtag_wunschzeit',
             'name'  => 'mo_dhl__wunschtag_wunschzeit_surcharge',
             'type'  => 'str',
             'value' => '4.80',
+        ],
+        [
+            'group' => 'mo_dhl__wunschtag_wunschzeit',
+            'name'  => 'mo_dhl__wunschtag_wunschzeit_surcharge_text',
+            'type'  => 'arr',
         ],
         [
             'group' => 'mo_dhl__wunschort',
