@@ -21,7 +21,7 @@ class GKVCreateShipmentOrderRequestBuilder
 {
 
     /**
-     * @param array $orderIds
+     * @param string[] $orderIds
      * @return CreateShipmentOrderRequest
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException

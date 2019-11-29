@@ -2,7 +2,7 @@
 <?php
 require __DIR__ . '/../../../../bootstrap.php';
 
-use Mediaopt\DHL\cli\CreateLabels;
+use Mediaopt\DHL\Cli\CreateLabels;
 use Symfony\Component\Console\Application;
 
 $application = new Application();

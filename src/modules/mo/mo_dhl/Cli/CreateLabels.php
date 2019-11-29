@@ -5,7 +5,7 @@
  * @copyright 2019 Mediaopt GmbH
  */
 
-namespace Mediaopt\DHL\cli;
+namespace Mediaopt\DHL\Cli;
 
 
 use Mediaopt\DHL\Adapter\DHLAdapter;
@@ -17,6 +17,7 @@ use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -26,14 +27,14 @@ class CreateLabels extends Command
 {
 
     /**
-     * @var InputInterface
-     */
-    protected $input;
-
-    /**
      * @var OutputInterface
      */
     protected $output;
+
+    /**
+     * @var string[]
+     */
+    protected $orderStatus = null;
 
     /**
      */
@@ -41,23 +42,28 @@ class CreateLabels extends Command
     {
         $this
             ->setName('mo:dhl:create-labels')
-            ->addOption('paid', null, null, 'Only create labels for paid orders')
+            ->addOption('paid', null, InputOption::VALUE_NONE, 'Only create labels for paid orders')
+            ->addOption('status', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'A list of order status to check', [])
             ->setDescription('Create labels for DHL shipments.');
     }
 
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
-     * @return void
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseErrorException
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->input = $input;
         $this->output = $output;
-        if (!$orderIds = $this->getOrderIds()) {
+        foreach ($input->getOption('status') as $status) {
+            if (!in_array($status, $this->getOrderStatus())) {
+                $this->output->writeln($this->translate('%s is not an allowed order status status. Please use one of %s', [$status, implode(', ', $this->getOrderStatus())]));
+                return;
+            }
+        }
+        if (!$orderIds = $this->getOrderIds($input->getOption('paid'), $input->getOption('status'))) {
             return;
         }
         $this->handleCreationResponse($this->callCreation($orderIds));
@@ -98,20 +104,24 @@ class CreateLabels extends Command
     }
 
     /**
+     * @param bool     $paid
+     * @param string[] $status
      * @return string[]
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseErrorException
      */
-    protected function getOrderIds()
+    protected function getOrderIds(bool $paid, array $status)
     {
+        $db = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
         $select =
             ' SELECT oxorder.OXID FROM oxorder '
             . ' LEFT JOIN mo_dhl_labels mdl ON oxorder.OXID = mdl.orderId '
-            . ' WHERE mdl.OXID IS NULL AND MO_DHL_PROCESS <> \'\' '
-            . ($this->input->getOption('paid') ? ' AND oxpaid <> "0000-00-00 00:00:00"' : '');
-        $db = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
+            . " WHERE mdl.OXID IS NULL AND MO_DHL_PROCESS != '' "
+            . ($paid ? ' AND oxpaid != "0000-00-00 00:00:00"' : '')
+            . ($status ? ' AND oxfolder in (' . implode(', ', $db->quoteArray($status)) . ')' : '');
         $orderIds = $db->getCol($select);
-        $this->output->writeln($this->translate('MO_DHL__BATCH_ORDERS_FOUND', [count($orderIds), 'status']));
+        $translationText = 'MO_DHL__BATCH_' . ($paid ? 'PAID_' : '') . 'ORDERS_' . ($status ? 'WITH_STATUS_' : '') . 'FOUND';
+        $this->output->writeln($this->translate($translationText, [count($orderIds), implode(', ', $status)]));
         return $orderIds;
     }
 
@@ -125,5 +135,16 @@ class CreateLabels extends Command
         $message = Registry::getLang()->translateString($text);
         $message = sprintf($message, ...$params);
         return $message;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrderStatus()
+    {
+        if ($this->orderStatus === null) {
+            $this->orderStatus = array_keys(Registry::getConfig()->getConfigParam('aOrderfolder'));
+        }
+        return $this->orderStatus;
     }
 }
