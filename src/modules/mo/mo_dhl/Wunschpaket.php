@@ -575,4 +575,30 @@ class Wunschpaket
     {
         return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__wunschzeit_surcharge');
     }
+
+    /**
+     * @param $langId
+     * @return mixed
+     */
+    public function getWunschtagText($langId)
+    {
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__wunschtag_surcharge_text')[$langId];
+    }
+
+    /**
+     * @param $langId
+     * @return mixed
+     */
+    public function getWunschzeitText($langId)
+    {
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__wunschzeit_surcharge_text')[$langId];
+    }
+    /**
+     * @param $langId
+     * @return mixed
+     */
+    public function getWunschtagWunschzeitText($langId)
+    {
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__wunschtag_wunschzeit_surcharge_text')[$langId];
+    }
 }

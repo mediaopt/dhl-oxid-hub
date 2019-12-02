@@ -9,6 +9,7 @@ namespace Mediaopt\DHL\Application\Controller;
  */
 
 use Mediaopt\DHL\Api\Wunschpaket;
+use OxidEsales\Eshop\Core\Registry;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -113,5 +114,40 @@ class OrderController extends OrderController_parent
         $deliveryAddress = $this->getDelAddress();
         $payment = $this->getPayment();
         return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->canAWunschpaketServiceBeSelected($basket, $user, $deliveryAddress, $payment);
+    }
+
+    /**
+     * @return string
+     */
+    public function moDHLGetCurrentLanguage()
+    {
+        return Registry::getLang()->getTplLanguage();
+    }
+
+    /**
+     * @param string $textVarName
+     * @return string
+     */
+    public function moDHLGetPlaceholder($textVarName)
+    {
+        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
+        $langId = $this->moDHLGetCurrentLanguage();
+        switch ($textVarName) {
+            case 'mo_dhl__wunschtag_surcharge_text':
+                $snippet = 'MO_DHL__WUNSCHTAG_COSTS';
+                $translation = $wunschpaket->getWunschtagText($langId);
+                break;
+            case 'mo_dhl__wunschzeit_surcharge_text':
+                $snippet = 'MO_DHL__WUNSCHZEIT_COSTS';
+                $translation = $wunschpaket->getWunschzeitText($langId);
+                break;
+            default:
+                $snippet = 'MO_DHL__COMBINATION_SURCHARGE';
+                $translation = $wunschpaket->getWunschtagWunschzeitText($langId);
+        }
+
+        $snippet .= Registry::getConfig()->getConfigParam('blShowVATForDelivery') ? '_NET' : '_GROSS';
+        $snippetTranslation = Registry::getLang()->translateString($snippet, $langId, false);
+        return $translation === '' ? $snippetTranslation : $translation;
     }
 }

@@ -30,6 +30,7 @@ $aModule = [
         \OxidEsales\Eshop\Application\Controller\UserController::class            => Application\Controller\UserController::class,
         \OxidEsales\Eshop\Application\Controller\ThankYouController::class        => Application\Controller\ThankYouController::class,
         \OxidEsales\Eshop\Application\Controller\OrderController::class           => Application\Controller\OrderController::class,
+        \OxidEsales\Eshop\Application\Controller\BasketController::class           => Application\Controller\BasketController::class,
         \OxidEsales\Eshop\Application\Component\UserComponent::class              => Application\Component\UserComponent::class,
         \OxidEsales\Eshop\Application\Model\Basket::class                         => Application\Model\Basket::class,
         \OxidEsales\Eshop\Application\Model\Order::class                          => Application\Model\Order::class,
