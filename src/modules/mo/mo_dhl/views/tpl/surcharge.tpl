@@ -2,9 +2,9 @@
 [{assign var="wunschzeitCosts" value=$oxcmp_basket->moDHLGetWunschzeitCosts()}]
 [{assign var="combinedCosts" value=$oxcmp_basket->moDHLGetCostsForCombinedWunschtagAndWunschzeit()}]
 
-[{assign var="moWunschtagText" value=$oView->moDHLGetPlaceholder('mo_dhl__wunschtag_surcharge_text')}]
-[{assign var="moWunschzeitText" value=$oView->moDHLGetPlaceholder('mo_dhl__wunschzeit_surcharge_text')}]
-[{assign var="moWunschtagWunschzeitText" value=$oView->moDHLGetPlaceholder('mo_dhl__wunschtag_wunschzeit_surcharge_text')}]
+[{assign var="moWunschtagText" value=$oView->moDHLGetSurchargeTranslation('mo_dhl__wunschtag_surcharge_text')}]
+[{assign var="moWunschzeitText" value=$oView->moDHLGetSurchargeTranslation('mo_dhl__wunschzeit_surcharge_text')}]
+[{assign var="moWunschtagWunschzeitText" value=$oView->moDHLGetSurchargeTranslation('mo_dhl__wunschtag_wunschzeit_surcharge_text')}]
 
 [{if $combinedCosts && $combinedCosts->getPrice() >= 0.01}]
     [{if $oViewConf->isFunctionalityEnabled('blShowVATForDelivery')}]
