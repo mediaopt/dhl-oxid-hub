@@ -5,38 +5,40 @@ namespace Mediaopt\DHL\Api\GKV;
 class PostfilialeType
 {
 
-    /**
-     * @var string $PostfilialNumber
-     */
-    protected $PostfilialNumber = null;
+    use AssignTrait;
 
     /**
-     * @var string $PostNumber
+     * @var string $postfilialNumber
      */
-    protected $PostNumber = null;
+    protected $postfilialNumber = null;
 
     /**
-     * @var string $Zip
+     * @var string $postNumber
      */
-    protected $Zip = null;
+    protected $postNumber = null;
 
     /**
-     * @var string $City
+     * @var string $zip
      */
-    protected $City = null;
+    protected $zip = null;
 
     /**
-     * @param string $PostfilialNumber
-     * @param string $PostNumber
-     * @param string $Zip
-     * @param string $City
+     * @var string $city
      */
-    public function __construct($PostfilialNumber, $PostNumber, $Zip, $City)
+    protected $city = null;
+
+    /**
+     * @param string $postfilialNumber
+     * @param string $postNumber
+     * @param string $zip
+     * @param string $city
+     */
+    public function __construct($postfilialNumber, $postNumber, $zip, $city)
     {
-        $this->PostfilialNumber = $PostfilialNumber;
-        $this->PostNumber = $PostNumber;
-        $this->Zip = $Zip;
-        $this->City = $City;
+        $this->postfilialNumber = $postfilialNumber;
+        $this->postNumber = $postNumber;
+        $this->zip = $zip;
+        $this->city = $city;
     }
 
     /**
@@ -44,16 +46,16 @@ class PostfilialeType
      */
     public function getPostfilialNumber()
     {
-        return $this->PostfilialNumber;
+        return $this->postfilialNumber;
     }
 
     /**
-     * @param string $PostfilialNumber
+     * @param string $postfilialNumber
      * @return PostfilialeType
      */
-    public function setPostfilialNumber($PostfilialNumber)
+    public function setPostfilialNumber($postfilialNumber)
     {
-        $this->PostfilialNumber = $PostfilialNumber;
+        $this->postfilialNumber = $postfilialNumber;
         return $this;
     }
 
@@ -62,16 +64,16 @@ class PostfilialeType
      */
     public function getPostNumber()
     {
-        return $this->PostNumber;
+        return $this->postNumber;
     }
 
     /**
-     * @param string $PostNumber
+     * @param string $postNumber
      * @return PostfilialeType
      */
-    public function setPostNumber($PostNumber)
+    public function setPostNumber($postNumber)
     {
-        $this->PostNumber = $PostNumber;
+        $this->postNumber = $postNumber;
         return $this;
     }
 
@@ -80,16 +82,16 @@ class PostfilialeType
      */
     public function getZip()
     {
-        return $this->Zip;
+        return $this->zip;
     }
 
     /**
-     * @param string $Zip
+     * @param string $zip
      * @return PostfilialeType
      */
-    public function setZip($Zip)
+    public function setZip($zip)
     {
-        $this->Zip = $Zip;
+        $this->zip = $zip;
         return $this;
     }
 
@@ -98,16 +100,16 @@ class PostfilialeType
      */
     public function getCity()
     {
-        return $this->City;
+        return $this->city;
     }
 
     /**
-     * @param string $City
+     * @param string $city
      * @return PostfilialeType
      */
-    public function setCity($City)
+    public function setCity($city)
     {
-        $this->City = $City;
+        $this->city = $city;
         return $this;
     }
 

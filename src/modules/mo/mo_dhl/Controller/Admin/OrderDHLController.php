@@ -3,11 +3,13 @@
 namespace Mediaopt\DHL\Controller\Admin;
 
 use Mediaopt\DHL\Adapter\DHLAdapter;
-use Mediaopt\DHL\Adapter\GKVShipmentBuilder;
+use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
+use Mediaopt\DHL\Api\GKV\CountryType;
 use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Response\DeleteShipmentOrderResponse;
 use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Merchant\Ekp;
@@ -31,20 +33,28 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     protected $wunschpaket;
 
+
+    /**
+     * Current class template name.
+     *
+     * @var string
+     */
+    protected $_sThisTemplate = 'mo_dhl__order_dhl.tpl';
+
     /**
      * @extend
      * @return string
      */
     public function render()
     {
-        parent::render();
+        $templateName = parent::render();
         $this->addTplParam('processes', Process::getAvailableProcesses());
         $this->addTplParam('ekp', $this->getEkp());
         $this->addTplParam('participationNumber', $this->getParticipationNumber());
         $this->addTplParam('processIdentifier', $this->getProcessIdentifier());
         $this->addTplParam('remarks', $this->getRemarks());
         $this->addTplParam('labels', $this->getOrder()->moDHLGetLabels());
-        return 'mo_dhl__order_dhl.tpl';
+        return $templateName;
     }
 
     /**
@@ -54,6 +64,43 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     public function createLabel()
     {
         $this->handleCreationResponse($this->callCreation());
+    }
+
+    /**
+     * template method: create label from custom input
+     *
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    public function createCustomLabel()
+    {
+        $data = Registry::getConfig()->getRequestParameter('data');
+        $request = $this->buildShipmentOrderRequest();
+        $shipmentOrder = $request->getShipmentOrder()[0];
+
+        $this->applyCustomGeneralData($shipmentOrder, $data['general']);
+        $this->applyCustomShipperData($shipmentOrder, $data['shipper']);
+        $this->applyCustomReceiverData($shipmentOrder, $data['receiver']);
+        $this->applyCustomServicesData($shipmentOrder, $data['services']);
+
+        $this->addTplParam('shipmentOrder', $this->getDataArray($shipmentOrder));
+        $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
+        $response = Registry::get(DHLAdapter::class)->buildGKV()->createShipmentOrder($request);
+        $this->handleCreationResponse($response);
+    }
+
+    /**
+     * template method: prepare data for customization
+     *
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    public function prepareCustomLabel()
+    {
+        $shipmentOrder = $this->buildShipmentOrderRequest()->getShipmentOrder()[0];
+
+        $this->addTplParam('shipmentOrder', $this->getDataArray($shipmentOrder));
+        $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
     }
 
     /**
@@ -82,15 +129,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     protected function callCreation()
     {
-        $shipmentBuilder = \oxNew(GKVShipmentBuilder::class);
-        $shipment = $shipmentBuilder->build($this->getOrder());
-        $shipmentOrder = new ShipmentOrderType($this->getOrder()->getId(), $shipment);
-        if (Registry::getConfig()->getShopConfVar('mo_dhl__only_with_leitcode')) {
-            $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration(true));
-        }
-        $gkvClient = Registry::get(DHLAdapter::class)->buildGKV();
-        $request = new CreateShipmentOrderRequest($gkvClient->buildVersion(), $shipmentOrder);
-        return $gkvClient->createShipmentOrder($request->setCombinedPrinting(0));
+        return Registry::get(DHLAdapter::class)->buildGKV()->createShipmentOrder($this->buildShipmentOrderRequest());
     }
 
     /**
@@ -307,5 +346,90 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         foreach ($errors as $error) {
             $utilsView->addErrorToDisplay($error);
         }
+    }
+
+    /**
+     * @return CreateShipmentOrderRequest
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    protected function buildShipmentOrderRequest(): CreateShipmentOrderRequest
+    {
+        return Registry::get(GKVCreateShipmentOrderRequestBuilder::class)->build([$this->getOrder()->getId()]);
+    }
+
+    /**
+     * @param ShipmentOrderType $shipmentOrder
+     * @return array
+     */
+    protected function getDataArray(ShipmentOrderType $shipmentOrder): array
+    {
+        $shipper = $shipmentOrder->getShipment()->getShipper();
+        $receiver = $shipmentOrder->getShipment()->getReceiver();
+        return [
+            'general'  => [
+                'weight' => $shipmentOrder->getShipment()->getShipmentDetails()->getShipmentItem()->getWeightInKG(),
+            ],
+            'shipper'  => [
+                'name'    => $shipper->getName()->getName1() . $shipper->getName()->getName2() . $shipper->getName()->getName3(),
+                'address' => $shipper->getAddress(),
+            ],
+            'receiver' => [
+                'name'    => $receiver->getName1(),
+                'type'    => $receiver->getAddress() !== null ? 'address' : ($receiver->getPackstation() !== null ? 'packstation' : 'poftfiliale'),
+                'address' => $receiver->getAddress() ?: $receiver->getPackstation() ?: $receiver->getPostfiliale(),
+            ],
+            'services' => [
+                'parcelOutletRouting' => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getParcelOutletRouting(),
+                'printOnlyIfCodeable' => $shipmentOrder->getPrintOnlyIfCodeable(),
+            ],
+        ];
+    }
+
+    /**
+     * @param ShipmentOrderType $shipmentOrder
+     * @param array             $generalData
+     */
+    protected function applyCustomGeneralData(ShipmentOrderType $shipmentOrder, $generalData)
+    {
+        $shipmentOrder->getShipment()->getShipmentDetails()->getShipmentItem()->setWeightInKG($generalData['weight']);
+    }
+
+    /**
+     * @param ShipmentOrderType $shipmentOrder
+     * @param array             $shipperData
+     */
+    protected function applyCustomShipperData(ShipmentOrderType $shipmentOrder, $shipperData)
+    {
+        $shipper = $shipmentOrder->getShipment()->getShipper();
+        $shipper->getName()->setName1($shipperData['name']);
+        $shipperData['Origin'] = new CountryType($shipperData['country']);
+        $shipper->getAddress()->assign($shipperData);
+    }
+
+    /**
+     * @param ShipmentOrderType $shipmentOrder
+     * @param array             $receiverData
+     */
+    protected function applyCustomReceiverData(ShipmentOrderType $shipmentOrder, $receiverData)
+    {
+        $receiver = $shipmentOrder->getShipment()->getReceiver();
+        $receiver->setName1($receiverData['name']);
+        if ($receiverData['country']) {
+            $receiverData['Origin'] = new CountryType($receiverData['country']);
+        }
+        $receiverAddress = $receiver->getAddress() ?: $receiver->getPackstation() ?: $receiver->getPostfiliale();
+        $receiverAddress->assign($receiverData);
+    }
+
+    /**
+     * @param ShipmentOrderType $shipmentOrder
+     * @param array             $servicesData
+     */
+    protected function applyCustomServicesData(ShipmentOrderType $shipmentOrder, $servicesData)
+    {
+        $services = $shipmentOrder->getShipment()->getShipmentDetails()->getService();
+        $services->setParcelOutletRouting(new ServiceconfigurationDetailsOptional((bool)$servicesData['parcelOutletRouting']['active'], $servicesData['parcelOutletRouting']['details'] ?: null));
+        $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration((bool)$servicesData['printOnlyIfCodeable']['active']));
     }
 }

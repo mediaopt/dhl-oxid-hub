@@ -136,7 +136,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     protected function buildShipmentDate(): string
     {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
+        $wunschpaket = Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         return $wunschpaket->getWunschpaket()->getTransferDay()->format('Y-m-d');
     }
 
@@ -155,8 +155,8 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     private function buildService(): ShipmentService
     {
         $service = new ShipmentService();
-        $remark = \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem');
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
+        $remark = Registry::getSession()->getVariable('ordrem');
+        $wunschpaket = Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         if ($wunschpaket->hasWunschzeit($remark)) {
             $service->setPreferredTime(new ServiceconfigurationDeliveryTimeframe(1, $wunschpaket->extractTime($remark)));
         }
@@ -170,9 +170,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         if ($wunschpaket->hasWunschort($remark)) {
             $service->setPreferredNeighbour(new ServiceconfigurationDetails(1, $locationPart1));
         }
-        if (Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active')) {
-            $service->setParcelOutletRouting(new ServiceconfigurationDetailsOptional(1, Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null));
-        }
+        $service->setParcelOutletRouting(new ServiceconfigurationDetailsOptional((bool)Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active'), Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null));
         return $service;
     }
 
@@ -191,7 +189,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     protected function buildShipper(): ShipperType
     {
-        $config = \OxidEsales\Eshop\Core\Registry::getConfig();
+        $config = Registry::getConfig();
 
         $name = new NameType($config->getShopConfVar('mo_dhl__sender_line1'), $config->getShopConfVar('mo_dhl__sender_line2'), $config->getShopConfVar('mo_dhl__sender_line3'));
         $iso2 = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$config->getShopConfVar('mo_dhl__sender_country')]);
@@ -216,7 +214,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     protected function buildPackstation(Order $order): PackStationType
     {
-        return new PackStationType($order->moDHLGetAddressData('streetnr'), $order->moDHLGetAddressData('addinfo'), $order->moDHLGetAddressData('zip'), $order->moDHLGetAddressData('city'), null, $this->buildCountry($order->moDHLGetAddressData('countryid')));
+        return new PackStationType($order->moDHLGetAddressData('addinfo'), $order->moDHLGetAddressData('streetnr'), $order->moDHLGetAddressData('zip'), $order->moDHLGetAddressData('city'), null, $this->buildCountry($order->moDHLGetAddressData('countryid')));
     }
 
     /**

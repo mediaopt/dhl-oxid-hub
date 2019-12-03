@@ -85,12 +85,12 @@ class CreateShipmentOrderRequest
     }
 
     /**
-     * @param ShipmentOrderType[] $ShipmentOrder
+     * @param ShipmentOrderType[]|ShipmentOrderType $ShipmentOrder
      * @return CreateShipmentOrderRequest
      */
     public function setShipmentOrder($ShipmentOrder)
     {
-        $this->ShipmentOrder = $ShipmentOrder;
+        $this->ShipmentOrder = is_array($ShipmentOrder) ? $ShipmentOrder : [$ShipmentOrder];
         return $this;
     }
 
