@@ -22,6 +22,9 @@ use OxidEsales\Eshop\Core\Registry;
 class ModuleConfiguration extends ModuleConfiguration_parent
 {
 
+    /**
+     * @var string[]
+     */
     const SURCHARGE_SNIPPETS = [
         'mo_dhl__wunschtag_surcharge_text'            => 'MO_DHL__WUNSCHTAG_COSTS',
         'mo_dhl__wunschzeit_surcharge_text'           => 'MO_DHL__WUNSCHZEIT_COSTS',
