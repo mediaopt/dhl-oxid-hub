@@ -9,6 +9,7 @@ namespace Mediaopt\DHL\Application\Controller;
  */
 
 use Mediaopt\DHL\Api\Wunschpaket;
+use OxidEsales\Eshop\Core\Registry;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -28,7 +29,7 @@ class OrderController extends OrderController_parent
         $atLeastOneServiceHasBeenDisabled = $this->moDHLUpdateWunschpaketTags();
         if ($atLeastOneServiceHasBeenDisabled) {
             /** @noinspection PhpParamsInspection */
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__DISABLED_SERVICE_ERROR');
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__DISABLED_SERVICE_ERROR');
         }
     }
 
@@ -39,8 +40,8 @@ class OrderController extends OrderController_parent
         /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
         $basket = $this->getBasket();
         $zip = $basket->moEmpfaengeservicesGetAddressedZipCode();
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
-        $previousRemark = $remark = \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem');
+        $wunschpaket = Registry::get(\Mediaopt\DHL\Wunschpaket::class);
+        $previousRemark = $remark = Registry::getSession()->getVariable('ordrem');
         if ($wunschpaket->hasWunschtag($remark) && !$wunschpaket->canAWunschtagBeSelected($basket)) {
             $remark = $wunschpaket->removeWunschtagTag($remark);
         }
@@ -53,7 +54,7 @@ class OrderController extends OrderController_parent
         if ($wunschpaket->hasWunschnachbar($remark) && !$wunschpaket->isWunschnachbarActive()) {
             $remark = $wunschpaket->removeWunschnachbarTag($remark);
         }
-        \OxidEsales\Eshop\Core\Registry::getSession()->setVariable('ordrem', $remark);
+        Registry::getSession()->setVariable('ordrem', $remark);
         return $remark !== $previousRemark;
     }
 
@@ -62,7 +63,7 @@ class OrderController extends OrderController_parent
      */
     public function moDHLGetLocation()
     {
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->extractLocation(parent::getOrderRemark());
+        return Registry::get(\Mediaopt\DHL\Wunschpaket::class)->extractLocation(parent::getOrderRemark());
     }
 
     /**
@@ -70,7 +71,7 @@ class OrderController extends OrderController_parent
      */
     public function moDHLGetTime()
     {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
+        $wunschpaket = Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         $preferredTime = $wunschpaket->extractTime(parent::getOrderRemark());
         return $preferredTime !== '' ? Wunschpaket::formatPreferredTime($preferredTime) : '';
     }
@@ -80,7 +81,7 @@ class OrderController extends OrderController_parent
      */
     public function moDHLGetWunschtag()
     {
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->extractWunschtag(parent::getOrderRemark());
+        return Registry::get(\Mediaopt\DHL\Wunschpaket::class)->extractWunschtag(parent::getOrderRemark());
     }
 
     /**
@@ -89,7 +90,7 @@ class OrderController extends OrderController_parent
      */
     public function getOrderRemark()
     {
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->removeWunschpaketTags(parent::getOrderRemark());
+        return Registry::get(\Mediaopt\DHL\Wunschpaket::class)->removeWunschpaketTags(parent::getOrderRemark());
     }
 
     /**
@@ -97,7 +98,7 @@ class OrderController extends OrderController_parent
      */
     public function moDHLIsAWunschpaketServiceSelected()
     {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
+        $wunschpaket = Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         return $wunschpaket->hasAnyWunschpaketService(parent::getOrderRemark());
     }
 
@@ -112,6 +113,32 @@ class OrderController extends OrderController_parent
         $user = $this->getUser();
         $deliveryAddress = $this->getDelAddress();
         $payment = $this->getPayment();
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->canAWunschpaketServiceBeSelected($basket, $user, $deliveryAddress, $payment);
+        return Registry::get(\Mediaopt\DHL\Wunschpaket::class)->canAWunschpaketServiceBeSelected($basket, $user, $deliveryAddress, $payment);
+    }
+
+    /**
+     * @return string
+     */
+    public function moDHLGetCurrentLanguage()
+    {
+        return Registry::getLang()->getTplLanguage();
+    }
+
+    /**
+     * @param string $textVarName
+     * @return string
+     */
+    public function moDHLGetSurchargeTranslation($textVarName)
+    {
+        $wunschpaket = Registry::get(\Mediaopt\DHL\Wunschpaket::class);
+        $langId = $this->moDHLGetCurrentLanguage();
+        switch ($textVarName) {
+            case 'mo_dhl__wunschtag_surcharge_text':
+                return $wunschpaket->getWunschtagText($langId);
+            case 'mo_dhl__wunschzeit_surcharge_text':
+                return $wunschpaket->getWunschzeitText($langId);
+            default:
+                return $wunschpaket->getWunschtagWunschzeitText($langId);
+        }
     }
 }

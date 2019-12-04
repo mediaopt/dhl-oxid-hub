@@ -10,6 +10,7 @@ namespace Mediaopt\DHL;
 
 use Mediaopt\DHL\Api\Wunschpaket as ApiWunschpaket;
 use Mediaopt\DHL\ServiceProvider\Branch;
+use OxidEsales\Eshop\Core\Registry;
 
 /**
  * This class integrates the Wunschpaket class of the SDK into OXID.
@@ -78,8 +79,8 @@ class Wunschpaket
     public function __construct()
     {
         try {
-            $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class);
-            $this->wunschpaket = $adapter->buildWunschpaket()->setCutOffTime(\OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__wunschtag_cutoff'))->setExcludedDaysForHandingOver($adapter->getDaysExcludedForHandingOver())->setPreparationDays($adapter->getPreparationDays());
+            $adapter = Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class);
+            $this->wunschpaket = $adapter->buildWunschpaket()->setCutOffTime(Registry::getConfig()->getShopConfVar('mo_dhl__wunschtag_cutoff'))->setExcludedDaysForHandingOver($adapter->getDaysExcludedForHandingOver())->setPreparationDays($adapter->getPreparationDays());
         } catch (\RuntimeException $exception) {
         }
     }
@@ -115,7 +116,7 @@ class Wunschpaket
             $options = $zip !== null && $wunschpaket !== null ? $wunschpaket->getPreferredDays($zip, $wunschpaket->getTransferDay()) : [];
             return $this->isWunschtagCompatibleWithEstimatedDeliveryTime($basket, $options) ? $options : [];
         } catch (\DomainException $exception) {
-            \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class)->getLogger()->error($exception->getMessage());
+            Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class)->getLogger()->error($exception->getMessage());
             return [];
         }
     }
@@ -404,7 +405,7 @@ class Wunschpaket
      */
     public function isWunschtagActive()
     {
-        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar(self::WUNSCHTAG_ACTIVE_FLAG);
+        return (bool)Registry::getConfig()->getShopConfVar(self::WUNSCHTAG_ACTIVE_FLAG);
     }
 
     /**
@@ -421,7 +422,7 @@ class Wunschpaket
      */
     public function isWunschzeitActive()
     {
-        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar(self::WUNSCHZEIT_ACTIVE_FLAG);
+        return (bool)Registry::getConfig()->getShopConfVar(self::WUNSCHZEIT_ACTIVE_FLAG);
     }
 
     /**
@@ -429,7 +430,7 @@ class Wunschpaket
      */
     public function isWunschortActive()
     {
-        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar(self::WUNSCHORT_ACTIVE_FLAG);
+        return (bool)Registry::getConfig()->getShopConfVar(self::WUNSCHORT_ACTIVE_FLAG);
     }
 
     /**
@@ -437,7 +438,7 @@ class Wunschpaket
      */
     public function isWunschnachbarActive()
     {
-        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar(self::WUNSCHNACHBAR_ACTIVE_FLAG);
+        return (bool)Registry::getConfig()->getShopConfVar(self::WUNSCHNACHBAR_ACTIVE_FLAG);
     }
 
     /**
@@ -451,7 +452,7 @@ class Wunschpaket
      */
     protected function isAWunschpaketServiceExcluded($basket, $user, $deliveryAddress, $payment)
     {
-        $adapter = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class);
+        $adapter = Registry::get(\Mediaopt\DHL\Adapter\DHLAdapter::class);
         return $this->isExcludedDueToSendingToADhlBranch($deliveryAddress) || $this->isExcludedDueToThePaymentOption($payment) || $adapter->isExcludedDueToSendingOutsideOfGermany($user, $deliveryAddress) || !$basket->moAllowsDhlDelivery();
     }
 
@@ -557,7 +558,7 @@ class Wunschpaket
      */
     public function getWunschtagSurcharge()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__wunschtag_surcharge');
+        return Registry::getConfig()->getConfigParam('mo_dhl__wunschtag_surcharge');
     }
 
     /**
@@ -565,7 +566,7 @@ class Wunschpaket
      */
     public function getCombinedWunschtagAndWunschzeitSurcharge()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__wunschtag_wunschzeit_surcharge');
+        return Registry::getConfig()->getConfigParam('mo_dhl__wunschtag_wunschzeit_surcharge');
     }
 
     /**
@@ -573,6 +574,44 @@ class Wunschpaket
      */
     public function getWunschzeitSurcharge()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__wunschzeit_surcharge');
+        return Registry::getConfig()->getConfigParam('mo_dhl__wunschzeit_surcharge');
+    }
+
+    /**
+     * @param $langId
+     * @return mixed
+     */
+    public function getWunschtagText($langId)
+    {
+        if ($translation = Registry::getConfig()->getConfigParam('mo_dhl__wunschtag_surcharge_text')[$langId]) {
+            return $translation;
+        }
+        $snippet = 'MO_DHL__WUNSCHTAG_COSTS' . (Registry::getConfig()->getConfigParam('blShowVATForDelivery') ? '_NET' : '_GROSS');
+        return Registry::getLang()->translateString($snippet, $langId, false);
+    }
+
+    /**
+     * @param $langId
+     * @return mixed
+     */
+    public function getWunschzeitText($langId)
+    {
+        if ($translation = Registry::getConfig()->getConfigParam('mo_dhl__wunschzeit_surcharge_text')[$langId]) {
+            return $translation;
+        }
+        $snippet = 'MO_DHL__WUNSCHZEIT_COSTS' . (Registry::getConfig()->getConfigParam('blShowVATForDelivery') ? '_NET' : '_GROSS');
+        return Registry::getLang()->translateString($snippet, $langId, false);
+    }
+    /**
+     * @param $langId
+     * @return mixed
+     */
+    public function getWunschtagWunschzeitText($langId)
+    {
+        if ($translation = Registry::getConfig()->getConfigParam('mo_dhl__wunschtag_wunschzeit_surcharge_text')[$langId]) {
+            return $translation;
+        }
+        $snippet = 'MO_DHL__COMBINATION_SURCHARGE' . (Registry::getConfig()->getConfigParam('blShowVATForDelivery') ? '_NET' : '_GROSS');
+        return Registry::getLang()->translateString($snippet, $langId, false);
     }
 }
