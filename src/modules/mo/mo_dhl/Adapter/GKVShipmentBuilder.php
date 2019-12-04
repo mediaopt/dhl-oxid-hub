@@ -170,7 +170,9 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         if ($wunschpaket->hasWunschort($remark)) {
             $service->setPreferredNeighbour(new ServiceconfigurationDetails(1, $locationPart1));
         }
-        $service->setParcelOutletRouting(new ServiceconfigurationDetailsOptional((bool)Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active'), Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null));
+        $isActive = (bool)Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active');
+        $altEmail = Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null;
+        $service->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $altEmail));
         return $service;
     }
 

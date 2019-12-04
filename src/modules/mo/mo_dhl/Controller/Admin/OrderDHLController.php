@@ -74,16 +74,16 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     public function createCustomLabel()
     {
-        $data = Registry::getConfig()->getRequestParameter('data');
         $request = $this->buildShipmentOrderRequest();
         $shipmentOrder = $request->getShipmentOrder()[0];
+        $data = Registry::getConfig()->getRequestParameter('data');
 
-        $this->applyCustomGeneralData($shipmentOrder, $data['general']);
-        $this->applyCustomShipperData($shipmentOrder, $data['shipper']);
-        $this->applyCustomReceiverData($shipmentOrder, $data['receiver']);
-        $this->applyCustomServicesData($shipmentOrder, $data['services']);
+        $this->useCustomGeneralData($shipmentOrder, $data['general']);
+        $this->useCustomShipper($shipmentOrder, $data['shipper']);
+        $this->useCustomReceiver($shipmentOrder, $data['receiver']);
+        $this->useCustomServices($shipmentOrder, $data['services']);
 
-        $this->addTplParam('shipmentOrder', $this->getDataArray($shipmentOrder));
+        $this->addTplParam('shipmentOrder', $this->toCustomizableParametersArray($shipmentOrder));
         $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
         $response = Registry::get(DHLAdapter::class)->buildGKV()->createShipmentOrder($request);
         $this->handleCreationResponse($response);
@@ -99,7 +99,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     {
         $shipmentOrder = $this->buildShipmentOrderRequest()->getShipmentOrder()[0];
 
-        $this->addTplParam('shipmentOrder', $this->getDataArray($shipmentOrder));
+        $this->addTplParam('shipmentOrder', $this->toCustomizableParametersArray($shipmentOrder));
         $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
     }
 
@@ -362,7 +362,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      * @param ShipmentOrderType $shipmentOrder
      * @return array
      */
-    protected function getDataArray(ShipmentOrderType $shipmentOrder): array
+    protected function toCustomizableParametersArray(ShipmentOrderType $shipmentOrder): array
     {
         $shipper = $shipmentOrder->getShipment()->getShipper();
         $receiver = $shipmentOrder->getShipment()->getReceiver();
@@ -390,7 +390,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      * @param ShipmentOrderType $shipmentOrder
      * @param array             $generalData
      */
-    protected function applyCustomGeneralData(ShipmentOrderType $shipmentOrder, $generalData)
+    protected function useCustomGeneralData(ShipmentOrderType $shipmentOrder, $generalData)
     {
         $shipmentOrder->getShipment()->getShipmentDetails()->getShipmentItem()->setWeightInKG($generalData['weight']);
     }
@@ -399,7 +399,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      * @param ShipmentOrderType $shipmentOrder
      * @param array             $shipperData
      */
-    protected function applyCustomShipperData(ShipmentOrderType $shipmentOrder, $shipperData)
+    protected function useCustomShipper(ShipmentOrderType $shipmentOrder, $shipperData)
     {
         $shipper = $shipmentOrder->getShipment()->getShipper();
         $shipper->getName()->setName1($shipperData['name']);
@@ -411,7 +411,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      * @param ShipmentOrderType $shipmentOrder
      * @param array             $receiverData
      */
-    protected function applyCustomReceiverData(ShipmentOrderType $shipmentOrder, $receiverData)
+    protected function useCustomReceiver(ShipmentOrderType $shipmentOrder, $receiverData)
     {
         $receiver = $shipmentOrder->getShipment()->getReceiver();
         $receiver->setName1($receiverData['name']);
@@ -426,10 +426,14 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      * @param ShipmentOrderType $shipmentOrder
      * @param array             $servicesData
      */
-    protected function applyCustomServicesData(ShipmentOrderType $shipmentOrder, $servicesData)
+    protected function useCustomServices(ShipmentOrderType $shipmentOrder, $servicesData)
     {
         $services = $shipmentOrder->getShipment()->getShipmentDetails()->getService();
-        $services->setParcelOutletRouting(new ServiceconfigurationDetailsOptional((bool)$servicesData['parcelOutletRouting']['active'], $servicesData['parcelOutletRouting']['details'] ?: null));
-        $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration((bool)$servicesData['printOnlyIfCodeable']['active']));
+        $isActive = filter_var($servicesData['parcelOutletRouting']['active'], FILTER_VALIDATE_BOOLEAN);
+        $details = $servicesData['parcelOutletRouting']['details'] ?: null;
+        $services->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $details));
+
+        $isActive = filter_var($servicesData['printOnlyIfCodeable']['active'], FILTER_VALIDATE_BOOLEAN);
+        $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration($isActive));
     }
 }
