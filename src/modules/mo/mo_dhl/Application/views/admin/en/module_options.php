@@ -26,6 +26,11 @@ $aLang = [
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_active'            => 'If checkbox is enabled, the Parcel Outlet Routing Service will be booked. In this case, your undeliverable packages will be held at the nearest parcel collection point for collection by the recipient rather than being returned immediately to you.',
     'SHOP_MODULE_mo_dhl__filialrouting_alternative_email'      => 'Alternative email address for the Parcel Outlet Routing Service (optional)',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_alternative_email' => 'Please enter your email address in case you wish to receive the notification for the Parcel Outlet Routing Service.',
+    'SHOP_MODULE_mo_dhl__paketankuendigung_active'             => 'Activate automatic delivery notification',
+    'SHOP_MODULE_mo_dhl__paketankuendigung_mode'               => 'Send customer e-mail address to DHL',
+    'SHOP_MODULE_mo_dhl__paketankuendigung_mode_NEVER'         => 'Never',
+    'SHOP_MODULE_mo_dhl__paketankuendigung_mode_ALWAYS'        => 'Always',
+    'SHOP_MODULE_mo_dhl__paketankuendigung_mode_ASK'           => 'Ask the customer',
 
     'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Parcel shop finder',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximum number of hits',

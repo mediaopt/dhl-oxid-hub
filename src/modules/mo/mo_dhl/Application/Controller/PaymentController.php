@@ -17,7 +17,10 @@ use OxidEsales\Eshop\Core\Registry;
 class PaymentController extends PaymentController_parent
 {
 
-    public function moDHLShowCheckboxForNotificationAllowance()
+    /**
+     * @return bool
+     */
+    public function moDHLShowCheckboxForNotificationAllowance(): bool
     {
         if ('ASK' !== Registry::getConfig()->getShopConfVar('mo_dhl__paketankuendigung_mode')) {
             return false;
@@ -28,7 +31,10 @@ class PaymentController extends PaymentController_parent
         return !$shipping->getFieldData('MO_DHL_EXCLUDED');
     }
 
-    public function moDHLIsNotificationAllowanceActive()
+    /**
+     * @return bool
+     */
+    public function moDHLIsNotificationAllowanceActive(): bool
     {
         $dynamicValues = $this->getSession()->getVariable('dynvalue');
         return $dynamicValues['mo_dhl_allow_notification'] || false;

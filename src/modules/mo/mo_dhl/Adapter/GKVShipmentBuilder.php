@@ -235,7 +235,11 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         return $address;
     }
 
-    protected function sendNotificationAllowed(Order $order)
+    /**
+     * @param Order $order
+     * @return bool
+     */
+    protected function sendNotificationAllowed(Order $order): bool
     {
         switch (Registry::getConfig()->getShopConfVar('mo_dhl__paketankuendigung_mode')) {
             case 'NEVER':
