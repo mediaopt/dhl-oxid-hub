@@ -61,7 +61,9 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         if ($returnBookingNumber = $this->buildReturnAccountNumber($order)) {
             $details->setReturnShipmentAccountNumber($returnBookingNumber);
         }
-        $details->setNotification(new ShipmentNotificationType($order->getFieldData('oxbillemail')));
+        if ($this->sendNotificationAllowed($order)) {
+            $details->setNotification(new ShipmentNotificationType($order->getFieldData('oxbillemail')));
+        }
         $details->setService($this->buildService());
         return $details;
     }
@@ -231,5 +233,17 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $address->setAddressAddition([$addInfo]);
         }
         return $address;
+    }
+
+    protected function sendNotificationAllowed(Order $order)
+    {
+        switch (Registry::getConfig()->getShopConfVar('mo_dhl__paketankuendigung_mode')) {
+            case 'NEVER':
+                return false;
+            case 'ALWAYS':
+                return true;
+            default:
+                return (bool)$order->getFieldData('MO_DHL_ALLOW_NOTIFICATION');
+        }
     }
 }

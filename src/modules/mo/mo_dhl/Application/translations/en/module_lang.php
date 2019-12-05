@@ -111,4 +111,5 @@ $aLang = [
     'MO_DHL__BATCH_ORDERS_WITH_STATUS_FOUND'      => '%d order(s) with status %s found',
     'MO_DHL__BATCH_PAID_ORDERS_WITH_STATUS_FOUND' => '%d paid order(s) with status %s found',
     'MO_DHL__BATCH_LABELS_CREATED'                => '%d label(s) created.',
+    'MO_DHL__ALLOW_NOTIFICATION'                  => 'I agree that my e-mail address is sent to the delivery service provider.',
 ];
