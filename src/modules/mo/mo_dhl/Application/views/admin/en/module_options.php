@@ -4,7 +4,7 @@ $sLangName = 'English';
 $aLang = [
     'charset' => 'UTF-8',
 
-    'SHOP_MODULE_GROUP_mo_dhl__account'         => 'DHL Business Customer Login',
+    'SHOP_MODULE_GROUP_mo_dhl__account'         => 'Credentials',
     'SHOP_MODULE_mo_dhl__account_sandbox'       => 'Use Testing-Webservice',
     'HELP_SHOP_MODULE_mo_dhl__account_sandbox'  => 'Use the testing webservice of DHL instead of the productive webservice. In this case you have to fill in the credentials of your <a href="https://entwickler.dhl.de">DHL Developer Portal</a> account below.',
     'SHOP_MODULE_mo_dhl__account_user'          => 'Username',
@@ -12,12 +12,10 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__account_password'      => 'Password',
     'HELP_SHOP_MODULE_mo_dhl__account_password' => 'Your Password for the <a href="http://www.dhl-geschaeftskundenportal.de">DHL Business Customer Portal</a>.',
     'SHOP_MODULE_mo_dhl__account_check'         => '',
+    'SHOP_MODULE_mo_dhl__merchant_ekp'          => 'EKP',
+    'HELP_SHOP_MODULE_mo_dhl__merchant_ekp'     => 'The EKP is your DHL customer number',
 
-    'SHOP_MODULE_GROUP_mo_dhl__merchant'    => 'Merchant Information',
-    'SHOP_MODULE_mo_dhl__merchant_ekp'      => 'EKP',
-    'HELP_SHOP_MODULE_mo_dhl__merchant_ekp' => 'The EKP is your DHL customer number',
-
-    'SHOP_MODULE_GROUP_mo_dhl__label'             => 'Label creation',
+    'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Delivery',
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Allow only Codeable shipping addresses',
     'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => 'If checkbox is enabled, shipment labels will only be created if the DHL delivery address verification succeeds (address is coedable). There is a surcharge for not codeable shipping addresses.',
 
@@ -27,7 +25,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__filialrouting_alternative_email'      => 'Alternative email address for the Parcel Outlet Routing Service (optional)',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_alternative_email' => 'Please enter your email address in case you wish to receive the notification for the Parcel Outlet Routing Service.',
 
-    'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Parcel shop finder',
+    'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Wunschpaket - Parcel shop finder',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximum number of hits',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_1'         => '1',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_2'         => '2',
@@ -85,11 +83,11 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__standortsuche_postfiliale'           => 'Postfiliale enabled',
     'SHOP_MODULE_mo_dhl__standortsuche_paketshop'             => 'Paketshop enabled',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschtag'          => 'Preferred day',
-    'SHOP_MODULE_mo_dhl__wunschtag_active'         => 'Enabled',
-    'SHOP_MODULE_mo_dhl__wunschtag_cutoff'         => 'Cut off Time',
-    'HELP_SHOP_MODULE_mo_dhl__wunschtag_cutoff'    => 'Cut-off time is the latest possible order time up to which the minimum preferred day (day of order + 2 days) can be guaranteed. As soon as the time is exceeded, the earliest preferred day displayed in the frontend will be shifted to one day later (day of order + 3 days).',
-    'SHOP_MODULE_mo_dhl__wunschtag_preparation'    => 'Preparation time for deliveries (Sunday and holidays excluded)',
+    'SHOP_MODULE_GROUP_mo_dhl__wunschtag'       => 'Wunschpaket - Preferred day',
+    'SHOP_MODULE_mo_dhl__wunschtag_active'      => 'Enabled',
+    'SHOP_MODULE_mo_dhl__wunschtag_cutoff'      => 'Cut off Time',
+    'HELP_SHOP_MODULE_mo_dhl__wunschtag_cutoff' => 'Cut-off time is the latest possible order time up to which the minimum preferred day (day of order + 2 days) can be guaranteed. As soon as the time is exceeded, the earliest preferred day displayed in the frontend will be shifted to one day later (day of order + 3 days).',
+    'SHOP_MODULE_mo_dhl__wunschtag_preparation' => 'Preparation time for deliveries (Sunday and holidays excluded)',
     'SHOP_MODULE_mo_dhl__wunschtag_preparation_0'  => '0',
     'SHOP_MODULE_mo_dhl__wunschtag_preparation_1'  => '1',
     'SHOP_MODULE_mo_dhl__wunschtag_preparation_2'  => '2',
@@ -98,30 +96,30 @@ $aLang = [
     'HELP_SHOP_MODULE_mo_dhl__wunschtag_surcharge' => 'Insert gross value as surcharge for the preferred day. Insert 0 to offer service for free. Use . as decimal separator.',
 
     'SHOP_MODULE_GROUP_mo_dhl__handing_over' => 'Days for handing over to DHL',
-    'SHOP_MODULE_mo_dhl__handing_over_help'  => 'On the working days checked, there is no transfer of parcels to DHL (in addition to sundays and public holidays). This information determines the first displayed preferred day in the frontend.',
-    'SHOP_MODULE_mo_dhl__handing_over_mon'   => 'Monday',
-    'SHOP_MODULE_mo_dhl__handing_over_tue'   => 'Tuesday',
-    'SHOP_MODULE_mo_dhl__handing_over_wed'   => 'Wednesday',
-    'SHOP_MODULE_mo_dhl__handing_over_thu'   => 'Thursday',
-    'SHOP_MODULE_mo_dhl__handing_over_fri'   => 'Friday',
-    'SHOP_MODULE_mo_dhl__handing_over_sat'   => 'Saturday',
+    'SHOP_MODULE_mo_dhl__handing_over_help'     => 'On the working days checked, there is no transfer of parcels to DHL (in addition to sundays and public holidays). This information determines the first displayed preferred day in the frontend.',
+    'SHOP_MODULE_mo_dhl__handing_over_mon'      => 'Monday',
+    'SHOP_MODULE_mo_dhl__handing_over_tue'      => 'Tuesday',
+    'SHOP_MODULE_mo_dhl__handing_over_wed'      => 'Wednesday',
+    'SHOP_MODULE_mo_dhl__handing_over_thu'      => 'Thursday',
+    'SHOP_MODULE_mo_dhl__handing_over_fri'      => 'Friday',
+    'SHOP_MODULE_mo_dhl__handing_over_sat'      => 'Saturday',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschzeit'          => 'Preferred time',
+    'SHOP_MODULE_GROUP_mo_dhl__wunschzeit'          => 'Wunschpaket - Preferred time',
     'SHOP_MODULE_mo_dhl__wunschzeit_active'         => 'Enabled',
     'SHOP_MODULE_mo_dhl__wunschzeit_surcharge'      => 'Delivery surcharge (EUR)',
     'HELP_SHOP_MODULE_mo_dhl__wunschzeit_surcharge' => 'Insert gross value as surcharge for the preferred time. Insert 0 to offer service for free. Use . as decimal separator.',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschtag_wunschzeit'          => 'Combination of preferred day and preferred time',
+    'SHOP_MODULE_GROUP_mo_dhl__wunschtag_wunschzeit'          => 'Wunschpaket - Combination of preferred day and preferred time',
     'SHOP_MODULE_mo_dhl__wunschtag_wunschzeit_surcharge'      => 'Delivery surcharge (EUR)',
     'HELP_SHOP_MODULE_mo_dhl__wunschtag_wunschzeit_surcharge' => 'Insert gross value as surcharge for the combination of preferred day and time. Insert 0 to offer service for free. Use . as decimal separator.',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschort'  => 'Preferred location',
+    'SHOP_MODULE_GROUP_mo_dhl__wunschort'  => 'Wunschpaket - Preferred location',
     'SHOP_MODULE_mo_dhl__wunschort_active' => 'Enabled',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschnachbar'  => 'Preferred neighbor',
+    'SHOP_MODULE_GROUP_mo_dhl__wunschnachbar'  => 'Wunschpaket - Preferred neighbor',
     'SHOP_MODULE_mo_dhl__wunschnachbar_active' => 'Enabled',
 
-    'SHOP_MODULE_GROUP_mo_dhl__sender'         => 'Sender data',
+    'SHOP_MODULE_GROUP_mo_dhl__sender'         => 'Delivery - Sender data',
     'SHOP_MODULE_mo_dhl__sender_line1'         => 'Line 1',
     'SHOP_MODULE_mo_dhl__sender_line2'         => 'Line 2',
     'SHOP_MODULE_mo_dhl__sender_line3'         => 'Line 3',
