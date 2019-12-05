@@ -5,6 +5,8 @@ namespace Mediaopt\DHL\Api\GKV;
 class PackStationType
 {
 
+    use AssignTrait;
+
     /**
      * @var string $postNumber
      */

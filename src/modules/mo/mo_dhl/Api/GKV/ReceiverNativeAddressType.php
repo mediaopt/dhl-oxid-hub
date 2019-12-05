@@ -5,6 +5,8 @@ namespace Mediaopt\DHL\Api\GKV;
 class ReceiverNativeAddressType
 {
 
+    use AssignTrait;
+
     /**
      * @var string $name2
      */

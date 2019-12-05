@@ -134,7 +134,11 @@
     <input type="submit" value="[{oxmultilang ident="GENERAL_SAVE"}]"/>
     <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CREATE_LABEL"}]"
            onClick="Javascript:document.myedit.fnc.value='createLabel'">
+    <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CUSTOM_LABEL_CREATE"}]"
+           onClick="Javascript:document.myedit.fnc.value='prepareCustomLabel'">
 </form>
+<br>
+<br>
 
 [{include file="bottomnaviitem.tpl"}]
 [{include file="bottomitem.tpl"}]

@@ -5,6 +5,8 @@ namespace Mediaopt\DHL\Api\GKV;
 class NativeAddressType
 {
 
+    use AssignTrait;
+
     /**
      * @var string $streetName
      */

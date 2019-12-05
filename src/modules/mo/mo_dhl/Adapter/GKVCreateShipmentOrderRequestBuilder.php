@@ -45,9 +45,7 @@ class GKVCreateShipmentOrderRequestBuilder
         $order = \oxNew(Order::class);
         $order->load($orderId);
         $shipmentOrder = new ShipmentOrderType($orderId, Registry::get(GKVShipmentBuilder::class)->build($order));
-        if (Registry::getConfig()->getShopConfVar('mo_dhl__only_with_leitcode')) {
-            $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration(true));
-        }
+        $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration((bool)Registry::getConfig()->getShopConfVar('mo_dhl__only_with_leitcode')));
         return $shipmentOrder;
     }
 }
