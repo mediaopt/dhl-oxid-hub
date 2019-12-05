@@ -19,10 +19,10 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Allow only Codeable shipping addresses',
     'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => 'If checkbox is enabled, shipment labels will only be created if the DHL delivery address verification succeeds (address is coedable). There is a surcharge for not codeable shipping addresses.',
 
-    'SHOP_MODULE_GROUP_mo_dhl__services'                       => 'Shipment Services',
-    'SHOP_MODULE_mo_dhl__filialrouting_active'                 => 'Parcel Outlet Routing',
-    'HELP_SHOP_MODULE_mo_dhl__filialrouting_active'            => 'If checkbox is enabled, the Parcel Outlet Routing Service will be booked. In this case, your undeliverable packages will be held at the nearest parcel collection point for collection by the recipient rather than being returned immediately to you.',
-    'SHOP_MODULE_mo_dhl__filialrouting_alternative_email'      => 'Alternative email address for the Parcel Outlet Routing Service (optional)',
+    'SHOP_MODULE_GROUP_mo_dhl__services'                  => 'Delivery - Services',
+    'SHOP_MODULE_mo_dhl__filialrouting_active'            => 'Parcel Outlet Routing',
+    'HELP_SHOP_MODULE_mo_dhl__filialrouting_active'       => 'If checkbox is enabled, the Parcel Outlet Routing Service will be booked. In this case, your undeliverable packages will be held at the nearest parcel collection point for collection by the recipient rather than being returned immediately to you.',
+    'SHOP_MODULE_mo_dhl__filialrouting_alternative_email' => 'Alternative email address for the Parcel Outlet Routing Service (optional)',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_alternative_email' => 'Please enter your email address in case you wish to receive the notification for the Parcel Outlet Routing Service.',
 
     'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Wunschpaket - Parcel shop finder',

@@ -18,7 +18,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Nur leitcodierbare Adressen zulassen',
     'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => 'Aktivieren Sie die Checkbox, wenn Versandetiketten nur für Adressen erstellt werden sollen, die seitens DHL als leitcodierbar gelten. Für nicht-leitcodierbare Adressen berechnet DHL in der Regel einen Aufschlag.',
 
-    'SHOP_MODULE_GROUP_mo_dhl__services'                       => 'Versand-Services',
+    'SHOP_MODULE_GROUP_mo_dhl__services'                       => 'Versand - Services',
     'SHOP_MODULE_mo_dhl__filialrouting_active'                 => 'Filialrouting',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_active'            => 'Durch Aktivierung wird eine Sendung bei Unzustellbarkeit (z.B. Empfänger nicht ermittelbar) automatisch in die nächstgelegene Postfiliale weitergeleitet.',
     'SHOP_MODULE_mo_dhl__filialrouting_alternative_email'      => 'Alternative E-Mail-Adresse für das Filialrouting (optional)',
