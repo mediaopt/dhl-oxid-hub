@@ -17,7 +17,7 @@ $aModule = [
         'en' => '<p>Enable features providing DHL services to your OXID shop.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-hmj/wiki/Dokumentation" target="_blank">Handbook</a></p>',
     ],
     'thumbnail'   => 'logo.png',
-    'version'     => '0.1.0',
+    'version'     => '0.2.0',
     'author'      => '<a href="http://www.mediaopt.de" target="_blank">mediaopt.</a>',
     'url'         => 'http://www.mediaopt.de',
     'email'       => 'shopsoftware@deutschepost.de',
