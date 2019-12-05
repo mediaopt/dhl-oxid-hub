@@ -58,7 +58,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     protected function buildShipmentDetails(Order $order): ShipmentDetailsType
     {
         $details = new ShipmentDetailsType($this->getProcess($order)->getServiceIdentifier(), $this->buildAccountNumber($order), $this->buildShipmentDate(), $this->buildShipmentItem($order));
-        if ($returnBookingNumber = $this->buildReturnAccountNumber($order)) {
+        if (Registry::getConfig()->getShopConfVar('mo_dhl__beilegerretoure_active') && $returnBookingNumber = $this->buildReturnAccountNumber($order)) {
             $details->setReturnShipmentAccountNumber($returnBookingNumber);
         }
         $details->setNotification(new ShipmentNotificationType($order->getFieldData('oxbillemail')));
