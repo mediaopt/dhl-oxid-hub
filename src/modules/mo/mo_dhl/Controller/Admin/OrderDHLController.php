@@ -419,10 +419,10 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     protected function useCustomReturnReceiver(ShipmentOrderType $shipmentOrder, $returnReceiverData)
     {
-        $shipper = $shipmentOrder->getShipment()->getReturnReceiver();
-        $shipper->getName()->setName1($returnReceiverData['name']);
+        $returnReceiver = $shipmentOrder->getShipment()->getReturnReceiver();
+        $returnReceiver->getName()->setName1($returnReceiverData['name']);
         $returnReceiverData['Origin'] = new CountryType($returnReceiverData['country']);
-        $shipper->getAddress()->assign($returnReceiverData);
+        $returnReceiver->getAddress()->assign($returnReceiverData);
     }
 
     /**
