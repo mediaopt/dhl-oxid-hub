@@ -43,6 +43,7 @@ $aLang = [
     'MO_DHL__CUSTOM_LABEL_WEIGHT'             => 'Gewicht (in kg)',
     'MO_DHL__CUSTOM_LABEL_PROCESS'            => 'Verfahrensnummer',
     'MO_DHL__CUSTOM_LABEL_RECEIVER'           => 'Empfänger',
+    'MO_DHL__CUSTOM_LABEL_RETURN_RECEIVER'    => 'Retoure - Empfängerdaten',
     'MO_DHL__CUSTOM_LABEL_NAME'               => 'Name',
     'MO_DHL__CUSTOM_LABEL_ADRESS_ADDITION'    => 'Addresszusatz',
     'MO_DHL__CUSTOM_LABEL_STREETNAME'         => 'Straßenname',

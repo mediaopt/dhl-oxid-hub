@@ -80,6 +80,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
 
         $this->useCustomGeneralData($shipmentOrder, $data['general']);
         $this->useCustomShipper($shipmentOrder, $data['shipper']);
+        $this->useCustomReturnReceiver($shipmentOrder, $data['returnReceiver']);
         $this->useCustomReceiver($shipmentOrder, $data['receiver']);
         $this->useCustomServices($shipmentOrder, $data['services']);
 
@@ -366,20 +367,25 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     {
         $shipper = $shipmentOrder->getShipment()->getShipper();
         $receiver = $shipmentOrder->getShipment()->getReceiver();
+        $returnReceiver = $shipmentOrder->getShipment()->getReturnReceiver();
         return [
-            'general'  => [
+            'general'        => [
                 'weight' => $shipmentOrder->getShipment()->getShipmentDetails()->getShipmentItem()->getWeightInKG(),
             ],
-            'shipper'  => [
+            'shipper'        => [
                 'name'    => $shipper->getName()->getName1() . $shipper->getName()->getName2() . $shipper->getName()->getName3(),
                 'address' => $shipper->getAddress(),
             ],
-            'receiver' => [
+            'receiver'       => [
                 'name'    => $receiver->getName1(),
                 'type'    => $receiver->getAddress() !== null ? 'address' : ($receiver->getPackstation() !== null ? 'packstation' : 'poftfiliale'),
                 'address' => $receiver->getAddress() ?: $receiver->getPackstation() ?: $receiver->getPostfiliale(),
             ],
-            'services' => [
+            'returnReceiver' => [
+                'name'    => $returnReceiver->getName()->getName1() . $returnReceiver->getName()->getName2() . $returnReceiver->getName()->getName3(),
+                'address' => $returnReceiver->getAddress(),
+            ],
+            'services'       => [
                 'parcelOutletRouting' => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getParcelOutletRouting(),
                 'printOnlyIfCodeable' => $shipmentOrder->getPrintOnlyIfCodeable(),
             ],
@@ -405,6 +411,18 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $shipper->getName()->setName1($shipperData['name']);
         $shipperData['Origin'] = new CountryType($shipperData['country']);
         $shipper->getAddress()->assign($shipperData);
+    }
+
+    /**
+     * @param ShipmentOrderType $shipmentOrder
+     * @param array             $returnReceiverData
+     */
+    protected function useCustomReturnReceiver(ShipmentOrderType $shipmentOrder, $returnReceiverData)
+    {
+        $shipper = $shipmentOrder->getShipment()->getReturnReceiver();
+        $shipper->getName()->setName1($returnReceiverData['name']);
+        $returnReceiverData['Origin'] = new CountryType($returnReceiverData['country']);
+        $shipper->getAddress()->assign($returnReceiverData);
     }
 
     /**
