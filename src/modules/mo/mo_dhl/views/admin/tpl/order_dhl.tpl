@@ -108,13 +108,15 @@
                                                    href="[{$label->getFieldData('labelUrl')}]">[{$label->getFieldData('shipmentNumber')}]</a>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>[{oxmultilang ident="MO_DHL__RETOURE_LABEL"}]</td>
-                                            <td>
-                                                <a target="_blank" rel="noopener noreferrer"
-                                                   href="[{$label->getFieldData('returnLabelUrl')}]">[{$label->getFieldData('returnShipmentNumber')}]</a>
-                                            </td>
-                                        </tr>
+                                        [{if $label->getFieldData('returnLabelUrl')}]
+                                            <tr>
+                                                <td>[{oxmultilang ident="MO_DHL__RETOURE_LABEL"}]</td>
+                                                <td>
+                                                    <a target="_blank" rel="noopener noreferrer"
+                                                       href="[{$label->getFieldData('returnLabelUrl')}]">[{$label->getFieldData('returnShipmentNumber')}]</a>
+                                                </td>
+                                            </tr>
+                                        [{/if}]
                                         <tr>
                                             <td>
                                                 <input type="submit" class="confinput" name="check"

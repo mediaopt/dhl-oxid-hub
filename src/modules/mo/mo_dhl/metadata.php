@@ -249,6 +249,12 @@ $aModule = [
             'value' => '',
         ],
         [
+            'group' => 'mo_dhl__retoure',
+            'name'  => 'mo_dhl__beilegerretoure_active',
+            'type'  => 'bool',
+            'value' => 1,
+        ],
+        [
             'group'       => 'mo_dhl__standortsuche',
             'name'        => 'mo_dhl__standortsuche_maximumHits',
             'type'        => 'select',

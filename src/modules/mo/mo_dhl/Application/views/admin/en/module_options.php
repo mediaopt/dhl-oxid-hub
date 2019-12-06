@@ -25,6 +25,9 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__filialrouting_alternative_email' => 'Alternative email address for the Parcel Outlet Routing Service (optional)',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_alternative_email' => 'Please enter your email address in case you wish to receive the notification for the Parcel Outlet Routing Service.',
 
+    'SHOP_MODULE_GROUP_mo_dhl__retoure'          => 'Return Shipment',
+    'SHOP_MODULE_mo_dhl__beilegerretoure_active' => 'Attached return shipment label',
+
     'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Wunschpaket - Parcel shop finder',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximum number of hits',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_1'         => '1',

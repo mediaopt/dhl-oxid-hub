@@ -24,6 +24,9 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__filialrouting_alternative_email'      => 'Alternative E-Mail-Adresse für das Filialrouting (optional)',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_alternative_email' => 'Geben Sie hier Ihre E-Mail-Adresse an, wenn Sie als Versender die Abholinformation erhalten möchten.',
 
+    'SHOP_MODULE_GROUP_mo_dhl__retoure'          => 'Retoure',
+    'SHOP_MODULE_mo_dhl__beilegerretoure_active' => 'Beilegerretoure',
+
     'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Wunschpaket - Standortsuche',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximale Trefferanzahl',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_1'         => '1',
