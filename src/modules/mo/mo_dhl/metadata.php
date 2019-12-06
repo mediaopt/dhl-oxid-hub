@@ -189,6 +189,27 @@ $aModule = [
             'type'  => 'bool',
         ],
         [
+            'group' => 'mo_dhl__delivery_weight',
+            'name'  => 'mo_dhl__default_weight',
+            'type'  => 'str',
+        ],
+        [
+            'group' => 'mo_dhl__delivery_weight',
+            'name'  => 'mo_dhl__calculate_weight',
+            'type'  => 'bool',
+            'value' => 1,
+        ],
+        [
+            'group' => 'mo_dhl__delivery_weight',
+            'name'  => 'mo_dhl__packing_weight_in_percent',
+            'type'  => 'str',
+        ],
+        [
+            'group' => 'mo_dhl__delivery_weight',
+            'name'  => 'mo_dhl__packing_weight_absolute',
+            'type'  => 'str',
+        ],
+        [
             'group' => 'mo_dhl__sender',
             'name'  => 'mo_dhl__sender_line1',
             'type'  => 'str',

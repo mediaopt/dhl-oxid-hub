@@ -18,6 +18,16 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Nur leitcodierbare Adressen zulassen',
     'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => 'Aktivieren Sie die Checkbox, wenn Versandetiketten nur für Adressen erstellt werden sollen, die seitens DHL als leitcodierbar gelten. Für nicht-leitcodierbare Adressen berechnet DHL in der Regel einen Aufschlag.',
 
+    'SHOP_MODULE_GROUP_mo_dhl__delivery_weight'          => 'Versand - Gewichtermittlung',
+    'SHOP_MODULE_mo_dhl__default_weight'                 => 'Standardgewicht (in kg)',
+    'HELP_SHOP_MODULE_mo_dhl__default_weight'            => 'Die hier eingetragenen Gewichte werden beim Erstellen der Versandetiketten verwendet, falls die automatische Gewichtsberechnung deaktiviert wird oder (bei aktivierter Gewichtsberechnung) für keinen Artikel innerhalb der Bestellung ein Gewicht gepflegt ist.',
+    'SHOP_MODULE_mo_dhl__calculate_weight'               => 'Paketgewicht automatisch berechnen',
+    'HELP_SHOP_MODULE_mo_dhl__calculate_weight'          => 'Ist dieses Feld aktiviert, werden die Paketgewichte automatisch auf Basis der Gewichte der enthaltenen Artikel sowie der prozentualen und fixen Gewichtsaufschläge berechnet.',
+    'SHOP_MODULE_mo_dhl__packing_weight_in_percent'      => 'Prozentualer Gewichtsaufschlag für Füllmaterial',
+    'HELP_SHOP_MODULE_mo_dhl__packing_weight_in_percent' => 'Prozentualer Gewichtsaufschlag für Verpackungsmaterial auf Basis der Summe der Artikelgewichte, wenn die automatische Gewichtsberechnung aktiviert ist.',
+    'SHOP_MODULE_mo_dhl__packing_weight_absolute'        => 'Gewichtsaufschlag für Verpackungsmaterial (in kg)',
+    'HELP_SHOP_MODULE_mo_dhl__packing_weight_absolute'   => 'Fester Gewichtsaufschlag in Kilogramm für Verpackungsmaterial, wenn die automatische Gewichtsberechnung aktiviert ist.',
+
     'SHOP_MODULE_GROUP_mo_dhl__services'                       => 'Versand - Services',
     'SHOP_MODULE_mo_dhl__filialrouting_active'                 => 'Filialrouting',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_active'            => 'Durch Aktivierung wird eine Sendung bei Unzustellbarkeit (z.B. Empfänger nicht ermittelbar) automatisch in die nächstgelegene Postfiliale weitergeleitet.',

@@ -11,6 +11,7 @@ use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
+use OxidEsales\Eshop\Core\Registry;
 
 /**
  * This class transforms an \oxOrder object into a Shipment object.
@@ -40,7 +41,7 @@ class BaseShipmentBuilder
      */
     public function __construct()
     {
-        $this->ekp = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__merchant_ekp');
+        $this->ekp = Registry::getConfig()->getConfigParam('mo_dhl__merchant_ekp');
         $this->loadProcessAndParticipationForDeliverySets();
     }
 
@@ -63,11 +64,20 @@ class BaseShipmentBuilder
      */
     protected function calculateWeight(Order $order): float
     {
-        $weight = 0;
+        $config = Registry::getConfig();
+        if (!$config->getShopConfVar('mo_dhl__calculate_weight')) {
+            return max(0.1, (float)$config->getShopConfVar('mo_dhl__default_weight'));
+        }
+        $weight = 0.0;
         foreach ($order->getOrderArticles() as $orderArticle) {
             /** @var \OxidEsales\Eshop\Application\Model\OrderArticle $orderArticle */
             $weight += (float)$orderArticle->getArticle()->getWeight() * $orderArticle->getFieldData('oxamount');
         }
+        if ($weight === 0.0) {
+            $weight = max(0.1, (float)$config->getShopConfVar('mo_dhl__default_weight'));
+        }
+        $weight *= 1 + (float)$config->getShopConfVar('mo_dhl__packing_weight_in_percent') / 100.0;
+        $weight += (float)$config->getShopConfVar('mo_dhl__packing_weight_absolute');
         return $weight;
     }
 

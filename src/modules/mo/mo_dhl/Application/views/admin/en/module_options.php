@@ -19,6 +19,16 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Allow only Codeable shipping addresses',
     'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => 'If checkbox is enabled, shipment labels will only be created if the DHL delivery address verification succeeds (address is coedable). There is a surcharge for not codeable shipping addresses.',
 
+    'SHOP_MODULE_GROUP_mo_dhl__delivery_weight'          => 'Delivery - Weight calculation',
+    'SHOP_MODULE_mo_dhl__default_weight'                 => 'Default weight (in kg)',
+    'HELP_SHOP_MODULE_mo_dhl__default_weight'            => 'The weight entered here is used when creating the shipping labels, if the automatic weight calculation is deactivated or (if weight calculation is activated) no weight is maintained for any item within the order.',
+    'SHOP_MODULE_mo_dhl__calculate_weight'               => 'Calculate weight automatically',
+    'HELP_SHOP_MODULE_mo_dhl__calculate_weight'          => 'If this box is checked, the package weights will be automatically calculated based on the weights of the items included, as well as the percentage and fixed surcharges.',
+    'SHOP_MODULE_mo_dhl__packing_weight_in_percent'      => 'Percentage of weight surcharge for filling material',
+    'HELP_SHOP_MODULE_mo_dhl__packing_weight_in_percent' => 'Percentage weight surcharge for packaging material based on the sum of the article weights when automatic weight calculation is activated.',
+    'SHOP_MODULE_mo_dhl__packing_weight_absolute'        => 'Absolute weight surcharge for packaging material (in kg)',
+    'HELP_SHOP_MODULE_mo_dhl__packing_weight_absolute'   => 'Fixed weight surcharge in kilograms for packaging material when automatic weight calculation is activated.',
+
     'SHOP_MODULE_GROUP_mo_dhl__services'                  => 'Delivery - Services',
     'SHOP_MODULE_mo_dhl__filialrouting_active'            => 'Parcel Outlet Routing',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_active'       => 'If checkbox is enabled, the Parcel Outlet Routing Service will be booked. In this case, your undeliverable packages will be held at the nearest parcel collection point for collection by the recipient rather than being returned immediately to you.',
