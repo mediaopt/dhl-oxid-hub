@@ -73,7 +73,7 @@ class BaseShipmentBuilder
             /** @var \OxidEsales\Eshop\Application\Model\OrderArticle $orderArticle */
             $weight += (float)$orderArticle->getArticle()->getWeight() * $orderArticle->getFieldData('oxamount');
         }
-        if ($weight === 0.0) {
+        if ($weight < 0.1) {
             $weight = max(0.1, (float)$config->getShopConfVar('mo_dhl__default_weight'));
         }
         $weight *= 1 + (float)$config->getShopConfVar('mo_dhl__packing_weight_in_percent') / 100.0;
