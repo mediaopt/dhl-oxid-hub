@@ -233,6 +233,74 @@
                             <table style="border : 1px #A9A9A9; border-style : solid solid solid solid; padding-top: 5px; padding-bottom: 5px; padding-right: 5px; padding-left: 5px; width: 600px;">
                                 <tr>
                                     <td class="edittext" colspan="3">
+                                        <b>[{oxmultilang ident='MO_DHL__CUSTOM_LABEL_RETURN_RECEIVER'}]</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_NAME'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[returnReceiver][name]"
+                                               value="[{$shipmentOrder.returnReceiver.name}]">
+                                    </td>
+                                </tr>
+                                [{assign var="address" value=$shipmentOrder.returnReceiver.address}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_STREETNAME'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[returnReceiver][streetName]"
+                                               value="[{$address->getStreetName()}]">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_STREETNUMBER'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[returnReceiver][streetNumber]"
+                                               value="[{$address->getStreetNumber()}]">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_ZIP'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[returnReceiver][zip]"
+                                               value="[{$address->getZip()}]">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_CITY'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[returnReceiver][city]"
+                                               value="[{$address->getCity()}]">
+                                    </td>
+                                </tr>
+                                [{assign var="origin" value=$address->getOrigin()}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_COUNTRY'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[returnReceiver][country]"
+                                               value="[{$origin->getCountryIsoCode()}]">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="edittext" colspan="2">
+                            <br>
+                            <table style="border : 1px #A9A9A9; border-style : solid solid solid solid; padding-top: 5px; padding-bottom: 5px; padding-right: 5px; padding-left: 5px; width: 600px;">
+                                <tr>
+                                    <td class="edittext" colspan="3">
                                         <b>[{oxmultilang ident='MO_DHL__CUSTOM_LABEL_SERVICES'}]</b>
                                     </td>
                                 </tr>
