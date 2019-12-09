@@ -182,7 +182,15 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     protected function buildReturnReceiver(): ShipperType
     {
-        return $this->buildShipper();
+        $config = Registry::getConfig();
+        if ($config->getShopConfVar('mo_dhl__retoure_receiver_use_sender')) {
+            return $this->buildShipper();
+        }
+        $name = new NameType($config->getShopConfVar('mo_dhl__retoure_receiver_line1'), $config->getShopConfVar('mo_dhl__retoure_receiver_line2'), $config->getShopConfVar('mo_dhl__retoure_receiver_line3'));
+        $iso2 = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$config->getShopConfVar('mo_dhl__retoure_receiver_country')]);
+        $country = new CountryType($iso2);
+        $address = new NativeAddressType($config->getShopConfVar('mo_dhl__retoure_receiver_street'), $config->getShopConfVar('mo_dhl__retoure_receiver_street_number'), $config->getShopConfVar('mo_dhl__retoure_receiver_zip'), $config->getShopConfVar('mo_dhl__retoure_receiver_city'), null, $country);
+        return new ShipperType($name, $address);
     }
 
     /**
