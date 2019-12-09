@@ -20,6 +20,7 @@ use Mediaopt\DHL\Api\GKV\ShipmentNotificationType;
 use Mediaopt\DHL\Api\GKV\ShipmentService;
 use Mediaopt\DHL\Api\GKV\ShipperType;
 use Mediaopt\DHL\Application\Model\Order;
+use Mediaopt\DHL\Model\MoDHLNotificationMode;
 use Mediaopt\DHL\ServiceProvider\Branch;
 use Mediaopt\DHL\Shipment\BillingNumber;
 use OxidEsales\Eshop\Core\Registry;
@@ -61,7 +62,9 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         if (Registry::getConfig()->getShopConfVar('mo_dhl__beilegerretoure_active') && $returnBookingNumber = $this->buildReturnAccountNumber($order)) {
             $details->setReturnShipmentAccountNumber($returnBookingNumber);
         }
-        $details->setNotification(new ShipmentNotificationType($order->getFieldData('oxbillemail')));
+        if ($this->sendNotificationAllowed($order)) {
+            $details->setNotification(new ShipmentNotificationType($order->getFieldData('oxbillemail')));
+        }
         $details->setService($this->buildService());
         return $details;
     }
@@ -239,5 +242,21 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $address->setAddressAddition([$addInfo]);
         }
         return $address;
+    }
+
+    /**
+     * @param Order $order
+     * @return bool
+     */
+    protected function sendNotificationAllowed(Order $order): bool
+    {
+        switch (Registry::getConfig()->getShopConfVar('mo_dhl__notification_mode')) {
+            case MoDHLNotificationMode::NEVER:
+                return false;
+            case MoDHLNotificationMode::ALWAYS:
+                return true;
+            default:
+                return (bool)$order->getFieldData('MO_DHL_ALLOW_NOTIFICATION');
+        }
     }
 }

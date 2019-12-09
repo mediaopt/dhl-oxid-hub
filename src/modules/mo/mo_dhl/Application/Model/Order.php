@@ -140,13 +140,15 @@ class Order extends Order_parent
         $ekp = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__merchant_ekp');
         $process = $this->getDelSet()->oxdeliveryset__mo_dhl_process->rawValue;
         $participation = $this->getDelSet()->oxdeliveryset__mo_dhl_participation->rawValue;
+        $allowNotification = $this->moDHLGetNotificationAllowance();
 
         $this->oxorder__mo_dhl_ekp = \oxNew(\OxidEsales\Eshop\Core\Field::class, $ekp, \OxidEsales\Eshop\Core\Field::T_RAW);
         $this->oxorder__mo_dhl_process = \oxNew(\OxidEsales\Eshop\Core\Field::class, $process, \OxidEsales\Eshop\Core\Field::T_RAW);
         $this->oxorder__mo_dhl_participation = \oxNew(\OxidEsales\Eshop\Core\Field::class, $participation, \OxidEsales\Eshop\Core\Field::T_RAW);
+        $this->oxorder__mo_dhl_allow_notification = \oxNew(\OxidEsales\Eshop\Core\Field::class, $allowNotification);
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $query = ' UPDATE oxorder' . " SET MO_DHL_EKP = {$db->quote($ekp)}," . "     MO_DHL_PARTICIPATION = {$db->quote($participation)}," . "     MO_DHL_PROCESS = {$db->quote($process)}" . " WHERE OXID = {$db->quote($this->getId())}";
-        $db->execute($query);
+        $query = ' UPDATE oxorder SET MO_DHL_EKP = ?, MO_DHL_PARTICIPATION = ?, MO_DHL_PROCESS = ?, MO_DHL_ALLOW_NOTIFICATION = ? WHERE OXID = ?';
+        $db->execute($query, [$ekp, $participation, $process, $allowNotification, $this->getId()]);
 
         return $status;
     }
@@ -193,5 +195,14 @@ class Order extends Order_parent
         $labels = \oxNew(MoDHLLabelList::class);
         $labels->loadOrderLabels($this->getId());
         return $labels;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function moDHLGetNotificationAllowance(): bool
+    {
+        $dynamicValues = $this->getSession()->getVariable('dynvalue');
+        return $dynamicValues['mo_dhl_allow_notification'] ?? false;
     }
 }

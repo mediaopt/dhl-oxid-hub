@@ -111,4 +111,5 @@ $aLang = [
     'MO_DHL__BATCH_PAID_ORDERS_FOUND'             => '%d bezahlte Bestellungen gefunden',
     'MO_DHL__BATCH_PAID_ORDERS_WITH_STATUS_FOUND' => '%d bezahlte Bestellungen mit Status %s gefunden',
     'MO_DHL__BATCH_LABELS_CREATED'                => '%d Labels erstellt.',
+    'MO_DHL__ALLOW_NOTIFICATION'                  => 'Ich stimme zu, dass meine E-Mail-Adresse an den Versanddienstleister übermittelt wird.',
 ];
