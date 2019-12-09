@@ -34,11 +34,11 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__filialrouting_alternative_email'      => 'Alternative E-Mail-Adresse für das Filialrouting (optional)',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_alternative_email' => 'Geben Sie hier Ihre E-Mail-Adresse an, wenn Sie als Versender die Abholinformation erhalten möchten.',
     'SHOP_MODULE_mo_dhl__paketankuendigung_active'             => 'Automatische Paketankündigungen aktivieren',
-    'SHOP_MODULE_mo_dhl__paketankuendigung_mode'               => 'Kunden-E-Mail-Adresse an DHL übermitteln',
-    'HELP_SHOP_MODULE_mo_dhl__paketankuendigung_mode'          => 'Legen Sie fest, ob die E-Mail Adresse des Kunden an DHL übermittelt werden soll. Bei der Option Auf Kundenwunsch übermitteln erscheint, im Frontend bei jeder Versandart, der ein DHL-Produkt zugewiesen wurde, eine entsprechende Checkbox im Checkout-Prozess, sodass der Kunde über die Weitergabe seiner E-Mail-Adresse selbst entscheiden kann. Dies ist die empfohlene Einstellung gemäß der DSGVO.',
-    'SHOP_MODULE_mo_dhl__paketankuendigung_mode_NEVER'         => 'Niemals',
-    'SHOP_MODULE_mo_dhl__paketankuendigung_mode_ALWAYS'        => 'Immer',
-    'SHOP_MODULE_mo_dhl__paketankuendigung_mode_ASK'           => 'Auf Kundenwunsch übermitteln',
+    'SHOP_MODULE_mo_dhl__notification_mode'                    => 'Kunden-E-Mail-Adresse an DHL übermitteln',
+    'HELP_SHOP_MODULE_mo_dhl__notification_mode'               => 'Legen Sie fest, ob die E-Mail Adresse des Kunden an DHL übermittelt werden soll. Bei der Option Auf Kundenwunsch übermitteln erscheint, im Frontend bei jeder Versandart, der ein DHL-Produkt zugewiesen wurde, eine entsprechende Checkbox im Checkout-Prozess, sodass der Kunde über die Weitergabe seiner E-Mail-Adresse selbst entscheiden kann. Dies ist die empfohlene Einstellung gemäß der DSGVO.',
+    'SHOP_MODULE_mo_dhl__notification_mode_NEVER'              => 'Niemals',
+    'SHOP_MODULE_mo_dhl__notification_mode_ALWAYS'             => 'Immer',
+    'SHOP_MODULE_mo_dhl__notification_mode_ASK'                => 'Auf Kundenwunsch übermitteln',
 
 
     'SHOP_MODULE_GROUP_mo_dhl__retoure'          => 'Retoure',

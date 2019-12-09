@@ -8,6 +8,7 @@
 namespace Mediaopt\DHL\Application\Controller;
 
 
+use Mediaopt\DHL\Model\MoDHLNotificationMode;
 use OxidEsales\Eshop\Application\Model\DeliverySet;
 use OxidEsales\Eshop\Core\Registry;
 
@@ -22,7 +23,7 @@ class PaymentController extends PaymentController_parent
      */
     public function moDHLShowCheckboxForNotificationAllowance(): bool
     {
-        if ('ASK' !== Registry::getConfig()->getShopConfVar('mo_dhl__paketankuendigung_mode')) {
+        if (MoDHLNotificationMode::ASK !== Registry::getConfig()->getShopConfVar('mo_dhl__notification_mode')) {
             return false;
         }
         $shippingId = $this->getSession()->getBasket()->getShippingId();
@@ -37,6 +38,6 @@ class PaymentController extends PaymentController_parent
     public function moDHLIsNotificationAllowanceActive(): bool
     {
         $dynamicValues = $this->getSession()->getVariable('dynvalue');
-        return $dynamicValues['mo_dhl_allow_notification'] || false;
+        return $dynamicValues['mo_dhl_allow_notification'] ?? false;
     }
 }

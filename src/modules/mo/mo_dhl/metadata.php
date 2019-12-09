@@ -287,7 +287,7 @@ $aModule = [
         ],
         [
             'group'       => 'mo_dhl__services',
-            'name'        => 'mo_dhl__paketankuendigung_mode',
+            'name'        => 'mo_dhl__notification_mode',
             'type'        => 'select',
             'value'       => 'NEVER',
             'constraints' => 'NEVER|ASK|ALWAYS',

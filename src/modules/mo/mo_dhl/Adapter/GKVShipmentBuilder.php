@@ -20,6 +20,7 @@ use Mediaopt\DHL\Api\GKV\ShipmentNotificationType;
 use Mediaopt\DHL\Api\GKV\ShipmentService;
 use Mediaopt\DHL\Api\GKV\ShipperType;
 use Mediaopt\DHL\Application\Model\Order;
+use Mediaopt\DHL\Model\MoDHLNotificationMode;
 use Mediaopt\DHL\ServiceProvider\Branch;
 use Mediaopt\DHL\Shipment\BillingNumber;
 use OxidEsales\Eshop\Core\Registry;
@@ -241,10 +242,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     protected function sendNotificationAllowed(Order $order): bool
     {
-        switch (Registry::getConfig()->getShopConfVar('mo_dhl__paketankuendigung_mode')) {
-            case 'NEVER':
+        switch (Registry::getConfig()->getShopConfVar('mo_dhl__notification_mode')) {
+            case MoDHLNotificationMode::NEVER:
                 return false;
-            case 'ALWAYS':
+            case MoDHLNotificationMode::ALWAYS:
                 return true;
             default:
                 return (bool)$order->getFieldData('MO_DHL_ALLOW_NOTIFICATION');
