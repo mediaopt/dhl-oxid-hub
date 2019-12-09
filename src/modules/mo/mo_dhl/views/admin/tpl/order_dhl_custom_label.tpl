@@ -336,6 +336,17 @@
                                                [{if $service->getActive()}]checked[{/if}]>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__beilegerretoure_active'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][beilegerretoure][active]"
+                                               value="false">
+                                        <input type="checkbox" name="data[services][beilegerretoure][active]"
+                                               [{if $shipmentOrder.services.beilegerretoure}]checked[{/if}]>
+                                    </td>
+                                </tr>
                             </table>
                         </td>
                     </tr>

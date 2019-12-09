@@ -4,6 +4,7 @@ namespace Mediaopt\DHL\Controller\Admin;
 
 use Mediaopt\DHL\Adapter\DHLAdapter;
 use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
+use Mediaopt\DHL\Adapter\GKVShipmentBuilder;
 use Mediaopt\DHL\Api\GKV\CountryType;
 use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
@@ -388,6 +389,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             'services'       => [
                 'parcelOutletRouting' => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getParcelOutletRouting(),
                 'printOnlyIfCodeable' => $shipmentOrder->getPrintOnlyIfCodeable(),
+                'beilegerretoure'     => $shipmentOrder->getShipment()->getShipmentDetails()->getReturnShipmentAccountNumber(),
             ],
         ];
     }
@@ -450,6 +452,11 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $isActive = filter_var($servicesData['parcelOutletRouting']['active'], FILTER_VALIDATE_BOOLEAN);
         $details = $servicesData['parcelOutletRouting']['details'] ?: null;
         $services->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $details));
+
+        if (filter_var($servicesData['beilegerretoure']['active'], FILTER_VALIDATE_BOOLEAN)) {
+            $accountNumber = Registry::get(GKVShipmentBuilder::class)->buildReturnAccountNumber($this->getOrder());
+            $shipmentOrder->getShipment()->getShipmentDetails()->setReturnShipmentAccountNumber($accountNumber);
+        }
 
         $isActive = filter_var($servicesData['printOnlyIfCodeable']['active'], FILTER_VALIDATE_BOOLEAN);
         $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration($isActive));

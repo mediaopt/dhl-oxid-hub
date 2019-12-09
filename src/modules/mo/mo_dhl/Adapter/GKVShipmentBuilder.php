@@ -122,7 +122,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      * @param Order $order
      * @return BillingNumber|null
      */
-    protected function buildReturnAccountNumber(Order $order)
+    public function buildReturnAccountNumber(Order $order)
     {
         if (!$this->getReturnProcess($order)) {
             return null;
