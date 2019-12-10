@@ -92,6 +92,7 @@ class CreateLabels extends Command
             $statusInformation = $creationState->getLabelData()->getStatus();
             $order = \oxNew(Order::class);
             $order->load($creationState->getSequenceNumber());
+            $order->storeCreationStatus($statusInformation->getStatusText());
             if ($errors = $statusInformation->getErrors()) {
                 $this->output->writeln($this->translate('MO_DHL__BATCH_ERROR_CREATION_ERROR', [$order->getFieldData('oxordernr'), implode(' ', $errors)]));
                 continue;
