@@ -59,9 +59,7 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
     }
 
     /**
-     * Viewable list size getter
-     *
-     * @return int
+     * @inheritDoc
      */
     protected function _getViewListSize()
     {
@@ -215,8 +213,19 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         return str_replace('&amp;', '&', $url);
     }
 
+    /**
+     * @return int[]
+     */
     public function getListSizeOptions()
     {
         return self::MO_DHL__LIST_SIZE_OPTIONS;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilterStringForLink(): string
+    {
+        return '&amp;' . http_build_query(['where' => $this->getListFilter(), 'viewListSize' => $this->getViewListSize()]);
     }
 }
