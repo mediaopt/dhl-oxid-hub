@@ -10,6 +10,7 @@ namespace Mediaopt\DHL\Application\Model;
 
 use Mediaopt\DHL\Model\MoDHLLabelList;
 use Mediaopt\DHL\ServiceProvider\Branch;
+use OxidEsales\Eshop\Core\Field;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -90,7 +91,7 @@ class Order extends Order_parent
         parent::_loadFromBasket($basket);
         $deliveryCosts = clone $basket->getDeliveryCost();
         $deliveryCosts->add($basket->moDHLGetDeliverySurcharges()->getPrice());
-        $this->oxorder__oxdelcost = new \OxidEsales\Eshop\Core\Field($deliveryCosts->getBruttoPrice(), \OxidEsales\Eshop\Core\Field::T_RAW);
+        $this->oxorder__oxdelcost = new Field($deliveryCosts->getBruttoPrice(), Field::T_RAW);
     }
 
     /**
@@ -142,10 +143,10 @@ class Order extends Order_parent
         $participation = $this->getDelSet()->oxdeliveryset__mo_dhl_participation->rawValue;
         $allowNotification = $this->moDHLGetNotificationAllowance();
 
-        $this->oxorder__mo_dhl_ekp = \oxNew(\OxidEsales\Eshop\Core\Field::class, $ekp, \OxidEsales\Eshop\Core\Field::T_RAW);
-        $this->oxorder__mo_dhl_process = \oxNew(\OxidEsales\Eshop\Core\Field::class, $process, \OxidEsales\Eshop\Core\Field::T_RAW);
-        $this->oxorder__mo_dhl_participation = \oxNew(\OxidEsales\Eshop\Core\Field::class, $participation, \OxidEsales\Eshop\Core\Field::T_RAW);
-        $this->oxorder__mo_dhl_allow_notification = \oxNew(\OxidEsales\Eshop\Core\Field::class, $allowNotification);
+        $this->oxorder__mo_dhl_ekp = \oxNew(Field::class, $ekp, Field::T_RAW);
+        $this->oxorder__mo_dhl_process = \oxNew(Field::class, $process, Field::T_RAW);
+        $this->oxorder__mo_dhl_participation = \oxNew(Field::class, $participation, Field::T_RAW);
+        $this->oxorder__mo_dhl_allow_notification = \oxNew(Field::class, $allowNotification);
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
         $query = ' UPDATE oxorder SET MO_DHL_EKP = ?, MO_DHL_PARTICIPATION = ?, MO_DHL_PROCESS = ?, MO_DHL_ALLOW_NOTIFICATION = ? WHERE OXID = ?';
         $db->execute($query, [$ekp, $participation, $process, $allowNotification, $this->getId()]);
@@ -204,5 +205,14 @@ class Order extends Order_parent
     {
         $dynamicValues = $this->getSession()->getVariable('dynvalue');
         return $dynamicValues['mo_dhl_allow_notification'] ?? false;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function storeCreationStatus(string $status)
+    {
+        $this->oxorder__mo_dhl_last_label_creation_status = oxNew(Field::class, $status);
+        $this->save();
     }
 }

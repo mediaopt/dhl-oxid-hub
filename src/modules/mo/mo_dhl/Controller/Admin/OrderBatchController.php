@@ -24,7 +24,7 @@ use OxidEsales\Eshop\Core\Registry;
  *
  * @author Mediaopt GmbH
  */
-class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
+class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admin\OrderList
 {
     /**
      * @var string
@@ -41,7 +41,12 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
     /**
      * @var int
      */
-    const ORDERS_PER_PAGE = 20;
+    protected $_iDefViewListSize = 10;
+
+    /**
+     * @var int[]
+     */
+    const MO_DHL__LIST_SIZE_OPTIONS = [10, 20, 50, 100];
 
     /**
      * @extend
@@ -51,6 +56,14 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
     {
         parent::render();
         return 'mo_dhl__order_batch.tpl';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function _getViewListSize()
+    {
+        return $this->_getUserDefListSize() ?: parent::_getViewListSize();
     }
 
     /**
@@ -111,6 +124,7 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
             $statusInformation = $creationState->getLabelData()->getStatus();
             $order = \oxNew(Order::class);
             $order->load($creationState->getSequenceNumber());
+            $order->storeCreationStatus($statusInformation->getStatusText());
             if ($errors = $statusInformation->getErrors()) {
                 $message = Registry::getLang()->translateString('MO_DHL__BATCH_ERROR_CREATION_ERROR');
                 $message = sprintf($message, $order->getFieldData('oxordernr'), implode(' ', $errors));
@@ -161,31 +175,6 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
     }
 
     /**
-     * @return array
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
-     */
-    public function loadOrders()
-    {
-        $maximum = self::ORDERS_PER_PAGE;
-        $unsanitizedPage = Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('page');
-        $sanitizedPage = max(1, (int) filter_var($unsanitizedPage, FILTER_SANITIZE_NUMBER_INT));
-        $offset = $maximum * ($sanitizedPage - 1);
-
-        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $query = "SELECT SQL_CALC_FOUND_ROWS * FROM oxorder WHERE OXSHOPID = ? ORDER BY OXORDERDATE DESC LIMIT {$offset}, {$maximum}";
-        $rows = $db->getAll($query, [$this->getConfig()->getShopId()]);
-        $foundRows = (int) $db->getOne('SELECT FOUND_ROWS()');
-        $orders = [];
-        foreach ($rows as $row) {
-            $order = \oxNew(\OxidEsales\Eshop\Application\Model\Order::class);
-            $order->assign($row);
-            $orders[] = $order;
-        }
-        return ['orders' => $orders, 'page' => max(1, (int)$sanitizedPage), 'pages' => max(1, ceil($foundRows / $maximum))];
-    }
-
-    /**
      * @param Shipment[] $orders
      * @return bool
      */
@@ -222,5 +211,21 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         }
         $url = Registry::get(\OxidEsales\Eshop\Core\UtilsUrl::class)->processUrl($prefix . 'index.php?cl=' . __CLASS__ . '&fnc=download');
         return str_replace('&amp;', '&', $url);
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getListSizeOptions()
+    {
+        return self::MO_DHL__LIST_SIZE_OPTIONS;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilterStringForLink(): string
+    {
+        return '&amp;' . http_build_query(['where' => $this->getListFilter(), 'viewListSize' => $this->getViewListSize()]);
     }
 }

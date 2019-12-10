@@ -316,6 +316,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     {
         $creationState = $response->getCreationState()[0];
         $statusInformation = $creationState->getLabelData()->getStatus();
+        $this->getOrder()->storeCreationStatus($statusInformation->getStatusText());
         if ($errors = $statusInformation->getErrors()) {
             $this->displayErrors($errors);
             return;
@@ -333,6 +334,9 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $deletionState = $response->getDeletionState()[0];
         $statusInformation = $deletionState->getStatus();
         if ($errors = $statusInformation->getErrors()) {
+            if ($statusInformation->getStatusText() === 'Unknown shipment number.') {
+                $label->delete();
+            }
             $this->displayErrors($errors);
             return;
         }
