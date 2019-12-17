@@ -21,7 +21,7 @@
                     <tr>
                         <td class="edittext" colspan="2">
                             <br>
-                            <table style="border : 1px #A9A9A9; border-style : solid solid solid solid; padding-top: 5px; padding-bottom: 5px; padding-right: 5px; padding-left: 5px; width: 600px;">
+                            <table style="border : 1px solid #A9A9A9; padding: 5px; width: 600px;">
                                 <tr>
                                     <td class="edittext" colspan="3">
                                         <b>[{oxmultilang ident="MO_DHL__PROCESS_AND_PARTICIPATION"}]</b>
@@ -94,18 +94,23 @@
                         <tr>
                             <td class="edittext" colspan="2">
                                 <br>
-                                <table style="border : 1px #A9A9A9; border-style : solid solid solid solid; padding-top: 5px; padding-bottom: 5px; padding-right: 5px; padding-left: 5px; width: 600px;">
+                                <table style="border : 1px solid #A9A9A9; padding: 5px; width: 600px;">
                                     <tr>
                                         <td class="edittext" colspan="3">
                                             <b>[{oxmultilang ident="MO_DHL__LABELS"}]</b>
                                         </td>
                                     </tr>
-                                    [{foreach from=$labels  item='label'}]
+                                    [{foreach from=$labels  item='label' name='labels'}]
                                         <tr>
                                             <td>[{oxmultilang ident="MO_DHL__LABEL"}]</td>
                                             <td>
                                                 <a target="_blank" rel="noopener noreferrer"
                                                    href="[{$label->getFieldData('labelUrl')}]">[{$label->getFieldData('shipmentNumber')}]</a>
+                                            </td>
+                                            <td [{if $label->getFieldData('returnLabelUrl')}] rowspan="2" [{/if}]>
+                                                <input type="submit" class="confinput" name="check"
+                                                       value="[{oxmultilang ident="MO_DHL__DELETE_SHIPMENT"}]"
+                                                       onClick="Javascript:document.myedit.labelId.value='[{$label->getId()}]';document.myedit.fnc.value='deleteShipment'">
                                             </td>
                                         </tr>
                                         [{if $label->getFieldData('returnLabelUrl')}]
@@ -117,13 +122,11 @@
                                                 </td>
                                             </tr>
                                         [{/if}]
-                                        <tr>
-                                            <td>
-                                                <input type="submit" class="confinput" name="check"
-                                                       value="[{oxmultilang ident="MO_DHL__DELETE_SHIPMENT"}]"
-                                                       onClick="Javascript:document.myedit.labelId.value='[{$label->getId()}]';document.myedit.fnc.value='deleteShipment'">
-                                            </td>
-                                        </tr>
+                                        [{if not $smarty.foreach.labels.last}]
+                                            <tr>
+                                                <td style="border-bottom: 1px solid #A9A9A9;" colspan="3"></td>
+                                            </tr>
+                                        [{/if}]
                                     [{/foreach}]
                                 </table>
                             </td>
