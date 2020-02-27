@@ -33,24 +33,33 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getLogin()
+    protected function getRestLogin()
     {
-        if ($user = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user')) {
-            return $user;
-        }
-        return $this->isProductionEnvironment() ? 'DhlEmpfaengerservicesOxid_3' : 'moptrandom-temp-string-1455964747901';
-
+        return 'DHL_Oxid_1';
     }
 
     /**
      * @return string
      */
-    protected function getPassword()
+    protected function getRestPassword()
     {
-        if ($password = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password')) {
-            return $password;
-        }
-        return $this->isProductionEnvironment() ? 'sLS0vunhKg47u6JyVTL0ZUDCG18Mh8' : 'H#R#__!w4-dt-9++9Z-r7-9';
+        return 'J7sC6PNrnyAaKs7AifHBhZW51rLGjz';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSoapLogin()
+    {
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSoapPassword()
+    {
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '';
     }
 
     /**

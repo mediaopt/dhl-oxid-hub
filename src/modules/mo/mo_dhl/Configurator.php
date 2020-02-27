@@ -33,8 +33,8 @@ abstract class Configurator
     protected function buildRestCredentials()
     {
         return $this->isProductionEnvironment()
-            ? Credentials::createProductionRestEndpoint($this->getLogin(), $this->getPassword(), $this->getEkp())
-            : Credentials::createSandboxRestEndpoint($this->getLogin(), $this->getPassword(), $this->getEkp());
+            ? Credentials::createProductionRestEndpoint($this->getRestLogin(), $this->getRestPassword(), $this->getEkp())
+            : Credentials::createSandboxRestEndpoint($this->getRestLogin(), $this->getRestPassword(), $this->getEkp());
     }
 
     /**
@@ -43,19 +43,29 @@ abstract class Configurator
     protected function buildSoapCredentials()
     {
         return $this->isProductionEnvironment()
-            ? Credentials::createProductionSoapEndpoint($this->getLogin(), $this->getPassword(), $this->getEkp())
-            : Credentials::createSandboxSoapEndpoint($this->getLogin(), $this->getPassword(), $this->getEkp());
+            ? Credentials::createProductionSoapEndpoint($this->getSoapLogin(), $this->getSoapPassword(), $this->getEkp())
+            : Credentials::createSandboxSoapEndpoint($this->getSoapLogin(), $this->getSoapPassword(), $this->getEkp());
     }
 
     /**
      * @return string
      */
-    abstract protected function getLogin();
+    abstract protected function getSoapLogin();
 
     /**
      * @return string
      */
-    abstract protected function getPassword();
+    abstract protected function getSoapPassword();
+
+    /**
+     * @return string
+     */
+    abstract protected function getRestLogin();
+
+    /**
+     * @return string
+     */
+    abstract protected function getRestPassword();
 
     /**
      * @return string
