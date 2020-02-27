@@ -32,9 +32,7 @@ abstract class Configurator
      */
     protected function buildRestCredentials()
     {
-        return $this->isProductionEnvironment()
-            ? Credentials::createProductionRestEndpoint($this->getRestLogin(), $this->getRestPassword(), $this->getEkp())
-            : Credentials::createSandboxRestEndpoint($this->getRestLogin(), $this->getRestPassword(), $this->getEkp());
+        return Credentials::createProductionRestEndpoint($this->getRestLogin(), $this->getRestPassword(), $this->getEkp());
     }
 
     /**
