@@ -35,7 +35,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getRestLogin()
     {
-        return 'DhlEmpfaengerservicesOxid_3';
+        return 'DHL_Oxid_1';
     }
 
     /**
@@ -43,7 +43,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getRestPassword()
     {
-        return 'sLS0vunhKg47u6JyVTL0ZUDCG18Mh8';
+        return 'J7sC6PNrnyAaKs7AifHBhZW51rLGjz';
     }
 
     /**
