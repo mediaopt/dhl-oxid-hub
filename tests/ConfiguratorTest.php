@@ -10,7 +10,16 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
     {
         return $this
             ->getMockBuilder(\Mediaopt\DHL\Configurator::class)
-            ->setMethods(['isProductionEnvironment', 'getLogin', 'getPassword', 'getMapsApiKey', 'buildLogHandler', 'getEkp'])
+            ->setMethods([
+                'isProductionEnvironment',
+                'getRestLogin',
+                'getRestPassword',
+                'getSoapLogin',
+                'getSoapPassword',
+                'getMapsApiKey',
+                'buildLogHandler',
+                'getEkp',
+            ])
             ->getMock();
     }
 
@@ -21,7 +30,16 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Standortsuche::class, $standortsuche);
     }
 
-    public function testEndpointForProductionEnvironment()
+    public function testRestEndpointForProductionEnvironment()
+    {
+        $configuratorMock = $this->getConfiguratorMock();
+
+        /** @var Standortsuche $standortsuche */
+        $standortsuche = $configuratorMock->buildStandortsuche(new \Monolog\Logger(__CLASS__));
+        $this->assertContains('production', $standortsuche->getCredentials()->getEndpoint());
+    }
+
+    public function testSoapEndpointForProductionEnvironment()
     {
         $configuratorMock = $this->getConfiguratorMock();
         $configuratorMock
@@ -30,7 +48,7 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
             ->willReturn(true);
 
         /** @var Standortsuche $standortsuche */
-        $standortsuche = $configuratorMock->buildStandortsuche(new \Monolog\Logger(__CLASS__));
+        $standortsuche = $configuratorMock->buildGKV(new \Monolog\Logger(__CLASS__));
         $this->assertContains('production', $standortsuche->getCredentials()->getEndpoint());
     }
 
@@ -43,7 +61,7 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
             ->willReturn(false);
 
         /** @var Standortsuche $standortsuche */
-        $standortsuche = $configuratorMock->buildStandortsuche(new \Monolog\Logger(__CLASS__));
+        $standortsuche = $configuratorMock->buildGKV(new \Monolog\Logger(__CLASS__));
         $this->assertContains('sandbox', $standortsuche->getCredentials()->getEndpoint());
     }
 

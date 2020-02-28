@@ -33,7 +33,7 @@ class BaseGKVTest extends \PHPUnit_Framework_TestCase
      */
     protected function buildGKV()
     {
-        return (new \GKVTestConfigurator())->buildGKV();
+        return (new \TestConfigurator())->buildGKV();
     }
 
     /**
