@@ -22,6 +22,18 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     const DEFAULT_LOG_RETENTION_SIZE = 30;
 
+    const TEST_API_USERNAME = 'moptrandom-temp-string-1455964747901';
+
+    const TEST_API_PASSWORD = 'H#R#__!w4-dt-9++9Z-r7-9';
+
+    const PROD_API_USERNAME = 'DHL_Oxid_2';
+
+    const PROD_API_PASSWORD = '0qy7vU4ubYUHgU5ppBsG2jIh48j9nO';
+
+    const TEST_GKV_USERNAME = '2222222222_01';
+
+    const TEST_GKV_PASSWORD = 'pass';
+
     /**
      * @return mixed
      */
@@ -35,7 +47,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getRestLogin()
     {
-        return 'DHL_Oxid_1';
+        return self::PROD_API_USERNAME;
     }
 
     /**
@@ -43,7 +55,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getRestPassword()
     {
-        return 'J7sC6PNrnyAaKs7AifHBhZW51rLGjz';
+        return self::PROD_API_PASSWORD;
     }
 
     /**
@@ -51,7 +63,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getSoapLogin()
     {
-        return $this->isProductionEnvironment() ? 'DHL_Oxid_2' : 'moptrandom-temp-string-1455964747901';
+        return $this->isProductionEnvironment() ? self::PROD_API_USERNAME : self::TEST_API_USERNAME;
     }
 
     /**
@@ -59,7 +71,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getSoapPassword()
     {
-        return $this->isProductionEnvironment() ? '0qy7vU4ubYUHgU5ppBsG2jIh48j9nO' : 'H#R#__!w4-dt-9++9Z-r7-9';
+        return $this->isProductionEnvironment() ? self::PROD_API_PASSWORD : self::TEST_API_PASSWORD;
     }
 
     /**
@@ -67,7 +79,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerGKVLogin()
     {
-        return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '') : '2222222222_01';
+        return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '') : self::TEST_GKV_USERNAME;
     }
 
     /**
@@ -75,7 +87,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerGKVPassword()
     {
-        return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '') : 'pass';
+        return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '') : self::TEST_GKV_PASSWORD;
     }
 
     /**

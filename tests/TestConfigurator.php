@@ -4,32 +4,32 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
 {
     protected function getRestLogin()
     {
-        return 'DHL_Oxid_2';
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::PROD_API_USERNAME;
     }
 
     protected function getRestPassword()
     {
-        return '0qy7vU4ubYUHgU5ppBsG2jIh48j9nO';
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::PROD_API_PASSWORD;
     }
 
     protected function getSoapLogin()
     {
-        return 'moptrandom-temp-string-1455964747901';
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_API_USERNAME;
     }
 
     protected function getSoapPassword()
     {
-        return 'H#R#__!w4-dt-9++9Z-r7-9';
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_API_PASSWORD;
     }
 
     protected function getCustomerGKVLogin()
     {
-        return '2222222222_01';
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_GKV_USERNAME;
     }
 
     protected function getCustomerGKVPassword()
     {
-        return 'pass';
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_GKV_PASSWORD;
     }
 
     protected function getEkp()
