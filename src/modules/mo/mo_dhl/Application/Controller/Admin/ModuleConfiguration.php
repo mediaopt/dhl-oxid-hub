@@ -8,7 +8,21 @@ namespace Mediaopt\DHL\Application\Controller\Admin;
  * @copyright 2016 Mediaopt GmbH
  */
 
+use Mediaopt\DHL\Api\GKV\CountryType;
+use Mediaopt\DHL\Api\GKV\NameType;
+use Mediaopt\DHL\Api\GKV\NativeAddressType;
+use Mediaopt\DHL\Api\GKV\ReceiverNativeAddressType;
+use Mediaopt\DHL\Api\GKV\ReceiverType;
+use Mediaopt\DHL\Api\GKV\Request\ValidateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\Shipment;
+use Mediaopt\DHL\Api\GKV\ShipmentDetailsType;
+use Mediaopt\DHL\Api\GKV\ShipmentItemType;
+use Mediaopt\DHL\Api\GKV\ShipperType;
+use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderType;
+use Mediaopt\DHL\Api\GKV\Version;
 use Mediaopt\DHL\Merchant\Ekp;
+use Mediaopt\DHL\Shipment\BillingNumber;
+use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 use OxidEsales\Eshop\Core\Registry;
 
@@ -117,18 +131,12 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     {
         $this->save();
         $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
-
-        try {
-            $days = $adapter->buildWunschpaket()->getPreferredDays('12045');
-        } catch (\RuntimeException $e) {
-            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($e->getMessage());
+        if (Registry::getConfig()->getConfigParam('mo_dhl__account_sandbox')) {
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__CHECK_FOR_SANDBOX_NOT_POSSIBLE');
             return;
         }
-        if (empty($days)) {
-            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__INCORRECT_CREDENTIALS');
-            return;
-        }
-        Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__CORRECT_CREDENTIALS');
+        $this->checkWunschpaket($adapter);
+        $this->checkGKV($adapter);
     }
 
     /**
@@ -174,5 +182,65 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         $snippet .= Registry::getConfig()->getConfigParam('blShowVATForDelivery') ? '_NET' : '_GROSS';
         $translation = Registry::getLang()->translateString($snippet, $langId, false);
         return $translation !== $snippet ? $translation : '';
+    }
+
+    /**
+     * @param \Mediaopt\DHL\Adapter\DHLAdapter $adapter
+     */
+    private function checkWunschpaket(\Mediaopt\DHL\Adapter\DHLAdapter $adapter) : void
+    {
+        try {
+            $days = $adapter->buildWunschpaket()->getPreferredDays('12045');
+        } catch (\RuntimeException $e) {
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($e->getMessage());
+            return;
+        }
+        if (empty($days)) {
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__INCORRECT_CREDENTIALS');
+        }
+    }
+
+    /**
+     * @param \Mediaopt\DHL\Adapter\DHLAdapter $adapter
+     */
+    private function checkGKV(\Mediaopt\DHL\Adapter\DHLAdapter $adapter) : void
+    {
+        try {
+            $shipment = $this->createShipmentToGermany($adapter);
+            $shipmentOrder = new ValidateShipmentOrderType('123', $shipment);
+            $request = new ValidateShipmentOrderRequest(new Version(3, 0, null), $shipmentOrder);
+
+            $response = $adapter->buildGKV()->validateShipment($request);
+        } catch (\RuntimeException $e) {
+            $e = $e->getPrevious() ?: $e;
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($e->getMessage());
+            return;
+        }
+        if ($response->getStatus() !== 0) {
+            switch ($response->getStatus()->getStatusText()) {
+                case 'login failed':
+                    Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__LOGIN_FAILED');
+                    return;
+                default:
+                    Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($response->getStatus()->getStatusText());
+                    return;
+            }
+        }
+        Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__CORRECT_CREDENTIALS');
+    }
+
+    /**
+     * @param \Mediaopt\DHL\Adapter\DHLAdapter $adapter
+     * @param string                           $product
+     * @return Shipment
+     */
+    protected function createShipmentToGermany(\Mediaopt\DHL\Adapter\DHLAdapter $adapter, $product = 'V01PAK') : Shipment
+    {
+        $gkv = $adapter->buildGKV();
+        $ShipmentDetails = new ShipmentDetailsType($product, new BillingNumber(Ekp::build($gkv->getSoapCredentials()->getEkp()), Process::build(Process::PAKET), Participation::build('01')), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
+        $Receiver = (new ReceiverType('a b'))->setAddress(new ReceiverNativeAddressType(null, null, 'Elbestr.', '28/29', '12045', 'Berlin', null, new CountryType('DE')));
+        $Shipper = (new ShipperType(new NameType('a b', null, null), new NativeAddressType('Elbestr.', '28', '12045', 'Berlin', null, new CountryType('DE'))));
+        $shipment = new Shipment($ShipmentDetails, $Shipper, $Receiver);
+        return $shipment;
     }
 }

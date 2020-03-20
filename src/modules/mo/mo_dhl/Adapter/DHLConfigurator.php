@@ -51,7 +51,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getSoapLogin()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '';
+        return $this->isProductionEnvironment() ? 'DHL_Oxid_2' : 'moptrandom-temp-string-1455964747901';
     }
 
     /**
@@ -59,7 +59,23 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getSoapPassword()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '';
+        return $this->isProductionEnvironment() ? '0qy7vU4ubYUHgU5ppBsG2jIh48j9nO' : 'H#R#__!w4-dt-9++9Z-r7-9';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerGKVLogin()
+    {
+        return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '') : '2222222222_01';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerGKVPassword()
+    {
+        return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '') : 'pass';
     }
 
     /**

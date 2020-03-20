@@ -4,12 +4,12 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
 {
     protected function getRestLogin()
     {
-        return 'DHL_Oxid_1';
+        return 'DHL_Oxid_2';
     }
 
     protected function getRestPassword()
     {
-        return 'J7sC6PNrnyAaKs7AifHBhZW51rLGjz';
+        return '0qy7vU4ubYUHgU5ppBsG2jIh48j9nO';
     }
 
     protected function getSoapLogin()
@@ -20,6 +20,16 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     protected function getSoapPassword()
     {
         return 'H#R#__!w4-dt-9++9Z-r7-9';
+    }
+
+    protected function getCustomerGKVLogin()
+    {
+        return '2222222222_01';
+    }
+
+    protected function getCustomerGKVPassword()
+    {
+        return 'pass';
     }
 
     protected function getEkp()
