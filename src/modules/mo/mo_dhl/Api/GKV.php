@@ -94,7 +94,12 @@ class GKV extends \SoapClient
     /**
      * @var Credentials
      */
-    protected $credentials;
+    protected $soapCredentials;
+
+    /**
+     * @var Credentials
+     */
+    protected $customerGKVCredentials;
 
     /**
      * @var LoggerInterface
@@ -103,18 +108,20 @@ class GKV extends \SoapClient
 
     /**
      * @param Credentials     $credentials
+     * @param Credentials     $customerGKVCredentials
      * @param LoggerInterface $logger
      */
-    public function __construct(Credentials $credentials, LoggerInterface $logger)
+    public function __construct(Credentials $credentials, Credentials $customerGKVCredentials, LoggerInterface $logger)
     {
-        $this->credentials = $credentials;
+        $this->soapCredentials = $credentials;
+        $this->customerGKVCredentials = $customerGKVCredentials;
         $this->logger = $logger;
         $options = [
             'features'       => SOAP_SINGLE_ELEMENT_ARRAYS,
             'trace'          => 1,
-            'location'       => $this->getCredentials()->getEndpoint(),
-            'login'          => $this->getCredentials()->getUsername(),
-            'password'       => $this->getCredentials()->getPassword(),
+            'location'       => $this->getSoapCredentials()->getEndpoint(),
+            'login'          => $this->getSoapCredentials()->getUsername(),
+            'password'       => $this->getSoapCredentials()->getPassword(),
             'authentication' => SOAP_AUTHENTICATION_BASIC,
             'classmap'       => self::$classmap,
         ];
@@ -125,9 +132,17 @@ class GKV extends \SoapClient
     /**
      * @return Credentials
      */
-    public function getCredentials(): Credentials
+    public function getSoapCredentials() : Credentials
     {
-        return $this->credentials;
+        return $this->soapCredentials;
+    }
+
+    /**
+     * @return Credentials
+     */
+    public function getCustomerGKVCredentials() : Credentials
+    {
+        return $this->customerGKVCredentials;
     }
 
     /**
@@ -147,9 +162,7 @@ class GKV extends \SoapClient
     {
         $this->getLogger()->debug(__METHOD__ . " - SOAP API call for function  $functionName", ['options' => $request]);
         try {
-            $auth = $this->getCredentials()->isSandbox()
-                ? new AuthenticationType('2222222222_01', 'pass')
-                : new AuthenticationType($this->getCredentials()->getUsername(), $this->getCredentials()->getPassword());
+            $auth = new AuthenticationType($this->getCustomerGKVCredentials()->getUsername(), $this->getCustomerGKVCredentials()->getPassword());
             $header = new \SoapHeader('http://dhl.de/webservice/cisbase', 'Authentification', $auth);
             return $this->__soapCall($functionName, [$request], null, $header);
         } catch (\SoapFault $exception) {

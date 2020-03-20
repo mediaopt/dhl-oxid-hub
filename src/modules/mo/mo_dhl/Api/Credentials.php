@@ -140,4 +140,9 @@ class Credentials
     {
         return new static('https://cig.dhl.de/services/production/soap', $username, $password, $ekp, false);
     }
+
+    public static function createCustomerGKVCredentials($username, $password)
+    {
+        return new static('', $username, $password);
+    }
 }

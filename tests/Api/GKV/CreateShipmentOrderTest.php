@@ -37,7 +37,7 @@ class CreateShipmentOrderTest extends BaseGKVTest
         $request = new CreateShipmentOrderRequest(new Version(3, 0), $shipmentOrder);
         $response = $this->buildGKV()->createShipmentOrder($request);
         $this->assertInstanceOf(CreateShipmentOrderResponse::class, $response);
-        $this->assertEquals(1101, $response->getStatus()->getStatusCode());
+        $this->assertEquals(1101, $response->getStatus()->getStatusCode(), $response->getStatus()->getStatusText());
         $this->assertContains('Das angegebene Produkt ist für das Land nicht verfügbar.', $response->getCreationState()[0]->getLabelData()->getStatus()->getStatusMessage());
     }
 

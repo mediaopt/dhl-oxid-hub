@@ -51,7 +51,7 @@ class BaseGKVTest extends \PHPUnit_Framework_TestCase
     protected function createShipmentToGermany($product = 'V01PAK'): Shipment
     {
         $gkv = $this->buildGKV();
-        $ShipmentDetails = new ShipmentDetailsType($product, new BillingNumber(Ekp::build($gkv->getCredentials()->getEkp()), Process::build(Process::PAKET), Participation::build('01')), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
+        $ShipmentDetails = new ShipmentDetailsType($product, new BillingNumber(Ekp::build($gkv->getSoapCredentials()->getEkp()), Process::build(Process::PAKET), Participation::build('01')), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
         $Receiver = (new ReceiverType('a b'))->setAddress(new ReceiverNativeAddressType(null, null, 'Elbestr.', '28/29', '12045', 'Berlin', null, new CountryType('DE')));
         $Shipper = (new ShipperType(new NameType('a b', null, null), new NativeAddressType('Elbestr.', '28', '12045', 'Berlin', null, new CountryType('DE'))));
         $shipment = new Shipment($ShipmentDetails, $Shipper, $Receiver);

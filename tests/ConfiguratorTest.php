@@ -16,6 +16,8 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
                 'getRestPassword',
                 'getSoapLogin',
                 'getSoapPassword',
+                'getCustomerGKVLogin',
+                'getCustomerGKVPassword',
                 'getMapsApiKey',
                 'buildLogHandler',
                 'getEkp',
@@ -49,7 +51,7 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
 
         /** @var Standortsuche $standortsuche */
         $standortsuche = $configuratorMock->buildGKV(new \Monolog\Logger(__CLASS__));
-        $this->assertContains('production', $standortsuche->getCredentials()->getEndpoint());
+        $this->assertContains('production', $standortsuche->getSoapCredentials()->getEndpoint());
     }
 
     public function testEndpointForSandboxEnvironment()
@@ -62,7 +64,7 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
 
         /** @var Standortsuche $standortsuche */
         $standortsuche = $configuratorMock->buildGKV(new \Monolog\Logger(__CLASS__));
-        $this->assertContains('sandbox', $standortsuche->getCredentials()->getEndpoint());
+        $this->assertContains('sandbox', $standortsuche->getSoapCredentials()->getEndpoint());
     }
 
     public function testThatTheLoggerUsesTheLogHandler()

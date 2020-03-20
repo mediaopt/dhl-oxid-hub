@@ -46,6 +46,14 @@ abstract class Configurator
     }
 
     /**
+     * @return Credentials
+     */
+    protected function buildCustomerGKVCredentials()
+    {
+        return Credentials::createCustomerGKVCredentials($this->getCustomerGKVLogin(), $this->getCustomerGKVPassword());
+    }
+
+    /**
      * @return string
      */
     abstract protected function getSoapLogin();
@@ -54,6 +62,16 @@ abstract class Configurator
      * @return string
      */
     abstract protected function getSoapPassword();
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerGKVLogin();
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerGKVPassword();
 
     /**
      * @return string
@@ -111,6 +129,7 @@ abstract class Configurator
     {
         return new GKV(
             $this->buildSoapCredentials(),
+            $this->buildCustomerGKVCredentials(),
             $logger ?: $this->buildLogger()
         );
     }
