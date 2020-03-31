@@ -164,6 +164,17 @@ class Process
     }
 
     /**
+     * @return bool
+     */
+    public function isInternational()
+    {
+        return in_array($this->identifier, [
+            self::PAKET_INTERNATIONAL,
+            self::PAKET_INTERNATIONAL_AT
+        ]);
+    }
+
+    /**
      * @return string[]
      */
     public static function getAvailableProcesses()
