@@ -139,7 +139,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         $this->checkWunschpaket($adapter);
         $deliveries = oxNew(DeliverySetList::class);
         $deliveries = array_filter((array) $deliveries->getDeliverySetList(null, null), function ($deliverySet) { return !$deliverySet->oxdeliveryset__mo_dhl_excluded->value;});
-        if (count($deliveries) === 0) {
+        if ($deliveries === []) {
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__NO_DELIVERYSET');
             return;
         }
