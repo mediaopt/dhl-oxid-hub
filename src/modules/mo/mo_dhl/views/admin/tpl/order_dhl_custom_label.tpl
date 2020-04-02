@@ -63,17 +63,6 @@
                                 [{assign var="address" value=$shipmentOrder.receiver.address}]
                                 [{if $shipmentOrder.receiver.type == 'address'}]
                                     <tr>
-                                        [{foreach from=$address->getAddressAddition() item="addressAddition"}]
-                                            <td>
-                                                [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_ADRESS_ADDITION'}]
-                                            </td>
-                                            <td>
-                                                <input type="text" name="data[receiver][addressAddition][]"
-                                                       value="[{$addressAddition}]">
-                                            </td>
-                                        [{/foreach}]
-                                    </tr>
-                                    <tr>
                                         <td>
                                             [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_STREETNAME'}]
                                         </td>
@@ -89,6 +78,15 @@
                                         <td>
                                             <input type="text" name="data[receiver][streetNumber]"
                                                    value="[{$address->getStreetNumber()}]">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_ADRESS_ADDITION'}]
+                                        </td>
+                                        <td>
+                                            <input type="text" name="data[receiver][name3]"
+                                                   value="[{$address->getName3()}]">
                                         </td>
                                     </tr>
                                 [{elseif $shipmentOrder.receiver.type == 'packstation'}]
