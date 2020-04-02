@@ -20,6 +20,7 @@ use Mediaopt\DHL\Api\GKV\ShipmentItemType;
 use Mediaopt\DHL\Api\GKV\ShipperType;
 use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderType;
 use Mediaopt\DHL\Api\GKV\Version;
+use Mediaopt\DHL\Application\Model\DeliverySetList;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Shipment\BillingNumber;
 use Mediaopt\DHL\Shipment\Participation;
@@ -136,7 +137,16 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             return;
         }
         $this->checkWunschpaket($adapter);
-        $this->checkGKV($adapter);
+        $deliveries = oxNew(DeliverySetList::class);
+        $deliveries = array_filter((array) $deliveries->getDeliverySetList(null, null), function ($deliverySet) { return !$deliverySet->oxdeliveryset__mo_dhl_excluded->value;});
+        if ($deliveries === []) {
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__NO_DELIVERYSET');
+            return;
+        }
+        $gkv = $adapter->buildGKV();
+        foreach ($deliveries as $delivery) {
+            $this->checkGKV($gkv, $delivery);
+        }
     }
 
     /**
@@ -201,28 +211,35 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     }
 
     /**
-     * @param \Mediaopt\DHL\Adapter\DHLAdapter $adapter
+     * @param \Mediaopt\DHL\Api\GKV $gkv
+     * @param \OxidEsales\Eshop\Application\Model\DeliverySet $deliveryset
      */
-    private function checkGKV(\Mediaopt\DHL\Adapter\DHLAdapter $adapter) : void
+    private function checkGKV(\Mediaopt\DHL\Api\GKV $gkv, $deliveryset) : void
     {
+        $lang = Registry::getLang();
+        Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($lang->translateString('MO_DHL__CHECKING_DELIVERYSET') . $deliveryset->oxdeliveryset__oxtitle->value);
         try {
-            $shipment = $this->createShipmentToGermany($adapter);
+            $shipment = $this->createTestShipment($gkv, $deliveryset);
             $shipmentOrder = new ValidateShipmentOrderType('123', $shipment);
             $request = new ValidateShipmentOrderRequest(new Version(3, 0, null), $shipmentOrder);
 
-            $response = $adapter->buildGKV()->validateShipment($request);
+            $response = $gkv->validateShipment($request);
         } catch (\RuntimeException $e) {
             $e = $e->getPrevious() ?: $e;
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($e->getMessage());
             return;
         }
-        if ($response->getStatus() !== 0) {
+        if ($response->getStatus()->getStatusCode() !== 0) {
             switch ($response->getStatus()->getStatusText()) {
                 case 'login failed':
                     Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__LOGIN_FAILED');
                     return;
                 default:
                     Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($response->getStatus()->getStatusText());
+                    $errors = array_unique($response->getValidationState()[0]->getStatus()->getStatusMessage());
+                    foreach ($errors as $error) {
+                        Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($error);
+                    }
                     return;
             }
         }
@@ -230,15 +247,16 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     }
 
     /**
-     * @param \Mediaopt\DHL\Adapter\DHLAdapter $adapter
-     * @param string                           $product
+     * @param \Mediaopt\DHL\Api\GKV $gkv
+     * @param \OxidEsales\Eshop\Application\Model\DeliverySet $deliveryset
      * @return Shipment
      */
-    protected function createShipmentToGermany(\Mediaopt\DHL\Adapter\DHLAdapter $adapter, $product = 'V01PAK') : Shipment
+    protected function createTestShipment(\Mediaopt\DHL\Api\GKV $gkv, $deliveryset) : Shipment
     {
-        $gkv = $adapter->buildGKV();
-        $ShipmentDetails = new ShipmentDetailsType($product, new BillingNumber(Ekp::build($gkv->getSoapCredentials()->getEkp()), Process::build(Process::PAKET), Participation::build('01')), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
-        $Receiver = (new ReceiverType('a b'))->setAddress(new ReceiverNativeAddressType(null, null, 'Elbestr.', '28/29', '12045', 'Berlin', null, new CountryType('DE')));
+        $process = Process::build($deliveryset->oxdeliveryset__mo_dhl_process->value);
+        $receiverCountryCode = $process->isInternational() ? 'FR' : 'DE';
+        $ShipmentDetails = new ShipmentDetailsType($process->getServiceIdentifier(), new BillingNumber(Ekp::build($gkv->getSoapCredentials()->getEkp()), $process, Participation::build($deliveryset->oxdeliveryset__mo_dhl_participation->value)), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
+        $Receiver = (new ReceiverType('a b'))->setAddress(new ReceiverNativeAddressType(null, null, 'Elbestr.', '28/29', '12045', 'Berlin', null, new CountryType($receiverCountryCode)));
         $Shipper = (new ShipperType(new NameType('a b', null, null), new NativeAddressType('Elbestr.', '28', '12045', 'Berlin', null, new CountryType('DE'))));
         $shipment = new Shipment($ShipmentDetails, $Shipper, $Receiver);
         return $shipment;
