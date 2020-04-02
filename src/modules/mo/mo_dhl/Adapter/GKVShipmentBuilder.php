@@ -171,7 +171,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $service->setPreferredNeighbour(new ServiceconfigurationDetails(1, "$locationPart2, $locationPart1"));
         }
         if ($wunschpaket->hasWunschort($remark)) {
-            $service->setPreferredNeighbour(new ServiceconfigurationDetails(1, $locationPart1));
+            $service->setPreferredLocation(new ServiceconfigurationDetails(1, $locationPart1));
         }
         $isActive = (bool)Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active');
         $altEmail = Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null;
@@ -237,10 +237,16 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     protected function buildAddress(Order $order): ReceiverNativeAddressType
     {
-        $address = new ReceiverNativeAddressType($order->moDHLGetAddressData('company') ?: null, null, $order->moDHLGetAddressData('street'), $order->moDHLGetAddressData('streetnr'), $order->moDHLGetAddressData('zip'), $order->moDHLGetAddressData('city'), null, $this->buildCountry($order->moDHLGetAddressData('countryid')));
-        if ($addInfo = $order->moDHLGetAddressData('addinfo')) {
-            $address->setAddressAddition([$addInfo]);
-        }
+        $address = new ReceiverNativeAddressType(
+            $order->moDHLGetAddressData('company') ?: null,
+            $order->moDHLGetAddressData('addinfo') ?: null,
+            $order->moDHLGetAddressData('street'),
+            $order->moDHLGetAddressData('streetnr'),
+            $order->moDHLGetAddressData('zip'),
+            $order->moDHLGetAddressData('city'),
+            null,
+            $this->buildCountry($order->moDHLGetAddressData('countryid'))
+        );
         return $address;
     }
 
