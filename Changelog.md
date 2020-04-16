@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+* Bugfix: put addinfo data in name3 field to display it on labels
+* use real shipment methods for credentials check
+
 ## 1.0.2
 * Bugfix: use Mediaopt credentials for GKV requests and add customer gkv login to requests
 
