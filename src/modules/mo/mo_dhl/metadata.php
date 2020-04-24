@@ -171,7 +171,7 @@ $aModule = [
             'group' => 'mo_dhl__account',
             'name'  => 'mo_dhl__account_sandbox',
             'type'  => 'bool',
-            'value' => 'false',
+            'value' => 'true',
         ],
         [
             'group' => 'mo_dhl__account',

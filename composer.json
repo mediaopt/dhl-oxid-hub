@@ -8,7 +8,7 @@
         "vendor-dir": "src/modules/mo/mo_dhl/vendor"
     },
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.1",
         "monolog/monolog": "1.12.*",
         "guzzlehttp/guzzle": "^6.0",
         "roave/security-advisories": "dev-master",
