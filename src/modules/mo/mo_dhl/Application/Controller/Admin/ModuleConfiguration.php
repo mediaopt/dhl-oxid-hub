@@ -95,6 +95,21 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     }
 
     /**
+     * Converts Multiline text to simple array. Returns this array.
+     *
+     * @param string $multiline Multiline text
+     *
+     * @return array
+     */
+    protected function _multilineToArray($multiline)
+    {
+        if (is_array($multiline)) {
+            return $multiline;
+        }
+        return parent::_multilineToArray($multiline);
+    }
+
+    /**
      */
     protected function moReviewFilialroutingAlternativeEmail()
     {
@@ -121,7 +136,6 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             Ekp::build($ekp);
         } catch (\InvalidArgumentException $exception) {
             Registry::getConfig()->saveShopConfVar('str', $ekpVariable, '', '', 'module:mo_dhl');
-            /** @noinspection PhpParamsInspection */
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__EKP_ERROR');
         }
     }

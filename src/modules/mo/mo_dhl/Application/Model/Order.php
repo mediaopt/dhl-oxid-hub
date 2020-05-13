@@ -26,19 +26,24 @@ class Order extends Order_parent
 {
     /**
      * @extend
-     * @param \OxidEsales\Eshop\Application\Model\Basket $basket
+     * @param \OxidEsales\Eshop\Application\Model\Basket    $basket
+     * @param \OxidEsales\Eshop\Application\Model\User|null $user
      * @return int|string
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      */
-    public function validatePayment($basket)
+    public function validatePayment($basket, $user = null)
     {
-        return $this->moDHLIsPaymentExcluded() ? \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MO_DHL__PAYMENT_EXCLUDED') : parent::validatePayment($basket);
+        if ($this->moDHLIsPaymentExcluded()) {
+            return \OxidEsales\Eshop\Core\Registry::getLang()->translateString('MO_DHL__PAYMENT_EXCLUDED');
+        }
+        return $user === null ? parent::validatePayment($basket) : parent::validatePayment($basket, $user);
     }
 
     /**
      * Returns true iff the payment is excluded by configuration.
      *
      * @return bool
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      */
     public function moDHLIsPaymentExcluded()
     {
@@ -50,7 +55,7 @@ class Order extends Order_parent
         $paymentId = $this->oxorder__oxpaymenttype->rawValue;
         $query = "SELECT mo_dhl_excluded FROM oxpayments WHERE OXID = {$db->quote($paymentId)}";
 
-        return (int) $db->getOne($query) > 0;
+        return (int)$db->getOne($query) > 0;
     }
 
     /**
@@ -67,9 +72,10 @@ class Order extends Order_parent
      * Added call to _setUser to ensure that the delivery address is set.
      *
      * @extend
-     * @param \Mediaopt\DHL\Application\Model\Basket $basket
+     * @param \Mediaopt\DHL\Application\Model\Basket   $basket
      * @param \OxidEsales\Eshop\Application\Model\User $user
      * @return int
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
     public function validateOrder($basket, $user)
     {
@@ -84,6 +90,7 @@ class Order extends Order_parent
      *
      * @extend
      * @param \OxidEsales\Eshop\Application\Model\Basket $basket
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
     protected function _loadFromBasket(\OxidEsales\Eshop\Application\Model\Basket $basket)
     {
@@ -98,7 +105,7 @@ class Order extends Order_parent
      * @extend
      * @param \OxidEsales\Eshop\Application\Model\Basket $basket
      * @return string|int
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      */
     public function validateDelivery($basket)
     {
@@ -109,7 +116,7 @@ class Order extends Order_parent
      * Returns true iff the delivery is excluded by configuration.
      *
      * @return bool
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      */
     public function moDHLIsDeliveryExcluded()
     {
@@ -120,21 +127,20 @@ class Order extends Order_parent
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
         $deliverySetId = $this->oxorder__oxdeltype->rawValue;
         $query = "SELECT mo_dhl_excluded FROM oxdeliveryset WHERE OXID = {$db->quote($deliverySetId)}";
-        return (int) $db->getOne($query) > 0;
+        return (int)$db->getOne($query) > 0;
     }
 
     /**
      * @param \OxidEsales\Eshop\Application\Model\Basket $basket
-     * @param \OxidEsales\Eshop\Application\Model\User $user
-     * @param bool $recalculate
+     * @param \OxidEsales\Eshop\Application\Model\User   $user
+     * @param bool                                       $recalculate
      * @return int
-     * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseException
      */
     public function finalizeOrder(\OxidEsales\Eshop\Application\Model\Basket $basket, $user, $recalculate = false)
     {
         $status = parent::finalizeOrder($basket, $user, $recalculate);
-        if ((string) $this->getId() === '') {
+        if ((string)$this->getId() === '') {
             return $status;
         }
 
@@ -149,7 +155,13 @@ class Order extends Order_parent
         $this->oxorder__mo_dhl_allow_notification = \oxNew(Field::class, $allowNotification);
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
         $query = ' UPDATE oxorder SET MO_DHL_EKP = ?, MO_DHL_PARTICIPATION = ?, MO_DHL_PROCESS = ?, MO_DHL_ALLOW_NOTIFICATION = ? WHERE OXID = ?';
-        $db->execute($query, [$ekp, $participation, $process, $allowNotification, $this->getId()]);
+        $db->execute($query, [
+            $ekp,
+            $participation,
+            $process,
+            $allowNotification,
+            $this->getId(),
+        ]);
 
         return $status;
     }
@@ -180,7 +192,10 @@ class Order extends Order_parent
      */
     public function moDHLGetAddressData($field)
     {
-        foreach (['oxdelfname', 'oxdellname'] as $check) {
+        foreach ([
+                     'oxdelfname',
+                     'oxdellname',
+                 ] as $check) {
             if (empty($this->getFieldData($check))) {
                 return $this->getFieldData("oxbill$field");
             }
@@ -201,7 +216,7 @@ class Order extends Order_parent
     /**
      * @return bool
      */
-    protected function moDHLGetNotificationAllowance(): bool
+    protected function moDHLGetNotificationAllowance() : bool
     {
         $dynamicValues = $this->getSession()->getVariable('dynvalue');
         return $dynamicValues['mo_dhl_allow_notification'] ?? false;

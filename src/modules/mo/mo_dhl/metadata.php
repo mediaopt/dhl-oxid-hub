@@ -171,7 +171,7 @@ $aModule = [
             'group' => 'mo_dhl__account',
             'name'  => 'mo_dhl__account_sandbox',
             'type'  => 'bool',
-            'value' => 'false',
+            'value' => 'true',
         ],
         [
             'group' => 'mo_dhl__account',
@@ -193,11 +193,13 @@ $aModule = [
             'group' => 'mo_dhl__account',
             'name'  => 'mo_dhl__account_check',
             'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__delivery',
             'name'  => 'mo_dhl__only_with_leitcode',
             'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__delivery_weight',
@@ -208,7 +210,7 @@ $aModule = [
             'group' => 'mo_dhl__delivery_weight',
             'name'  => 'mo_dhl__calculate_weight',
             'type'  => 'bool',
-            'value' => 1,
+            'value' => 'true',
         ],
         [
             'group' => 'mo_dhl__delivery_weight',
@@ -273,6 +275,7 @@ $aModule = [
             'group' => 'mo_dhl__services',
             'name'  => 'mo_dhl__filialrouting_active',
             'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__services',
@@ -284,6 +287,7 @@ $aModule = [
             'group' => 'mo_dhl__services',
             'name'  => 'mo_dhl__paketankuendigung_active',
             'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group'       => 'mo_dhl__services',
@@ -296,13 +300,13 @@ $aModule = [
             'group' => 'mo_dhl__retoure',
             'name'  => 'mo_dhl__beilegerretoure_active',
             'type'  => 'bool',
-            'value' => 1,
+            'value' => 'true',
         ],
         [
             'group' => 'mo_dhl__retoure_receiver',
             'name'  => 'mo_dhl__retoure_receiver_use_sender',
             'type'  => 'bool',
-            'value' => 1,
+            'value' => 'true',
         ],
         [
             'group' => 'mo_dhl__retoure_receiver',
@@ -370,16 +374,19 @@ $aModule = [
             'group' => 'mo_dhl__standortsuche',
             'name'  => 'mo_dhl__standortsuche_packstation',
             'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__standortsuche',
             'name'  => 'mo_dhl__standortsuche_postfiliale',
             'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__standortsuche',
             'name'  => 'mo_dhl__standortsuche_paketshop',
             'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__wunschtag',
@@ -511,6 +518,7 @@ $aModule = [
             'group' => 'mo_dhl__logs',
             'name'  => 'mo_dhl__logfiles',
             'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__privacy',
