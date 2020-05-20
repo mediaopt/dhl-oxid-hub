@@ -10,7 +10,6 @@ use Mediaopt\DHL\Api\GKV\PackStationType;
 use Mediaopt\DHL\Api\GKV\PostfilialeType;
 use Mediaopt\DHL\Api\GKV\ReceiverNativeAddressType;
 use Mediaopt\DHL\Api\GKV\ReceiverType;
-use Mediaopt\DHL\Api\GKV\ServiceconfigurationDeliveryTimeframe;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetails;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
 use Mediaopt\DHL\Api\GKV\Shipment;
@@ -160,9 +159,6 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         $service = new ShipmentService();
         $remark = Registry::getSession()->getVariable('ordrem');
         $wunschpaket = Registry::get(\Mediaopt\DHL\Wunschpaket::class);
-        if ($wunschpaket->hasWunschzeit($remark)) {
-            $service->setPreferredTime(new ServiceconfigurationDeliveryTimeframe(1, $wunschpaket->extractTime($remark)));
-        }
         if ($wunschpaket->hasWunschtag($remark)) {
             $service->setPreferredDay(new ServiceconfigurationDetails(1, $wunschpaket->extractWunschtag($remark)));
         }

@@ -138,17 +138,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__handing_over_fri'      => 'Freitag',
     'SHOP_MODULE_mo_dhl__handing_over_sat'      => 'Samstag',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschzeit'          => 'Wunschpaket - Wunschzeit',
-    'SHOP_MODULE_mo_dhl__wunschzeit_active'         => 'Aktiv',
-    'SHOP_MODULE_mo_dhl__wunschzeit_surcharge'      => 'Aufpreis auf Versandkosten (EUR)',
-    'HELP_SHOP_MODULE_mo_dhl__wunschzeit_surcharge' => 'Geben Sie hier einen Aufpreis als Bruttowert für den Service Wunschzeit an. Geben Sie 0 ein, um den Service konstenfrei anzubieten. Nutzen Sie . als Dezimalzeichen.',
-    'SHOP_MODULE_mo_dhl__wunschzeit_surcharge_text' => 'Anzeigetext für den Aufpreis bei aktiver Wunschzeit im Frontend',
-
-    'SHOP_MODULE_GROUP_mo_dhl__wunschtag_wunschzeit'          => 'Wunschpaket - Kombination aus Wunschtag und Wunschzeit',
-    'SHOP_MODULE_mo_dhl__wunschtag_wunschzeit_surcharge'      => 'Aufpreis auf Versandkosten (EUR)',
-    'HELP_SHOP_MODULE_mo_dhl__wunschtag_wunschzeit_surcharge' => 'Geben Sie hier einen Aufpreis als Bruttowert für die Kombination aus den Services Wunschzeit und -tag an. Geben Sie 0 ein, um den Service konstenfrei anzubieten. Nutzen Sie . als Dezimalzeichen.',
-    'SHOP_MODULE_mo_dhl__wunschtag_wunschzeit_surcharge_text' => 'Anzeigetext für den Aufpreis bei aktiver Wunschzeit und -tag im Frontend',
-
     'SHOP_MODULE_GROUP_mo_dhl__wunschort'  => 'Wunschpaket - Wunschort',
     'SHOP_MODULE_mo_dhl__wunschort_active' => 'Aktiv',
 

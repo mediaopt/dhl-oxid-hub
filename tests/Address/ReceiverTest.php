@@ -32,23 +32,21 @@ class ReceiverTest extends \PHPUnit_Framework_TestCase
         $address = $this->buildSampleAddress();
         $locationType = 'Wunschnachbar';
         $location = 'Rudi Mentär';
-        $time = '12001400';
         $wunschtag = date('d.m.Y', strtotime('next Wednesday'));
 
-        $receiver = new Receiver($contact, $postnummer, $address, $locationType, $location, $time, $wunschtag);
+        $receiver = new Receiver($contact, $postnummer, $address, $locationType, $location, $wunschtag);
         $this->assertEquals($contact, $receiver->getReceiver());
         $this->assertEquals($postnummer, $receiver->getPostnummer());
         $this->assertEquals($address, $receiver->getAddress());
         $this->assertEquals($locationType, $receiver->getDesiredLocationType());
         $this->assertEquals($location, $receiver->getDesiredLocation());
-        $this->assertEquals($time, $receiver->getDesiredTime());
     }
 
     public function testLinesWithNameOnly()
     {
         $name = Faker\Factory::create('de')->name;
         $contact = new Contact($name);
-        $receiver = new Receiver($contact, '', $this->buildSampleAddress(), '', '', '', '');
+        $receiver = new Receiver($contact, '', $this->buildSampleAddress(), '', '', '');
         $this->assertEquals($name, $receiver->getLine1());
         $this->assertEquals('', $receiver->getLine2());
         $this->assertEquals('', $receiver->getLine3());
@@ -59,7 +57,7 @@ class ReceiverTest extends \PHPUnit_Framework_TestCase
         $name = Faker\Factory::create('de')->name;
         $contact = new Contact($name);
         $postnummer = '1234567890';
-        $receiver = new Receiver($contact, $postnummer, $this->buildSampleAddress(), '', '', '', '');
+        $receiver = new Receiver($contact, $postnummer, $this->buildSampleAddress(), '', '', '');
         $this->assertEquals($name, $receiver->getLine1());
         $this->assertEquals($postnummer, $receiver->getLine2());
         $this->assertEquals('', $receiver->getLine3());
@@ -71,7 +69,7 @@ class ReceiverTest extends \PHPUnit_Framework_TestCase
         $name = $faker->name;
         $company = $faker->company;
         $contact = new Contact($name, '', '', $company);
-        $receiver = new Receiver($contact, '', $this->buildSampleAddress(), '', '', '', '');
+        $receiver = new Receiver($contact, '', $this->buildSampleAddress(), '', '', '');
         $this->assertEquals($company, $receiver->getLine1());
         $this->assertEquals($name, $receiver->getLine2());
         $this->assertEquals('', $receiver->getLine3());
@@ -84,7 +82,7 @@ class ReceiverTest extends \PHPUnit_Framework_TestCase
         $company = $faker->company;
         $contact = new Contact($name, '', '', $company);
         $postnummer = '1234567890';
-        $receiver = new Receiver($contact, $postnummer, $this->buildSampleAddress(), '', '', '', '');
+        $receiver = new Receiver($contact, $postnummer, $this->buildSampleAddress(), '', '', '');
         $this->assertEquals($company, $receiver->getLine1());
         $this->assertEquals($postnummer, $receiver->getLine2());
         $this->assertEquals($name, $receiver->getLine3());

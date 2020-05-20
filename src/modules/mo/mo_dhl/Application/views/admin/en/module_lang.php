@@ -15,7 +15,6 @@ $aLang = [
     'MO_DHL__PROCESS_AND_PARTICIPATION'      => 'Process and Participation numbers',
     'MO_DHL__WUNSCHPAKET'                    => 'Wunschpaket Options',
     'MO_DHL__WUNSCHTAG'                      => 'Preferred day',
-    'MO_DHL__WUNSCHZEIT'                     => 'Preferred time',
     'MO_DHL__WUNSCHORT'                      => 'Preferred location',
     'MO_DHL__WUNSCHNACHBAR'                  => 'Preferred neighbour',
     'MO_DHL__EKP'                            => 'EKP',

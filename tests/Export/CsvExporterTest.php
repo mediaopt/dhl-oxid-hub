@@ -62,7 +62,7 @@ class CsvExporterTest extends PHPUnit_Framework_TestCase
         'Länge'                                              => '',
         'Breite'                                             => '',
         'Höhe'                                               => '',
-        'Produkt- und Servicedetails'                        => 'V01PAK.V00WN.V01PT.V01PD',
+        'Produkt- und Servicedetails'                        => 'V01PAK.V00WN.V01PD',
         'Retourenempfänger Name 1'                           => '',
         'Retourenempfänger Name 2'                           => '',
         'Retourenempfänger Name 3'                           => '',
@@ -153,7 +153,6 @@ class CsvExporterTest extends PHPUnit_Framework_TestCase
         'Service - Sendungshandling'                  => '',
         'Service - beliebiger Hinweistext'            => '',
         'Service - Zustelldatum'                      => '14.02.2018',
-        'Service - Zustellzeitfenster'                => '12001400',
         'Sendungsdokumente - Einlieferungsstelle'     => '',
         'Creation-Software'                           => CsvExporter::CREATOR_TAG,
         'Service - ind. Versendervorgabe Kennzeichen' => '',
@@ -177,9 +176,8 @@ class CsvExporterTest extends PHPUnit_Framework_TestCase
     {
         $contact = new Contact('Arno Nühm', 'arno@nue.hm', '007', 'modiaept');
         $address = new Address('Wassermannstr.', '58', '12489', 'Berlin-Adlershof');
-        $wunschzeit = '12001400';
         $wunschtag = '14.02.2018';
-        return new Receiver($contact, '12345678', $address, $locationType, 'Rudi Mentär', $wunschzeit, $wunschtag);
+        return new Receiver($contact, '12345678', $address, $locationType, 'Rudi Mentär', $wunschtag);
     }
 
     protected function buildSampleSender()
@@ -247,7 +245,7 @@ class CsvExporterTest extends PHPUnit_Framework_TestCase
         for ($i = 0; $i < 3; $i++) {
             $exporter = new CsvExporter('UTF-8');
             $exporter->export(array_fill(0, mt_rand(0, 10), $this->buildSampleOrder('')));
-            list($header) = explode("\r\n", $exporter->save());
+            [$header] = explode("\r\n", $exporter->save());
             $stream = fopen('php://memory', 'rwb');
             fwrite($stream, $header);
             rewind($stream);

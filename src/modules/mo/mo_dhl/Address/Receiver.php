@@ -47,11 +47,6 @@ class Receiver implements Addressable
     /**
      * @var string
      */
-    protected $desiredTime;
-
-    /**
-     * @var string
-     */
     protected $wunschtag;
 
     /**
@@ -60,16 +55,14 @@ class Receiver implements Addressable
      * @param Address $address
      * @param string  $desiredLocationType
      * @param string  $desiredLocation
-     * @param string  $desiredTime
      * @param string  $wunschtag
      */
-    public function __construct(Contact $receiver, $postnummer, Address $address, $desiredLocationType, $desiredLocation, $desiredTime, $wunschtag)
+    public function __construct(Contact $receiver, $postnummer, Address $address, $desiredLocationType, $desiredLocation, $wunschtag)
     {
         $this->receiver = $receiver;
         $this->postnummer = $postnummer;
         $this->address = $address;
         $this->desiredLocation = $desiredLocation;
-        $this->desiredTime = $desiredTime;
         $this->desiredLocationType = $desiredLocationType;
         $this->wunschtag = $wunschtag;
     }
@@ -114,13 +107,6 @@ class Receiver implements Addressable
         return $this->desiredLocationType;
     }
 
-    /**
-     * @return string
-     */
-    public function getDesiredTime()
-    {
-        return $this->desiredTime;
-    }
 
     /**
      * @return string

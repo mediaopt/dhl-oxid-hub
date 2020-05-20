@@ -206,7 +206,6 @@ div#moDHLWunschpaket dt {
     margin-top: 20px;
 }
 
-#moDHLWunschzeit,
 #moDHLWunschtag {
     display: flex;
     align-items: flex-start;
@@ -262,11 +261,6 @@ div#moDHLWunschpaket dl dd ul li input:disabled + label {
 
 div#moDHLWunschpaket dl dd ul li input:checked + label {
     background-color: #fc0;
-}
-
-
-div#moDHLWunschpaket ul#moDHLWunschzeit li {
-    width: 90px;
 }
 
 div#moDHLWunschpaket ul#moDHLWunschtag li {
@@ -349,14 +343,6 @@ label.ttip {
     outline: none;
     border: none;
     background: transparent;
-}
-
-.wunschzeit--label.wunschpaket--theme-azure {
-    min-height: 16px;
-}
-
-.wunschzeit--label.wunschpaket--theme-flow, .wunschzeit--label.wunschpaket--theme-wave {
-    min-height: 20px;
 }
 
 .wunschtag--label.wunschpaket--theme-azure {

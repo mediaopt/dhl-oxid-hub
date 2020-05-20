@@ -70,7 +70,7 @@ class ShipmentBuilder extends BaseShipmentBuilder
     {
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         list($locationType, $location) = $wunschpaket->extractLocation($order->oxorder__oxremark->value);
-        return new Receiver($this->buildContact($order), $order->oxorder__oxdeladdinfo->rawValue, $this->buildAddress($order), $locationType, $location, $wunschpaket->extractTime($order->oxorder__oxremark->value), $wunschpaket->extractWunschtag($order->oxorder__oxremark->value));
+        return new Receiver($this->buildContact($order), $order->oxorder__oxdeladdinfo->rawValue, $this->buildAddress($order), $locationType, $location, $wunschpaket->extractWunschtag($order->oxorder__oxremark->value));
     }
 
     /**

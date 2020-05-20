@@ -137,17 +137,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__handing_over_fri'      => 'Friday',
     'SHOP_MODULE_mo_dhl__handing_over_sat'      => 'Saturday',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschzeit'          => 'Wunschpaket - Preferred time',
-    'SHOP_MODULE_mo_dhl__wunschzeit_active'         => 'Enabled',
-    'SHOP_MODULE_mo_dhl__wunschzeit_surcharge'      => 'Delivery surcharge (EUR)',
-    'HELP_SHOP_MODULE_mo_dhl__wunschzeit_surcharge' => 'Insert gross value as surcharge for the preferred time. Insert 0 to offer service for free. Use . as decimal separator.',
-    'SHOP_MODULE_mo_dhl__wunschzeit_surcharge_text' => 'Displayed text for the surcharge for the preferred time in the frontend',
-
-    'SHOP_MODULE_GROUP_mo_dhl__wunschtag_wunschzeit'          => 'Wunschpaket - Combination of preferred day and preferred time',
-    'SHOP_MODULE_mo_dhl__wunschtag_wunschzeit_surcharge'      => 'Delivery surcharge (EUR)',
-    'HELP_SHOP_MODULE_mo_dhl__wunschtag_wunschzeit_surcharge' => 'Insert gross value as surcharge for the combination of preferred day and time. Insert 0 to offer service for free. Use . as decimal separator.',
-    'SHOP_MODULE_mo_dhl__wunschtag_wunschzeit_surcharge_text' => 'Displayed text for the surcharge for the combination of preferred day and time in the frontend',
-
     'SHOP_MODULE_GROUP_mo_dhl__wunschort'  => 'Wunschpaket - Preferred location',
     'SHOP_MODULE_mo_dhl__wunschort_active' => 'Enabled',
 

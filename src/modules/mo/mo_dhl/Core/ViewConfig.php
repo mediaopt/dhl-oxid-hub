@@ -94,17 +94,6 @@ class ViewConfig extends ViewConfig_parent
     /**
      * @return bool
      */
-    public function moIsWunschzeitActivated()
-    {
-        /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
-        $basket = \OxidEsales\Eshop\Core\Registry::getConfig()->getSession()->getBasket();
-        $zip = $basket->moEmpfaengeservicesGetAddressedZipCode();
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->canAWunschzeitBeSelected($zip);
-    }
-
-    /**
-     * @return bool
-     */
     public function moIsWunschortActivated()
     {
         return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->isWunschortActive();

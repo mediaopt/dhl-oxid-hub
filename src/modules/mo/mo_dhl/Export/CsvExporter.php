@@ -161,7 +161,6 @@ class CsvExporter implements Exporter
         'Service - Sendungshandling',
         'Service - beliebiger Hinweistext',
         'Service - Zustelldatum',
-        'Service - Zustellzeitfenster',
         'Sendungsdokumente - Einlieferungsstelle',
         'Creation-Software',
         'Service - ind. Versendervorgabe Kennzeichen',
@@ -418,7 +417,6 @@ class CsvExporter implements Exporter
         $row['Service - Sendungshandling'] = '';
         $row['Service - beliebiger Hinweistext'] = '';
         $row['Service - Zustelldatum'] = $shipment->getReceiver()->getWunschtag();
-        $row['Service - Zustellzeitfenster'] = $shipment->getReceiver()->getDesiredTime();
         $row['Service - ind. Versendervorgabe Kennzeichen'] = '';
         $row['Service - Ident-Check - Vorname'] = '';
         $row['Service - Ident-Check - Nachname'] = '';
@@ -440,10 +438,6 @@ class CsvExporter implements Exporter
         }
         if ($shipment->getReceiver()->getDesiredLocationType() === Wunschpaket::WUNSCHNACHBAR) {
             $details[] = 'V00WN';
-        }
-        $desiredTime = $shipment->getReceiver()->getDesiredTime();
-        if (!empty($desiredTime)) {
-            $details[] = 'V01PT';
         }
         $wunschtag = $shipment->getReceiver()->getWunschtag();
         if (!empty($wunschtag)) {

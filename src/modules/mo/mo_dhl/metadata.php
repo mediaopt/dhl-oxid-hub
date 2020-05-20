@@ -461,34 +461,6 @@ $aModule = [
             'value' => 'true',
         ],
         [
-            'group' => 'mo_dhl__wunschzeit',
-            'name'  => 'mo_dhl__wunschzeit_active',
-            'type'  => 'bool',
-            'value' => 'false',
-        ],
-        [
-            'group' => 'mo_dhl__wunschzeit',
-            'name'  => 'mo_dhl__wunschzeit_surcharge',
-            'type'  => 'str',
-            'value' => '4.80',
-        ],
-        [
-            'group' => 'mo_dhl__wunschzeit',
-            'name'  => 'mo_dhl__wunschzeit_surcharge_text',
-            'type'  => 'arr',
-        ],
-        [
-            'group' => 'mo_dhl__wunschtag_wunschzeit',
-            'name'  => 'mo_dhl__wunschtag_wunschzeit_surcharge',
-            'type'  => 'str',
-            'value' => '4.80',
-        ],
-        [
-            'group' => 'mo_dhl__wunschtag_wunschzeit',
-            'name'  => 'mo_dhl__wunschtag_wunschzeit_surcharge_text',
-            'type'  => 'arr',
-        ],
-        [
             'group' => 'mo_dhl__wunschort',
             'name'  => 'mo_dhl__wunschort_active',
             'type'  => 'bool',

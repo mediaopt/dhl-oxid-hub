@@ -45,9 +45,6 @@ class OrderController extends OrderController_parent
         if ($wunschpaket->hasWunschtag($remark) && !$wunschpaket->canAWunschtagBeSelected($basket)) {
             $remark = $wunschpaket->removeWunschtagTag($remark);
         }
-        if ($wunschpaket->hasWunschzeit($remark) && !$wunschpaket->canAWunschzeitBeSelected($zip)) {
-            $remark = $wunschpaket->removeTimeTag($remark);
-        }
         if ($wunschpaket->hasWunschort($remark) && !$wunschpaket->isWunschortActive()) {
             $remark = $wunschpaket->removeWunschortTag($remark);
         }
@@ -64,16 +61,6 @@ class OrderController extends OrderController_parent
     public function moDHLGetLocation()
     {
         return Registry::get(\Mediaopt\DHL\Wunschpaket::class)->extractLocation(parent::getOrderRemark());
-    }
-
-    /**
-     * @return string
-     */
-    public function moDHLGetTime()
-    {
-        $wunschpaket = Registry::get(\Mediaopt\DHL\Wunschpaket::class);
-        $preferredTime = $wunschpaket->extractTime(parent::getOrderRemark());
-        return $preferredTime !== '' ? Wunschpaket::formatPreferredTime($preferredTime) : '';
     }
 
     /**
@@ -134,11 +121,8 @@ class OrderController extends OrderController_parent
         $langId = $this->moDHLGetCurrentLanguage();
         switch ($textVarName) {
             case 'mo_dhl__wunschtag_surcharge_text':
-                return $wunschpaket->getWunschtagText($langId);
-            case 'mo_dhl__wunschzeit_surcharge_text':
-                return $wunschpaket->getWunschzeitText($langId);
             default:
-                return $wunschpaket->getWunschtagWunschzeitText($langId);
+                return $wunschpaket->getWunschtagText($langId);
         }
     }
 }

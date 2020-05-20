@@ -10,7 +10,7 @@ namespace Mediaopt\DHL\Application\Model;
 /** @noinspection LongInheritanceChainInspection */
 
 /**
- * Adds functionality to integrate surcharges in case a Wunschtag or Wunschzeit is selected.
+ * Adds functionality to integrate surcharges in case a Wunschtag is selected.
  *
  * @author Mediaopt GmbH
  */
@@ -39,12 +39,6 @@ class Basket extends Basket_parent
     {
         $remark = \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem');
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
-        if ($wunschpaket->hasWunschzeit($remark) && $wunschpaket->hasWunschtag($remark)) {
-            return $this->moDHLGetCostsForCombinedWunschtagAndWunschzeit();
-        }
-        if ($wunschpaket->hasWunschzeit($remark)) {
-            return $this->moDHLGetWunschzeitCosts();
-        }
         if ($wunschpaket->hasWunschtag($remark)) {
             return $this->moDHLGetWunschtagCosts();
         }
@@ -105,27 +99,6 @@ class Basket extends Basket_parent
     {
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         return $wunschpaket->hasWunschtag(\OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem')) ? $this->moDHLCalculateSurcharge($wunschpaket->getWunschtagSurcharge()) : \oxNew(\OxidEsales\Eshop\Core\Price::class, 0.0);
-    }
-
-    /**
-     * @return \OxidEsales\Eshop\Core\Price
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
-     */
-    public function moDHLGetWunschzeitCosts()
-    {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
-        return $wunschpaket->hasWunschzeit(\OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem')) ? $this->moDHLCalculateSurcharge($wunschpaket->getWunschzeitSurcharge()) : \oxNew(\OxidEsales\Eshop\Core\Price::class, 0.0);
-    }
-
-    /**
-     * @return \OxidEsales\Eshop\Core\Price
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
-     */
-    public function moDHLGetCostsForCombinedWunschtagAndWunschzeit()
-    {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
-        $remark = \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem');
-        return $wunschpaket->hasWunschtag($remark) && $wunschpaket->hasWunschzeit($remark) ? $this->moDHLCalculateSurcharge($wunschpaket->getCombinedWunschtagAndWunschzeitSurcharge()) : \oxNew(\OxidEsales\Eshop\Core\Price::class, 0.0);
     }
 
     /**

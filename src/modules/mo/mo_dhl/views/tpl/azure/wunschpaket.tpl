@@ -2,37 +2,15 @@
     [{if $oViewConf->moIsAnyWunschpaketFeatureActivated()}]
         <div id="moDHLWunschpaket"
              class="theme--is-azure"
-             data-translatenowunschzeit="[{oxmultilang ident='MO_DHL__NO_WUNSCHZEIT'}]"
              data-translatenowunschtag="[{oxmultilang ident='MO_DHL__NO_WUNSCHTAG'}]"
              data-translatefailedblacklist="[{oxmultilang ident='MO_DHL__FAILED_BLACKLIST'}]"
-             data-theme="azure" data-timeanddate="[{$oViewConf->getSslSelfLink()}]cl=MoDHLYellowBox&zip=">
+             data-theme="azure" data-dateajax="[{$oViewConf->getSslSelfLink()}]cl=MoDHLYellowBox&zip=">
             <img src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
 
             <h3>[{oxmultilang ident="MO_DHL__WUNSCHPAKET"}]</h3>
 
             <p>[{oxmultilang ident="MO_DHL__WUNSCHPAKET_DESCRIPTION"}]</p>
             <dl>
-                [{capture name="combinedPriceFormatted" assign="combinedPriceFormatted"}]
-                    [{assign var="combinedCosts" value=$oView->moDHLGetCostsForCombinedWunschtagAndWunschzeit()}]
-                    [{if $oViewConf->isFunctionalityEnabled('blShowVATForDelivery')}]
-                        [{oxprice price=$combinedCosts->getNettoPrice() currency=$currency}]
-                    [{else}]
-                        [{oxprice price=$combinedCosts->getBruttoPrice() currency=$currency}]
-                    [{/if}]
-                [{/capture}]
-
-                [{capture name="inCombinationWithWunschzeit" assign="inCombinationWithWunschzeit"}]
-                    [{if $oViewConf->moIsWunschtagActivated() && $oViewConf->moIsWunschzeitActivated()}]
-                        , [{oxmultilang ident="MO_DHL__IN_COMBINATION_WITH_WUNSCHZEIT"}] [{$combinedPriceFormatted|trim}]
-                    [{/if}]
-                [{/capture}]
-
-                [{capture name="inCombinationWithWunschtag" assign="inCombinationWithWunschtag"}]
-                    [{if $oViewConf->moIsWunschtagActivated() && $oViewConf->moIsWunschzeitActivated()}]
-                        , [{oxmultilang ident="MO_DHL__IN_COMBINATION_WITH_WUNSCHTAG"}] [{$combinedPriceFormatted|trim}]
-                    [{/if}]
-                [{/capture}]
-
                 [{assign var="wunschtagCosts" value=$oView->moDHLGetWunschtagCosts()}]
                 <dt id="moDHL--wunschtag-info"
                     class="tooltip [{if !$oViewConf->moIsWunschtagActivated()}]moDHL--deactivated[{/if}]">
@@ -48,12 +26,16 @@
                             [{if $oViewConf->isFunctionalityEnabled('blShowVATForDelivery')}]
                                 ([{oxmultilang ident="MO_DHL__SURCHARGE_NET" suffix="COLON"}]
                                 <span class="text-style--nbsp">
-                                    [{oxprice price=$wunschtagCosts->getNettoPrice() currency=$currency}][{$inCombinationWithWunschzeit|trim}])
+                                    [{oxprice price=$wunschtagCosts->getNettoPrice() currency=$currency}])
                                 </span>
-                            [{else}]
+
+
+[{else}]
                                 ([{oxmultilang ident="MO_DHL__SURCHARGE_GROSS" suffix="COLON"}]
+
+
                                 <span class="text-style--nbsp">
-                                    [{oxprice price=$wunschtagCosts->getBruttoPrice() currency=$currency}][{$inCombinationWithWunschzeit|trim}])
+                                    [{oxprice price=$wunschtagCosts->getBruttoPrice() currency=$currency}])
                                 </span>
                             [{/if}]
                             </span>
@@ -80,55 +62,6 @@
                                 <label class="wunschtag--label wunschpaket--theme-azure">
                                     [{$option.label}]
                                 </label>
-                            </li>
-                        [{/foreach}]
-                    </ul>
-                </dd>
-
-                [{assign var="wunschzeitCosts" value=$oView->moDHLGetWunschzeitCosts()}]
-                <dt id="moDHL--wunschzeit-info"
-                    class="tooltip [{if !$oViewConf->moIsWunschzeitActivated()}]moDHL--deactivated[{/if}]">
-                    <label>
-                        <input type="checkbox" id="moDHLTimeCheckbox" value=""/>
-                        [{oxmultilang ident="MO_DHL__WUNSCHZEIT_LABEL_HEADLINE"}]
-                        [{oxmultilang ident="MO_DHL__WUNSCHZEIT_LABEL_CONTENT"}]
-                        <div class="ttip"
-                             data-tooltip="[{oxmultilang ident="MO_DHL__WUNSCHZEIT_TOOLTIP"}]"></div>
-                        [{if $wunschzeitCosts && $wunschzeitCosts->getPrice() > 0}]
-                        <span class="font-weight--normal">
-                            <br/>
-                            [{if $oViewConf->isFunctionalityEnabled('blShowVATForDelivery')}]
-                                ([{oxmultilang ident="MO_DHL__SURCHARGE_NET" suffix="COLON"}]
-                                <span class="text-style--nbsp">
-                                    [{oxprice price=$wunschzeitCosts->getNettoPrice() currency=$currency}][{$inCombinationWithWunschtag|trim}])
-                                </span>
-                            [{else}]
-                                ([{oxmultilang ident="MO_DHL__SURCHARGE_GROSS" suffix="COLON"}]
-                                <span class="text-style--nbsp">
-                                    [{oxprice price=$wunschzeitCosts->getBruttoPrice() currency=$currency}][{$inCombinationWithWunschtag|trim}])
-                                </span>
-                            [{/if}]
-                        </span>
-                        [{/if}]
-                    </label>
-                </dt>
-                <dd id="moDHL--wunschzeit-values"
-                    [{if !$oViewConf->moIsWunschzeitActivated()}] class="moDHL--deactivated" [{/if}]>
-                    <ul id="moDHLWunschzeit">
-                        <li>
-                            <input type="radio" name="moDHLTime" id="wunschzeit:none" value=""/>
-                            <label class="wunschzeit--label wunschpaket--theme-azure"
-                                   for="wunschzeit:none">[{oxmultilang ident="MO_DHL__NO_WUNSCHZEIT"}]</label>
-                        </li>
-                        [{foreach from=$oView->moDHLGetWunschzeitOptions() key="optionId" item="option"}]
-                            <li>
-                                [{assign var="radioId" value="option:"|cat:$optionId}]
-                                <input type="radio"
-                                       name="moDHLTime"
-                                       id="[{$radioId}]"
-                                       value="[{$optionId}]"
-                                />
-                                <label class="wunschzeit--label wunschpaket--theme-azure">[{$option}]</label>
                             </li>
                         [{/foreach}]
                     </ul>

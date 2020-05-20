@@ -9,7 +9,7 @@
 [{/if}]
 
 [{assign var="location" value=$oView->moDHLGetLocation()}]
-[{if $location[0] || $oView->moDHLGetTime() || $oView->moDHLGetWunschtag()}]
+[{if $location[0] || $oView->moDHLGetWunschtag()}]
     [{oxscript include=$oViewConf->getModuleUrl("mo_dhl", "out/src/js/widgets/mo_dhl__wunschpaket.js") priority=9}]
     [{oxscript add='$(function(){mo_dhl__wunschpaket.moveWunschpaketBoxes();});'}]
 [{/if}]
@@ -32,11 +32,6 @@
                         [{if $oView->moDHLGetWunschtag()}]
                             [{oxmultilang ident="MO_DHL__WUNSCHTAG"}]
                             [{$oView->moDHLGetWunschtag()}]
-                            <br>
-                        [{/if}]
-                        [{if $oView->moDHLGetTime()}]
-                            [{oxmultilang ident="MO_DHL__WUNSCHZEIT"}]
-                            [{$oView->moDHLGetTime()}]
                             <br>
                         [{/if}]
                         [{if $location[0]}]
@@ -112,15 +107,6 @@
                         </span>
                         <span class="desc">
                             [{$oView->moDHLGetWunschtag()}]
-                        </span>
-                        <br>
-                    [{/if}]
-                    [{if $oView->moDHLGetTime()}]
-                        <span class="title">
-                            [{oxmultilang ident="MO_DHL__WUNSCHZEIT"}]
-                        </span>
-                        <span class="desc">
-                            [{$oView->moDHLGetTime()}]
                         </span>
                         <br>
                     [{/if}]
@@ -205,15 +191,6 @@
                                 </span>
                                 <span class="desc">
                                     [{$oView->moDHLGetWunschtag()}]
-                                </span>
-                                <br>
-                            [{/if}]
-                            [{if $oView->moDHLGetTime()}]
-                                <span class="title">
-                                    [{oxmultilang ident="MO_DHL__WUNSCHZEIT"}]
-                                </span>
-                                <span class="desc">
-                                    [{$oView->moDHLGetTime()}]
                                 </span>
                                 <br>
                             [{/if}]

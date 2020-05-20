@@ -62,29 +62,11 @@ class UserController extends UserController_parent
     /**
      * @return string[]
      */
-    public function moDHLGetWunschzeitOptions()
-    {
-        /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
-        $basket = $this->getSession()->getBasket();
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->getWunschzeitOptions($basket->moEmpfaengeservicesGetAddressedZipCode());
-    }
-
-    /**
-     * @return string[]
-     */
     public function moDHLGetWunschtagOptions()
     {
         $basket = $this->getSession()->getBasket();
         $options = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->getWunschtagOptions($basket);
         return array_map('MoDHLYellowBox::formatWunschtag', $options);
-    }
-
-    /**
-     * @return string
-     */
-    public function moDHLGetSelectedWunschzeitId()
-    {
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->extractTime(parent::getOrderRemark());
     }
 
     /**
@@ -103,29 +85,6 @@ class UserController extends UserController_parent
         /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
         $basket = \OxidEsales\Eshop\Core\Registry::getSession()->getBasket();
         $amount = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->getWunschtagSurcharge();
-        return $basket->moDHLCalculateSurcharge($amount);
-    }
-
-    /**
-     * @return \OxidEsales\Eshop\Core\Price
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
-     */
-    public function moDHLGetCostsForCombinedWunschtagAndWunschzeit()
-    {
-        /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
-        $basket = \OxidEsales\Eshop\Core\Registry::getSession()->getBasket();
-        $amount = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->getCombinedWunschtagAndWunschzeitSurcharge();
-        return $basket->moDHLCalculateSurcharge($amount);
-    }
-
-    /**
-     * @return \OxidEsales\Eshop\Core\Price
-     */
-    public function moDHLGetWunschzeitCosts()
-    {
-        /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
-        $basket = \OxidEsales\Eshop\Core\Registry::getSession()->getBasket();
-        $amount = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->getWunschzeitSurcharge();
         return $basket->moDHLCalculateSurcharge($amount);
     }
 }
