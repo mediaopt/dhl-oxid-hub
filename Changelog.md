@@ -1,4 +1,6 @@
 # Changelog
+## 1.0.5
+* Removed preferred time
 
 ## 1.0.4
 * Oxid 6.2 compatibility
