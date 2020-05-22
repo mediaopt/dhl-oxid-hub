@@ -42,8 +42,6 @@ class ModuleConfiguration extends ModuleConfiguration_parent
      */
     const SURCHARGE_SNIPPETS = [
         'mo_dhl__wunschtag_surcharge_text'            => 'MO_DHL__WUNSCHTAG_COSTS',
-        'mo_dhl__wunschzeit_surcharge_text'           => 'MO_DHL__WUNSCHZEIT_COSTS',
-        'mo_dhl__wunschtag_wunschzeit_surcharge_text' => 'MO_DHL__COMBINATION_SURCHARGE',
     ];
 
     /**

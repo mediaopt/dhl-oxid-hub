@@ -42,17 +42,7 @@ class YellowBoxController extends \OxidEsales\Eshop\Application\Controller\Front
      */
     protected function retrieveOptions($zip)
     {
-        return ['preferredTimes' => $this->getPreferredTimes($zip), 'preferredDays' => $this->getPreferredDays($zip)];
-    }
-
-    /**
-     * @param string $zip
-     * @return string[]
-     */
-    protected function getPreferredTimes($zip)
-    {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
-        return $wunschpaket->isWunschzeitActive() ? $wunschpaket->getWunschzeitOptions($zip) : [];
+        return ['preferredDays' => $this->getPreferredDays($zip)];
     }
 
     /**

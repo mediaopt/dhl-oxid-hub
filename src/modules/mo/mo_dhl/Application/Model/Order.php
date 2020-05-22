@@ -18,7 +18,7 @@ use OxidEsales\Eshop\Core\Field;
  * Adds functionality to...
  * - ... exclude delivery sets in case the destination is a Packstation or Postfiliale.
  * - ... exclude payment options in case the destination is a Packstation or Postfiliale.
- * - ... add surcharges in case Wunschtag or Wunschzeit is selected.
+ * - ... add surcharges in case Wunschtag is selected.
  *
  * @author Mediaopt GmbH
  */
@@ -86,7 +86,7 @@ class Order extends Order_parent
     }
 
     /**
-     * Adds costs for Wunschtag and Wunschzeit to the delivery costs.
+     * Adds costs for Wunschtag to the delivery costs.
      *
      * @extend
      * @param \OxidEsales\Eshop\Application\Model\Basket $basket

@@ -1,40 +1,8 @@
 [{assign var="wunschtagCosts" value=$oxcmp_basket->moDHLGetWunschtagCosts()}]
-[{assign var="wunschzeitCosts" value=$oxcmp_basket->moDHLGetWunschzeitCosts()}]
-[{assign var="combinedCosts" value=$oxcmp_basket->moDHLGetCostsForCombinedWunschtagAndWunschzeit()}]
 
 [{assign var="moWunschtagText" value=$oView->moDHLGetSurchargeTranslation('mo_dhl__wunschtag_surcharge_text')}]
-[{assign var="moWunschzeitText" value=$oView->moDHLGetSurchargeTranslation('mo_dhl__wunschzeit_surcharge_text')}]
-[{assign var="moWunschtagWunschzeitText" value=$oView->moDHLGetSurchargeTranslation('mo_dhl__wunschtag_wunschzeit_surcharge_text')}]
 
-[{if $combinedCosts && $combinedCosts->getPrice() >= 0.01}]
-    [{if $oViewConf->isFunctionalityEnabled('blShowVATForDelivery')}]
-        <tr>
-            <th class="text-right">[{$moWunschtagWunschzeitText}]&colon;</th class="text-right">
-            <td id="moDHLWunschtagCosts" class="text-right">
-                [{oxprice price=$combinedCosts->getNettoPrice() currency=$currency}]
-            </td>
-        </tr>
-        [{if $combinedCosts->getVatValue()}]
-            <tr>
-                <th class="text-right">
-                    [{if $oxcmp_basket->isProportionalCalculationOn()}]
-                        [{oxmultilang ident="BASKET_TOTAL_PLUS_PROPORTIONAL_VAT" suffix="COLON"}]
-                    [{else}]
-                        [{oxmultilang ident="VAT_PLUS_PERCENT_AMOUNT" suffix="COLON" args=$combinedCosts->getVat()}]
-                    [{/if}]
-                </th class="text-right">
-                <td class="text-right">[{oxprice price=$combinedCosts->getVatValue() currency=$currency}]</td>
-            </tr>
-        [{/if}]
-    [{else}]
-        <tr>
-            <th class="text-right">[{$moWunschtagWunschzeitText}]&colon;</th class="text-right">
-            <td id="moDHLWunschtagCosts" class="text-right">
-                [{oxprice price=$combinedCosts->getBruttoPrice() currency=$currency}]
-            </td>
-        </tr>
-    [{/if}]
-[{elseif $wunschtagCosts && $wunschtagCosts->getPrice() >= 0.01}]
+[{if $wunschtagCosts && $wunschtagCosts->getPrice() >= 0.01}]
     [{if $oViewConf->isFunctionalityEnabled('blShowVATForDelivery')}]
         <tr>
             <th class="text-right">[{$moWunschtagText}]&colon;</th class="text-right">
@@ -59,34 +27,6 @@
             <th class="text-right">[{$moWunschtagText}]&colon;</th class="text-right">
             <td id="moDHLWunschtagCosts" class="text-right">
                 [{oxprice price=$wunschtagCosts->getBruttoPrice() currency=$currency}]
-            </td>
-        </tr>
-    [{/if}]
-[{elseif $wunschzeitCosts && $wunschzeitCosts->getPrice() >= 0.01}]
-    [{if $oViewConf->isFunctionalityEnabled('blShowVATForDelivery')}]
-        <tr>
-            <th class="text-right">[{$moWunschzeitText}]&colon;</th class="text-right">
-            <td id="moDHLWunschzeitCosts" class="text-right">
-                [{oxprice price=$wunschzeitCosts->getNettoPrice() currency=$currency}]
-            </td>
-        </tr>
-        [{if $wunschzeitCosts->getVatValue()}]
-            <tr>
-                <th class="text-right">
-                    [{if $oxcmp_basket->isProportionalCalculationOn()}]
-                        [{oxmultilang ident="BASKET_TOTAL_PLUS_PROPORTIONAL_VAT" suffix="COLON"}]
-                    [{else}]
-                        [{oxmultilang ident="VAT_PLUS_PERCENT_AMOUNT" suffix="COLON" args=$wunschzeitCosts->getVat()}]
-                    [{/if}]
-                </th class="text-right">
-                <td class="text-right">[{oxprice price=$wunschzeitCosts->getVatValue() currency=$currency}]</td>
-            </tr>
-        [{/if}]
-    [{else}]
-        <tr>
-            <th class="text-right">[{$moWunschzeitText}]&colon;</th class="text-right">
-            <td id="moDHLWunschzeitCosts" class="text-right">
-                [{oxprice price=$wunschzeitCosts->getBruttoPrice() currency=$currency}]
             </td>
         </tr>
     [{/if}]

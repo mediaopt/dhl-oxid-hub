@@ -123,49 +123,6 @@ class WunschpaketTest extends \PHPUnit_Framework_TestCase
         $this->buildWunschpaket()->setExcludedDaysForHandingOver(['Sax']);
     }
 
-    public function testThatInvalidPreferredTimeKeysAreJustReturned()
-    {
-        $this->assertEquals('abcdefgh', Wunschpaket::formatPreferredTime('abcdefgh'));
-        $this->assertEquals('12OO14OO', Wunschpaket::formatPreferredTime('12OO14OO'));
-        $this->assertEquals('16oo14oo', Wunschpaket::formatPreferredTime('16oo14oo'));
-        $this->assertEquals('120014009', Wunschpaket::formatPreferredTime('120014009'));
-        $this->assertEquals('9001000', Wunschpaket::formatPreferredTime('9001000'));
-    }
-
-    public function testGetPreferredTimeStructure()
-    {
-        $wunschpaket = $this->buildWunschpaket();
-        foreach (['12045', '18181', '12489'] as $zip) {
-            foreach ($wunschpaket->getPreferredTimes($zip) as $key => $time) {
-                $this->assertEquals($key, preg_replace('/\D+/', '', $time));
-                $this->assertEquals($time, Wunschpaket::formatPreferredTime($key), $key);
-            }
-        }
-    }
-
-    public function testGetPreferredTimesForInvalidZip()
-    {
-        $this->assertEquals([], $this->buildWunschpaket()->getPreferredTimes('9041'));
-    }
-
-    public function testGetPreferredTimeWhereNotAvailableDueToRegion()
-    {
-        $wunschpaket = $this->buildWunschpaket();
-        $this->assertEmpty($wunschpaket->getPreferredTimes('25859'));
-    }
-
-    public function testGetPreferredTimeOnHolidays()
-    {
-        $wunschpaket = $this->buildWunschpaket();
-        foreach (['03.10.', '01.01.', '01.05.', '25.12.', '26.12.'] as $dayAndMonth) {
-            $date = new \DateTime($dayAndMonth . date('Y'));
-            if ($date->getTimestamp() < time()) {
-                $date->modify('+1 year');
-            }
-            $this->assertNotEmpty($wunschpaket->getPreferredTimes('12045', $date), 'There are no preferredTimes for ' . $date->format('d.m.Y'));
-        }
-    }
-
     public function testThatExcludedFlagMatchesNegationOfIsValidPreferredDay()
     {
         $wunschpaket = $this->buildWunschpaket();

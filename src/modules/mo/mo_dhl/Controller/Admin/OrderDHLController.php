@@ -247,7 +247,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     protected function getRemarks()
     {
         $remark = $this->getOrder()->oxorder__oxremark->value;
-        return array_merge($this->moDHLGetPreferredDay($remark), $this->moDHLGetPreferredTime($remark), $this->moDHLGetPreferredLocation($remark));
+        return array_merge($this->moDHLGetPreferredDay($remark), $this->moDHLGetPreferredLocation($remark));
     }
 
     /**
@@ -258,16 +258,6 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     {
         $preferredDay = $this->getWunschpaket()->extractWunschtag($remark);
         return $preferredDay !== '' ? [$this->translateString('MO_DHL__WUNSCHTAG') => $preferredDay] : [];
-    }
-
-    /**
-     * @param string $remark
-     * @return string[]
-     */
-    protected function moDHLGetPreferredTime($remark)
-    {
-        $preferredTime = $this->getWunschpaket()->extractTime($remark);
-        return $preferredTime !== '' ? [$this->translateString('MO_DHL__WUNSCHZEIT') => Wunschpaket::formatPreferredTime($preferredTime)] : [];
     }
 
     /**

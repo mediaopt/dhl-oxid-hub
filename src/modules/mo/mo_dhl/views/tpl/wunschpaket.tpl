@@ -14,7 +14,7 @@
     [{oxscript include=$oViewConf->getModuleUrl("mo_dhl", "out/src/js/widgets/mo_dhl__wunschpaket.js") priority=8}]
     [{oxscript include=$oViewConf->getModuleUrl("mo_dhl", "out/src/js/widgets/mo_dhl__validatorHelper.js") priority=9}]
     [{capture name='initialize' assign='initialize'}]
-        $(function() { mo_dhl__wunschpaket.initializeWunschpaket("[{$oView->moDHLGetSelectedWunschzeitId()}]", "[{$oView->moDHLGetSelectedWunschtag()}]"); });
+        $(function() { mo_dhl__wunschpaket.initializeWunschpaket("[{$oView->moDHLGetSelectedWunschtag()}]"); });
     [{/capture}]
     [{oxscript add=$initialize}]
 [{/if}]

@@ -62,19 +62,6 @@ class Wunschpaket extends Base
     protected $excludedDaysForHandingOver = [];
 
     /**
-     * @param string|int $preferredTime
-     * @return string
-     */
-    public static function formatPreferredTime($preferredTime)
-    {
-        if (strlen($preferredTime) !== 8 || !ctype_digit($preferredTime)) {
-            return $preferredTime;
-        }
-        $chunks = str_split((string)$preferredTime, 2);
-        return "{$chunks[0]}:{$chunks[1]}-{$chunks[2]}:{$chunks[3]}";
-    }
-
-    /**
      * @param ClientInterface $client
      * @param Credentials     $credentials
      * @param LoggerInterface $logger
@@ -187,36 +174,6 @@ class Wunschpaket extends Base
             $date = new \DateTime('today');
         }
         return "$zip/availableServices?startDate={$date->format('Y-m-d')}";
-    }
-
-    /**
-     * @param string         $zip
-     * @param \DateTime|null $date if null, today is the default
-     * @return string[]
-     */
-    public function getPreferredTimes($zip, \DateTime $date = null)
-    {
-        try {
-            $services = $this->callApi($this->buildAvailableServicesUrl($zip, $date));
-            if ($services->preferredTime->available === false) {
-                return [];
-            }
-
-            $options = [];
-            foreach ((array)$services->preferredTime->timeframes as $timeframe) {
-                foreach (['start', 'end'] as $dayTimeProperty) {
-                    if (strlen($timeframe->$dayTimeProperty) < 2) {
-                        $timeframe->$dayTimeProperty = "0{$timeframe->$dayTimeProperty}";
-                    }
-                }
-                $interval = "{$timeframe->start}-{$timeframe->end}";
-                $options[preg_replace('/\D+/', '', $interval)] = $interval;
-            }
-            return $options;
-        } catch (WebserviceException $exception) {
-            // The exception is logged inside callApi.
-            return [];
-        }
     }
 
     /**

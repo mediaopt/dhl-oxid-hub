@@ -43,7 +43,10 @@ class UserComponent extends UserComponent_parent
      */
     protected function moDHLGenerateWunschpaketTags()
     {
-        return array_values([$this->moDHLGeneratePreferredDayTag(), $this->moDHLGeneratePreferredTimeTag(), $this->moDHLGeneratePreferredLocationTag()]);
+        return array_values([
+            $this->moDHLGeneratePreferredDayTag(),
+            $this->moDHLGeneratePreferredLocationTag(),
+        ]);
     }
 
 
@@ -89,25 +92,6 @@ class UserComponent extends UserComponent_parent
         } catch (\InvalidArgumentException $exception) {
             /** @noinspection PhpParamsInspection */
             \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__WUNSCHTAG_INVALID');
-            return '';
-        }
-    }
-
-    /**
-     * @return string
-     */
-    protected function moDHLGeneratePreferredTimeTag()
-    {
-        $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
-        $submittedTime = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('moDHLTime');
-        try {
-            /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
-            $basket = $this->getSession()->getBasket();
-            $zip = $basket->moEmpfaengeservicesGetAddressedZipCode();
-            return $submittedTime !== '' && $wunschpaket->canAWunschzeitBeSelected($zip) ? $wunschpaket->generateWunschzeitTag($submittedTime, $zip) : '';
-        } catch (\InvalidArgumentException $exception) {
-            /** @noinspection PhpParamsInspection */
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__WUNSCHZEIT_INVALID');
             return '';
         }
     }

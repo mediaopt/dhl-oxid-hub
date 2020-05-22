@@ -16,11 +16,6 @@ class ShipmentService
     protected $DeliveryTimeframe = null;
 
     /**
-     * @var ServiceconfigurationDeliveryTimeframe $PreferredTime
-     */
-    protected $PreferredTime = null;
-
-    /**
      * @var ServiceconfigurationISR $IndividualSenderRequirement
      */
     protected $IndividualSenderRequirement = null;
@@ -169,24 +164,6 @@ class ShipmentService
     public function setDeliveryTimeframe($DeliveryTimeframe)
     {
         $this->DeliveryTimeframe = $DeliveryTimeframe;
-        return $this;
-    }
-
-    /**
-     * @return ServiceconfigurationDeliveryTimeframe
-     */
-    public function getPreferredTime()
-    {
-        return $this->PreferredTime;
-    }
-
-    /**
-     * @param ServiceconfigurationDeliveryTimeframe $PreferredTime
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
-     */
-    public function setPreferredTime($PreferredTime)
-    {
-        $this->PreferredTime = $PreferredTime;
         return $this;
     }
 

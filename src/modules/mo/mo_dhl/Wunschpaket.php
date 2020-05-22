@@ -57,11 +57,6 @@ class Wunschpaket
     /**
      * @var string
      */
-    const WUNSCHZEIT_ACTIVE_FLAG = 'mo_dhl__wunschzeit_active';
-
-    /**
-     * @var string
-     */
     const WUNSCHORT_ACTIVE_FLAG = 'mo_dhl__wunschort_active';
 
     /**
@@ -83,16 +78,6 @@ class Wunschpaket
             $this->wunschpaket = $adapter->buildWunschpaket()->setCutOffTime(Registry::getConfig()->getShopConfVar('mo_dhl__wunschtag_cutoff'))->setExcludedDaysForHandingOver($adapter->getDaysExcludedForHandingOver())->setPreparationDays($adapter->getPreparationDays());
         } catch (\RuntimeException $exception) {
         }
-    }
-
-    /**
-     * @param string $zip
-     * @return string[]
-     */
-    public function getWunschzeitOptions($zip)
-    {
-        $wunschpaket = $this->getWunschpaket();
-        return $wunschpaket !== null ? $wunschpaket->getPreferredTimes($zip, $wunschpaket->getTransferDay()) : [];
     }
 
     /**
@@ -131,7 +116,10 @@ class Wunschpaket
     {
         $tags = [[self::TIME_OPENING_TAG, self::TIME_CLOSING_TAG], [self::LOCATION_OPENING_TAG, self::LOCATION_CLOSING_TAG], [self::WUNSCHTAG_OPENING_TAG, self::WUNSCHTAG_CLOSING_TAG]];
         foreach ($tags as $tag) {
-            list($openingTag, $closingTag) = $tag;
+            [
+                $openingTag,
+                $closingTag,
+            ] = $tag;
             $remark = $this->removeTag($remark, $openingTag, $closingTag);
         }
         return $remark;
@@ -150,7 +138,10 @@ class Wunschpaket
             return $remark;
         }
 
-        list($leftBoundary, $rightBoundary) = $boundaries;
+        [
+            $leftBoundary,
+            $rightBoundary,
+        ] = $boundaries;
         $leftRemark = substr($remark, 0, $leftBoundary);
         $rightRemark = substr($remark, $rightBoundary + strlen($closingTag));
         return $leftRemark . $rightRemark;
@@ -202,7 +193,10 @@ class Wunschpaket
         if (strpos($content, ':') === false) {
             return ['', '', ''];
         }
-        list($type, $location) = explode(':', $content, 2);
+        [
+            $type,
+            $location,
+        ] = explode(':', $content, 2);
         $information = $type === ApiWunschpaket::WUNSCHNACHBAR ? explode(';', $location, 2) : [$location];
         return $information[0] !== $location ? [$type, $information[0], $information[1]] : [$type, $location, ''];
     }
@@ -222,7 +216,10 @@ class Wunschpaket
             return '';
         }
 
-        list($leftBoundary, $rightBoundary) = $boundaries;
+        [
+            $leftBoundary,
+            $rightBoundary,
+        ] = $boundaries;
         $locationStart = $leftBoundary + strlen($openingTag);
         $locationLength = $rightBoundary - $leftBoundary - strlen($closingTag) + 1;
         return substr($remark, $locationStart, $locationLength);
@@ -235,26 +232,6 @@ class Wunschpaket
     public function hasWunschort($remark)
     {
         return $this->extractLocation($remark)[0] === ApiWunschpaket::WUNSCHORT;
-    }
-
-    /**
-     * @param string $remark
-     * @return bool
-     */
-    public function hasWunschzeit($remark)
-    {
-        return (bool) $this->extractTime($remark);
-    }
-
-    /**
-     * Returns the content of the time tag in the supplied string.
-     *
-     * @param string $remark
-     * @return string
-     */
-    public function extractTime($remark)
-    {
-        return $this->extractTagsContent($remark, self::TIME_OPENING_TAG, self::TIME_CLOSING_TAG);
     }
 
     /**
@@ -336,15 +313,6 @@ class Wunschpaket
      * @param string $remark
      * @return string
      */
-    public function removeTimeTag($remark)
-    {
-        return $this->removeTag($remark, self::TIME_OPENING_TAG, self::TIME_CLOSING_TAG);
-    }
-
-    /**
-     * @param string $remark
-     * @return string
-     */
     public function removeWunschortTag($remark)
     {
         $extendedOpeningTag = self::LOCATION_OPENING_TAG . ApiWunschpaket::WUNSCHORT;
@@ -367,7 +335,7 @@ class Wunschpaket
      */
     public function hasAnyWunschpaketService($remark)
     {
-        return $this->hasWunschzeit($remark) || $this->hasWunschtag($remark) || $this->hasWunschort($remark) || $this->hasWunschnachbar($remark);
+        return $this->hasWunschtag($remark) || $this->hasWunschort($remark) || $this->hasWunschnachbar($remark);
     }
 
     /**
@@ -386,8 +354,7 @@ class Wunschpaket
         if ($this->isAWunschpaketServiceExcluded($basket, $user, $deliveryAddress, $payment)) {
             return false;
         }
-        $zip = $basket !== null ? $basket->moEmpfaengeservicesGetAddressedZipCode() : null;
-        return $this->canAWunschtagBeSelected($basket) || $this->canAWunschzeitBeSelected($zip) || $this->isWunschortActive() || $this->isWunschnachbarActive();
+        return $this->canAWunschtagBeSelected($basket) || $this->isWunschortActive() || $this->isWunschnachbarActive();
     }
 
     /**
@@ -406,23 +373,6 @@ class Wunschpaket
     public function isWunschtagActive()
     {
         return (bool)Registry::getConfig()->getShopConfVar(self::WUNSCHTAG_ACTIVE_FLAG);
-    }
-
-    /**
-     * @param string $zip
-     * @return bool
-     */
-    public function canAWunschzeitBeSelected($zip)
-    {
-        return $this->isWunschzeitActive() && $this->getWunschzeitOptions($zip) !== [];
-    }
-
-    /**
-     * @return bool
-     */
-    public function isWunschzeitActive()
-    {
-        return (bool)Registry::getConfig()->getShopConfVar(self::WUNSCHZEIT_ACTIVE_FLAG);
     }
 
     /**
@@ -505,19 +455,6 @@ class Wunschpaket
     }
 
     /**
-     * @param string $submittedTime
-     * @param string $zip
-     * @return string
-     */
-    public function generateWunschzeitTag($submittedTime, $zip)
-    {
-        if ($submittedTime === '' || !array_key_exists($submittedTime, $this->getWunschzeitOptions($zip))) {
-            throw new \InvalidArgumentException('Invalid preferred time.');
-        }
-        return $this->encloseTime($submittedTime);
-    }
-
-    /**
      * @param string $wunschtag
      * @param \Mediaopt\DHL\Application\Model\Basket $basket
      * @return string
@@ -562,22 +499,6 @@ class Wunschpaket
     }
 
     /**
-     * @return mixed
-     */
-    public function getCombinedWunschtagAndWunschzeitSurcharge()
-    {
-        return Registry::getConfig()->getConfigParam('mo_dhl__wunschtag_wunschzeit_surcharge');
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getWunschzeitSurcharge()
-    {
-        return Registry::getConfig()->getConfigParam('mo_dhl__wunschzeit_surcharge');
-    }
-
-    /**
      * @param $langId
      * @return mixed
      */
@@ -587,31 +508,6 @@ class Wunschpaket
             return $translation;
         }
         $snippet = 'MO_DHL__WUNSCHTAG_COSTS' . (Registry::getConfig()->getConfigParam('blShowVATForDelivery') ? '_NET' : '_GROSS');
-        return Registry::getLang()->translateString($snippet, $langId, false);
-    }
-
-    /**
-     * @param $langId
-     * @return mixed
-     */
-    public function getWunschzeitText($langId)
-    {
-        if ($translation = Registry::getConfig()->getConfigParam('mo_dhl__wunschzeit_surcharge_text')[$langId]) {
-            return $translation;
-        }
-        $snippet = 'MO_DHL__WUNSCHZEIT_COSTS' . (Registry::getConfig()->getConfigParam('blShowVATForDelivery') ? '_NET' : '_GROSS');
-        return Registry::getLang()->translateString($snippet, $langId, false);
-    }
-    /**
-     * @param $langId
-     * @return mixed
-     */
-    public function getWunschtagWunschzeitText($langId)
-    {
-        if ($translation = Registry::getConfig()->getConfigParam('mo_dhl__wunschtag_wunschzeit_surcharge_text')[$langId]) {
-            return $translation;
-        }
-        $snippet = 'MO_DHL__COMBINATION_SURCHARGE' . (Registry::getConfig()->getConfigParam('blShowVATForDelivery') ? '_NET' : '_GROSS');
         return Registry::getLang()->translateString($snippet, $langId, false);
     }
 }
