@@ -32,16 +32,6 @@ class Wunschpaket
     /**
      * @var string
      */
-    const TIME_OPENING_TAG = '{DHL-time}';
-
-    /**
-     * @var string
-     */
-    const TIME_CLOSING_TAG = '{/DHL-time}';
-
-    /**
-     * @var string
-     */
     const WUNSCHTAG_OPENING_TAG = '{DHL-wunschtag}';
 
     /**
@@ -114,7 +104,16 @@ class Wunschpaket
      */
     public function removeWunschpaketTags($remark)
     {
-        $tags = [[self::TIME_OPENING_TAG, self::TIME_CLOSING_TAG], [self::LOCATION_OPENING_TAG, self::LOCATION_CLOSING_TAG], [self::WUNSCHTAG_OPENING_TAG, self::WUNSCHTAG_CLOSING_TAG]];
+        $tags = [
+            [
+                self::LOCATION_OPENING_TAG,
+                self::LOCATION_CLOSING_TAG,
+            ],
+            [
+                self::WUNSCHTAG_OPENING_TAG,
+                self::WUNSCHTAG_CLOSING_TAG,
+            ],
+        ];
         foreach ($tags as $tag) {
             [
                 $openingTag,
@@ -272,17 +271,6 @@ class Wunschpaket
     public function encloseLocation($location)
     {
         return self::LOCATION_OPENING_TAG . $location . self::LOCATION_CLOSING_TAG;
-    }
-
-    /**
-     * Returns a time enclosed in a tag.
-     *
-     * @param string $time
-     * @return string
-     */
-    public function encloseTime($time)
-    {
-        return self::TIME_OPENING_TAG . $time . self::TIME_CLOSING_TAG;
     }
 
     /**
