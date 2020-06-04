@@ -32,7 +32,10 @@ class ServiceProviderList
     protected function sortByDistance(array $serviceProviders)
     {
         $sortByDistance = function (BasicServiceProvider $serviceProvider1, BasicServiceProvider $serviceProvider2) {
-            return $serviceProvider1->getLocation()->getDistance() - $serviceProvider2->getLocation()->getDistance();
+            if ($serviceProvider1->getLocation()->getDistance() !== $serviceProvider2->getLocation()->getDistance()) {
+                return $serviceProvider1->getLocation()->getDistance() - $serviceProvider2->getLocation()->getDistance();
+            }
+            return $serviceProvider1->getNumber() - $serviceProvider2->getNumber();
         };
         usort($serviceProviders, $sortByDistance);
         return $serviceProviders;
