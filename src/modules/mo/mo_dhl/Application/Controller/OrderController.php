@@ -8,7 +8,6 @@ namespace Mediaopt\DHL\Application\Controller;
  * @copyright 2016 Mediaopt GmbH
  */
 
-use Mediaopt\DHL\Api\Wunschpaket;
 use OxidEsales\Eshop\Core\Registry;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -132,8 +131,7 @@ class OrderController extends OrderController_parent
     public function moDHLShowGoGreenLogo()
     {
         $shipSet = $this->getShipSet();
-        return
-            Registry::getConfig()->getShopConfVar('mo_dhl__go_green_active')
+        return Registry::getConfig()->getShopConfVar('mo_dhl__go_green_active')
             && !$shipSet->oxdeliveryset__mo_dhl_excluded->value
             && $shipSet->oxdeliveryset__mo_dhl_process->value;
     }
