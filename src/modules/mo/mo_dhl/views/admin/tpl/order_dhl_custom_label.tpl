@@ -336,6 +336,17 @@
                                 </tr>
                                 <tr>
                                     <td>
+                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__go_green_active'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][go_green][active]"
+                                               value="false">
+                                        <input type="checkbox" name="data[services][go_green][active]"
+                                               [{if $shipmentOrder.services.go_green}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
                                         [{oxmultilang ident='SHOP_MODULE_mo_dhl__beilegerretoure_active'}]
                                     </td>
                                     <td>

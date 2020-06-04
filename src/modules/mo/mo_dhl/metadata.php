@@ -67,6 +67,11 @@ $aModule = [
         ],
         [
             'template' => 'page/checkout/order.tpl',
+            'block'    => 'shippingAndPayment',
+            'file'     => 'views/blocks/checkout_order_shipping_and_payment.tpl',
+        ],
+        [
+            'template' => 'page/checkout/order.tpl',
             'block'    => 'checkout_order_address',
             'file'     => 'views/blocks/checkout_order_address.tpl',
         ],
@@ -295,6 +300,12 @@ $aModule = [
             'type'        => 'select',
             'value'       => 'NEVER',
             'constraints' => 'NEVER|ASK|ALWAYS',
+        ],
+        [
+            'group' => 'mo_dhl__services',
+            'name'  => 'mo_dhl__go_green_active',
+            'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__retoure',
