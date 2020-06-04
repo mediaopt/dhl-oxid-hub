@@ -10,6 +10,7 @@ use Mediaopt\DHL\Api\GKV\PackStationType;
 use Mediaopt\DHL\Api\GKV\PostfilialeType;
 use Mediaopt\DHL\Api\GKV\ReceiverNativeAddressType;
 use Mediaopt\DHL\Api\GKV\ReceiverType;
+use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetails;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
 use Mediaopt\DHL\Api\GKV\Shipment;
@@ -162,13 +163,15 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         if ($wunschpaket->hasWunschtag($remark)) {
             $service->setPreferredDay(new ServiceconfigurationDetails(1, $wunschpaket->extractWunschtag($remark)));
         }
-        list($type, $locationPart1, $locationPart2) = $wunschpaket->extractLocation($remark);
+        [$type, $locationPart1, $locationPart2] = $wunschpaket->extractLocation($remark);
         if ($wunschpaket->hasWunschnachbar($remark)) {
             $service->setPreferredNeighbour(new ServiceconfigurationDetails(1, "$locationPart2, $locationPart1"));
         }
         if ($wunschpaket->hasWunschort($remark)) {
             $service->setPreferredLocation(new ServiceconfigurationDetails(1, $locationPart1));
         }
+        $isActive = (bool)Registry::getConfig()->getShopConfVar('mo_dhl__go_green_active');
+        $service->setGoGreen(new Serviceconfiguration($isActive));
         $isActive = (bool)Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active');
         $altEmail = Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null;
         $service->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $altEmail));

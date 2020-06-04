@@ -384,6 +384,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
                 'parcelOutletRouting' => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getParcelOutletRouting(),
                 'printOnlyIfCodeable' => $shipmentOrder->getPrintOnlyIfCodeable(),
                 'beilegerretoure'     => $shipmentOrder->getShipment()->getShipmentDetails()->getReturnShipmentAccountNumber(),
+                'go_green'            => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getGoGreen()->getActive(),
             ],
         ];
     }
@@ -451,6 +452,9 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             $accountNumber = Registry::get(GKVShipmentBuilder::class)->buildReturnAccountNumber($this->getOrder());
             $shipmentOrder->getShipment()->getShipmentDetails()->setReturnShipmentAccountNumber($accountNumber);
         }
+
+        $isActive = filter_var($servicesData['go_green']['active'], FILTER_VALIDATE_BOOLEAN);
+        $services->setGoGreen(new Serviceconfiguration($isActive));
 
         $isActive = filter_var($servicesData['printOnlyIfCodeable']['active'], FILTER_VALIDATE_BOOLEAN);
         $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration($isActive));

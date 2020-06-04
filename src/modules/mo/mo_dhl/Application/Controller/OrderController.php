@@ -125,4 +125,16 @@ class OrderController extends OrderController_parent
                 return $wunschpaket->getWunschtagText($langId);
         }
     }
+
+    /**
+     * @return bool
+     */
+    public function moDHLShowGoGreenLogo()
+    {
+        $shipSet = $this->getShipSet();
+        return
+            Registry::getConfig()->getShopConfVar('mo_dhl__go_green_active')
+            && !$shipSet->oxdeliveryset__mo_dhl_excluded->value
+            && $shipSet->oxdeliveryset__mo_dhl_process->value;
+    }
 }
