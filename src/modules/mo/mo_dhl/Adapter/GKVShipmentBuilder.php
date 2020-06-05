@@ -164,7 +164,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         $wunschpaket = Registry::get(\Mediaopt\DHL\Wunschpaket::class);
         if ($wunschpaket->hasWunschtag($remark) && $process->supportsPreferredDay()) {
             $wunschtag = $wunschpaket->extractWunschtag($remark);
-            $wunschtag = substr($wunschtag, 6) . '-' . substr($wunschtag, 3,2) . '-' . substr($wunschtag, 0, 2);
+            $wunschtag = date('Y-m-d', strtotime($wunschtag));
             $service->setPreferredDay(new ServiceconfigurationDetails(1, $wunschtag));
         }
         [$type, $locationPart1, $locationPart2] = $wunschpaket->extractLocation($remark);

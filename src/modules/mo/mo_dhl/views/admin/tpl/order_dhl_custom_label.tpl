@@ -337,6 +337,7 @@
                                     </td>
                                 </tr>
                                 [{if $process->supportsGoGreen()}]
+                                [{assign var="service" value=$shipmentOrder.services.go_green}]
                                 <tr>
                                     <td>
                                         [{oxmultilang ident='SHOP_MODULE_mo_dhl__go_green_active'}]
@@ -345,7 +346,7 @@
                                         <input type="hidden" name="data[services][go_green][active]"
                                                value="false">
                                         <input type="checkbox" name="data[services][go_green][active]"
-                                               [{if $shipmentOrder.services.go_green->getActive()}]checked[{/if}]>
+                                               [{if $service->getActive()}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]

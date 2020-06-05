@@ -451,11 +451,9 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             $services->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $details));
         }
 
-        if ($process->supportsDHLRetoure()) {
-            if (filter_var($servicesData['beilegerretoure']['active'], FILTER_VALIDATE_BOOLEAN)) {
-                $accountNumber = Registry::get(GKVShipmentBuilder::class)->buildReturnAccountNumber($this->getOrder());
-                $shipmentOrder->getShipment()->getShipmentDetails()->setReturnShipmentAccountNumber($accountNumber);
-            }
+        if ($process->supportsDHLRetoure() && filter_var($servicesData['beilegerretoure']['active'], FILTER_VALIDATE_BOOLEAN)) {
+            $accountNumber = Registry::get(GKVShipmentBuilder::class)->buildReturnAccountNumber($this->getOrder());
+            $shipmentOrder->getShipment()->getShipmentDetails()->setReturnShipmentAccountNumber($accountNumber);
         }
 
         if ($process->supportsGoGreen()) {
