@@ -78,6 +78,86 @@ class Process
     /**
      * @var string
      */
+    const SERVICE_PREFERRED_DAY = "SERVICE_PREFERRED_DAY";
+
+    /**
+     * @var string
+     */
+    const SERVICE_PREFERRED_NEIGHBOUR = "SERVICE_PREFERRED_NEIGHBOUR";
+
+    /**
+     * @var string
+     */
+    const SERVICE_PREFERRED_LOCATION = "SERVICE_PREFERRED_LOCATION";
+
+    /**
+     * @var string
+     */
+    const SERVICE_NOTIFICATION = "SERVICE_NOTIFICATION";
+
+    /**
+     * @var string
+     */
+    const SERVICE_GO_GREEN = "SERVICE_GO_GREEN";
+
+    /**
+     * @var string
+     */
+    const SERVICE_PARCEL_OUTLET_ROUTING = "SERVICE_PARCEL_OUTLET_ROUTING";
+
+    /**
+     * @var string
+     */
+    const SERVICE_DHL_RETOURE = "SERVICE_DHL_RETOURE";
+
+    /**
+     * @var string[]
+     */
+    const SUPPORTED_SERVICES = [
+        self::PAKET => [
+            self::SERVICE_PREFERRED_NEIGHBOUR,
+            self::SERVICE_PREFERRED_LOCATION,
+            self::SERVICE_NOTIFICATION,
+            self::SERVICE_PREFERRED_DAY,
+            self::SERVICE_GO_GREEN,
+            self::SERVICE_PARCEL_OUTLET_ROUTING,
+            self::SERVICE_DHL_RETOURE,
+        ],
+        self::PAKET_PRIO => [
+            self::SERVICE_PREFERRED_NEIGHBOUR,
+            self::SERVICE_PREFERRED_LOCATION,
+            self::SERVICE_NOTIFICATION,
+            self::SERVICE_PREFERRED_DAY,
+            self::SERVICE_GO_GREEN,
+            self::SERVICE_PARCEL_OUTLET_ROUTING,
+            self::SERVICE_DHL_RETOURE,
+        ],
+        self::PAKET_INTERNATIONAL => [
+            self::SERVICE_NOTIFICATION,
+            self::SERVICE_GO_GREEN,
+        ],
+        self::EUROPAKET => [
+            self::SERVICE_NOTIFICATION,
+            self::SERVICE_GO_GREEN,
+        ],
+        self::PAKET_CONNECT => [
+            self::SERVICE_NOTIFICATION,
+            self::SERVICE_GO_GREEN,
+            self::SERVICE_DHL_RETOURE,
+        ],
+        self::WARENPOST => [
+            self::SERVICE_PREFERRED_NEIGHBOUR,
+            self::SERVICE_PREFERRED_LOCATION,
+            self::SERVICE_NOTIFICATION,
+            self::SERVICE_GO_GREEN,
+            self::SERVICE_PARCEL_OUTLET_ROUTING,
+            self::SERVICE_DHL_RETOURE,
+        ],
+    ];
+
+    /**
+     * @var string
+     */
     protected $identifier;
 
     /**
@@ -86,6 +166,14 @@ class Process
     public function __construct($identifier)
     {
         $this->identifier = $identifier;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return $this->identifier;
     }
 
     /**
@@ -143,6 +231,62 @@ class Process
         ];
 
         return $identifierToNumber[$this->identifier];
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsPreferredNeighbour()
+    {
+        return in_array(self::SERVICE_PREFERRED_NEIGHBOUR, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsPreferredLocation()
+    {
+        return in_array(self::SERVICE_PREFERRED_LOCATION, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsNotification()
+    {
+        return in_array(self::SERVICE_NOTIFICATION, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsPreferredDay()
+    {
+        return in_array(self::SERVICE_PREFERRED_DAY, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsGoGreen()
+    {
+        return in_array(self::SERVICE_GO_GREEN, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsParcelOutletRouting()
+    {
+        return in_array(self::SERVICE_PARCEL_OUTLET_ROUTING, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsDHLRetoure()
+    {
+        return in_array(self::SERVICE_DHL_RETOURE, self::SUPPORTED_SERVICES[$this->identifier]);
     }
 
     /**

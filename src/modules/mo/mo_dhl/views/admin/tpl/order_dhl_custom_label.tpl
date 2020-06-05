@@ -302,6 +302,7 @@
                                         <b>[{oxmultilang ident='MO_DHL__CUSTOM_LABEL_SERVICES'}]</b>
                                     </td>
                                 </tr>
+                                [{if $process->supportsParcelOutletRouting()}]
                                 [{assign var="service" value=$shipmentOrder.services.parcelOutletRouting}]
                                 <tr>
                                     <td>
@@ -322,6 +323,7 @@
                                                value="[{$service->getDetails()}]">
                                     </td>
                                 </tr>
+                                [{/if}]
                                 [{assign var="service" value=$shipmentOrder.services.printOnlyIfCodeable}]
                                 <tr>
                                     <td>
@@ -334,6 +336,7 @@
                                                [{if $service->getActive()}]checked[{/if}]>
                                     </td>
                                 </tr>
+                                [{if $process->supportsGoGreen()}]
                                 <tr>
                                     <td>
                                         [{oxmultilang ident='SHOP_MODULE_mo_dhl__go_green_active'}]
@@ -342,9 +345,11 @@
                                         <input type="hidden" name="data[services][go_green][active]"
                                                value="false">
                                         <input type="checkbox" name="data[services][go_green][active]"
-                                               [{if $shipmentOrder.services.go_green}]checked[{/if}]>
+                                               [{if $shipmentOrder.services.go_green->getActive()}]checked[{/if}]>
                                     </td>
                                 </tr>
+                                [{/if}]
+                                [{if $process->supportsDHLRetoure()}]
                                 <tr>
                                     <td>
                                         [{oxmultilang ident='SHOP_MODULE_mo_dhl__beilegerretoure_active'}]
@@ -356,6 +361,7 @@
                                                [{if $shipmentOrder.services.beilegerretoure}]checked[{/if}]>
                                     </td>
                                 </tr>
+                                [{/if}]
                             </table>
                         </td>
                     </tr>
