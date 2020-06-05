@@ -59,13 +59,13 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     protected function buildShipmentDetails(Order $order): ShipmentDetailsType
     {
         $details = new ShipmentDetailsType($this->getProcess($order)->getServiceIdentifier(), $this->buildAccountNumber($order), $this->buildShipmentDate(), $this->buildShipmentItem($order));
-        if (Registry::getConfig()->getShopConfVar('mo_dhl__beilegerretoure_active') && $returnBookingNumber = $this->buildReturnAccountNumber($order)) {
+        if (Registry::getConfig()->getShopConfVar('mo_dhl__beilegerretoure_active') && $this->getProcess($order)->supportsDHLRetoure() && $returnBookingNumber = $this->buildReturnAccountNumber($order)) {
             $details->setReturnShipmentAccountNumber($returnBookingNumber);
         }
         if ($this->sendNotificationAllowed($order)) {
             $details->setNotification(new ShipmentNotificationType($order->getFieldData('oxbillemail')));
         }
-        $details->setService($this->buildService());
+        $details->setService($this->buildService($order));
         return $details;
     }
 
@@ -153,28 +153,36 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     }
 
     /**
+     * @param Order $order
      * @return ShipmentService
      */
-    private function buildService(): ShipmentService
+    private function buildService(Order $order): ShipmentService
     {
         $service = new ShipmentService();
-        $remark = Registry::getSession()->getVariable('ordrem');
+        $process = $this->getProcess($order);
+        $remark = $order->oxorder__oxremark->value;
         $wunschpaket = Registry::get(\Mediaopt\DHL\Wunschpaket::class);
-        if ($wunschpaket->hasWunschtag($remark)) {
-            $service->setPreferredDay(new ServiceconfigurationDetails(1, $wunschpaket->extractWunschtag($remark)));
+        if ($wunschpaket->hasWunschtag($remark) && $process->supportsPreferredDay()) {
+            $wunschtag = $wunschpaket->extractWunschtag($remark);
+            $wunschtag = date('Y-m-d', strtotime($wunschtag));
+            $service->setPreferredDay(new ServiceconfigurationDetails(1, $wunschtag));
         }
         [$type, $locationPart1, $locationPart2] = $wunschpaket->extractLocation($remark);
-        if ($wunschpaket->hasWunschnachbar($remark)) {
+        if ($wunschpaket->hasWunschnachbar($remark) && $process->supportsPreferredNeighbour()) {
             $service->setPreferredNeighbour(new ServiceconfigurationDetails(1, "$locationPart2, $locationPart1"));
         }
-        if ($wunschpaket->hasWunschort($remark)) {
+        if ($wunschpaket->hasWunschort($remark) && $process->supportsPreferredLocation()) {
             $service->setPreferredLocation(new ServiceconfigurationDetails(1, $locationPart1));
         }
-        $isActive = (bool)Registry::getConfig()->getShopConfVar('mo_dhl__go_green_active');
-        $service->setGoGreen(new Serviceconfiguration($isActive));
-        $isActive = (bool)Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active');
-        $altEmail = Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null;
-        $service->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $altEmail));
+        if ($process->supportsGoGreen()) {
+            $isActive = (bool)Registry::getConfig()->getShopConfVar('mo_dhl__go_green_active');
+            $service->setGoGreen(new Serviceconfiguration($isActive));
+        }
+        if ($process->supportsParcelOutletRouting()) {
+            $isActive = (bool)Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active');
+            $altEmail = Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null;
+            $service->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $altEmail));
+        }
         return $service;
     }
 
@@ -255,6 +263,9 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     protected function sendNotificationAllowed(Order $order): bool
     {
+        if (!$this->getProcess($order)->supportsNotification()) {
+            return false;
+        }
         switch (Registry::getConfig()->getShopConfVar('mo_dhl__notification_mode')) {
             case MoDHLNotificationMode::NEVER:
                 return false;

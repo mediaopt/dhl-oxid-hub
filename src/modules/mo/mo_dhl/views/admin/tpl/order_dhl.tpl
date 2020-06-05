@@ -44,7 +44,7 @@
                                         <select id="processIdentifier" name="processIdentifier">
                                             <option value="">-</option>
                                             [{foreach from=$processes key='identifier' item='label'}]
-                                                <option value="[{$identifier}]"[{if $identifier === $processIdentifier}] selected[{/if}]>
+                                                <option value="[{$identifier}]"[{if $identifier === $process->getIdentifier()}] selected[{/if}]>
                                                     [{$label}]
                                                 </option>
                                             [{/foreach}]

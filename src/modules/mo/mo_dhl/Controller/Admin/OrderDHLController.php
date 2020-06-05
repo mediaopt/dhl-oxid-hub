@@ -52,7 +52,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $this->addTplParam('processes', Process::getAvailableProcesses());
         $this->addTplParam('ekp', $this->getEkp());
         $this->addTplParam('participationNumber', $this->getParticipationNumber());
-        $this->addTplParam('processIdentifier', $this->getProcessIdentifier());
+        $this->addTplParam('process', $this->getProcess());
         $this->addTplParam('remarks', $this->getRemarks());
         $this->addTplParam('labels', $this->getOrder()->moDHLGetLabels());
         return $templateName;
@@ -165,11 +165,11 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @return string
+     * @return Process
      */
-    protected function getProcessIdentifier()
+    protected function getProcess()
     {
-        return (string) $this->getOrder()->oxorder__mo_dhl_process->rawValue;
+        return Process::build($this->getOrder()->oxorder__mo_dhl_process->rawValue);
     }
 
     /**
@@ -384,7 +384,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
                 'parcelOutletRouting' => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getParcelOutletRouting(),
                 'printOnlyIfCodeable' => $shipmentOrder->getPrintOnlyIfCodeable(),
                 'beilegerretoure'     => $shipmentOrder->getShipment()->getShipmentDetails()->getReturnShipmentAccountNumber(),
-                'go_green'            => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getGoGreen()->getActive(),
+                'go_green'            => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getGoGreen(),
             ],
         ];
     }
@@ -443,18 +443,23 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     protected function useCustomServices(ShipmentOrderType $shipmentOrder, $servicesData)
     {
+        $process = $this->getProcess();
         $services = $shipmentOrder->getShipment()->getShipmentDetails()->getService();
-        $isActive = filter_var($servicesData['parcelOutletRouting']['active'], FILTER_VALIDATE_BOOLEAN);
-        $details = $servicesData['parcelOutletRouting']['details'] ?: null;
-        $services->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $details));
+        if ($process->supportsParcelOutletRouting()) {
+            $isActive = filter_var($servicesData['parcelOutletRouting']['active'], FILTER_VALIDATE_BOOLEAN);
+            $details = $servicesData['parcelOutletRouting']['details'] ?: null;
+            $services->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $details));
+        }
 
-        if (filter_var($servicesData['beilegerretoure']['active'], FILTER_VALIDATE_BOOLEAN)) {
+        if ($process->supportsDHLRetoure() && filter_var($servicesData['beilegerretoure']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $accountNumber = Registry::get(GKVShipmentBuilder::class)->buildReturnAccountNumber($this->getOrder());
             $shipmentOrder->getShipment()->getShipmentDetails()->setReturnShipmentAccountNumber($accountNumber);
         }
 
-        $isActive = filter_var($servicesData['go_green']['active'], FILTER_VALIDATE_BOOLEAN);
-        $services->setGoGreen(new Serviceconfiguration($isActive));
+        if ($process->supportsGoGreen()) {
+            $isActive = filter_var($servicesData['go_green']['active'], FILTER_VALIDATE_BOOLEAN);
+            $services->setGoGreen(new Serviceconfiguration($isActive));
+        }
 
         $isActive = filter_var($servicesData['printOnlyIfCodeable']['active'], FILTER_VALIDATE_BOOLEAN);
         $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration($isActive));
