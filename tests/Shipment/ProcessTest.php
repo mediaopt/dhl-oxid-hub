@@ -4,7 +4,7 @@ use Mediaopt\DHL\Shipment\Process;
 
 class ProcessTest extends PHPUnit_Framework_TestCase
 {
-    const PROCESS_NUMBERS = ['01', '06', '53', '54', '55', '82', '86', '87'];
+    const PROCESS_NUMBERS = ['01', '06', '53', '54', '55', '82', '86', '87', '62'];
 
     const SERVICE_IDENTIFIERS = [
         'V01PAK',
@@ -17,6 +17,7 @@ class ProcessTest extends PHPUnit_Framework_TestCase
         'V86PARCEL',
         'V87PARCEL',
         'V82PARCEL',
+        'V62WP',
     ];
 
     const PROCESS_IDENTIFIERS = [
@@ -29,6 +30,17 @@ class ProcessTest extends PHPUnit_Framework_TestCase
         Process::PAKET_INTERNATIONAL_AT,
         Process::PAKET_AT,
         Process::PAKET_CONNECT_AT,
+        Process::WARENPOST,
+    ];
+
+    const ADDITIONAL_SERVICE_IDENTIFIERS = [
+        Process::SERVICE_PREFERRED_LOCATION,
+        Process::SERVICE_PREFERRED_NEIGHBOUR,
+        Process::SERVICE_PREFERRED_DAY,
+        Process::SERVICE_DHL_RETOURE,
+        Process::SERVICE_PARCEL_OUTLET_ROUTING,
+        Process::SERVICE_GO_GREEN,
+        Process::SERVICE_NOTIFICATION,
     ];
 
     public function testThatAProcessWithAnInvalidIdentifierCannotBeInstantiated()
@@ -84,5 +96,31 @@ class ProcessTest extends PHPUnit_Framework_TestCase
             }
         }
         $this->assertEquals([], $invalidIdentifiers);
+    }
+
+    public function testThatEachAddtionalServiceHasAtLeastOneProduct()
+    {
+        foreach (self::ADDITIONAL_SERVICE_IDENTIFIERS as $service) {
+            $this->assertNotEmpty(Process::getProcessesSupportingService($service));
+        }
+    }
+
+    public function testThatAnUnknownServiceHasNoProducts()
+    {
+        $this->assertEmpty(Process::getProcessesSupportingService('UNKNOWN_SERVICE'));
+    }
+
+    public function testThatWarenpostSupportsCertainServices()
+    {
+        $warenpost = Process::build(Process::WARENPOST);
+        $this->assertTrue($warenpost->supportsGoGreen());
+        $this->assertTrue($warenpost->supportsPreferredLocation());
+        $this->assertTrue($warenpost->supportsPreferredNeighbour());
+    }
+
+    public function testThatWarenpostDoesNotSupportCertainServices()
+    {
+        $warenpost = Process::build(Process::WARENPOST);
+        $this->assertFalse($warenpost->supportsPreferredDay());
     }
 }
