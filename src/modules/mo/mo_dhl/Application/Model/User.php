@@ -98,6 +98,15 @@ class User extends User_parent
     }
 
     /**
+     * @return string[]
+     */
+    public function moGetSelectedWunschpaketServices()
+    {
+        $remark = \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('ordrem');
+        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->getSelectedWunschpaketServices($remark);
+    }
+
+    /**
      * @return bool
      */
     public function moIsForcedToUseDhlDelivery()
