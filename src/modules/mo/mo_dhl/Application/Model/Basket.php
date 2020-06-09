@@ -177,7 +177,10 @@ class Basket extends Basket_parent
     {
         if (!isset($this->moIsDhlDeliveryAllowedWithService[$service])) {
             $articleIds = $this->moDHLGetProductIds();
-            $this->moIsDhlDeliveryAllowedWithService[$service] = $articleIds === [] || $this->moExistsItemIndependentDeliveryRuleAllowingDhlDelivery($service) || $this->moCanEachItemBeDeliveredViaDhl($articleIds, $service);
+            $this->moIsDhlDeliveryAllowedWithService[$service] =
+                $articleIds === []
+                || $this->moExistsItemIndependentDeliveryRuleAllowingDhlDelivery($service)
+                || $this->moCanEachItemBeDeliveredViaDhl($articleIds, $service);
         }
         return $this->moIsDhlDeliveryAllowedWithService[$service];
     }
@@ -204,15 +207,16 @@ class Basket extends Basket_parent
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
         $activeDeliverySet = $this->moIsActiveSnippet('oxdeliveryset');
         $activeDelivery = $this->moIsActiveSnippet('oxdelivery');
-        $allowsService = 1;
-        if ($service !== null) {
-            $processes = Process::getProcessesSupportingService($service);
-            $processList = implode(",", $db->quoteArray($processes));
-            $allowsService = "oxdeliveryset.MO_DHL_PROCESS in ($processList)";
-        }
+        $allowsService = $this->moSupportsServiceSnippet($service);
         $ids = implode(', ', array_map([$db, 'quote'], $articleIds));
         $categoryIds = "SELECT OXCATNID FROM oxobject2category WHERE OXOBJECTID IN ({$ids})";
-        $exclusion = ' SELECT MIN(oxdeliveryset.MO_DHL_EXCLUDED + oxdelivery.MO_DHL_EXCLUDED) AS isExcluded' . ' FROM oxobject2delivery' . "   JOIN oxdelivery ON oxdelivery.OXID = OXDELIVERYID AND ({$activeDelivery})" . '   JOIN oxdel2delset ON OXDELID = oxdelivery.OXID ' . "   JOIN oxdeliveryset ON oxdeliveryset.OXID = OXDELSETID AND ({$allowsService}) AND ({$activeDeliverySet})" . " WHERE OXOBJECTID IN ({$ids}) OR OXOBJECTID IN ({$categoryIds})" . ' GROUP BY OXOBJECTID';
+        $exclusion =
+            ' SELECT MIN(oxdeliveryset.MO_DHL_EXCLUDED + oxdelivery.MO_DHL_EXCLUDED) AS isExcluded' .
+            ' FROM oxobject2delivery' .
+            "   JOIN oxdelivery ON oxdelivery.OXID = OXDELIVERYID AND ({$activeDelivery})" .
+            '   JOIN oxdel2delset ON OXDELID = oxdelivery.OXID ' .
+            "   JOIN oxdeliveryset ON oxdeliveryset.OXID = OXDELSETID AND ({$allowsService}) AND ({$activeDeliverySet})" .
+            " WHERE OXOBJECTID IN ({$ids}) OR OXOBJECTID IN ({$categoryIds})" . ' GROUP BY OXOBJECTID';
         $isExcluded = "SELECT COALESCE(MAX(isExcluded), 1) FROM ({$exclusion}) exclusion";
         return !$db->getOne($isExcluded);
     }
@@ -226,12 +230,7 @@ class Basket extends Basket_parent
     {
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
         $activeDeliverySet = $this->moIsActiveSnippet('oxdeliveryset');
-        $allowsService = 1;
-        if ($service !== null) {
-            $processes = Process::getProcessesSupportingService($service);
-            $processList = implode(",", $db->quoteArray($processes));
-            $allowsService = "oxdeliveryset.MO_DHL_PROCESS in ($processList)";
-        }
+        $allowsService = $this->moSupportsServiceSnippet($service);
         $activeDelivery = $this->moIsActiveSnippet('oxdelivery');
         $itemDependency = ' SELECT OXID FROM oxobject2delivery' . " WHERE OXDELIVERYID = oxdelivery.OXID AND OXTYPE IN ('oxarticles', 'oxcategories')";
         $query = ' SELECT COALESCE(MIN(oxdeliveryset.MO_DHL_EXCLUDED), 1)'
@@ -253,5 +252,22 @@ class Basket extends Basket_parent
         }
 
         return $user->getSelectedAddressId() !== null && \OxidEsales\Eshop\Core\Registry::getSession()->getVariable('blshowshipaddress') ? $user->getSelectedAddress()->oxaddress__oxzip->value : $user->oxuser__oxzip->value;
+    }
+
+    /**
+     * @param string|null $service
+     * @return int|string
+     */
+    protected function moSupportsServiceSnippet(?string $service)
+    {
+        if ($service === null) {
+            return  1;
+        }
+        if (!$processes = Process::getProcessesSupportingService($service)) {
+            return 0;
+        }
+        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
+        $processList = implode(",", $db->quoteArray($processes));
+        return "oxdeliveryset.MO_DHL_PROCESS in ($processList)";
     }
 }
