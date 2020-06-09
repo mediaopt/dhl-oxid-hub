@@ -234,6 +234,18 @@ class Process
     }
 
     /**
+     * @param string $service
+     * @return string[]
+     */
+    public static function getProcessesSupportingService($service)
+    {
+        $services = array_filter(self::SUPPORTED_SERVICES, function($services) use ($service) {
+            return in_array($service, $services);
+        });
+        return array_keys($services);
+    }
+
+    /**
      * @return bool
      */
     public function supportsPreferredNeighbour()

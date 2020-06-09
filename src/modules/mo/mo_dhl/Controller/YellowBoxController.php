@@ -2,6 +2,8 @@
 
 namespace Mediaopt\DHL\Controller;
 
+use Mediaopt\DHL\Shipment\Process;
+
 /**
  * @author Mediaopt GmbH
  */
@@ -54,6 +56,6 @@ class YellowBoxController extends \OxidEsales\Eshop\Application\Controller\Front
         /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
         $basket = \OxidEsales\Eshop\Core\Registry::getSession()->getBasket();
         $wunschpaket = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class);
-        return $wunschpaket->isWunschtagActive() ? array_map('self::formatWunschtag', $wunschpaket->getWunschtagOptions($basket, $zip)) : [];
+        return $wunschpaket->isWunschtagActive() && $basket->moAllowsDhlDeliveryWithService(Process::SERVICE_PREFERRED_DAY) ? array_map('self::formatWunschtag', $wunschpaket->getWunschtagOptions($basket, $zip)) : [];
     }
 }
