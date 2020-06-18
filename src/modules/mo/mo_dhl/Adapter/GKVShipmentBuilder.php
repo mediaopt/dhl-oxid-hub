@@ -174,10 +174,6 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         if ($wunschpaket->hasWunschort($remark) && $process->supportsPreferredLocation()) {
             $service->setPreferredLocation(new ServiceconfigurationDetails(1, $locationPart1));
         }
-        if ($process->supportsGoGreen()) {
-            $isActive = (bool)Registry::getConfig()->getShopConfVar('mo_dhl__go_green_active');
-            $service->setGoGreen(new Serviceconfiguration($isActive));
-        }
         if ($process->supportsParcelOutletRouting()) {
             $isActive = (bool)Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active');
             $altEmail = Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null;
