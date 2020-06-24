@@ -30,6 +30,8 @@ $aLang = [
     'HELP_SHOP_MODULE_mo_dhl__packing_weight_absolute'   => 'Fixed weight surcharge in kilograms for packaging material when automatic weight calculation is activated.',
 
     'SHOP_MODULE_GROUP_mo_dhl__services'                       => 'Delivery - Services',
+    'SHOP_MODULE_mo_dhl__go_green_active'                      => 'GoGreen',
+    'HELP_SHOP_MODULE_mo_dhl__go_green_active'                 => 'Displays that GoGreen is used for the DHL deliveries. Activate this option only, if GoGreen is acitvated for the deliveries.',
     'SHOP_MODULE_mo_dhl__filialrouting_active'                 => 'Parcel Outlet Routing',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_active'            => 'If checkbox is enabled, the Parcel Outlet Routing Service will be booked. In this case, your undeliverable packages will be held at the nearest parcel collection point for collection by the recipient rather than being returned immediately to you.',
     'SHOP_MODULE_mo_dhl__filialrouting_alternative_email'      => 'Alternative email address for the Parcel Outlet Routing Service (optional)',
