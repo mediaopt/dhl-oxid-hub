@@ -13,8 +13,8 @@ $aModule = [
     'id'          => 'mo_dhl',
     'title'       => 'DHL Produkte und Services',
     'description' => [
-        'de' => '<p>Erweitern Sie Ihren Shop um DHL Produkte und Services.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-hmj/wiki/Dokumentation" target="_blank">Handbuch</a></p>',
-        'en' => '<p>Enable features providing DHL products and services to your OXID shop.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-hmj/wiki/Dokumentation" target="_blank">Handbook</a></p>',
+        'de' => '<p>Erweitern Sie Ihren Shop um DHL Produkte und Services.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbuch</a></p>',
+        'en' => '<p>Enable features providing DHL products and services to your OXID shop.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbook</a></p>',
     ],
     'thumbnail'   => 'logo.png',
     'version'     => '1.1.0',

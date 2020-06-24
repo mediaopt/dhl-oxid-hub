@@ -116,10 +116,10 @@ class Wunschpaket
             ],
         ];
         foreach ($tags as $tag) {
-            [
+            list(
                 $openingTag,
                 $closingTag,
-            ] = $tag;
+                ) = $tag;
             $remark = $this->removeTag($remark, $openingTag, $closingTag);
         }
         return $remark;
@@ -138,10 +138,10 @@ class Wunschpaket
             return $remark;
         }
 
-        [
+        list(
             $leftBoundary,
             $rightBoundary,
-        ] = $boundaries;
+            ) = $boundaries;
         $leftRemark = substr($remark, 0, $leftBoundary);
         $rightRemark = substr($remark, $rightBoundary + strlen($closingTag));
         return $leftRemark . $rightRemark;
@@ -193,10 +193,10 @@ class Wunschpaket
         if (strpos($content, ':') === false) {
             return ['', '', ''];
         }
-        [
+        list(
             $type,
             $location,
-        ] = explode(':', $content, 2);
+            ) = explode(':', $content, 2);
         $information = $type === ApiWunschpaket::WUNSCHNACHBAR ? explode(';', $location, 2) : [$location];
         return $information[0] !== $location ? [$type, $information[0], $information[1]] : [$type, $location, ''];
     }
@@ -216,10 +216,10 @@ class Wunschpaket
             return '';
         }
 
-        [
+        list(
             $leftBoundary,
             $rightBoundary,
-        ] = $boundaries;
+            ) = $boundaries;
         $locationStart = $leftBoundary + strlen($openingTag);
         $locationLength = $rightBoundary - $leftBoundary - strlen($closingTag) + 1;
         return substr($remark, $locationStart, $locationLength);

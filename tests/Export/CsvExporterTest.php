@@ -245,7 +245,7 @@ class CsvExporterTest extends PHPUnit_Framework_TestCase
         for ($i = 0; $i < 3; $i++) {
             $exporter = new CsvExporter('UTF-8');
             $exporter->export(array_fill(0, mt_rand(0, 10), $this->buildSampleOrder('')));
-            [$header] = explode("\r\n", $exporter->save());
+            list($header) = explode("\r\n", $exporter->save());
             $stream = fopen('php://memory', 'rwb');
             fwrite($stream, $header);
             rewind($stream);

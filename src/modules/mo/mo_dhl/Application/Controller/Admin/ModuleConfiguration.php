@@ -209,7 +209,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     /**
      * @param \Mediaopt\DHL\Adapter\DHLAdapter $adapter
      */
-    private function checkWunschpaket(\Mediaopt\DHL\Adapter\DHLAdapter $adapter) : void
+    private function checkWunschpaket(\Mediaopt\DHL\Adapter\DHLAdapter $adapter)
     {
         try {
             $days = $adapter->buildWunschpaket()->getPreferredDays('12045');
@@ -226,7 +226,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
      * @param \Mediaopt\DHL\Api\GKV $gkv
      * @param \OxidEsales\Eshop\Application\Model\DeliverySet $deliveryset
      */
-    private function checkGKV(\Mediaopt\DHL\Api\GKV $gkv, $deliveryset) : void
+    private function checkGKV(\Mediaopt\DHL\Api\GKV $gkv, $deliveryset)
     {
         $lang = Registry::getLang();
         Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($lang->translateString('MO_DHL__CHECKING_DELIVERYSET') . $deliveryset->oxdeliveryset__oxtitle->value);
