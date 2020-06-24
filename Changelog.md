@@ -1,4 +1,7 @@
 # Changelog
+## 1.1.1
+* fixed HTML layout
+
 ## 1.1.0
 * product Warenpost is now available
 * only those services are selectable and sent that are available for the product

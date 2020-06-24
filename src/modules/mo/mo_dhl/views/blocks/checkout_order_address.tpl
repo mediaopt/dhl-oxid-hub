@@ -87,82 +87,86 @@
     [{/if}]
 [{elseif $oViewConf->moHasAncestorTheme('flow')}]
     [{if $oView->moDHLIsAWunschpaketServiceSelected()}]
-        <div class="col-xs-12 col-md-6 moEmpfaengerserviceWunschpaketBox no--padding-left">
-            <div class="panel panel-default" id="moDHLCheckoutBox">
-                <div class="panel-heading">
-                    <img class="moEmpfaengerserviceWunschpaketBox--image"
-                         src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
-                    <a href="[{oxgetseourl ident=$oViewConf->getOrderLink()}]">
-                        <button type="submit" class="btn btn-xs btn-warning pull-right submitButton largeButton"
-                                title="[{oxmultilang ident="EDIT"}]">
-                            <i class="fa fa-pencil"></i>
-                        </button>
-                    </a>
-                </div>
-                <div class="panel-body">
-                    <h3 class="no--margin-top">[{oxmultilang ident="MO_DHL__WUNSCHPAKET_CHECKOUT"}]</h3>
-                    [{if $oView->moDHLGetWunschtag()}]
-                        <span class="title">
+        <div class="row">
+            <div class="col-xs-12 col-md-12 moEmpfaengerserviceWunschpaketBox">
+                <div class="panel panel-default" id="moDHLCheckoutBox">
+                    <div class="panel-heading">
+                        <img class="moEmpfaengerserviceWunschpaketBox--image"
+                             src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
+                        <a href="[{oxgetseourl ident=$oViewConf->getOrderLink()}]">
+                            <button type="submit" class="btn btn-xs btn-warning pull-right submitButton largeButton"
+                                    title="[{oxmultilang ident="EDIT"}]">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <h3 class="no--margin-top">[{oxmultilang ident="MO_DHL__WUNSCHPAKET_CHECKOUT"}]</h3>
+                        [{if $oView->moDHLGetWunschtag()}]
+                            <span class="title">
                             [{oxmultilang ident="MO_DHL__WUNSCHTAG"}]
                         </span>
-                        <span class="desc">
+                            <span class="desc">
                             [{$oView->moDHLGetWunschtag()}]
                         </span>
-                        <br>
-                    [{/if}]
-                    [{if $location[0]}]
-                        [{if $location[0] == 'Wunschnachbar'}]
-                            <span class="title">
+                            <br>
+                        [{/if}]
+                        [{if $location[0]}]
+                            [{if $location[0] == 'Wunschnachbar'}]
+                                <span class="title">
                                 [{oxmultilang ident="MO_DHL__WUNSCHNACHBAR"}]
-                                [{assign var="privacyLink" value=$oViewConf->moGetPrivacyLinkForWunschpaket()}]
-                                [{if $privacyLink}]
-                                    <span class="font-weight--normal">
+                                    [{assign var="privacyLink" value=$oViewConf->moGetPrivacyLinkForWunschpaket()}]
+                                    [{if $privacyLink}]
+                                        <span class="font-weight--normal">
                                         (<a class="privacy-policy" href="[{$privacyLink}]"
                                             target="_blank">[{oxmultilang ident="MO_DHL__PRIVACY_LINK_SHORT"}]</a>)
                                     </span>
-                                [{/if}]
+                                    [{/if}]
                             </span>
-                            <span class="desc">
+                                <span class="desc">
                                 [{$location[2]}]
                             </span>
-                            <span class="desc">
+                                <span class="desc">
                                 [{$location[1]}]
                             </span>
-                        [{else}]
-                            <span class="title">
+                            [{else}]
+                                <span class="title">
                                 [{oxmultilang ident="MO_DHL__WUNSCHORT"}]
                             </span>
-                            <span class="desc">
+                                <span class="desc">
                                 [{$location[1]}]
                             </span>
+                            [{/if}]
+                            <br>
                         [{/if}]
-                        <br>
-                    [{/if}]
 
-                    [{include file="mo_dhl__surcharge.tpl"}]
+                        [{include file="mo_dhl__surcharge.tpl"}]
 
+                    </div>
                 </div>
             </div>
         </div>
     [{elseif $oView->moDHLCanAWunschpaketServiceBeSelected()}]
-        <div class="col-xs-12 col-md-6 moEmpfaengerserviceWunschpaketBox no--padding-left">
-            <div class="panel panel-default" id="moDHLCheckoutBox">
-                <div class="panel-heading">
-                    <img class="moEmpfaengerserviceWunschpaketBox--image"
-                         src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
-                    <a href="[{oxgetseourl ident=$oViewConf->getOrderLink()}]">
-                        <button type="submit" class="btn btn-xs btn-warning pull-right submitButton largeButton"
-                                title="[{oxmultilang ident="EDIT"}]">
-                            <i class="fa fa-pencil"></i>
-                        </button>
-                    </a>
-                </div>
-                <div class="panel-body">
-                    <h3 class="no--margin-top">[{oxmultilang ident="MO_DHL__NO_WUNSCHPAKET"}]</h3>
-                    <p>
-                        [{'MO_DHL__WUNSCHPAKET_DESCRIPTION_CHANGE'|oxmultilangassign|sprintf:$oViewConf->getOrderLink()}]
-                    </p>
-                    <p>[{oxmultilang ident="MO_DHL__WUNSCHPAKET_DESCRIPTION_SHORT"}]</p>
+        <div class="row">
+            <div class="col-xs-12 col-md-12 moEmpfaengerserviceWunschpaketBox">
+                <div class="panel panel-default" id="moDHLCheckoutBox">
+                    <div class="panel-heading">
+                        <img class="moEmpfaengerserviceWunschpaketBox--image"
+                             src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
+                        <a href="[{oxgetseourl ident=$oViewConf->getOrderLink()}]">
+                            <button type="submit" class="btn btn-xs btn-warning pull-right submitButton largeButton"
+                                    title="[{oxmultilang ident="EDIT"}]">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <h3 class="no--margin-top">[{oxmultilang ident="MO_DHL__NO_WUNSCHPAKET"}]</h3>
+                        <p>
+                            [{'MO_DHL__WUNSCHPAKET_DESCRIPTION_CHANGE'|oxmultilangassign|sprintf:$oViewConf->getOrderLink()}]
+                        </p>
+                        <p>[{oxmultilang ident="MO_DHL__WUNSCHPAKET_DESCRIPTION_SHORT"}]</p>
+                    </div>
                 </div>
             </div>
         </div>
