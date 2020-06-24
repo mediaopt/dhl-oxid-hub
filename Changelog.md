@@ -1,4 +1,9 @@
 # Changelog
+## 1.1.0
+* product Warenpost is now available
+* only those services are selectable and sent that are available for the product
+* GoGreen label can be displayed for dhl deliveries on the checkout overview page
+
 ## 1.0.5
 * Removed preferred time
 
