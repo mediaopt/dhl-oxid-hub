@@ -2,6 +2,8 @@
 
 namespace Mediaopt\DHL\Application\Model;
 
+use Mediaopt\DHL\Shipment\Process;
+
 /**
  * @author Mediaopt GmbH
  */
@@ -20,7 +22,11 @@ class DeliveryList extends DeliveryList_parent
      */
     public function hasDeliveries($basket, $user, $sDelCountry, $sDeliverySetId)
     {
-        return (!is_object($user) || !$user->moIsForcedToUseDhlDelivery() || !$this->moIsExcluded($sDeliverySetId)) && parent::hasDeliveries($basket, $user, $sDelCountry, $sDeliverySetId);
+        return (!is_object($user)
+                || !$user->moIsForcedToUseDhlDelivery()
+                || !$this->moIsExcluded($sDeliverySetId))
+            && $this->moSupportsSelectedWunschpaketServices($user, $sDeliverySetId)
+            && parent::hasDeliveries($basket, $user, $sDelCountry, $sDeliverySetId);
     }
 
     /**
@@ -33,5 +39,26 @@ class DeliveryList extends DeliveryList_parent
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
         $query = ' SELECT MO_DHL_EXCLUDED' . ' FROM oxdeliveryset' . " WHERE OXID = {$db->quote($deliverySetId)}";
         return (bool) $db->getOne($query);
+    }
+
+    /**
+     * @param \Mediaopt\DHL\Application\Model\User $user
+     * @param string                               $deliverySetId
+     * @return bool
+     */
+    public function moSupportsSelectedWunschpaketServices($user, $deliverySetId)
+    {
+        if (!$services = $user->moGetSelectedWunschpaketServices()) {
+            return true;
+        }
+        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
+        $query = " SELECT MO_DHL_PROCESS FROM oxdeliveryset WHERE OXID = {$db->quote($deliverySetId)}";
+        $process = $db->getOne($query);
+        foreach ($services as $service) {
+            if (!in_array($process, Process::getProcessesSupportingService($service))) {
+                return false;
+            }
+        }
+        return true;
     }
 }

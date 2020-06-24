@@ -17,7 +17,7 @@ $aModule = [
         'en' => '<p>Enable features providing DHL products and services to your OXID shop.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbook</a></p>',
     ],
     'thumbnail'   => 'logo.png',
-    'version'     => '1.0.5',
+    'version'     => '1.1.0',
     'author'      => '<a href="http://www.mediaopt.de" target="_blank">mediaopt.</a>',
     'url'         => 'http://www.mediaopt.de',
     'email'       => 'shopsoftware@deutschepost.de',
@@ -64,6 +64,11 @@ $aModule = [
             'template' => 'form/user.tpl',
             'block'    => 'user',
             'file'     => 'views/blocks/user.tpl',
+        ],
+        [
+            'template' => 'page/checkout/order.tpl',
+            'block'    => 'shippingAndPayment',
+            'file'     => 'views/blocks/checkout_order_shipping_and_payment.tpl',
         ],
         [
             'template' => 'page/checkout/order.tpl',
@@ -295,6 +300,12 @@ $aModule = [
             'type'        => 'select',
             'value'       => 'NEVER',
             'constraints' => 'NEVER|ASK|ALWAYS',
+        ],
+        [
+            'group' => 'mo_dhl__services',
+            'name'  => 'mo_dhl__go_green_active',
+            'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__retoure',

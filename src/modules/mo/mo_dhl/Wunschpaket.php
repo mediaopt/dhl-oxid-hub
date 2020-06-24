@@ -10,6 +10,7 @@ namespace Mediaopt\DHL;
 
 use Mediaopt\DHL\Api\Wunschpaket as ApiWunschpaket;
 use Mediaopt\DHL\ServiceProvider\Branch;
+use Mediaopt\DHL\Shipment\Process;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
@@ -327,6 +328,25 @@ class Wunschpaket
     }
 
     /**
+     * @param string $remark
+     * @return string[]
+     */
+    public function getSelectedWunschpaketServices($remark)
+    {
+        $services = [];
+        if ($this->hasWunschtag($remark)) {
+            $services[] = Process::SERVICE_PREFERRED_DAY;
+        }
+        if ($this->hasWunschnachbar($remark)) {
+            $services[] = Process::SERVICE_PREFERRED_NEIGHBOUR;
+        }
+        if ($this->hasWunschort($remark)) {
+            $services[] = Process::SERVICE_PREFERRED_LOCATION;
+        }
+        return $services;
+    }
+
+    /**
      * Returns true iff preferred day, time, location or neighbor is activated and can be selected.
      *
      * @param \Mediaopt\DHL\Application\Model\Basket $basket
@@ -351,7 +371,7 @@ class Wunschpaket
      */
     public function canAWunschtagBeSelected(\Mediaopt\DHL\Application\Model\Basket $basket)
     {
-        return $this->isWunschtagActive() && $this->getWunschtagOptions($basket) !== [];
+        return $this->isWunschtagActive() && $basket->moAllowsDhlDeliveryWithService(Process::SERVICE_PREFERRED_DAY) && $this->getWunschtagOptions($basket) !== [];
     }
 
 

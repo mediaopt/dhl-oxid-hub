@@ -66,7 +66,7 @@ class UserController extends UserController_parent
     {
         $basket = $this->getSession()->getBasket();
         $options = \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->getWunschtagOptions($basket);
-        return array_map('MoDHLYellowBox::formatWunschtag', $options);
+        return array_map('Mediaopt\DHL\Controller\YellowBoxController::formatWunschtag', $options);
     }
 
     /**

@@ -71,6 +71,91 @@ class Process
     const PAKET_INTERNATIONAL_AT = 'PAKET_INTERNATIONAL_AT';
 
     /**
+     * @var string Warenpost national
+     */
+    const WARENPOST = 'WARENPOST';
+
+    /**
+     * @var string
+     */
+    const SERVICE_PREFERRED_DAY = "SERVICE_PREFERRED_DAY";
+
+    /**
+     * @var string
+     */
+    const SERVICE_PREFERRED_NEIGHBOUR = "SERVICE_PREFERRED_NEIGHBOUR";
+
+    /**
+     * @var string
+     */
+    const SERVICE_PREFERRED_LOCATION = "SERVICE_PREFERRED_LOCATION";
+
+    /**
+     * @var string
+     */
+    const SERVICE_NOTIFICATION = "SERVICE_NOTIFICATION";
+
+    /**
+     * @var string
+     */
+    const SERVICE_GO_GREEN = "SERVICE_GO_GREEN";
+
+    /**
+     * @var string
+     */
+    const SERVICE_PARCEL_OUTLET_ROUTING = "SERVICE_PARCEL_OUTLET_ROUTING";
+
+    /**
+     * @var string
+     */
+    const SERVICE_DHL_RETOURE = "SERVICE_DHL_RETOURE";
+
+    /**
+     * @var string[]
+     */
+    const SUPPORTED_SERVICES = [
+        self::PAKET => [
+            self::SERVICE_PREFERRED_NEIGHBOUR,
+            self::SERVICE_PREFERRED_LOCATION,
+            self::SERVICE_NOTIFICATION,
+            self::SERVICE_PREFERRED_DAY,
+            self::SERVICE_GO_GREEN,
+            self::SERVICE_PARCEL_OUTLET_ROUTING,
+            self::SERVICE_DHL_RETOURE,
+        ],
+        self::PAKET_PRIO => [
+            self::SERVICE_PREFERRED_NEIGHBOUR,
+            self::SERVICE_PREFERRED_LOCATION,
+            self::SERVICE_NOTIFICATION,
+            self::SERVICE_PREFERRED_DAY,
+            self::SERVICE_GO_GREEN,
+            self::SERVICE_PARCEL_OUTLET_ROUTING,
+            self::SERVICE_DHL_RETOURE,
+        ],
+        self::PAKET_INTERNATIONAL => [
+            self::SERVICE_NOTIFICATION,
+            self::SERVICE_GO_GREEN,
+        ],
+        self::EUROPAKET => [
+            self::SERVICE_NOTIFICATION,
+            self::SERVICE_GO_GREEN,
+        ],
+        self::PAKET_CONNECT => [
+            self::SERVICE_NOTIFICATION,
+            self::SERVICE_GO_GREEN,
+            self::SERVICE_DHL_RETOURE,
+        ],
+        self::WARENPOST => [
+            self::SERVICE_PREFERRED_NEIGHBOUR,
+            self::SERVICE_PREFERRED_LOCATION,
+            self::SERVICE_NOTIFICATION,
+            self::SERVICE_GO_GREEN,
+            self::SERVICE_PARCEL_OUTLET_ROUTING,
+            self::SERVICE_DHL_RETOURE,
+        ],
+    ];
+
+    /**
      * @var string
      */
     protected $identifier;
@@ -81,6 +166,14 @@ class Process
     public function __construct($identifier)
     {
         $this->identifier = $identifier;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return $this->identifier;
     }
 
     /**
@@ -127,6 +220,7 @@ class Process
             self::PAKET_INTERNATIONAL          => '53',
             self::EUROPAKET                    => '54',
             self::PAKET_CONNECT                => '55',
+            self::WARENPOST                    => '62',
             self::PAKET_AT                     => '86',
             self::PAKET_CONNECT_AT             => '87',
             self::PAKET_INTERNATIONAL_AT       => '82',
@@ -137,6 +231,74 @@ class Process
         ];
 
         return $identifierToNumber[$this->identifier];
+    }
+
+    /**
+     * @param string $service
+     * @return string[]
+     */
+    public static function getProcessesSupportingService($service)
+    {
+        $services = array_filter(self::SUPPORTED_SERVICES, function($services) use ($service) {
+            return in_array($service, $services);
+        });
+        return array_keys($services);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsPreferredNeighbour()
+    {
+        return in_array(self::SERVICE_PREFERRED_NEIGHBOUR, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsPreferredLocation()
+    {
+        return in_array(self::SERVICE_PREFERRED_LOCATION, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsNotification()
+    {
+        return in_array(self::SERVICE_NOTIFICATION, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsPreferredDay()
+    {
+        return in_array(self::SERVICE_PREFERRED_DAY, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsGoGreen()
+    {
+        return in_array(self::SERVICE_GO_GREEN, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsParcelOutletRouting()
+    {
+        return in_array(self::SERVICE_PARCEL_OUTLET_ROUTING, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsDHLRetoure()
+    {
+        return in_array(self::SERVICE_DHL_RETOURE, self::SUPPORTED_SERVICES[$this->identifier]);
     }
 
     /**
@@ -151,6 +313,7 @@ class Process
             self::PAKET_INTERNATIONAL          => 'V53WPAK',
             self::EUROPAKET                    => 'V54EPAK',
             self::PAKET_CONNECT                => 'V55PAK',
+            self::WARENPOST                    => 'V62WP',
             self::PAKET_AT                     => 'V86PARCEL',
             self::PAKET_CONNECT_AT             => 'V87PARCEL',
             self::PAKET_INTERNATIONAL_AT       => 'V82PARCEL',
@@ -189,6 +352,7 @@ class Process
             'PAKET_AT'               => 'DHL Paket Austria',
             'PAKET_CONNECT_AT'       => 'DHL Paket Connect (Austria)',
             'PAKET_INTERNATIONAL_AT' => 'DHL Paket International (Austria)',
+            'WARENPOST'              => 'Warenpost national',
         ];
     }
 }
