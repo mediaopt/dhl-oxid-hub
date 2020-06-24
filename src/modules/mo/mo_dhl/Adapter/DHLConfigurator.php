@@ -26,13 +26,17 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const TEST_API_PASSWORD = 'H#R#__!w4-dt-9++9Z-r7-9';
 
-    const PROD_API_USERNAME = 'DHL_Oxid_2';
+    const PROD_API_USERNAME = 'DHL_Oxid_3';
 
-    const PROD_API_PASSWORD = '0qy7vU4ubYUHgU5ppBsG2jIh48j9nO';
+    const PROD_API_PASSWORD = 'RGZ02BtCUBOHkxzMdy1NUm29oxhpHx';
 
     const TEST_GKV_USERNAME = '2222222222_01';
 
     const TEST_GKV_PASSWORD = 'pass';
+
+    const TEST_RETOURE_USERNAME = '2222222222_customer';
+
+    const TEST_RETOURE_PASSWORD = 'uBQbZ62!ZiBiVVbhc';
 
     /**
      * @return mixed
@@ -45,7 +49,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getRestLogin()
+    protected function getProdLogin()
     {
         return self::PROD_API_USERNAME;
     }
@@ -53,7 +57,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getRestPassword()
+    protected function getProdPassword()
     {
         return self::PROD_API_PASSWORD;
     }
@@ -61,17 +65,17 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getSoapLogin()
+    protected function getSandboxLogin()
     {
-        return $this->isProductionEnvironment() ? self::PROD_API_USERNAME : self::TEST_API_USERNAME;
+        return self::TEST_API_USERNAME;
     }
 
     /**
      * @return string
      */
-    protected function getSoapPassword()
+    protected function getSandboxPassword()
     {
-        return $this->isProductionEnvironment() ? self::PROD_API_PASSWORD : self::TEST_API_PASSWORD;
+        return self::TEST_API_PASSWORD;
     }
 
     /**
@@ -88,6 +92,22 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     protected function getCustomerGKVPassword()
     {
         return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '') : self::TEST_GKV_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerRetoureLogin()
+    {
+        return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '') : self::TEST_RETOURE_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerRetourePassword()
+    {
+        return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '') : self::TEST_RETOURE_PASSWORD;
     }
 
     /**

@@ -213,4 +213,9 @@ class DHLAdapter
     {
         return $this->getSdk()->buildGKV();
     }
+
+    public function buildRetoure()
+    {
+        return $this->getSdk()->buildRetoure();
+    }
 }

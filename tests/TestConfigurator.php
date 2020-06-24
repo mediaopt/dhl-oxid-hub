@@ -2,22 +2,22 @@
 
 class TestConfigurator extends \Mediaopt\DHL\Configurator
 {
-    protected function getRestLogin()
+    protected function getProdLogin()
     {
         return \Mediaopt\DHL\Adapter\DHLConfigurator::PROD_API_USERNAME;
     }
 
-    protected function getRestPassword()
+    protected function getProdPassword()
     {
         return \Mediaopt\DHL\Adapter\DHLConfigurator::PROD_API_PASSWORD;
     }
 
-    protected function getSoapLogin()
+    protected function getSandboxLogin()
     {
         return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_API_USERNAME;
     }
 
-    protected function getSoapPassword()
+    protected function getSandboxPassword()
     {
         return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_API_PASSWORD;
     }
@@ -30,6 +30,16 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     protected function getCustomerGKVPassword()
     {
         return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_GKV_PASSWORD;
+    }
+
+    protected function getCustomerRetoureLogin()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_RETOURE_USERNAME;
+    }
+
+    protected function getCustomerRetourePassword()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_RETOURE_PASSWORD;
     }
 
     protected function getEkp()

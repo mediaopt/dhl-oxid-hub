@@ -5,6 +5,7 @@ namespace Mediaopt\DHL;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Mediaopt\DHL\Api\Credentials;
+use Mediaopt\DHL\Api\Retoure;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
 use Mediaopt\DHL\Api\Wunschpaket;
@@ -30,9 +31,11 @@ abstract class Configurator
     /**
      * @return Credentials
      */
-    protected function buildRestCredentials()
+    protected function buildRestCredentials($forceUseProd = false)
     {
-        return Credentials::createProductionRestEndpoint($this->getRestLogin(), $this->getRestPassword(), $this->getEkp());
+        return $this->isProductionEnvironment() || $forceUseProd
+            ? Credentials::createProductionRestEndpoint($this->getProdLogin(), $this->getProdPassword(), $this->getEkp())
+            : Credentials::createSandboxRestEndpoint($this->getSandboxLogin(), $this->getSandboxPassword(), $this->getEkp());
     }
 
     /**
@@ -41,8 +44,8 @@ abstract class Configurator
     protected function buildSoapCredentials()
     {
         return $this->isProductionEnvironment()
-            ? Credentials::createProductionSoapEndpoint($this->getSoapLogin(), $this->getSoapPassword(), $this->getEkp())
-            : Credentials::createSandboxSoapEndpoint($this->getSoapLogin(), $this->getSoapPassword(), $this->getEkp());
+            ? Credentials::createProductionSoapEndpoint($this->getProdLogin(), $this->getProdPassword(), $this->getEkp())
+            : Credentials::createSandboxSoapEndpoint($this->getSandboxLogin(), $this->getSandboxPassword(), $this->getEkp());
     }
 
     /**
@@ -50,18 +53,26 @@ abstract class Configurator
      */
     protected function buildCustomerGKVCredentials()
     {
-        return Credentials::createCustomerGKVCredentials($this->getCustomerGKVLogin(), $this->getCustomerGKVPassword());
+        return Credentials::createCustomerCredentials($this->getCustomerGKVLogin(), $this->getCustomerGKVPassword());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildCustomerRetoureCredentials()
+    {
+        return Credentials::createCustomerCredentials($this->getCustomerRetoureLogin(), $this->getCustomerRetourePassword());
     }
 
     /**
      * @return string
      */
-    abstract protected function getSoapLogin();
+    abstract protected function getSandboxLogin();
 
     /**
      * @return string
      */
-    abstract protected function getSoapPassword();
+    abstract protected function getSandboxPassword();
 
     /**
      * @return string
@@ -76,12 +87,22 @@ abstract class Configurator
     /**
      * @return string
      */
-    abstract protected function getRestLogin();
+    abstract protected function getCustomerRetoureLogin();
 
     /**
      * @return string
      */
-    abstract protected function getRestPassword();
+    abstract protected function getCustomerRetourePassword();
+
+    /**
+     * @return string
+     */
+    abstract protected function getProdLogin();
+
+    /**
+     * @return string
+     */
+    abstract protected function getProdPassword();
 
     /**
      * @return string
@@ -100,7 +121,7 @@ abstract class Configurator
         ServiceProviderBuilder $serviceProviderBuilder = null
     ) {
         return new Standortsuche(
-            $this->buildRestCredentials(),
+            $this->buildRestCredentials(true),
             $logger ?: $this->buildLogger(),
             $client ?: $this->buildClient(),
             $serviceProviderBuilder
@@ -115,7 +136,7 @@ abstract class Configurator
     public function buildWunschpaket(LoggerInterface $logger = null, ClientInterface $client = null)
     {
         return new Wunschpaket(
-            $this->buildRestCredentials(),
+            $this->buildRestCredentials(true),
             $logger ?: $this->buildLogger(),
             $client ?: $this->buildClient()
         );
@@ -131,6 +152,16 @@ abstract class Configurator
             $this->buildSoapCredentials(),
             $this->buildCustomerGKVCredentials(),
             $logger ?: $this->buildLogger()
+        );
+    }
+
+    public function buildRetoure(LoggerInterface $logger = null, ClientInterface $client = null)
+    {
+        return new Retoure(
+            $this->buildRestCredentials(),
+            $this->buildCustomerRetoureCredentials(),
+            $logger ?: $this->buildLogger(),
+            $client ?: $this->buildClient()
         );
     }
 
