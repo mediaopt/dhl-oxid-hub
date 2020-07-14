@@ -10,7 +10,7 @@ use Mediaopt\DHL\Api\Retoure\SimpleAddress;
 use Mediaopt\DHL\Application\Model\Order;
 use OxidEsales\Eshop\Core\Registry;
 
-class ReturnRequestBuilder
+class RetoureRequestBuilder
 {
 
     /**
@@ -23,7 +23,7 @@ class ReturnRequestBuilder
         $returnOrder
             ->setCustomerReference($order->getFieldData('oxordernr'))
             ->setShipmentReference(Registry::getConfig()->getShopConfVar('mo_dhl__retoure_reference_prefix') . $order->getFieldData('oxordernr'))
-            ->setReceiverId($this->buildReceiverId())
+            ->setReceiverId($this->buildReceiverId($order->getFieldData('oxbillcountryid')))
             ->setSenderAddress($this->buildSenderAddress($order))
             ->setEmail($order->getFieldData('oxbillemail'))
             ->setTelephoneNumber($order->moDHLGetAddressData('fon'));
@@ -31,12 +31,18 @@ class ReturnRequestBuilder
     }
 
     /**
+     * @param string $countryId
+     *
      * @return string
      */
-    protected function buildReceiverId()
+    protected function buildReceiverId(string $countryId)
     {
-        $config = Registry::getConfig();
-        return strtolower(Registry::getConfig()->getShopConfVar('mo_dhl__retoure_receiver_id'));
+        $country = \oxNew(\OxidEsales\Eshop\Application\Model\Country::class);
+        $country->load($countryId);
+        if (!$receiverId = $country->getFieldData('mo_dhl_retoure_receiver_id')) {
+            throw new \InvalidArgumentException(sprintf(Registry::getLang()->translateString('MO_DHL__NO_RECEIVER_ID'), $country->getFieldData('title')));
+        }
+        return $receiverId;
     }
 
     /**

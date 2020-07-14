@@ -44,7 +44,7 @@
                                         <select id="processIdentifier" name="processIdentifier">
                                             <option value="">-</option>
                                             [{foreach from=$processes key='identifier' item='label'}]
-                                                <option value="[{$identifier}]"[{if $identifier === $process->getIdentifier()}] selected[{/if}]>
+                                                <option value="[{$identifier}]"[{if $process AND $identifier === $process->getIdentifier()}] selected[{/if}]>
                                                     [{$label}]
                                                 </option>
                                             [{/foreach}]
@@ -101,26 +101,50 @@
                                         </td>
                                     </tr>
                                     [{foreach from=$labels  item='label' name='labels'}]
-                                        <tr>
-                                            <td>[{oxmultilang ident="MO_DHL__LABEL"}]</td>
-                                            <td>
-                                                <a target="_blank" rel="noopener noreferrer"
-                                                   href="[{$label->getFieldData('labelUrl')}]">[{$label->getFieldData('shipmentNumber')}]</a>
-                                            </td>
-                                            <td [{if $label->getFieldData('returnLabelUrl')}] rowspan="2" [{/if}]>
-                                                <input type="submit" class="confinput" name="check"
-                                                       value="[{oxmultilang ident="MO_DHL__DELETE_SHIPMENT"}]"
-                                                       onClick="Javascript:document.myedit.labelId.value='[{$label->getId()}]';document.myedit.fnc.value='deleteShipment'">
-                                            </td>
-                                        </tr>
-                                        [{if $label->getFieldData('returnLabelUrl')}]
+                                        [{if $label->isRetoure()}]
                                             <tr>
                                                 <td>[{oxmultilang ident="MO_DHL__RETOURE_LABEL"}]</td>
                                                 <td>
                                                     <a target="_blank" rel="noopener noreferrer"
-                                                       href="[{$label->getFieldData('returnLabelUrl')}]">[{$label->getFieldData('returnShipmentNumber')}]</a>
+                                                       href="[{$label->getFieldData('labelUrl')}]">[{$label->getFieldData('shipmentNumber')}]</a>
+                                                </td>
+                                                <td [{if $label->getFieldData('qrLabelUrl')}] rowspan="2" [{/if}]>
+                                                    <input type="submit" class="confinput" name="check"
+                                                           value="[{oxmultilang ident="MO_DHL__DELETE_SHIPMENT"}]"
+                                                           onClick="Javascript:document.myedit.labelId.value='[{$label->getId()}]';document.myedit.fnc.value='deleteShipment'">
                                                 </td>
                                             </tr>
+                                            [{if $label->getFieldData('qrLabelUrl')}]
+                                            <tr>
+                                                <td>[{oxmultilang ident="MO_DHL__RETOURE_QR_LABEL"}]</td>
+                                                <td>
+                                                    <a target="_blank" rel="noopener noreferrer"
+                                                       href="[{$label->getFieldData('qrLabelUrl')}]">[{$label->getFieldData('shipmentNumber')}]</a>
+                                                </td>
+                                            </tr>
+                                            [{/if}]
+                                        [{else}]
+                                            <tr>
+                                                <td>[{oxmultilang ident="MO_DHL__LABEL"}]</td>
+                                                <td>
+                                                    <a target="_blank" rel="noopener noreferrer"
+                                                       href="[{$label->getFieldData('labelUrl')}]">[{$label->getFieldData('shipmentNumber')}]</a>
+                                                </td>
+                                                <td [{if $label->getFieldData('returnLabelUrl')}] rowspan="2" [{/if}]>
+                                                    <input type="submit" class="confinput" name="check"
+                                                           value="[{oxmultilang ident="MO_DHL__DELETE_SHIPMENT"}]"
+                                                           onClick="Javascript:document.myedit.labelId.value='[{$label->getId()}]';document.myedit.fnc.value='deleteShipment'">
+                                                </td>
+                                            </tr>
+                                            [{if $label->getFieldData('returnLabelUrl')}]
+                                                <tr>
+                                                    <td>[{oxmultilang ident="MO_DHL__RETOURE_LABEL"}]</td>
+                                                    <td>
+                                                        <a target="_blank" rel="noopener noreferrer"
+                                                           href="[{$label->getFieldData('returnLabelUrl')}]">[{$label->getFieldData('returnShipmentNumber')}]</a>
+                                                    </td>
+                                                </tr>
+                                            [{/if}]
                                         [{/if}]
                                         [{if not $smarty.foreach.labels.last}]
                                             <tr>
@@ -141,6 +165,8 @@
            onClick="Javascript:document.myedit.fnc.value='createLabel'">
     <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CUSTOM_LABEL_CREATE"}]"
            onClick="Javascript:document.myedit.fnc.value='prepareCustomLabel'">
+    <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CREATE_RETOURE"}]"
+           onClick="Javascript:document.myedit.fnc.value='createRetoure'">
 </form>
 <br>
 <br>

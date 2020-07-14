@@ -5,8 +5,13 @@ namespace Mediaopt\DHL\Api;
 
 
 use GuzzleHttp\ClientInterface;
-use Mediaopt\DHL\Adapter\ReturnRequestBuilder;
+use Mediaopt\DHL\Adapter\RetoureRequestBuilder;
+use Mediaopt\DHL\Api\Retoure\RetoureResponse;
 use Mediaopt\DHL\Application\Model\Order;
+use Mediaopt\DHL\Model\MoDHLLabel;
+use org\bovigo\vfs\DirectoryIterationTestCase;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\ViewConfig;
 use Psr\Log\LoggerInterface;
 
 class Retoure extends Base
@@ -18,9 +23,9 @@ class Retoure extends Base
     protected $customerCredentials = null;
 
     /**
-     * @var ReturnRequestBuilder|null
+     * @var RetoureRequestBuilder|null
      */
-    protected $returnRequestBuilder = null;
+    protected $retoureRequestBuilder = null;
 
     /**
      * @param Credentials     $credentials
@@ -32,7 +37,7 @@ class Retoure extends Base
     {
         parent::__construct($credentials, $logger, $client);
         $this->customerCredentials = $customerCredentials;
-        $this->returnRequestBuilder = new ReturnRequestBuilder();
+        $this->retoureRequestBuilder = new RetoureRequestBuilder();
     }
 
     /**
@@ -62,6 +67,13 @@ class Retoure extends Base
      */
     public function createRetoure(Order $order)
     {
-        return $this->callApi('', ['json' => $this->returnRequestBuilder->build($order)], 'post');
+        return new RetoureResponse($this->callApi('', ['json' => $this->retoureRequestBuilder->build($order)], 'post'));
     }
+
+    public function handleResponse(Order $order, RetoureResponse $response)
+    {
+        $label = MoDHLLabel::fromOrderAndRetoure($order, $response);
+        $label->save();
+    }
+
 }
