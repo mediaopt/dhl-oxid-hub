@@ -141,11 +141,19 @@ class Credentials
         return new static('https://cig.dhl.de/services/production/soap', $username, $password, $ekp, false);
     }
 
+    /**
+     * @param string $username
+     * @param string $password
+     * @return static
+     */
     public static function createCustomerCredentials($username, $password)
     {
         return new static('', $username, $password);
     }
 
+    /**
+     * @return string
+     */
     public function getBasicAuth()
     {
         return base64_encode($this->getUsername() . ':' . $this->getPassword());

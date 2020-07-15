@@ -95,12 +95,21 @@ class MoDHLLabel extends BaseModel
         return $label;
     }
 
+    /**
+     * @param string $fileName
+     * @param array  $data
+     * @throws \OxidEsales\EshopCommunity\Core\Exception\FileException
+     */
     protected function storeData($fileName, $data)
     {
         $path = Registry::get(ViewConfig::class)->getModulePath('mo_dhl', 'documents');
         file_put_contents($path . DIRECTORY_SEPARATOR . $fileName, base64_decode($data));
     }
 
+    /**
+     * @param string $fileName
+     * @throws \OxidEsales\EshopCommunity\Core\Exception\FileException
+     */
     protected function deleteData($fileName)
     {
         $path = Registry::get(ViewConfig::class)->getModulePath('mo_dhl', 'documents');

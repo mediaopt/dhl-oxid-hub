@@ -155,6 +155,11 @@ abstract class Configurator
         );
     }
 
+    /**
+     * @param LoggerInterface|null $logger
+     * @param ClientInterface|null $client
+     * @return Retoure
+     */
     public function buildRetoure(LoggerInterface $logger = null, ClientInterface $client = null)
     {
         return new Retoure(

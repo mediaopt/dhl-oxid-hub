@@ -70,6 +70,11 @@ class Retoure extends Base
         return new RetoureResponse($this->callApi('', ['json' => $this->retoureRequestBuilder->build($order)], 'post'));
     }
 
+    /**
+     * @param Order           $order
+     * @param RetoureResponse $response
+     * @throws \Exception
+     */
     public function handleResponse(Order $order, RetoureResponse $response)
     {
         $label = MoDHLLabel::fromOrderAndRetoure($order, $response);
