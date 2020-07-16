@@ -14,12 +14,24 @@ use OxidEsales\Eshop\Core\ViewConfig;
 class AccountOrderController extends AccountOrderController_parent
 {
 
+    /**
+     * @var string
+     */
     const MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_ALWAYS = 'ALWAYS';
 
+    /**
+     * @var string
+     */
     const MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_ONLY_DHL = 'ONLY_DHL';
 
+    /**
+     * @var string
+     */
     const MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_NEVER = 'NEVER';
 
+    /**
+     * @var string
+     */
     const MO_DHL__DEFAULT_RETOURE_ERROR_MESSAGE = 'MO_DHL__DEFAULT_RETOURE_ERROR_MESSAGE';
 
     /**
@@ -102,11 +114,11 @@ class AccountOrderController extends AccountOrderController_parent
                 return 'account_order';
             }
             $fileType = $format === 'qr' ? 'image/jpeg' : 'application/pdf';
-            \OxidEsales\Eshop\Core\Registry::getUtils()->setHeader("Content-Type: $fileType;");
-            echo file_get_contents($labelFile);die;
+            $utils = \OxidEsales\Eshop\Core\Registry::getUtils();
+            $utils->setHeader("Content-Type: $fileType;");
+            $utils->showMessageAndExit(file_get_contents($labelFile));
         } catch (\Exception $e) {
             $this->moDHLHandleError($e->getMessage(), $data);
-            return;
         }
     }
 

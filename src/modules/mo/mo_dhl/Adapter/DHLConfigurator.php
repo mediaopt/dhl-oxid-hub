@@ -99,7 +99,9 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerRetoureLogin()
     {
-        return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '') : self::TEST_RETOURE_USERNAME;
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '')
+            : self::TEST_RETOURE_USERNAME;
     }
 
     /**
@@ -107,7 +109,9 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerRetourePassword()
     {
-        return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '') : self::TEST_RETOURE_PASSWORD;
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '')
+            : self::TEST_RETOURE_PASSWORD;
     }
 
     /**

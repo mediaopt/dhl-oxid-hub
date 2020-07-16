@@ -102,8 +102,8 @@ $aLang = [
     'MO_DHL__BATCH_LABELS_CREATED'                => '%d Labels erstellt.',
     'MO_DHL__ALLOW_NOTIFICATION'                  => 'Ich stimme zu, dass meine E-Mail-Adresse an den Versanddienstleister übermittelt wird.',
     'MO_DHL__RETOURE'                             => 'Retoure',
-    'MO_DHL__RETOURE_LABEL'                       => 'Retourelabel',
+    'MO_DHL__RETOURE_LABEL'                       => 'Retourenlabel',
     'MO_DHL__RETOURE_QR_LABEL'                    => 'Retoure QR Code',
     'MO_DHL__CREATE_RETOURE'                      => 'Retourenlabel erstellen',
-    'MO_DHL__DEFAULT_RETOURE_ERROR_MESSAGE'       => 'Bei der Erstellung des Retourelabels gab es einen Fehler. Bitte versuchen Sie es nochmal oder wenden Sie sich an den Support.',
+    'MO_DHL__DEFAULT_RETOURE_ERROR_MESSAGE'       => 'Bei der Erstellung des Retourenlabels gab es einen Fehler. Bitte versuchen Sie es nochmal oder wenden Sie sich an den Support.',
 ];

@@ -84,13 +84,14 @@ class MoDHLLabel extends BaseModel
         $label = new self();
         $label->storeData($retoureResponse->getShipmentNumber() . '.jpeg', $retoureResponse->getQrLabelData());
         $label->storeData($retoureResponse->getShipmentNumber() . '.pdf', $retoureResponse->getLabelData());
+        $fileName = 'documents' . DIRECTORY_SEPARATOR . $retoureResponse->getShipmentNumber();
         $label->assign([
-            'oxshopid'             => $order->getShopId(),
-            'orderId'              => $order->getId(),
-            'type'                 => self::TYPE_RETOURE,
-            'shipmentNumber'       => $retoureResponse->getShipmentNumber(),
-            'labelUrl'             => Registry::get(ViewConfig::class)->getModuleUrl('mo_dhl', 'documents' . DIRECTORY_SEPARATOR . $retoureResponse->getShipmentNumber() . '.pdf'),
-            'qrLabelUrl'             => Registry::get(ViewConfig::class)->getModuleUrl('mo_dhl', 'documents' . DIRECTORY_SEPARATOR . $retoureResponse->getShipmentNumber() . '.jpeg'),
+            'oxshopid'       => $order->getShopId(),
+            'orderId'        => $order->getId(),
+            'type'           => self::TYPE_RETOURE,
+            'shipmentNumber' => $retoureResponse->getShipmentNumber(),
+            'labelUrl'       => Registry::get(ViewConfig::class)->getModuleUrl('mo_dhl', $fileName . '.pdf'),
+            'qrLabelUrl'     => Registry::get(ViewConfig::class)->getModuleUrl('mo_dhl', $fileName . '.jpeg'),
         ]);
         return $label;
     }
@@ -113,7 +114,9 @@ class MoDHLLabel extends BaseModel
     protected function deleteData($fileName)
     {
         $path = Registry::get(ViewConfig::class)->getModulePath('mo_dhl', 'documents');
-        unlink($path . DIRECTORY_SEPARATOR . $fileName);
+        if (is_file($path . DIRECTORY_SEPARATOR . $fileName)) {
+            unlink($path . DIRECTORY_SEPARATOR . $fileName);
+        }
     }
 
     /**
