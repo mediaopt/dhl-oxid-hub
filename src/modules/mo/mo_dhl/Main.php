@@ -120,4 +120,12 @@ class Main
     {
         return $this->getConfigurator()->buildGKV($this->getLogger());
     }
+
+    /**
+     * @return Api\Retoure
+     */
+    public function buildRetoure()
+    {
+        return $this->getConfigurator()->buildRetoure($this->getLogger());
+    }
 }

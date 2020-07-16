@@ -12,12 +12,14 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
             ->getMockBuilder(\Mediaopt\DHL\Configurator::class)
             ->setMethods([
                 'isProductionEnvironment',
-                'getRestLogin',
-                'getRestPassword',
-                'getSoapLogin',
-                'getSoapPassword',
+                'getProdLogin',
+                'getProdPassword',
+                'getSandboxLogin',
+                'getSandboxPassword',
                 'getCustomerGKVLogin',
                 'getCustomerGKVPassword',
+                'getCustomerRetoureLogin',
+                'getCustomerRetourePassword',
                 'getMapsApiKey',
                 'buildLogHandler',
                 'getEkp',

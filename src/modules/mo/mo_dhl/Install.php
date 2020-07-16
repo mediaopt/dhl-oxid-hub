@@ -1,6 +1,9 @@
 <?php
 namespace Mediaopt\DHL;
 
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\ViewConfig;
+
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
@@ -23,7 +26,19 @@ class Install
         static::ensureConfigVariableNameLength();
         static::addTables();
         static::addColumns();
+        static::ensureDocumentsFolderExists();
         static::cleanUp();
+    }
+
+    protected function ensureDocumentsFolderExists()
+    {
+        $path = Registry::get(ViewConfig::class)->getModulePath('mo_dhl', '') . 'documents';
+        if (!is_dir($path)) {
+            mkdir($path);
+        }
+        if (!is_dir($path)) {
+            Registry::getUtilsView()->addErrorToDisplay(sprintf(Registry::getLang()->translateString('MO_DHL__INSTALL_FOLDER_ERROR'), $path));
+        }
     }
 
     /**
@@ -161,7 +176,10 @@ class Install
             + self::addColumn('oxorder', 'MO_DHL_PROCESS', 'VARCHAR(32)')
             + self::addColumn('oxorder', 'MO_DHL_PARTICIPATION', 'CHAR(2)')
             + self::addColumn('oxorder', 'MO_DHL_LAST_LABEL_CREATION_STATUS', 'VARCHAR(100)')
-            + self::addColumn('oxorder', 'MO_DHL_ALLOW_NOTIFICATION', 'TINYINT(1) NOT NULL DEFAULT 0');
+            + self::addColumn('oxorder', 'MO_DHL_ALLOW_NOTIFICATION', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxcountry', 'MO_DHL_RETOURE_RECEIVER_ID', 'VARCHAR(32)')
+            + self::addColumn('mo_dhl_labels', 'type', 'ENUM("delivery", "retoure") DEFAULT "delivery"')
+            + self::addColumn('mo_dhl_labels', 'qrLabelUrl', 'VARCHAR(512)');
         if (max($payments, $delivery, $order) === 0) {
             return;
         }
