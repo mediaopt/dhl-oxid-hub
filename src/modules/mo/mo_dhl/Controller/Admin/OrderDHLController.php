@@ -79,7 +79,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             $retoureService->handleResponse($this->getOrder(), $response);
         } catch (\Exception $e) {
             \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($e->getMessage());
-            if (!($previous = $e->getPrevious()) || !($previous instanceof ClientException)) {
+            if (!($previous = $e->getPrevious()) || !$previous instanceof ClientException) {
                 return;
             }
             $response = $previous->getResponse();
