@@ -47,21 +47,23 @@ abstract class Base
 
     /**
      * @param string $relativeUrl
+     * @param array  $options
+     * @param string $method
      *
      * @return \stdClass
      * @throws WebserviceException
      */
-    protected function callApi($relativeUrl)
+    protected function callApi($relativeUrl, $options = [], $method = 'get')
     {
-        if (array_key_exists($relativeUrl, $this->memoizations)) {
+        if ($options === [] && array_key_exists($relativeUrl, $this->memoizations)) {
             return $this->memoizations[$relativeUrl];
         }
 
         $url = $this->buildUrl($relativeUrl);
-        $requestOptions = $this->buildRequestOptions();
+        $requestOptions = array_merge($options, $this->buildRequestOptions());
         $this->getLogger()->debug(__METHOD__ . " - API call with $url", ['options' => $requestOptions]);
         try {
-            $response = $this->getClient()->get($url, $requestOptions);
+            $response = $this->getClient()->{$method}($url, $requestOptions);
             $body = $response->getBody();
             $payload = $body !== null ? $body->getContents() : '';
             if ($payload === '') {
@@ -75,7 +77,9 @@ abstract class Base
                 $this->getLogger()->error($message, ['response' => $response, 'payload' => $payload]);
                 throw new WebserviceException('API returned an unexpected value.');
             }
-            $this->memoizations[$relativeUrl] = $decoded;
+            if ($options === []) {
+                $this->memoizations[$relativeUrl] = $decoded;
+            }
             return $decoded;
         } catch (RequestException $exception) {
             $message = __METHOD__ . " - The API call to $url failed due to {$exception->getMessage()}";

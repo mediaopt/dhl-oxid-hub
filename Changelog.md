@@ -1,4 +1,10 @@
 # Changelog
+## 1.2.0
+* create return labels in the oxid admin
+* allow users to create return labels in the frontend
+* display return labels and return label QR codes
+* define the receiverID for returns on a per country level
+
 ## 1.1.1
 * fixed HTML layout
 

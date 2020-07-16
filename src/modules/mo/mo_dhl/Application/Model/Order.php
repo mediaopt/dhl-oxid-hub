@@ -8,6 +8,7 @@ namespace Mediaopt\DHL\Application\Model;
  * @copyright 2016 Mediaopt GmbH
  */
 
+use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Model\MoDHLLabelList;
 use Mediaopt\DHL\ServiceProvider\Branch;
 use OxidEsales\Eshop\Core\Field;
@@ -24,6 +25,12 @@ use OxidEsales\Eshop\Core\Field;
  */
 class Order extends Order_parent
 {
+
+    /**
+     * @var MoDHLLabel|false|null
+     */
+    protected $moDHLRetoureLabel = null;
+
     /**
      * @extend
      * @param \OxidEsales\Eshop\Application\Model\Basket    $basket
@@ -211,6 +218,26 @@ class Order extends Order_parent
         $labels = \oxNew(MoDHLLabelList::class);
         $labels->loadOrderLabels($this->getId());
         return $labels;
+    }
+
+    /**
+     * @return MoDHLLabel|false
+     */
+    public function moDHLGetRetoure()
+    {
+        if ($this->moDHLRetoureLabel === null) {
+            $labels = $this->moDHLGetLabels();
+            $this->moDHLRetoureLabel = reset(array_filter($labels->getArray(), function ($label) {return $label->isRetoure();}));
+        }
+        return $this->moDHLRetoureLabel;
+}
+
+    /**
+     * @return bool
+     */
+    public function moDHLHasRetoure()
+    {
+        return $this->moDHLGetRetoure() !== false;
     }
 
     /**

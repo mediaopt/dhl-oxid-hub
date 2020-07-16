@@ -213,4 +213,12 @@ class DHLAdapter
     {
         return $this->getSdk()->buildGKV();
     }
+
+    /**
+     * @return \Mediaopt\DHL\Api\Retoure
+     */
+    public function buildRetoure()
+    {
+        return $this->getSdk()->buildRetoure();
+    }
 }

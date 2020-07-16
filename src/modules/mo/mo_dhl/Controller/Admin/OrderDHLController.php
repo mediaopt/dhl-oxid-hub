@@ -2,6 +2,7 @@
 
 namespace Mediaopt\DHL\Controller\Admin;
 
+use GuzzleHttp\Exception\ClientException;
 use Mediaopt\DHL\Adapter\DHLAdapter;
 use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
 use Mediaopt\DHL\Adapter\GKVShipmentBuilder;
@@ -13,6 +14,7 @@ use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
 use Mediaopt\DHL\Api\Wunschpaket;
+use Mediaopt\DHL\Exception\WebserviceException;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Shipment\Participation;
@@ -68,6 +70,30 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
+     */
+    public function createRetoure()
+    {
+        try {
+            $retoureService = Registry::get(DHLAdapter::class)->buildRetoure();
+            $response = $retoureService->createRetoure($this->getOrder());
+            $retoureService->handleResponse($this->getOrder(), $response);
+        } catch (\Exception $e) {
+            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($e->getMessage());
+            if (!($previous = $e->getPrevious()) || !$previous instanceof ClientException) {
+                return;
+            }
+            $response = $previous->getResponse();
+            if (!$response->getBody()) {
+                return;
+            }
+            $data = json_decode($response->getBody()->getContents());
+            if ($data->detail) {
+                \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($data->detail);
+            }
+        }
+    }
+
+    /**
      * template method: create label from custom input
      *
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
@@ -111,6 +137,10 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     {
         $label = \oxNew(MoDHLLabel::class);
         $label->load(Registry::getConfig()->getRequestParameter('labelId'));
+        if ($label->isRetoure()) {
+            $label->delete();
+            return;
+        }
         $this->handleDeletionResponse($label, $this->callDeleteShipment($label->getFieldData('shipmentNumber')));
     }
 
@@ -165,11 +195,14 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @return Process
+     * @return Process|null
      */
     protected function getProcess()
     {
-        return Process::build($this->getOrder()->oxorder__mo_dhl_process->rawValue);
+        if ($processNr = $this->getOrder()->oxorder__mo_dhl_process->rawValue) {
+            return Process::build($processNr);
+        }
+        return null;
     }
 
     /**

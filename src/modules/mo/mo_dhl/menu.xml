@@ -17,6 +17,9 @@
             <SUBMENU id="mxpaymeth" cl="admin_payment" list="payment_list">
                 <TAB id="MO_DHL__PAYMENTS_DHL" cl="MoDHLPaymentsDHL"/>
             </SUBMENU>
+            <SUBMENU id="mxcountries" cl="country" list="country_list">
+                <TAB id="MO_DHL__COUNTRY_DHL" cl="MoDHLCountryDHL"/>
+            </SUBMENU>
         </MAINMENU>
     </OXMENU>
 </OX>
