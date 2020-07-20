@@ -144,7 +144,7 @@ class MoDHLLabel extends BaseModel
         if ($this->isDelivery()) {
             $order = oxNew(Order::class);
             $order->load($this->getFieldData('orderId'));
-            $order->oxorder__oxtrackcode = new Field($this->getFieldData('shipmentNumber'));
+            $order->oxorder__oxtrackcode = oxNew(Field::class, $this->getFieldData('shipmentNumber'));
             $order->save();
         }
         return parent::save();
