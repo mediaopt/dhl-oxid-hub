@@ -12,6 +12,7 @@ use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Model\MoDHLLabelList;
 use Mediaopt\DHL\ServiceProvider\Branch;
 use OxidEsales\Eshop\Core\Field;
+use OxidEsales\Eshop\Core\Registry;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -25,6 +26,11 @@ use OxidEsales\Eshop\Core\Field;
  */
 class Order extends Order_parent
 {
+
+    /**
+     * @var string
+     */
+    const MO_DHL__TRACKING_URL = "https://www.dhl.de/%s/privatkunden/pakete-empfangen/verfolgen.html?piececode=%s";
 
     /**
      * @var MoDHLLabel|false|null
@@ -256,5 +262,25 @@ class Order extends Order_parent
     {
         $this->oxorder__mo_dhl_last_label_creation_status = oxNew(Field::class, $status);
         $this->save();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getShipmentTrackingUrl()
+    {
+        if ($this->_sShipTrackUrl === null) {
+            if (!($trackingCode = $this->getTrackCode()) || !$this->oxorder__mo_dhl_process->rawValue) {
+                return parent::getShipmentTrackingUrl();
+            }
+            $label = oxNew(MoDHLLabel::class);
+            if (!$label->loadByOrderAndTrackingNumber($this->getId(), $trackingCode)) {
+                return parent::getShipmentTrackingUrl();
+            }
+            $lang = Registry::getLang()->getLanguageAbbr() === 'de' ? 'de' : 'en';
+            $this->_sShipTrackUrl = sprintf(self::MO_DHL__TRACKING_URL, $lang, $trackingCode);
+        }
+
+        return $this->_sShipTrackUrl;
     }
 }
