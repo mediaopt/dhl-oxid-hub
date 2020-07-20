@@ -1,4 +1,8 @@
 # Changelog
+## 1.2.1
+* store shipment number in oxtrackcode field of order after delivery label creation
+* display dhl tracking link when oxtrackcode was set via delivery label creation
+
 ## 1.2.0
 * create return labels in the oxid admin
 * allow users to create return labels in the frontend

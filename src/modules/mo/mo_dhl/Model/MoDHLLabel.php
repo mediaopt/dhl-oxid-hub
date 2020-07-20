@@ -11,6 +11,7 @@ namespace Mediaopt\DHL\Model;
 use Mediaopt\DHL\Api\GKV\CreationState;
 use Mediaopt\DHL\Api\Retoure\RetoureResponse;
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\ViewConfig;
@@ -136,6 +137,20 @@ class MoDHLLabel extends BaseModel
     }
 
     /**
+     * @inheritDoc
+     */
+    public function save()
+    {
+        if ($this->isDelivery()) {
+            $order = oxNew(Order::class);
+            $order->load($this->getFieldData('orderId'));
+            $order->oxorder__oxtrackcode = oxNew(Field::class, $this->getFieldData('shipmentNumber'));
+            $order->save();
+        }
+        return parent::save();
+    }
+
+    /**
      * @return bool
      */
     public function isRetoure()
@@ -149,5 +164,23 @@ class MoDHLLabel extends BaseModel
     public function isDelivery()
     {
         return $this->getFieldData('type') === self::TYPE_DELIVERY;
+    }
+
+    /**
+     * @param string $orderId
+     * @param string $shipmentNumber
+     *
+     * @return bool
+     */
+    public function loadByOrderAndTrackingNumber($orderId, $shipmentNumber)
+    {
+        $this->_addField('oxid', 0);
+        $query = $this->buildSelectString([
+            $this->getViewName() . '.orderId' => $orderId,
+            $this->getViewName() . '.shipmentNumber' => $shipmentNumber,
+            ]);
+        $this->_isLoaded = $this->assignRecord($query);
+
+        return $this->_isLoaded;
     }
 }
