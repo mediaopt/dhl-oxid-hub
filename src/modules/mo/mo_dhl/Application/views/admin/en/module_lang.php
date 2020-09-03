@@ -23,6 +23,7 @@ $aLang = [
     'MO_DHL__PARTICIPATION_NUMBER'                 => 'Participation number',
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'A participation number is exactly two characters long and consists solely of letters and digits',
     'MO_DHL__OPERATOR'                             => 'Delivery operator',
+    'HELP_MO_DHL__OPERATOR'                        => 'Please provide the name of the delivery operator. This information is needed for a possible return outside the EU.',
     'MO_DHL__PROCESS_IDENTIFIER'                   => 'Process number',
     'MO_DHL__PROCESS_IDENTIFIER_ERROR'             => 'Please choose a process number from the list.',
     'MO_DHL__DELIVERYSET_DHL'                      => 'DHL',

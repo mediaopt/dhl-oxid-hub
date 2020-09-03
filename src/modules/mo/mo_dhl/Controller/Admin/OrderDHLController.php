@@ -219,8 +219,12 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     public function save()
     {
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $information = ['MO_DHL_EKP' => $this->validateEkp(), 'MO_DHL_PROCESS' => $this->validateProcessIdentifier(), 'MO_DHL_PARTICIPATION' => $this->validateParticipationNumber()];
-        $information['MO_DHL_OPERATOR'] = Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('operator');
+        $information = [
+            'MO_DHL_EKP' => $this->validateEkp(),
+            'MO_DHL_PROCESS' => $this->validateProcessIdentifier(),
+            'MO_DHL_PARTICIPATION' => $this->validateParticipationNumber(),
+            'MO_DHL_OPERATOR' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('operator'),
+        ];
         $tuples = [];
         foreach ($information as $column => $value) {
             if (empty($value)) {

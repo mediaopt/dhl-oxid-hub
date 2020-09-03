@@ -32,7 +32,7 @@ class RetoureRequestBuilder
             ->setTelephoneNumber($order->moDHLGetAddressData('fon'));
         $country = $this->buildCountry($order->getFieldData('oxbillcountryid'));
 
-        if ($country->getCountryISOCode() == 'CHE') {
+        if (!in_array($country->getCountryISOCode(), Country::EU_COUNTRIES_LIST)) {
             $returnOrder->setCustomsDocument($this->buildCustomsDocument($order));
         }
 
@@ -92,12 +92,11 @@ class RetoureRequestBuilder
      */
     protected function buildCustomsDocument(Order $order)
     {
-        $document = new CustomsDocument();
-        $document->setCurrency($order->getFieldData('oxcurrency'))
+        return (new CustomsDocument())
+            ->setCurrency($order->getFieldData('oxcurrency'))
             ->setOriginalShipmentNumber($order->getFieldData('oxtrackcode'))
             ->setOriginalOperator($order->getFieldData('mo_dhl_operator'))
             ->setPositions($this->buildPositions($order));
-        return $document;
     }
 
     /**
@@ -113,7 +112,7 @@ class RetoureRequestBuilder
             $positions[] = (new CustomsDocumentPosition())
                 ->setPositionDescription(substr($orderArticle->getArticle()->getFieldData('oxtitle'), 0, 50))
                 ->setCount($count)
-                ->setWeightInGrams($orderArticle->getFieldData('oxweight') * 1000.0)
+                ->setWeightInGrams($orderArticle->getFieldData('oxweight') * 1000.0 * $count)
                 ->setValues($orderArticle->getPrice()->getPrice() * $count)
                 ->setArticleReference($orderArticle->getArticle()->getId());
         }
