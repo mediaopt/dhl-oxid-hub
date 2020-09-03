@@ -22,6 +22,7 @@ $aLang = [
     'MO_DHL__FILIALROUTING_EMAIL_ERROR'            => 'Die alternative E-Mail-Adresse für das Filialrouting war nicht valide und wurde zurückgesetzt.',
     'MO_DHL__PARTICIPATION_NUMBER'                 => 'Teilnahmenummer',
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'Eine Teilnahmenummer besteht aus genau zwei Zeichen und enthält nur Buchstaben und Ziffern.',
+    'MO_DHL__OPERATOR'                             => 'Zusteller',
     'MO_DHL__PROCESS_IDENTIFIER'                   => 'Verfahrensnummer',
     'MO_DHL__PROCESS_IDENTIFIER_ERROR'             => 'Bitte wählen Sie eine Verfahrensnummer aus der Liste.',
     'MO_DHL__DELIVERYSET_DHL'                      => 'DHL',

@@ -22,6 +22,7 @@ $aLang = [
     'MO_DHL__FILIALROUTING_EMAIL_ERROR'            => 'The alternative e-mail address for Filialrouting was not valid and therefor was reset.',
     'MO_DHL__PARTICIPATION_NUMBER'                 => 'Participation number',
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'A participation number is exactly two characters long and consists solely of letters and digits',
+    'MO_DHL__OPERATOR'                             => 'Delivery operator',
     'MO_DHL__PROCESS_IDENTIFIER'                   => 'Process number',
     'MO_DHL__PROCESS_IDENTIFIER_ERROR'             => 'Please choose a process number from the list.',
     'MO_DHL__DELIVERYSET_DHL'                      => 'DHL',

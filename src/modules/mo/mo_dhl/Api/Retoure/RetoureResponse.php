@@ -76,9 +76,9 @@ class RetoureResponse
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getQrLabelData() : string
+    public function getQrLabelData()
     {
         return $this->qrLabelData;
     }
