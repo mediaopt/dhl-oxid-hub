@@ -167,9 +167,12 @@ class Install
      */
     protected static function addColumns()
     {
-        $payments = self::addColumn('oxpayments', 'MO_DHL_EXCLUDED', 'TINYINT(1) NOT NULL DEFAULT 0');
+        $payments = self::addColumn('oxpayments', 'MO_DHL_EXCLUDED', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxpayments', 'MO_DHL_CASH_ON_DELIVERY', 'TINYINT(1) NOT NULL DEFAULT 0');
         $delivery = self::addColumn('oxdeliveryset', 'MO_DHL_EXCLUDED', 'TINYINT(1) NOT NULL DEFAULT 0')
             + self::addColumn('oxdelivery', 'MO_DHL_EXCLUDED', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxdeliveryset', 'MO_DHL_IDENT_CHECK', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxdeliveryset', 'MO_DHL_ADDITIONAL_INSURANCE', 'TINYINT(1) NOT NULL DEFAULT 0')
             + self::addColumn('oxdeliveryset', 'MO_DHL_PROCESS', 'VARCHAR(32)')
             + self::addColumn('oxdeliveryset', 'MO_DHL_PARTICIPATION', 'CHAR(2)');
         $order = self::addColumn('oxorder', 'MO_DHL_EKP', 'CHAR(10)')
@@ -177,10 +180,17 @@ class Install
             + self::addColumn('oxorder', 'MO_DHL_PARTICIPATION', 'CHAR(2)')
             + self::addColumn('oxorder', 'MO_DHL_LAST_LABEL_CREATION_STATUS', 'VARCHAR(100)')
             + self::addColumn('oxorder', 'MO_DHL_ALLOW_NOTIFICATION', 'TINYINT(1) NOT NULL DEFAULT 0')
-            + self::addColumn('oxcountry', 'MO_DHL_RETOURE_RECEIVER_ID', 'VARCHAR(32)')
-            + self::addColumn('mo_dhl_labels', 'type', 'ENUM("delivery", "retoure") DEFAULT "delivery"')
+            + self::addColumn('oxorder', 'MO_DHL_IDENT_CHECK_BIRTHDAY', 'VARCHAR(10)');
+        $country = self::addColumn('oxcountry', 'MO_DHL_RETOURE_RECEIVER_ID', 'VARCHAR(32)');
+        $labels = self::addColumn('mo_dhl_labels', 'type', 'ENUM("delivery", "retoure") DEFAULT "delivery"')
             + self::addColumn('mo_dhl_labels', 'qrLabelUrl', 'VARCHAR(512)');
-        if (max($payments, $delivery, $order) === 0) {
+        $articles = self::addColumn('oxarticles', 'MO_DHL_VISUAL_AGE_CHECK16', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxarticles', 'MO_DHL_VISUAL_AGE_CHECK18', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxarticles', 'MO_DHL_BULKY_GOOD', 'TINYINT(1) NOT NULL DEFAULT 0');
+        $categories = self::addColumn('oxcategories', 'MO_DHL_VISUAL_AGE_CHECK16', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxcategories', 'MO_DHL_VISUAL_AGE_CHECK18', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxcategories', 'MO_DHL_BULKY_GOOD', 'TINYINT(1) NOT NULL DEFAULT 0');
+        if (max($payments, $delivery, $order, $country, $labels, $articles, $categories) === 0) {
             return;
         }
 

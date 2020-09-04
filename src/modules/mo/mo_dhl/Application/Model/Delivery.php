@@ -61,4 +61,13 @@ class Delivery extends Delivery_parent
         }
         return $processes !== [];
     }
+
+    /**
+     * @param string $service
+     * @return bool
+     */
+    public function moDHLUsesService(string $service) : bool
+    {
+        return (bool) $this->getFieldData($service);
+    }
 }
