@@ -19,6 +19,9 @@ use OxidEsales\Eshop\Core\Registry;
 class PaymentController extends PaymentController_parent
 {
 
+    /**
+     * @inheritDoc
+     */
     public function validatePayment()
     {
         $status = parent::validatePayment();

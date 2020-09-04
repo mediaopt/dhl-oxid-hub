@@ -344,7 +344,7 @@ class Process
     /**
      * @return bool
      */
-    public function supportsVisualAgeCheck()
+    public function supportsVisualAgeCheck() : bool
     {
         return in_array(self::SERVICE_VISUAL_AGE_CHECK, self::SUPPORTED_SERVICES[$this->identifier]);
     }
@@ -352,7 +352,7 @@ class Process
     /**
      * @return bool
      */
-    public function supportsAdditionalInsurance()
+    public function supportsAdditionalInsurance() : bool
     {
         return in_array(self::SERVICE_ADDITIONAL_INSURANCE, self::SUPPORTED_SERVICES[$this->identifier]);
     }
@@ -360,7 +360,7 @@ class Process
     /**
      * @return bool
      */
-    public function supportsIdentCheck()
+    public function supportsIdentCheck() : bool
     {
         return in_array(self::SERVICE_IDENT_CHECK, self::SUPPORTED_SERVICES[$this->identifier]);
     }
@@ -368,7 +368,7 @@ class Process
     /**
      * @return bool
      */
-    public function supportsBulkyGood()
+    public function supportsBulkyGood() : bool
     {
         return in_array(self::SERVICE_BULKY_GOOD, self::SUPPORTED_SERVICES[$this->identifier]);
     }
@@ -376,7 +376,7 @@ class Process
     /**
      * @return bool
      */
-    public function supportsCashOnDelivery()
+    public function supportsCashOnDelivery() : bool
     {
         return in_array(self::SERVICE_CASH_ON_DELIVERY, self::SUPPORTED_SERVICES[$this->identifier]);
     }

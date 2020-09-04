@@ -215,7 +215,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
 
     /**
      * @param Order $order
-     * @return Ident
+     * @return \stdClass
      */
     protected function createIdent(Order $order) : \stdClass
     {
