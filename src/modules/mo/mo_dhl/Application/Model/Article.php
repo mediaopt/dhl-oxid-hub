@@ -8,6 +8,8 @@
 namespace Mediaopt\DHL\Application\Model;
 
 
+use OxidEsales\Eshop\Core\DatabaseProvider;
+
 /**
  * @author Mediaopt GmbH
  */
@@ -53,14 +55,19 @@ class Article extends \OxidEsales\Eshop\Application\Model\Article
         if ($this->getFieldData($service)) {
             return true;
         }
-        foreach ($this->getCategoryIds() as $categoryId) {
-            $category = oxNew(Category::class);
-            $category->load($categoryId);
-            if ($category->moDHLUsesService($service)) {
-                return true;
-            }
+        if (!$this->getCategoryIds()) {
+            return false;
         }
-        return false;
+        $db = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
+        $ids = implode(', ', $db->quoteArray($this->getCategoryIds()));
+        $query = "SELECT MAX($service) FROM oxcategories AS parent"
+            . " LEFT JOIN oxcategories as child"
+            . " ON parent.OXSHOPID = child.OXSHOPID"
+            .    " AND parent.OXROOTID = child.OXROOTID"
+            .    " AND parent.OXLEFT <= child.OXLEFT"
+            .    " AND child.OXRIGHT <= parent.OXRIGHT"
+            . " WHERE child.OXID IN ($ids)";
+        return (bool) $db->getOne($query);
     }
 
 }

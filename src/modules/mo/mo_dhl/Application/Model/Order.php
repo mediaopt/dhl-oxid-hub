@@ -318,9 +318,7 @@ class Order extends Order_parent
             case Article::MO_DHL__VISUAL_AGE_CHECK16:
             case Article::MO_DHL__VISUAL_AGE_CHECK18:
             case Article::MO_DHL__BULKY_GOOD:
-                /**
-                 * @var $orderArticle OrderArticle
-                 */
+                /** @var OrderArticle $orderArticle */
                 foreach ($this->getOrderArticles() as $orderArticle) {
                     if ($orderArticle->getArticle()->moDHLUsesService($service)) {
                         return true;

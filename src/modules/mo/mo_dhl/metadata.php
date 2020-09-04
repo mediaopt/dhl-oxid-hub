@@ -43,7 +43,7 @@ $aModule = [
         \OxidEsales\Eshop\Application\Model\DeliveryList::class                   => Application\Model\DeliveryList::class,
         \OxidEsales\Eshop\Application\Model\DeliverySetList::class                => Application\Model\DeliverySetList::class,
         \OxidEsales\Eshop\Application\Model\Article::class                        => Application\Model\Article::class,
-        \OxidEsales\Eshop\Application\Model\Category::class                        => Application\Model\Category::class,
+        \OxidEsales\Eshop\Application\Model\Category::class                       => Application\Model\Category::class,
     ],
     'controllers' => [
         'MoDHLFinder'         => Controller\FinderController::class,
@@ -326,11 +326,11 @@ $aModule = [
             'value' => 'false',
         ],
         [
-            'group' => 'mo_dhl__services',
-            'name'  => 'mo_dhl__ident_check_min_age',
+            'group'       => 'mo_dhl__services',
+            'name'        => 'mo_dhl__ident_check_min_age',
             'type'        => 'select',
             'value'       => '0',
-            'constraints' => '0|A16|A18',
+            'constraints' => '0|16|18',
         ],
         [
             'group' => 'mo_dhl__retoure',
@@ -339,10 +339,10 @@ $aModule = [
             'value' => '',
         ],
         [
-            'group' => 'mo_dhl__retoure',
-            'name'  => 'mo_dhl__retoure_allow_frontend_creation',
-            'type'  => 'select',
-            'value' => 'NEVER',
+            'group'       => 'mo_dhl__retoure',
+            'name'        => 'mo_dhl__retoure_allow_frontend_creation',
+            'type'        => 'select',
+            'value'       => 'NEVER',
             'constraints' => 'NEVER|ONLY_DHL|ALWAYS',
         ],
         [

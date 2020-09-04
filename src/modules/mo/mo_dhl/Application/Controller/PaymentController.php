@@ -29,18 +29,16 @@ class PaymentController extends PaymentController_parent
         if ($session->getVariable('payerror') || !$this->moDHLShowIdentCheckFields()) {
             return $status;
         }
-        if (!($dynvalue = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('dynvalue'))) {
-            $dynvalue = $session->getVariable('dynvalue');
-        }
-        if (!isset($dynvalue['mo_dhl_ident_check_birthday']) || !preg_match('#[0-9]{1,2}\.[0-9]{1,2}\.[12][0-9]{3}#', $dynvalue['mo_dhl_ident_check_birthday'])) {
+        $dynvalue = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('dynvalue')
+            ?: $session->getVariable('dynvalue');
+        if (!isset($dynvalue['mo_dhl_ident_check_birthday']) || !preg_match("#[0-9]{1,2}\.[0-9]{1,2}\.[12][0-9]{3}#", $dynvalue['mo_dhl_ident_check_birthday'])) {
             $this->addTplParam('mo_dhl_birthday_errors', [new InputException(Registry::getLang()->translateString('MO_DHL__BIRTHDAY_ERROR_FORMAT'))]);
             return;
         }
         $date = new \DateTime($dynvalue['mo_dhl_ident_check_birthday']);
         if ($minAge = Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')) {
-            $minAge = substr($minAge, 1);
-            $newestAllowedBirthday = new \DateTime("-$minAge years");
-            if ($date > $newestAllowedBirthday) {
+            $latestAllowedBirthday = new \DateTime("-$minAge years");
+            if ($date > $latestAllowedBirthday) {
                 $errorMessage = sprintf(Registry::getLang()->translateString('MO_DHL__BIRTHDAY_ERROR_AGE'), $minAge);
                 $this->addTplParam('mo_dhl_birthday_errors', [new InputException($errorMessage)]);
                 return;

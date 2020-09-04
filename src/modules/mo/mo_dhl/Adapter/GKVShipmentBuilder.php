@@ -196,21 +196,13 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $service->setBulkyGoods(new Serviceconfiguration(true));
         }
         if ($order->moDHLUsesService(Article::MO_DHL__CASH_ON_DELIVERY) && $process->supportsCashOnDelivery()) {
-            $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery(true, 0, $this->getCashOnDeliveryAmount($order)));
+            $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery(true, 0, $order->oxorder__oxtotalordersum->value));
         }
         if ($order->moDHLUsesService(Article::MO_DHL__ADDITIONAL_INSURANCE) && $order->oxorder__oxtotalbrutsum->value > 500 & $process->supportsAdditionalInsurance()) {
             $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance(true, $order->oxorder__oxtotalbrutsum->value));
         }
 
         return $service;
-    }
-
-    /**
-     * @param Order $order
-     * @return float
-     */
-    protected function getCashOnDeliveryAmount(Order $order) {
-        return $order->oxorder__oxtotalordersum->value;
     }
 
     /**
@@ -223,7 +215,9 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         $ident->surname = $order->moDHLGetAddressData('lname');
         $ident->givenName = $order->moDHLGetAddressData('fname');
         $ident->dateOfBirth = $order->getFieldData('mo_dhl_ident_check_birthday');
-        $ident->minimumAge = Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age') ?: null;
+        $ident->minimumAge = Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
+            ? 'A' . Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
+            : null;
         return $ident;
     }
 
