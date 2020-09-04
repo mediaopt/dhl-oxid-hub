@@ -129,8 +129,15 @@ class AccountOrderController extends AccountOrderController_parent
     public function moDHLShowRetoureActions(Order $order)
     {
         $showActions = Registry::getConfig()->getShopConfVar('mo_dhl__retoure_allow_frontend_creation');
-        return $showActions === self::MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_ALWAYS ||
-            ($showActions === self::MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_ONLY_DHL && $order->oxorder__mo_dhl_process->rawValue);
+
+        $retoureDeadline = strtotime(
+            '+' . Registry::getConfig()->getShopConfVar('mo_dhl__retoure_days_limit') . ' days',
+            strtotime($order->oxorder__oxsenddate->value)
+        );
+
+        return ($showActions === self::MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_ALWAYS ||
+            ($showActions === self::MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_ONLY_DHL && $order->oxorder__mo_dhl_process->rawValue)) &&
+            time() < $retoureDeadline;
     }
 
     /**

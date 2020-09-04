@@ -50,6 +50,8 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retoure_allow_frontend_creation_NEVER'    => 'never',
     'SHOP_MODULE_mo_dhl__retoure_allow_frontend_creation_ONLY_DHL' => 'only for DHL orders',
     'SHOP_MODULE_mo_dhl__retoure_allow_frontend_creation_ALWAYS'   => 'always',
+    'SHOP_MODULE_mo_dhl__retoure_days_limit'                       => 'Max. time for creating returns (days)',
+    'HELP_SHOP_MODULE_mo_dhl__retoure_days_limit'                  => 'You can specify max. time whether customers can create return labels.',
 
     'SHOP_MODULE_GROUP_mo_dhl__beilegerretoure'            => 'Return Shipment',
     'SHOP_MODULE_mo_dhl__beilegerretoure_active'           => 'Attached return shipment label',
