@@ -171,9 +171,11 @@ class Install
         $delivery = self::addColumn('oxdeliveryset', 'MO_DHL_EXCLUDED', 'TINYINT(1) NOT NULL DEFAULT 0')
             + self::addColumn('oxdelivery', 'MO_DHL_EXCLUDED', 'TINYINT(1) NOT NULL DEFAULT 0')
             + self::addColumn('oxdeliveryset', 'MO_DHL_PROCESS', 'VARCHAR(32)')
+            + self::addColumn('oxdeliveryset', 'MO_DHL_OPERATOR', 'VARCHAR(40)')
             + self::addColumn('oxdeliveryset', 'MO_DHL_PARTICIPATION', 'CHAR(2)');
         $order = self::addColumn('oxorder', 'MO_DHL_EKP', 'CHAR(10)')
             + self::addColumn('oxorder', 'MO_DHL_PROCESS', 'VARCHAR(32)')
+            + self::addColumn('oxorder', 'MO_DHL_OPERATOR', 'VARCHAR(40)')
             + self::addColumn('oxorder', 'MO_DHL_PARTICIPATION', 'CHAR(2)')
             + self::addColumn('oxorder', 'MO_DHL_LAST_LABEL_CREATION_STATUS', 'VARCHAR(100)')
             + self::addColumn('oxorder', 'MO_DHL_ALLOW_NOTIFICATION', 'TINYINT(1) NOT NULL DEFAULT 0')

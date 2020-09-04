@@ -83,7 +83,6 @@ class MoDHLLabel extends BaseModel
     public static function fromOrderAndRetoure(Order $order, RetoureResponse $retoureResponse)
     {
         $label = new self();
-        $label->storeData($retoureResponse->getShipmentNumber() . '.jpeg', $retoureResponse->getQrLabelData());
         $label->storeData($retoureResponse->getShipmentNumber() . '.pdf', $retoureResponse->getLabelData());
         $fileName = 'documents' . DIRECTORY_SEPARATOR . $retoureResponse->getShipmentNumber();
         $label->assign([
@@ -92,8 +91,15 @@ class MoDHLLabel extends BaseModel
             'type'           => self::TYPE_RETOURE,
             'shipmentNumber' => $retoureResponse->getShipmentNumber(),
             'labelUrl'       => Registry::get(ViewConfig::class)->getModuleUrl('mo_dhl', $fileName . '.pdf'),
-            'qrLabelUrl'     => Registry::get(ViewConfig::class)->getModuleUrl('mo_dhl', $fileName . '.jpeg'),
         ]);
+
+        if (!empty($retoureResponse->getQrLabelData())) {
+            $label->storeData($retoureResponse->getShipmentNumber() . '.jpeg', $retoureResponse->getQrLabelData());
+            $label->assign([
+                'qrLabelUrl' => Registry::get(ViewConfig::class)->getModuleUrl('mo_dhl', $fileName . '.jpeg'),
+            ]);
+        }
+
         return $label;
     }
 

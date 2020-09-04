@@ -63,6 +63,18 @@
                                         />
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>
+                                        <label for="operator">[{oxmultilang ident="MO_DHL__OPERATOR"}]
+                                            :</label>
+                                    </td>
+                                    <td>
+                                        <input id="operator" name="operator" maxlength="40"
+                                               placeholder="[{oxmultilang ident="MO_DHL__OPERATOR"}]"
+                                               value="[{$operator}]"
+                                        />
+                                    </td>
+                                </tr>
                             </table>
                         </td>
                     </tr>
