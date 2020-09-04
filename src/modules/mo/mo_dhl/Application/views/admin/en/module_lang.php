@@ -72,4 +72,14 @@ $aLang = [
     'MO_DHL__CREATE_RETOURE'           => 'Create Retoure label',
     'MO_DHL__NO_RECEIVER_ID'           => 'The Retoure Receiver Id is not set for the given country %s. Please add it under Master Settings > Countries > DHL.',
 
+    'MO_DHL__ARTICLES_DHL'                => 'DHL',
+    'MO_DHL__CATEGORIES_DHL'              => 'DHL',
+    'MO_DHL__VISUAL_AGE_CHECK16'          => 'Age check: 16 years',
+    'MO_DHL__VISUAL_AGE_CHECK18'          => 'Age check: 18 years',
+    'MO_DHL__BULKY_GOOD'                  => 'Bulky good',
+    'MO_DHL__IDENT_CHECK'                 => 'Ident-Check',
+    'MO_DHL__CASH_ON_DELIVERY'            => 'Cash on delivery',
+    'MO_DHL__ADDITIONAL_INSURANCE'        => 'Additional Insurance',
+    'HELP_MO_DHL__ADDITIONAL_INSURANCE'   => 'DHL normally insures the delivery inside Germany up to 500 EUR concerning losing or damaging. For deliveries of more expensive products DHL offers an additional insurance up to 2.500 EUR (+6,00 EUR surcharge) or 25.000 EUR  (+18,00 EUR surcharge). You can find more informationens <a href="https://www.dhl.de/content/dam/images/pdf/GK/Services/dhl-transportversicherung-infoblatt-en-052020.pdf">here</a>',
+
 ];

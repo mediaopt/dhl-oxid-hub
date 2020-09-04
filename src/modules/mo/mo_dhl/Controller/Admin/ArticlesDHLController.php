@@ -7,27 +7,27 @@
 
 namespace Mediaopt\DHL\Controller\Admin;
 
+use OxidEsales\Eshop\Core\Registry;
+
 /**
  * @author Mediaopt GmbH
  */
-class DeliveryDHLController extends AbstractAdminDHLController
+class ArticlesDHLController extends AbstractAdminDHLController
 {
 
     /**
      * @return string
      */
-    protected
-    function moDHLGetTemplateName() : string
+    protected function moDHLGetTemplateName() : string
     {
-        return 'mo_dhl__delivery_dhl.tpl';
+        return 'mo_dhl__article_dhl.tpl';
     }
 
     /**
      * @return string
      */
-    protected
-    function moDHLGetBaseClassName() : string
+    protected function moDHLGetBaseClassName() : string
     {
-        return \OxidEsales\Eshop\Application\Model\Delivery::class;
+        return \OxidEsales\Eshop\Application\Model\Article::class;
     }
 }

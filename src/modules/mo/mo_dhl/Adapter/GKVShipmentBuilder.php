@@ -4,6 +4,7 @@ namespace Mediaopt\DHL\Adapter;
 
 use Mediaopt\DHL\Api\GKV\CommunicationType;
 use Mediaopt\DHL\Api\GKV\CountryType;
+use Mediaopt\DHL\Api\GKV\Ident;
 use Mediaopt\DHL\Api\GKV\NameType;
 use Mediaopt\DHL\Api\GKV\NativeAddressType;
 use Mediaopt\DHL\Api\GKV\PackStationType;
@@ -11,14 +12,19 @@ use Mediaopt\DHL\Api\GKV\PostfilialeType;
 use Mediaopt\DHL\Api\GKV\ReceiverNativeAddressType;
 use Mediaopt\DHL\Api\GKV\ReceiverType;
 use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationAdditionalInsurance;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationCashOnDelivery;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetails;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationIC;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationVisualAgeCheck;
 use Mediaopt\DHL\Api\GKV\Shipment;
 use Mediaopt\DHL\Api\GKV\ShipmentDetailsType;
 use Mediaopt\DHL\Api\GKV\ShipmentItemType;
 use Mediaopt\DHL\Api\GKV\ShipmentNotificationType;
 use Mediaopt\DHL\Api\GKV\ShipmentService;
 use Mediaopt\DHL\Api\GKV\ShipperType;
+use Mediaopt\DHL\Application\Model\Article;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Model\MoDHLNotificationMode;
 use Mediaopt\DHL\ServiceProvider\Branch;
@@ -179,7 +185,40 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $altEmail = Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null;
             $service->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $altEmail));
         }
+        if ($order->moDHLUsesService(Article::MO_DHL__IDENT_CHECK) && $process->supportsIdentCheck()) {
+            $service->setIdentCheck(new ServiceconfigurationIC($this->createIdent($order), true));
+        } elseif ($order->moDHLUsesService(Article::MO_DHL__VISUAL_AGE_CHECK18) && $process->supportsVisualAgeCheck()) {
+            $service->setVisualCheckOfAge(new ServiceconfigurationVisualAgeCheck(true, 'A18'));
+        } elseif ($order->moDHLUsesService(Article::MO_DHL__VISUAL_AGE_CHECK16) && $process->supportsVisualAgeCheck()) {
+            $service->setVisualCheckOfAge(new ServiceconfigurationVisualAgeCheck(true, 'A16'));
+        }
+        if ($order->moDHLUsesService(Article::MO_DHL__BULKY_GOOD) && $process->supportsBulkyGood()) {
+            $service->setBulkyGoods(new Serviceconfiguration(true));
+        }
+        if ($order->moDHLUsesService(Article::MO_DHL__CASH_ON_DELIVERY) && $process->supportsCashOnDelivery()) {
+            $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery(true, 0, $order->oxorder__oxtotalordersum->value));
+        }
+        if ($order->moDHLUsesService(Article::MO_DHL__ADDITIONAL_INSURANCE) && $order->oxorder__oxtotalbrutsum->value > 500 & $process->supportsAdditionalInsurance()) {
+            $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance(true, $order->oxorder__oxtotalbrutsum->value));
+        }
+
         return $service;
+    }
+
+    /**
+     * @param Order $order
+     * @return \stdClass
+     */
+    protected function createIdent(Order $order) : \stdClass
+    {
+        $ident = new \stdClass();
+        $ident->surname = $order->moDHLGetAddressData('lname');
+        $ident->givenName = $order->moDHLGetAddressData('fname');
+        $ident->dateOfBirth = $order->getFieldData('mo_dhl_ident_check_birthday');
+        $ident->minimumAge = Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
+            ? 'A' . Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
+            : null;
+        return $ident;
     }
 
     /**

@@ -9,7 +9,6 @@
 <form name="transfer" id="transfer" action="[{$oViewConf->getSelfLink()}]" method="post">
     [{$oViewConf->getHiddenSid()}]
     <input type="hidden" name="oxid" value="[{$oxid}]">
-    <input type="hidden" name="oxidCopy" value="[{$oxid}]">
     <input type="hidden" name="cl" value="[{$oView->getClassName()}]">
     <input type="hidden" name="language" value="[{$actlang}]">
 </form>
@@ -66,6 +65,31 @@
                         [{$readonly}]
                 />
                 [{oxinputhelp ident="HELP_MO_DHL__PARTICIPATION_NUMBER"}]
+                </td>
+            </tr>
+
+            <tr>
+                <td class="edittext">
+                    [{oxmultilang ident="MO_DHL__IDENT_CHECK"}]
+                </td>
+                <td class="edittext">
+                    <input type="hidden" name="editval[oxdeliveryset__mo_dhl_ident_check]" value="0">
+                    <input class="edittext" type="checkbox" name="editval[oxdeliveryset__mo_dhl_ident_check]"
+                           value='1'
+                           [{if $edit->oxdeliveryset__mo_dhl_ident_check->value == 1}]checked[{/if}] [{$readonly}]>
+                    [{oxinputhelp ident="HELP_MO_DHL__IDENT_CHECK"}]
+                </td>
+            </tr>
+            <tr>
+                <td class="edittext">
+                    [{oxmultilang ident="MO_DHL__ADDITIONAL_INSURANCE"}]
+                </td>
+                <td class="edittext">
+                    <input type="hidden" name="editval[oxdeliveryset__mo_dhl_additional_insurance]" value="0">
+                    <input class="edittext" type="checkbox" name="editval[oxdeliveryset__mo_dhl_additional_insurance]"
+                           value='1'
+                           [{if $edit->oxdeliveryset__mo_dhl_additional_insurance->value == 1}]checked[{/if}] [{$readonly}]>
+                    [{oxinputhelp ident="HELP_MO_DHL__ADDITIONAL_INSURANCE"}]
                 </td>
             </tr>
             <tr>

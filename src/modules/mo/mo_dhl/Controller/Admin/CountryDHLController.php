@@ -12,50 +12,22 @@ use OxidEsales\Eshop\Core\Registry;
 /**
  * @author Mediaopt GmbH
  */
-class CountryDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
+class CountryDHLController extends AbstractAdminDHLController
 {
 
     /**
-     * @extend
      * @return string
      */
-    public function render()
+    protected function moDHLGetTemplateName() : string
     {
-        parent::render();
-        $id = $this->getEditObjectId();
-        if (isset($id) && $id != "-1") {
-            $country = oxNew(\OxidEsales\Eshop\Application\Model\Country::class);
-            $country->load($id);
-            $this->addTplParam("edit", $country);
-            if ($country->isDerived()) {
-                $this->addTplParam('readonly', true);
-            }
-        }
         return 'mo_dhl__country_dhl.tpl';
     }
 
     /**
-     * @extend
-     * @throws \Exception
+     * @return string
      */
-    public function save()
+    protected function moDHLGetBaseClassName() : string
     {
-        parent::save();
-        $id = $this->getEditObjectId();
-        if ($id === "-1") {
-            return;
-        }
-
-        $params = Registry::getConfig()->getRequestParameter("editval");
-
-        $country = oxNew(\OxidEsales\Eshop\Application\Model\Country::class);
-
-        $country->load($id);
-
-        if ($country->isDerived()) {
-            return;
-        }
-        $country->assign($params);
-        $country->save();
+        return \OxidEsales\Eshop\Application\Model\Country::class;
     }
 }

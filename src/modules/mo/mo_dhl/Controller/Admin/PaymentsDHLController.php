@@ -12,50 +12,22 @@ use OxidEsales\Eshop\Core\Registry;
 /**
  * @author Mediaopt GmbH
  */
-class PaymentsDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
+class PaymentsDHLController extends AbstractAdminDHLController
 {
 
     /**
-     * @extend
      * @return string
      */
-    public function render()
+    protected function moDHLGetTemplateName() : string
     {
-        parent::render();
-        $id = $this->getEditObjectId();
-        if (isset($id) && $id != "-1") {
-            $payment = oxNew(\OxidEsales\Eshop\Application\Model\Payment::class);
-            $payment->load($id);
-            $this->addTplParam("edit", $payment);
-            if ($payment->isDerived()) {
-                $this->addTplParam('readonly', true);
-            }
-        }
         return 'mo_dhl__payments_dhl.tpl';
     }
 
     /**
-     * @extend
-     * @throws \Exception
+     * @return string
      */
-    public function save()
+    protected function moDHLGetBaseClassName() : string
     {
-        parent::save();
-        $id = $this->getEditObjectId();
-        if ($id === "-1") {
-            return;
-        }
-
-        $params = Registry::getConfig()->getRequestParameter("editval");
-
-        $payment = oxNew(\OxidEsales\Eshop\Application\Model\Payment::class);
-
-        $payment->load($id);
-
-        if ($payment->isDerived()) {
-            return;
-        }
-        $payment->assign($params);
-        $payment->save();
+        return \OxidEsales\Eshop\Application\Model\Payment::class;
     }
 }

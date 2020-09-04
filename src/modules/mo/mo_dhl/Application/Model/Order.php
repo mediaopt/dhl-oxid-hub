@@ -11,6 +11,9 @@ namespace Mediaopt\DHL\Application\Model;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Model\MoDHLLabelList;
 use Mediaopt\DHL\ServiceProvider\Branch;
+use OxidEsales\Eshop\Application\Model\DeliverySet;
+use OxidEsales\Eshop\Application\Model\OrderArticle;
+use OxidEsales\Eshop\Application\Model\Payment;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Registry;
 
@@ -161,18 +164,21 @@ class Order extends Order_parent
         $process = $this->getDelSet()->oxdeliveryset__mo_dhl_process->rawValue;
         $participation = $this->getDelSet()->oxdeliveryset__mo_dhl_participation->rawValue;
         $allowNotification = $this->moDHLGetNotificationAllowance();
+        $birthday = $this->moDHLGetBirthday();
 
         $this->oxorder__mo_dhl_ekp = \oxNew(Field::class, $ekp, Field::T_RAW);
         $this->oxorder__mo_dhl_process = \oxNew(Field::class, $process, Field::T_RAW);
         $this->oxorder__mo_dhl_participation = \oxNew(Field::class, $participation, Field::T_RAW);
         $this->oxorder__mo_dhl_allow_notification = \oxNew(Field::class, $allowNotification);
+        $this->oxorder__mo_dhl_ident_check_birthday = \oxNew(Field::class, $birthday);
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $query = ' UPDATE oxorder SET MO_DHL_EKP = ?, MO_DHL_PARTICIPATION = ?, MO_DHL_PROCESS = ?, MO_DHL_ALLOW_NOTIFICATION = ? WHERE OXID = ?';
+        $query = ' UPDATE oxorder SET MO_DHL_EKP = ?, MO_DHL_PARTICIPATION = ?, MO_DHL_PROCESS = ?, MO_DHL_ALLOW_NOTIFICATION = ?, MO_DHL_IDENT_CHECK_BIRTHDAY = ? WHERE OXID = ?';
         $db->execute($query, [
             $ekp,
             $participation,
             $process,
             $allowNotification,
+            $birthday,
             $this->getId(),
         ]);
 
@@ -255,6 +261,15 @@ class Order extends Order_parent
         return $dynamicValues['mo_dhl_allow_notification'] ?? false;
     }
 
+    public function moDHLGetBirthday() : string
+    {
+        $dynamicValues = $this->getSession()->getVariable('dynvalue');
+        if (!$birthday = $dynamicValues['mo_dhl_ident_check_birthday']) {
+            return '';
+        }
+        return (new \DateTime($birthday))->format('Y-m-d');
+    }
+
     /**
      * @param string $status
      */
@@ -282,5 +297,35 @@ class Order extends Order_parent
         }
 
         return $this->_sShipTrackUrl;
+    }
+
+    /**
+     * @param string $service
+     * @return bool
+     */
+    public function moDHLUsesService(string $service) : bool
+    {
+        switch ($service) {
+            case Article::MO_DHL__IDENT_CHECK:
+            case Article::MO_DHL__ADDITIONAL_INSURANCE:
+                $deliveryset = oxNew(DeliverySet::class);
+                $deliveryset->load($this->oxorder__oxdeltype->value);
+                return $deliveryset->moDHLUsesService($service);
+            case Article::MO_DHL__CASH_ON_DELIVERY:
+                $payment = oxNew(Payment::class);
+                $payment->load($this->oxorder__oxpaymenttype->value);
+                return (bool) $payment->getFieldData($service);
+            case Article::MO_DHL__VISUAL_AGE_CHECK16:
+            case Article::MO_DHL__VISUAL_AGE_CHECK18:
+            case Article::MO_DHL__BULKY_GOOD:
+                /** @var OrderArticle $orderArticle */
+                foreach ($this->getOrderArticles() as $orderArticle) {
+                    if ($orderArticle->getArticle()->moDHLUsesService($service)) {
+                        return true;
+                    }
+                }
+                return false;
+        }
+        return false;
     }
 }

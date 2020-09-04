@@ -42,6 +42,11 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__notification_mode_ALWAYS'             => 'Immer',
     'SHOP_MODULE_mo_dhl__notification_mode_ASK'                => 'Auf Kundenwunsch übermitteln',
 
+    'SHOP_MODULE_mo_dhl__ident_check_min_age'     => 'Mindestalter für den IdentCheck',
+    'SHOP_MODULE_mo_dhl__ident_check_min_age_0'   => 'kein Mindestalter',
+    'SHOP_MODULE_mo_dhl__ident_check_min_age_A16' => '16 Jahre',
+    'SHOP_MODULE_mo_dhl__ident_check_min_age_A18' => '18 Jahre',
+
     'SHOP_MODULE_GROUP_mo_dhl__retoure'                            => 'Retoure',
     'SHOP_MODULE_mo_dhl__retoure_reference_prefix'                 => 'Präfix für die Sendungsreferenz',
     'HELP_SHOP_MODULE_mo_dhl__retoure_reference_prefix'            => 'Sie können ein Präfix angeben, welches in Kombination mit der Bestellnummer die Sendungsreferenz ergibt. Diese wird ausschließlich in der Übersicht über erstellte Retourenlabel im DHL Geschäftskundenportal ausgegeben.',
