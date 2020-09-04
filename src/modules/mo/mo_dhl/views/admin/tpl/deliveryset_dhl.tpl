@@ -94,6 +94,18 @@
                 </td>
             </tr>
             <tr>
+                <td class="edittext" width="140">
+                    [{oxmultilang ident="MO_DHL__OPERATOR"}]
+                </td>
+                <td class="edittext" width="250">
+                    <input name="editval[oxdeliveryset__mo_dhl_operator]" maxlength="40"
+                           value="[{$edit->oxdeliveryset__mo_dhl_operator->rawValue}]"
+                           [{$readonly}]
+                    />
+                    [{oxinputhelp ident="HELP_MO_DHL__OPERATOR"}]
+                </td>
+            </tr>
+            <tr>
                 <td class="edittext">
                 </td>
                 <td class="edittext"><br>
