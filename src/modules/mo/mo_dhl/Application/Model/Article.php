@@ -60,7 +60,7 @@ class Article extends \OxidEsales\Eshop\Application\Model\Article
         }
         $db = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
         $ids = implode(', ', $db->quoteArray($this->getCategoryIds()));
-        $query = "SELECT MAX($service) FROM oxcategories AS parent"
+        $query = "SELECT MAX(parent.$service) FROM oxcategories AS parent"
             . " LEFT JOIN oxcategories as child"
             . " ON parent.OXSHOPID = child.OXSHOPID"
             .    " AND parent.OXROOTID = child.OXROOTID"
