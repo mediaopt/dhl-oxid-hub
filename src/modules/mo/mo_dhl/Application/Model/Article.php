@@ -60,13 +60,13 @@ class Article extends \OxidEsales\Eshop\Application\Model\Article
         }
         $db = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
         $ids = implode(', ', $db->quoteArray($this->getCategoryIds()));
-        $query = "SELECT MAX(parent.$service) FROM oxcategories AS parent"
-            . " LEFT JOIN oxcategories as child"
-            . " ON parent.OXSHOPID = child.OXSHOPID"
-            .    " AND parent.OXROOTID = child.OXROOTID"
-            .    " AND parent.OXLEFT <= child.OXLEFT"
-            .    " AND child.OXRIGHT <= parent.OXRIGHT"
-            . " WHERE child.OXID IN ($ids)";
+        $query = "SELECT MAX(ancestor.$service) FROM oxcategories AS ancestor"
+            . " LEFT JOIN oxcategories as descendant"
+            . " ON ancestor.OXSHOPID = descendant.OXSHOPID"
+            .    " AND ancestor.OXROOTID = descendant.OXROOTID"
+            .    " AND ancestor.OXLEFT <= descendant.OXLEFT"
+            .    " AND descendant.OXRIGHT <= ancestor.OXRIGHT"
+            . " WHERE descendant.OXID IN ($ids)";
         return (bool) $db->getOne($query);
     }
 
