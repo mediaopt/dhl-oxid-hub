@@ -346,6 +346,12 @@ $aModule = [
             'constraints' => 'NEVER|ONLY_DHL|ALWAYS',
         ],
         [
+            'group' => 'mo_dhl__retoure',
+            'name'  => 'mo_dhl__retoure_days_limit',
+            'type'  => 'str',
+            'value' => '30',
+        ],
+        [
             'group' => 'mo_dhl__beilegerretoure',
             'name'  => 'mo_dhl__beilegerretoure_active',
             'type'  => 'bool',
