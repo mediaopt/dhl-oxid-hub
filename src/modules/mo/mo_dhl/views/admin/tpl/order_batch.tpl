@@ -10,11 +10,12 @@
         <table cellspacing="0" cellpadding="0" border="0" width="100%">
             <colgroup>
                 <col width="2%">
-                <col width="25%">
-                <col width="25%">
+                <col width="20%">
+                <col width="20%">
                 <col width="10%">
                 <col width="17%">
                 <col width="17%">
+                <col width="10%">
             </colgroup>
 
             <tr class="listitem">
@@ -65,7 +66,7 @@
                 <td valign="top" class="listfilter" height="20">
                     <div class="r1">
                         <div class="b1">
-                            <input class="listedit" type="text" size="50" maxlength="128"
+                            <input class="listedit" type="text" size="45" maxlength="128"
                                    name="where[oxorder][oxbillfname]" value="[{$where.oxorder.oxbillfname}]">
                         </div>
                     </div>
@@ -73,19 +74,35 @@
                 <td valign="top" class="listfilter" height="20">
                     <div class="r1">
                         <div class="b1">
-                            <input class="listedit" type="text" size="50" maxlength="128"
+                            <input class="listedit" type="text" size="45" maxlength="128"
                                    name="where[oxorder][oxbilllname]" value="[{$where.oxorder.oxbilllname}]">
                         </div>
                     </div>
                 </td>
-                <td valign="top" class="listfilter" height="20" colspan="2" nowrap>
+                <td valign="top" class="listfilter" height="20"  nowrap>
                     <div class="r1">
                         <div class="b1">
                             <div class="find"><input class="listedit" type="submit" name="submitit"
                                                      value="[{oxmultilang ident="GENERAL_SEARCH"}]"></div>
-                            <input class="listedit" type="text" size="50" maxlength="128"
+                            <input class="listedit" type="text" size="40" maxlength="128"
                                    name="where[oxorder][mo_dhl_last_label_creation_status]"
                                    value="[{$where.oxorder.mo_dhl_last_label_creation_status}]">
+                        </div>
+                    </div>
+                </td>
+                <td valign="top" class="listfilter" height="20">
+                    <div class="r1">
+                        <div class="b1">
+                            <select name="RetoureRequestStatusFilter" class="requestselect" onChange="document.batchForm.submit();">
+                                <option value="-1" [{if $RetoureRequestStatusFilter == -1}]SELECTED[{/if}]
+                                    >[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
+                                <option value="-" [{if $RetoureRequestStatusFilter === '-'}]SELECTED[{/if}]>-</option>
+                                [{foreach from=$RetoureRequestStatuses key=RetoureRequestStatus item=label}]
+                                    <option value="[{$RetoureRequestStatus}]"
+                                        [{if $RetoureRequestStatusFilter == $RetoureRequestStatus}]SELECTED[{/if}]
+                                        >[{oxmultilang ident=$label noerror=true}]</option>
+                                [{/foreach}]
+                            </select>
                         </div>
                     </div>
                 </td>
@@ -102,6 +119,7 @@
                 <td class="listheader" height="15">[{oxmultilang ident="ORDER_LIST_CUSTOMERFNAME"}]</td>
                 <td class="listheader" height="15">[{oxmultilang ident="ORDER_LIST_CUSTOMERLNAME"}]</td>
                 <td class="listheader" height="15">[{oxmultilang ident="MO_DHL__LAST_DHL_STATUS"}]</td>
+                <td class="listheader" height="15">[{oxmultilang ident="MO_DHL__RETOURE_LABEL"}]</td>
             </tr>
             [{foreach from=$mylist item=listitem}]
             <tr>
@@ -127,12 +145,22 @@
                 <td valign="top" class="listitem" height="15">
                     <div class="listitemfloating">[{$listitem->oxorder__mo_dhl_last_label_creation_status->value}]</div>
                 </td>
+                <td valign="top" class="listitem" height="15">
+                    <div class="listitemfloating">
+                    [{if isset($listitem->oxorder__mo_dhl_retoure_request_status->value)}]
+                        [{assign var="retoure_request_status" value=$listitem->oxorder__mo_dhl_retoure_request_status->value}]
+                        [{oxmultilang ident=$RetoureRequestStatuses.$retoure_request_status noerror=true}]
+                    [{else}]
+                        -
+                    [{/if}]
+                    </div>
+                </td>
             </tr>
             [{/foreach}]
 
             [{assign var="whereparam" value=$oView->getFilterStringForLink()}]
             <tr>
-                <td class="pagination" colspan="7">
+                <td class="pagination" colspan="8">
                     <div class="r1">
                         <div class="b1">
                             <table cellspacing="0" cellpadding="0" border="0" width="100%">

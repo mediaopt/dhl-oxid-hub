@@ -24,7 +24,6 @@ $aLang = [
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'Eine Teilnahmenummer besteht aus genau zwei Zeichen und enthält nur Buchstaben und Ziffern.',
     'MO_DHL__OPERATOR'                             => 'Zusteller',
     'HELP_MO_DHL__OPERATOR'                        => 'Tragen Sie hier den Zusteller der Lieferung an. Dieser wird für eine mögliche Retoure außerhalb der EU benötigt.',
-    'MO_DHL__RETOURE_REQUST_STATUS'                => 'Retoure request',
     'MO_DHL__RETOURE_REQUESTED'                    => 'Angefordert',
     'MO_DHL__RETOURE_CREATED'                      => 'Erstellt',
     'MO_DHL__RETOURE_DECLINED'                     => 'Abgelehnt',

@@ -78,7 +78,7 @@
                                 [{if isset($RetoureRequestStatuses) }]
                                     <tr>
                                         <td>
-                                            <label for="retoureRequest">[{oxmultilang ident="MO_DHL__RETOURE_REQUST_STATUS"}]
+                                            <label for="retoureRequest">[{oxmultilang ident="MO_DHL__RETOURE_LABEL"}]
                                                 :</label>
                                         </td>
                                         <td>[{$status}]
