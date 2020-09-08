@@ -19,6 +19,7 @@ use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
+use Mediaopt\DHL\Shipment\RetoureRequest;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
@@ -58,6 +59,10 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $this->addTplParam('process', $this->getProcess());
         $this->addTplParam('remarks', $this->getRemarks());
         $this->addTplParam('labels', $this->getOrder()->moDHLGetLabels());
+        if (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_aprove')) {
+            $this->addTplParam('RetoureRequestStatuses', RetoureRequest::getRetoureRequestStatuses());
+            $this->addTplParam('RetoureRequestStatus', $this->getRetoureRequestStatus());
+        }
         return $templateName;
     }
 
@@ -75,9 +80,15 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     public function createRetoure()
     {
         try {
+            $order = $this->getOrder();
+
             $retoureService = Registry::get(DHLAdapter::class)->buildRetoure();
-            $response = $retoureService->createRetoure($this->getOrder());
-            $retoureService->handleResponse($this->getOrder(), $response);
+            $response = $retoureService->createRetoure($order);
+            $retoureService->handleResponse($order, $response);
+
+            if ($order->oxorder__mo_dhl_retoure_request_status->rawValue == RetoureRequest::REQUESTED) {
+                $order->setRetoureStatus(RetoureRequest::CREATED);
+            }
         } catch (\Exception $e) {
             \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($e->getMessage());
             if (!($previous = $e->getPrevious()) || !$previous instanceof ClientException) {
@@ -140,6 +151,12 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $label->load(Registry::getConfig()->getRequestParameter('labelId'));
         if ($label->isRetoure()) {
             $label->delete();
+
+            $order = $this->getOrder();
+            if ($order->oxorder__mo_dhl_retoure_request_status->rawValue == RetoureRequest::CREATED) {
+                $order->setRetoureStatus(RetoureRequest::REQUESTED);
+            }
+
             return;
         }
         $this->handleDeletionResponse($label, $this->callDeleteShipment($label->getFieldData('shipmentNumber')));
@@ -215,6 +232,17 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
+     * @return string
+     */
+    protected function getRetoureRequestStatus()
+    {
+        if ($RetoureRequestStatus = $this->getOrder()->oxorder__mo_dhl_retoure_request_status->rawValue) {
+            return RetoureRequest::build($RetoureRequestStatus);
+        }
+        return null;
+    }
+
+    /**
      */
     public function save()
     {
@@ -224,6 +252,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             'MO_DHL_PROCESS' => $this->validateProcessIdentifier(),
             'MO_DHL_PARTICIPATION' => $this->validateParticipationNumber(),
             'MO_DHL_OPERATOR' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('operator'),
+            'MO_DHL_RETOURE_REQUEST_STATUS' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('retoureRequest'),
         ];
         $tuples = [];
         foreach ($information as $column => $value) {

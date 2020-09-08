@@ -75,6 +75,26 @@
                                         />
                                     </td>
                                 </tr>
+                                [{if isset($RetoureRequestStatuses) }]
+                                    <tr>
+                                        <td>
+                                            <label for="retoureRequest">[{oxmultilang ident="MO_DHL__RETOURE_REQUST_STATUS"}]
+                                                :</label>
+                                        </td>
+                                        <td>[{$status}]
+                                            <select id="retoureRequest" name="retoureRequest">
+                                                [{if !isset($RetoureRequestStatus) }]
+                                                    <option value="">-</option>
+                                                [{/if}]
+                                                [{foreach from=$RetoureRequestStatuses key='status' item='label'}]
+                                                    <option value="[{$status}]"[{if $RetoureRequestStatus === $status}] selected[{/if}]>
+                                                        [{oxmultilang ident="$label"}]
+                                                    </option>
+                                                [{/foreach}]
+                                            </select>
+                                        </td>
+                                    </tr>
+                                [{/if}]
                             </table>
                         </td>
                     </tr>

@@ -57,6 +57,8 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retoure_allow_frontend_creation_ALWAYS'   => 'Immer',
     'SHOP_MODULE_mo_dhl__retoure_days_limit'                       => 'Max. Zeitraum zur Erstellung von Retouren (in Tagen)',
     'HELP_SHOP_MODULE_mo_dhl__retoure_days_limit'                  => 'Kunden können nur innerhalb einer bestimmten Zeit ab Versand der Ware ein Retourenlabel erstellen.',
+    'SHOP_MODULE_mo_dhl__retoure_admin_aprove'                     => 'Kunden sollten nach einem Retourenlabel fragen',
+    'HELP_SHOP_MODULE_mo_dhl__retoure_admin_aprove'                => 'Sie können angeben, ob Kunden die Berechtigung zum Erstellen eines Retourenlabel erhalten sollen.',
 
     'SHOP_MODULE_GROUP_mo_dhl__beilegerretoure'            => 'Beilegerretoure',
     'SHOP_MODULE_mo_dhl__beilegerretoure_active'           => 'Beilegerretoure aktiv',

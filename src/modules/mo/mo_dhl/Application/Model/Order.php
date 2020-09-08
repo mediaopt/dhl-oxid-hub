@@ -11,6 +11,7 @@ namespace Mediaopt\DHL\Application\Model;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Model\MoDHLLabelList;
 use Mediaopt\DHL\ServiceProvider\Branch;
+use Mediaopt\DHL\Shipment\RetoureRequest;
 use OxidEsales\Eshop\Application\Model\DeliverySet;
 use OxidEsales\Eshop\Application\Model\OrderArticle;
 use OxidEsales\Eshop\Application\Model\Payment;
@@ -327,5 +328,29 @@ class Order extends Order_parent
                 return false;
         }
         return false;
+    }
+
+    /**
+     * @param $status string
+     */
+    public function setRetoureStatus($status) {
+        $this->oxorder__mo_dhl_retoure_request_status = new Field($status);
+        $this->save();
+    }
+
+    /**
+     * @return bool
+     */
+    public function moDHLIsRetoureRequested() {
+        return $this->oxorder__mo_dhl_retoure_request_status == RetoureRequest::REQUESTED ? : false;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function moDHLIsRetoureDeclined()
+    {
+        return $this->oxorder__mo_dhl_retoure_request_status == RetoureRequest::DECLINED  ? : false;
     }
 }
