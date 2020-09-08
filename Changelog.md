@@ -1,4 +1,14 @@
 # Changelog
+## 1.2.2
+* added a list of additional services:
+    * bulky goods (assign per product or category)
+    * visual check of age (assign per product or category)
+    * additional incurance (assign per shipping method)
+    * ident check (assign per shipping method)
+    * cash on delivery (assign per payment method)
+* retoure international for returns outside the EU
+* set a time span in which customers are allowed to create return labels after products were sent
+
 ## 1.2.1
 * store shipment number in oxtrackcode field of order after delivery label creation
 * display dhl tracking link when oxtrackcode was set via delivery label creation

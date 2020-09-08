@@ -21,5 +21,13 @@
                 <TAB id="MO_DHL__COUNTRY_DHL" cl="MoDHLCountryDHL"/>
             </SUBMENU>
         </MAINMENU>
+        <MAINMENU id="mxmanageprod">
+            <SUBMENU id="mxarticles" cl="article" list="article_list">
+                <TAB id="MO_DHL__ARTICLES_DHL" cl="MoDHLArticlesDHL"/>
+            </SUBMENU>
+            <SUBMENU id="mxcategories" cl="category" list="category_list">
+                <TAB id="MO_DHL__CATEGORIES_DHL" cl="MoDHLCategoriesDHL"/>
+            </SUBMENU>
+        </MAINMENU>
     </OXMENU>
 </OX>

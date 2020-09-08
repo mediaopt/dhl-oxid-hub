@@ -111,6 +111,31 @@ class Process
     const SERVICE_DHL_RETOURE = "SERVICE_DHL_RETOURE";
 
     /**
+     * @var string
+     */
+    const SERVICE_VISUAL_AGE_CHECK = "SERVICE_VISUAL_AGE_CHECK";
+
+    /**
+     * @var string
+     */
+    const SERVICE_ADDITIONAL_INSURANCE = "SERVICE_ADDITIONAL_INSURANCE";
+
+    /**
+     * @var string
+     */
+    const SERVICE_BULKY_GOOD = "SERVICE_BULKY_GOOD";
+
+    /**
+     * @var string
+     */
+    const SERVICE_CASH_ON_DELIVERY = "SERVICE_CASH_ON_DELIVERY";
+
+    /**
+     * @var string
+     */
+    const SERVICE_IDENT_CHECK = "SERVICE_IDENT_CHECK";
+
+    /**
      * @var string[]
      */
     const SUPPORTED_SERVICES = [
@@ -122,6 +147,11 @@ class Process
             self::SERVICE_GO_GREEN,
             self::SERVICE_PARCEL_OUTLET_ROUTING,
             self::SERVICE_DHL_RETOURE,
+            self::SERVICE_VISUAL_AGE_CHECK,
+            self::SERVICE_IDENT_CHECK,
+            self::SERVICE_ADDITIONAL_INSURANCE,
+            self::SERVICE_BULKY_GOOD,
+            self::SERVICE_CASH_ON_DELIVERY,
         ],
         self::PAKET_PRIO => [
             self::SERVICE_PREFERRED_NEIGHBOUR,
@@ -131,19 +161,29 @@ class Process
             self::SERVICE_GO_GREEN,
             self::SERVICE_PARCEL_OUTLET_ROUTING,
             self::SERVICE_DHL_RETOURE,
+            self::SERVICE_VISUAL_AGE_CHECK,
+            self::SERVICE_IDENT_CHECK,
+            self::SERVICE_ADDITIONAL_INSURANCE,
+            self::SERVICE_CASH_ON_DELIVERY,
         ],
         self::PAKET_INTERNATIONAL => [
             self::SERVICE_NOTIFICATION,
             self::SERVICE_GO_GREEN,
+            self::SERVICE_ADDITIONAL_INSURANCE,
+            self::SERVICE_BULKY_GOOD,
+            self::SERVICE_CASH_ON_DELIVERY,
         ],
         self::EUROPAKET => [
             self::SERVICE_NOTIFICATION,
             self::SERVICE_GO_GREEN,
+            self::SERVICE_ADDITIONAL_INSURANCE,
         ],
         self::PAKET_CONNECT => [
             self::SERVICE_NOTIFICATION,
             self::SERVICE_GO_GREEN,
             self::SERVICE_DHL_RETOURE,
+            self::SERVICE_ADDITIONAL_INSURANCE,
+            self::SERVICE_BULKY_GOOD,
         ],
         self::WARENPOST => [
             self::SERVICE_PREFERRED_NEIGHBOUR,
@@ -299,6 +339,46 @@ class Process
     public function supportsDHLRetoure()
     {
         return in_array(self::SERVICE_DHL_RETOURE, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsVisualAgeCheck() : bool
+    {
+        return in_array(self::SERVICE_VISUAL_AGE_CHECK, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsAdditionalInsurance() : bool
+    {
+        return in_array(self::SERVICE_ADDITIONAL_INSURANCE, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsIdentCheck() : bool
+    {
+        return in_array(self::SERVICE_IDENT_CHECK, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsBulkyGood() : bool
+    {
+        return in_array(self::SERVICE_BULKY_GOOD, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsCashOnDelivery() : bool
+    {
+        return in_array(self::SERVICE_CASH_ON_DELIVERY, self::SUPPORTED_SERVICES[$this->identifier]);
     }
 
     /**

@@ -6,7 +6,7 @@ class ServiceconfigurationIC
 {
 
     /**
-     * @var Ident $Ident
+     * @var Ident|\stdClass $Ident
      */
     protected $Ident = null;
 
@@ -16,7 +16,7 @@ class ServiceconfigurationIC
     protected $active = null;
 
     /**
-     * @param Ident $Ident
+     * @param Ident|\stdClass $Ident
      * @param bool  $active
      */
     public function __construct($Ident, $active)
@@ -26,7 +26,7 @@ class ServiceconfigurationIC
     }
 
     /**
-     * @return Ident
+     * @return Ident|\stdClass
      */
     public function getIdent()
     {
@@ -34,7 +34,7 @@ class ServiceconfigurationIC
     }
 
     /**
-     * @param Ident $Ident
+     * @param Ident|\stdClass $Ident
      * @return ServiceconfigurationIC
      */
     public function setIdent($Ident)

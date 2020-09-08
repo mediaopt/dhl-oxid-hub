@@ -106,4 +106,7 @@ $aLang = [
     'MO_DHL__RETOURE_QR_LABEL'                    => 'Retoure QR Code',
     'MO_DHL__CREATE_RETOURE'                      => 'Retourenlabel erstellen',
     'MO_DHL__DEFAULT_RETOURE_ERROR_MESSAGE'       => 'Bei der Erstellung des Retourenlabels gab es einen Fehler. Bitte versuchen Sie es nochmal oder wenden Sie sich an den Support.',
+    'MO_DHL__BIRTHDAY'                            => 'Bitte geben Sie Ihr Geburtsdatum für den Ident-Check an.',
+    'MO_DHL__BIRTHDAY_ERROR_FORMAT'               => 'Das Format für das Geburtsdatum ist dd.mm.yyyy.',
+    'MO_DHL__BIRTHDAY_ERROR_AGE'                  => 'Sie müssen mindestens %s Jahre alt sein.',
 ];

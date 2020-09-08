@@ -22,6 +22,8 @@ $aLang = [
     'MO_DHL__FILIALROUTING_EMAIL_ERROR'            => 'The alternative e-mail address for Filialrouting was not valid and therefor was reset.',
     'MO_DHL__PARTICIPATION_NUMBER'                 => 'Participation number',
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'A participation number is exactly two characters long and consists solely of letters and digits',
+    'MO_DHL__OPERATOR'                             => 'Delivery operator',
+    'HELP_MO_DHL__OPERATOR'                        => 'Please provide the name of the delivery operator. This information is needed for a possible return outside the EU.',
     'MO_DHL__PROCESS_IDENTIFIER'                   => 'Process number',
     'MO_DHL__PROCESS_IDENTIFIER_ERROR'             => 'Please choose a process number from the list.',
     'MO_DHL__DELIVERYSET_DHL'                      => 'DHL',
@@ -69,5 +71,15 @@ $aLang = [
     'HELP_MO_DHL__RETOURE_RECEIVER_ID' => 'You can find the retoure receivers (receiverID) in the DHL Business Customer Portal (https://www.dhl-geschaeftskundenportal.de) at "Retoure" > "Settings" > "Receiver ID".',
     'MO_DHL__CREATE_RETOURE'           => 'Create Retoure label',
     'MO_DHL__NO_RECEIVER_ID'           => 'The Retoure Receiver Id is not set for the given country %s. Please add it under Master Settings > Countries > DHL.',
+
+    'MO_DHL__ARTICLES_DHL'                => 'DHL',
+    'MO_DHL__CATEGORIES_DHL'              => 'DHL',
+    'MO_DHL__VISUAL_AGE_CHECK16'          => 'Age check: 16 years',
+    'MO_DHL__VISUAL_AGE_CHECK18'          => 'Age check: 18 years',
+    'MO_DHL__BULKY_GOOD'                  => 'Bulky good',
+    'MO_DHL__IDENT_CHECK'                 => 'Ident-Check',
+    'MO_DHL__CASH_ON_DELIVERY'            => 'Cash on delivery',
+    'MO_DHL__ADDITIONAL_INSURANCE'        => 'Additional Insurance',
+    'HELP_MO_DHL__ADDITIONAL_INSURANCE'   => 'DHL normally insures the delivery inside Germany up to 500 EUR concerning losing or damaging. For deliveries of more expensive products DHL offers an additional insurance up to 2.500 EUR (+6,00 EUR surcharge) or 25.000 EUR  (+18,00 EUR surcharge). You can find more informationens <a href="https://www.dhl.de/content/dam/images/pdf/GK/Services/dhl-transportversicherung-infoblatt-en-052020.pdf">here</a>',
 
 ];

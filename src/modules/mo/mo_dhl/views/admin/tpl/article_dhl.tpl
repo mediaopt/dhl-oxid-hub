@@ -19,7 +19,7 @@
     <input type="hidden" name="cl" value="[{$oView->getClassName()}]">
     <input type="hidden" name="fnc" value="">
     <input type="hidden" name="oxid" value="[{$oxid}]">
-    <input type="hidden" name="editval[oxpaments__oxid]" value="[{$oxid}]">
+    <input type="hidden" name="editval[oxarticles__oxid]" value="[{$oxid}]">
     <input type="hidden" name="language" value="[{$actlang}]">
 
     <table cellspacing="0" cellpadding="0" border="0" width="98%">
@@ -31,26 +31,38 @@
                     [{if $oxid != "-1"}]
                         <tr>
                             <td class="edittext">
-                                [{oxmultilang ident="MO_DHL__EXCLUDED"}]
+                                [{oxmultilang ident="MO_DHL__VISUAL_AGE_CHECK16"}]
                             </td>
                             <td class="edittext">
-                                <input type="hidden" name="editval[oxpayments__mo_dhl_excluded]" value="0">
-                                <input class="edittext" type="checkbox" name="editval[oxpayments__mo_dhl_excluded]"
+                                <input type="hidden" name="editval[oxarticles__mo_dhl_visual_age_check16]" value="0">
+                                <input class="edittext" type="checkbox" name="editval[oxarticles__mo_dhl_visual_age_check16]"
                                        value='1'
-                                       [{if $edit->oxpayments__mo_dhl_excluded->value == 1}]checked[{/if}] [{$readonly}]>
-                                [{oxinputhelp ident="HELP_MO_DHL__EXCLUDED"}]
+                                       [{if $edit->oxarticles__mo_dhl_visual_age_check16->value == 1}]checked[{/if}] [{$readonly}]>
+                                [{oxinputhelp ident="HELP_MO_DHL__VISUAL_AGE_CHECK16"}]
                             </td>
                         </tr>
                         <tr>
                             <td class="edittext">
-                                [{oxmultilang ident="MO_DHL__CASH_ON_DELIVERY"}]
+                                [{oxmultilang ident="MO_DHL__VISUAL_AGE_CHECK18"}]
                             </td>
                             <td class="edittext">
-                                <input type="hidden" name="editval[oxpayments__mo_dhl_cash_on_delivery]" value="0">
-                                <input class="edittext" type="checkbox" name="editval[oxpayments__mo_dhl_cash_on_delivery]"
+                                <input type="hidden" name="editval[oxarticles__mo_dhl_visual_age_check18]" value="0">
+                                <input class="edittext" type="checkbox" name="editval[oxarticles__mo_dhl_visual_age_check18]"
                                        value='1'
-                                       [{if $edit->oxpayments__mo_dhl_cash_on_delivery->value == 1}]checked[{/if}] [{$readonly}]>
-                                [{oxinputhelp ident="HELP_MO_DHL__CASH_ON_DELIVERY"}]
+                                       [{if $edit->oxarticles__mo_dhl_visual_age_check18->value == 1}]checked[{/if}] [{$readonly}]>
+                                [{oxinputhelp ident="HELP_MO_DHL__VISUAL_AGE_CHECK18"}]
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="edittext">
+                                [{oxmultilang ident="MO_DHL__BULKY_GOOD"}]
+                            </td>
+                            <td class="edittext">
+                                <input type="hidden" name="editval[oxarticles__mo_dhl_bulky_good]" value="0">
+                                <input class="edittext" type="checkbox" name="editval[oxarticles__mo_dhl_bulky_good]"
+                                       value='1'
+                                       [{if $edit->oxarticles__mo_dhl_bulky_good->value == 1}]checked[{/if}] [{$readonly}]>
+                                [{oxinputhelp ident="HELP_MO_DHL__BULKY_GOOD"}]
                             </td>
                         </tr>
                         <tr>
