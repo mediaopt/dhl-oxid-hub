@@ -57,8 +57,8 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retoure_allow_frontend_creation_ALWAYS'   => 'always',
     'SHOP_MODULE_mo_dhl__retoure_days_limit'                       => 'Max. time for customers to create return labels (in days)',
     'HELP_SHOP_MODULE_mo_dhl__retoure_days_limit'                  => 'Customers can only create return labels in a given time frame after products were sent.',
-    'SHOP_MODULE_mo_dhl__retoure_admin_aprove'                     => 'Customers should ask for return label creation.',
-    'HELP_SHOP_MODULE_mo_dhl__retoure_admin_aprove'                => 'You can specify whether customers should get permission to create return label.',
+    'SHOP_MODULE_mo_dhl__retoure_admin_approve'                     => 'Customers should ask for return label creation.',
+    'HELP_SHOP_MODULE_mo_dhl__retoure_admin_approve'                => 'You can specify whether customers should get permission to create return label.',
 
     'SHOP_MODULE_GROUP_mo_dhl__beilegerretoure'            => 'Return Shipment',
     'SHOP_MODULE_mo_dhl__beilegerretoure_active'           => 'Attached return shipment label',

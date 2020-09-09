@@ -4,7 +4,7 @@
 [{else}]
     [{if $oView->moDHLCanUserCreateRetoure($order)}]
         <strong>[{oxmultilang ident="MO_DHL__RETOURE"}]</strong>
-        [{if $oView->moDHLShouldUserAskForRetoure($order)}]
+        [{if $oView->moDHLShouldUserAskForRetoure()}]
             [{if $order->moDHLIsRetoureDeclined()}]
                 <br/>
                 [{oxmultilang ident="MO_DHL__RETOURE_DECLINED"}]

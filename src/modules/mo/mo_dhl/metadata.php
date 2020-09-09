@@ -354,7 +354,7 @@ $aModule = [
         ],
         [
             'group' => 'mo_dhl__retoure',
-            'name'  => 'mo_dhl__retoure_admin_aprove',
+            'name'  => 'mo_dhl__retoure_admin_approve',
             'type'  => 'bool',
             'value' => 'false',
         ],

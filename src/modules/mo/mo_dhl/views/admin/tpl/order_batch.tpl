@@ -1,5 +1,6 @@
 [{include file="headitem.tpl" title="MO_DHL__BATCH_TITLE"|oxmultilangassign box=" "}]
 [{assign var="where" value=$oView->getListFilter()}]
+[{$RetoureAdminApprove}]
 
 <h1>[{oxmultilang ident="MO_DHL__BATCH_TITLE"}]</h1>
 <form name="batchForm" id="batchForm" action="[{$oViewConf->getSelfLink()}]" method="post">
@@ -15,7 +16,9 @@
                 <col width="10%">
                 <col width="17%">
                 <col width="17%">
-                <col width="10%">
+                [{if $RetoureAdminApprove}]
+                    <col width="10%">
+                [{/if}]
             </colgroup>
 
             <tr class="listitem">
@@ -90,22 +93,24 @@
                         </div>
                     </div>
                 </td>
-                <td valign="top" class="listfilter" height="20">
-                    <div class="r1">
-                        <div class="b1">
-                            <select name="RetoureRequestStatusFilter" class="requestselect" onChange="document.batchForm.submit();">
-                                <option value="-1" [{if $RetoureRequestStatusFilter == -1}]SELECTED[{/if}]
-                                    >[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
-                                <option value="-" [{if $RetoureRequestStatusFilter === '-'}]SELECTED[{/if}]>-</option>
-                                [{foreach from=$RetoureRequestStatuses key=RetoureRequestStatus item=label}]
-                                    <option value="[{$RetoureRequestStatus}]"
-                                        [{if $RetoureRequestStatusFilter == $RetoureRequestStatus}]SELECTED[{/if}]
-                                        >[{oxmultilang ident=$label noerror=true}]</option>
-                                [{/foreach}]
-                            </select>
+                [{if $RetoureAdminApprove}]
+                    <td valign="top" class="listfilter" height="20">
+                        <div class="r1">
+                            <div class="b1">
+                                <select name="RetoureRequestStatusFilter" class="requestselect" onChange="document.batchForm.submit();">
+                                    <option value="-1" [{if $RetoureRequestStatusFilter == -1}]SELECTED[{/if}]
+                                        >[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
+                                    <option value="-" [{if $RetoureRequestStatusFilter === '-'}]SELECTED[{/if}]>-</option>
+                                    [{foreach from=$RetoureRequestStatuses key=RetoureRequestStatus item=label}]
+                                        <option value="[{$RetoureRequestStatus}]"
+                                            [{if $RetoureRequestStatusFilter == $RetoureRequestStatus}]SELECTED[{/if}]
+                                            >[{oxmultilang ident=$label noerror=true}]</option>
+                                    [{/foreach}]
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                </td>
+                    </td>
+                [{/if}]
             </tr>
             <tr>
                 <td class="listheader first" height="15">
@@ -119,7 +124,9 @@
                 <td class="listheader" height="15">[{oxmultilang ident="ORDER_LIST_CUSTOMERFNAME"}]</td>
                 <td class="listheader" height="15">[{oxmultilang ident="ORDER_LIST_CUSTOMERLNAME"}]</td>
                 <td class="listheader" height="15">[{oxmultilang ident="MO_DHL__LAST_DHL_STATUS"}]</td>
-                <td class="listheader" height="15">[{oxmultilang ident="MO_DHL__RETOURE_LABEL"}]</td>
+                [{if $RetoureAdminApprove}]
+                    <td class="listheader" height="15">[{oxmultilang ident="MO_DHL__RETOURE_LABEL"}]</td>
+                [{/if}]
             </tr>
             [{foreach from=$mylist item=listitem}]
             <tr>
@@ -145,22 +152,24 @@
                 <td valign="top" class="listitem" height="15">
                     <div class="listitemfloating">[{$listitem->oxorder__mo_dhl_last_label_creation_status->value}]</div>
                 </td>
-                <td valign="top" class="listitem" height="15">
-                    <div class="listitemfloating">
-                    [{if isset($listitem->oxorder__mo_dhl_retoure_request_status->value)}]
-                        [{assign var="retoure_request_status" value=$listitem->oxorder__mo_dhl_retoure_request_status->value}]
-                        [{oxmultilang ident=$RetoureRequestStatuses.$retoure_request_status noerror=true}]
-                    [{else}]
-                        -
-                    [{/if}]
-                    </div>
-                </td>
+                [{if $RetoureAdminApprove}]
+                    <td valign="top" class="listitem" height="15">
+                        <div class="listitemfloating">
+                        [{if isset($listitem->oxorder__mo_dhl_retoure_request_status->value)}]
+                            [{assign var="retoure_request_status" value=$listitem->oxorder__mo_dhl_retoure_request_status->value}]
+                            [{oxmultilang ident=$RetoureRequestStatuses.$retoure_request_status noerror=true}]
+                        [{else}]
+                            -
+                        [{/if}]
+                        </div>
+                    </td>
+                [{/if}]
             </tr>
             [{/foreach}]
 
             [{assign var="whereparam" value=$oView->getFilterStringForLink()}]
             <tr>
-                <td class="pagination" colspan="8">
+                <td class="pagination" colspan="[{if $RetoureAdminApprove}]8[{else}]7[{/if}]">
                     <div class="r1">
                         <div class="b1">
                             <table cellspacing="0" cellpadding="0" border="0" width="100%">

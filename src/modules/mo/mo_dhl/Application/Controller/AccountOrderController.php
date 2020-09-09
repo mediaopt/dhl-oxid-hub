@@ -142,12 +142,11 @@ class AccountOrderController extends AccountOrderController_parent
     }
 
     /**
-     * @param  Order $order
      * @return bool
      */
-    public function moDHLShouldUserAskForRetoure(Order $order)
+    public function moDHLShouldUserAskForRetoure()
     {
-        return (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_aprove'));
+        return (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve'));
     }
 
     /**

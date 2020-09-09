@@ -57,11 +57,14 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
     {
         parent::render();
 
-        $retoureRequestStatuses = RetoureRequest::getRetoureRequestStatuses();
-        $retoureRequestStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter("RetoureRequestStatusFilter");
+        if (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve')) {
+            $retoureRequestStatuses = RetoureRequest::getRetoureRequestStatuses();
+            $retoureRequestStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter("RetoureRequestStatusFilter");
 
-        $this->_aViewData["RetoureRequestStatuses"] = $retoureRequestStatuses;
-        $this->_aViewData["RetoureRequestStatusFilter"] = $retoureRequestStatusFilter;
+            $this->_aViewData["RetoureRequestStatuses"] = $retoureRequestStatuses;
+            $this->_aViewData["RetoureRequestStatusFilter"] = $retoureRequestStatusFilter;
+            $this->_aViewData["RetoureAdminApprove"] = Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve');
+        }
 
         return 'mo_dhl__order_batch.tpl';
     }

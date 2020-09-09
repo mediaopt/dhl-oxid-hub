@@ -59,7 +59,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $this->addTplParam('process', $this->getProcess());
         $this->addTplParam('remarks', $this->getRemarks());
         $this->addTplParam('labels', $this->getOrder()->moDHLGetLabels());
-        if (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_aprove')) {
+        if (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve')) {
             $this->addTplParam('RetoureRequestStatuses', RetoureRequest::getRetoureRequestStatuses());
             $this->addTplParam('RetoureRequestStatus', $this->getRetoureRequestStatus());
         }
