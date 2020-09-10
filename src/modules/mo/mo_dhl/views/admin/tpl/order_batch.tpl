@@ -1,7 +1,5 @@
 [{include file="headitem.tpl" title="MO_DHL__BATCH_TITLE"|oxmultilangassign box=" "}]
 [{assign var="where" value=$oView->getListFilter()}]
-[{$RetoureAdminApprove}]
-
 <h1>[{oxmultilang ident="MO_DHL__BATCH_TITLE"}]</h1>
 <form name="batchForm" id="batchForm" action="[{$oViewConf->getSelfLink()}]" method="post">
     <input type="hidden" name="cl" value="[{$oViewConf->getActiveClassName()}]">

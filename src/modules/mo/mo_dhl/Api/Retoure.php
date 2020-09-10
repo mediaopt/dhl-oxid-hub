@@ -79,6 +79,8 @@ class Retoure extends Base
     {
         $label = MoDHLLabel::fromOrderAndRetoure($order, $response);
         $label->save();
+
+        (oxNew(\OxidEsales\Eshop\Core\Email::class))->moDHLSendRetoureLabelToCustomer($order);
     }
 
 }
