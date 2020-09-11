@@ -342,7 +342,7 @@ class Order extends Order_parent
      * @return bool
      */
     public function moDHLIsRetoureRequested() {
-        return $this->oxorder__mo_dhl_retoure_request_status == RetoureRequest::REQUESTED;
+        return $this->oxorder__mo_dhl_retoure_request_status->rawValue === RetoureRequest::REQUESTED;
     }
 
 
@@ -351,6 +351,6 @@ class Order extends Order_parent
      */
     public function moDHLIsRetoureDeclined()
     {
-        return $this->oxorder__mo_dhl_retoure_request_status == RetoureRequest::DECLINED;
+        return $this->oxorder__mo_dhl_retoure_request_status->rawValue === RetoureRequest::DECLINED;
     }
 }

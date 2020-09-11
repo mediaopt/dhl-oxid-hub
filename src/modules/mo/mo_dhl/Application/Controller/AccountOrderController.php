@@ -146,11 +146,11 @@ class AccountOrderController extends AccountOrderController_parent
      */
     public function moDHLShouldUserAskForRetoure()
     {
-        return (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve'));
+        return Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve');
     }
 
     /**
-     * @return string|void
+     * @return void
      */
     public function moDHLRetoureRequest()
     {
@@ -161,12 +161,12 @@ class AccountOrderController extends AccountOrderController_parent
 
         $order = oxNew(Order::class);
         $order->load($orderId);
-        if ($order->getFieldData('mo_dhl_retoure_request_status') == RetoureRequest::REQUESTED) {
+        if ($order->getFieldData('mo_dhl_retoure_request_status') === RetoureRequest::REQUESTED) {
             $order->setRetoureStatus(null);
         } else {
             $order->setRetoureStatus(RetoureRequest::REQUESTED);
         }
-        return 'account_order';
+        return;
     }
 
     /**

@@ -86,7 +86,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             $response = $retoureService->createRetoure($order);
             $retoureService->handleResponse($order, $response);
 
-            if ($order->oxorder__mo_dhl_retoure_request_status->rawValue == RetoureRequest::REQUESTED) {
+            if (isset($order->oxorder__mo_dhl_retoure_request_status->rawValue)) {
                 $order->setRetoureStatus(RetoureRequest::CREATED);
             }
         } catch (\Exception $e) {
@@ -153,7 +153,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             $label->delete();
 
             $order = $this->getOrder();
-            if ($order->oxorder__mo_dhl_retoure_request_status->rawValue == RetoureRequest::CREATED) {
+            if ($order->oxorder__mo_dhl_retoure_request_status->rawValue === RetoureRequest::CREATED) {
                 $order->setRetoureStatus(RetoureRequest::REQUESTED);
             }
 
@@ -232,7 +232,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     protected function getRetoureRequestStatus()
     {

@@ -141,11 +141,12 @@ class Email extends Email_parent
         $lang->setBaseLanguage($orderLang);
 
         $smarty->security_settings['INCLUDE_ANY'] = true;
+        $oldIsAdmin = $myConfig->isAdmin();
         $myConfig->setAdminMode(false);
 
         $this->setBody($smarty->fetch('mo_dhl__email_retoure_html.tpl'));
         $this->setAltBody($smarty->fetch('mo_dhl__email_retoure_plain.tpl'));
-        $myConfig->setAdminMode(true);
+        $myConfig->setAdminMode($oldIsAdmin);
         $lang->setTplLanguage($oldTplLang);
         $lang->setBaseLanguage($oldBaseLang);
 
