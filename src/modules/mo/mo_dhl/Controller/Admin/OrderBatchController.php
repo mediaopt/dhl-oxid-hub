@@ -14,6 +14,7 @@ use Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Export\CsvExporter;
 use Mediaopt\DHL\Model\MoDHLLabel;
+use Mediaopt\DHL\Shipment\RetoureRequest;
 use Mediaopt\DHL\Shipment\Shipment;
 use OxidEsales\Eshop\Core\Registry;
 
@@ -55,7 +56,41 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
     public function render()
     {
         parent::render();
+
+        if (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve')) {
+            $retoureRequestStatuses = RetoureRequest::getRetoureRequestStatuses();
+            $retoureRequestStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter("RetoureRequestStatusFilter");
+
+            $this->_aViewData["RetoureRequestStatuses"] = $retoureRequestStatuses;
+            $this->_aViewData["RetoureRequestStatusFilter"] = $retoureRequestStatusFilter;
+            $this->_aViewData["RetoureAdminApprove"] = Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve');
+        }
+
         return 'mo_dhl__order_batch.tpl';
+    }
+
+    /**
+     * Adding retoure request status check
+     *
+     * @param array  $whereQuery SQL condition array
+     * @param string $fullQuery  SQL query string
+     *
+     * @return string
+     */
+    protected function _prepareWhereQuery($whereQuery, $fullQuery)
+    {
+        $database = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
+        $query = parent::_prepareWhereQuery($whereQuery, $fullQuery);
+
+        $retoureRequestStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('RetoureRequestStatusFilter');
+
+        if (isset((RetoureRequest::getRetoureRequestStatuses())[$retoureRequestStatusFilter])) {
+            $query .= " and ( oxorder.mo_dhl_retoure_request_status = " . $database->quote($retoureRequestStatusFilter) . " )";
+        } elseif ($retoureRequestStatusFilter === '-') {
+            $query .= " and ( oxorder.mo_dhl_retoure_request_status IS NULL )";
+        }
+
+        return $query;
     }
 
     /**

@@ -24,6 +24,9 @@ $aLang = [
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'A participation number is exactly two characters long and consists solely of letters and digits',
     'MO_DHL__OPERATOR'                             => 'Delivery operator',
     'HELP_MO_DHL__OPERATOR'                        => 'Please provide the name of the delivery operator. This information is needed for a possible return outside the EU.',
+    'MO_DHL__RETOURE_REQUESTED'                    => 'Requested',
+    'MO_DHL__RETOURE_CREATED'                      => 'Created',
+    'MO_DHL__RETOURE_DECLINED'                     => 'Declined',
     'MO_DHL__PROCESS_IDENTIFIER'                   => 'Process number',
     'MO_DHL__PROCESS_IDENTIFIER_ERROR'             => 'Please choose a process number from the list.',
     'MO_DHL__DELIVERYSET_DHL'                      => 'DHL',
@@ -82,4 +85,5 @@ $aLang = [
     'MO_DHL__ADDITIONAL_INSURANCE'        => 'Additional Insurance',
     'HELP_MO_DHL__ADDITIONAL_INSURANCE'   => 'DHL normally insures the delivery inside Germany up to 500 EUR concerning losing or damaging. For deliveries of more expensive products DHL offers an additional insurance up to 2.500 EUR (+6,00 EUR surcharge) or 25.000 EUR  (+18,00 EUR surcharge). You can find more informationens <a href="https://www.dhl.de/content/dam/images/pdf/GK/Services/dhl-transportversicherung-infoblatt-en-052020.pdf">here</a>',
 
+    'MO_DHL__RETOURE_LABELS_EMAIL_SUBJECT' => 'Your return label has been created',
 ];

@@ -7,6 +7,7 @@ namespace Mediaopt\DHL\Application\Controller;
 use GuzzleHttp\Exception\ClientException;
 use Mediaopt\DHL\Adapter\DHLAdapter;
 use Mediaopt\DHL\Model\MoDHLLabel;
+use Mediaopt\DHL\Shipment\RetoureRequest;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\ViewConfig;
@@ -126,7 +127,7 @@ class AccountOrderController extends AccountOrderController_parent
      * @param  Order $order
      * @return bool
      */
-    public function moDHLShowRetoureActions(Order $order)
+    public function moDHLCanUserCreateRetoure(Order $order)
     {
         $showActions = Registry::getConfig()->getShopConfVar('mo_dhl__retoure_allow_frontend_creation');
 
@@ -138,6 +139,34 @@ class AccountOrderController extends AccountOrderController_parent
         return ($showActions === self::MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_ALWAYS ||
             ($showActions === self::MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_ONLY_DHL && $order->oxorder__mo_dhl_process->rawValue)) &&
             time() < $retoureDeadline;
+    }
+
+    /**
+     * @return bool
+     */
+    public function moDHLShouldUserAskForRetoure()
+    {
+        return Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve');
+    }
+
+    /**
+     * @return void
+     */
+    public function moDHLRetoureRequest()
+    {
+        if (!$orderId = Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestEscapedParameter('orderId')) {
+            $this->moDHLHandleError('orderId is missing');
+            return;
+        }
+
+        $order = oxNew(Order::class);
+        $order->load($orderId);
+        if ($order->getFieldData('mo_dhl_retoure_request_status') === RetoureRequest::REQUESTED) {
+            $order->setRetoureStatus(null);
+        } else {
+            $order->setRetoureStatus(RetoureRequest::REQUESTED);
+        }
+        return;
     }
 
     /**

@@ -187,7 +187,10 @@ $aModule = [
         'mo_dhl__email_order_plain.tpl'      => 'mo/mo_dhl/views/tpl/email/order_plain.tpl',
         'mo_dhl__retoure_links.tpl'          => 'mo/mo_dhl/views/tpl/retoure_links.tpl',
         'mo_dhl__retoure_button.tpl'         => 'mo/mo_dhl/views/tpl/retoure_button.tpl',
+        'mo_dhl__retoure_request.tpl'        => 'mo/mo_dhl/views/tpl/retoure_request.tpl',
         'mo_dhl__retoure.tpl'                => 'mo/mo_dhl/views/tpl/retoure.tpl',
+        'mo_dhl__email_retoure_html.tpl'     => 'mo/mo_dhl/views/tpl/email/retoure_html.tpl',
+        'mo_dhl__email_retoure_plain.tpl'    => 'mo/mo_dhl/views/tpl/email/retoure_plain.tpl',
     ],
     'settings'    => [
         [
@@ -350,6 +353,12 @@ $aModule = [
             'name'  => 'mo_dhl__retoure_days_limit',
             'type'  => 'str',
             'value' => '30',
+        ],
+        [
+            'group' => 'mo_dhl__retoure',
+            'name'  => 'mo_dhl__retoure_admin_approve',
+            'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__beilegerretoure',

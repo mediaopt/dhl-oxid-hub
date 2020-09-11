@@ -24,6 +24,9 @@ $aLang = [
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'Eine Teilnahmenummer besteht aus genau zwei Zeichen und enthält nur Buchstaben und Ziffern.',
     'MO_DHL__OPERATOR'                             => 'Zusteller',
     'HELP_MO_DHL__OPERATOR'                        => 'Tragen Sie hier den Zusteller der Lieferung an. Dieser wird für eine mögliche Retoure außerhalb der EU benötigt.',
+    'MO_DHL__RETOURE_REQUESTED'                    => 'Angefordert',
+    'MO_DHL__RETOURE_CREATED'                      => 'Erstellt',
+    'MO_DHL__RETOURE_DECLINED'                     => 'Abgelehnt',
     'MO_DHL__PROCESS_IDENTIFIER'                   => 'Verfahrensnummer',
     'MO_DHL__PROCESS_IDENTIFIER_ERROR'             => 'Bitte wählen Sie eine Verfahrensnummer aus der Liste.',
     'MO_DHL__DELIVERYSET_DHL'                      => 'DHL',
@@ -81,4 +84,6 @@ $aLang = [
     'MO_DHL__CASH_ON_DELIVERY'          => 'Nachnahme',
     'MO_DHL__ADDITIONAL_INSURANCE'      => 'Transportversicherung',
     'HELP_MO_DHL__ADDITIONAL_INSURANCE' => 'Grundsätzlich haftet DHL für Ihr Paket beim deutschlandweiten Versand gegen Verlust oder Beschädigung bis 500 EUR (nur gegen Vorlage des quittierten Einlieferungsbeleges). Für besonders wertvolle Sendungen bietet DHL Ihnen darüber hinaus eine Transportversicherung bis 2.500 EUR (+6,00 EUR Aufpreis) oder 25.000 EUR  (+18,00 EUR Aufpreis) an. Weiter Informationen finden Sie <a href="https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/services/service-loesungen.html#versicherung">hier</a>',
+
+    'MO_DHL__RETOURE_LABELS_EMAIL_SUBJECT' => 'Ihr Rücksendeetikett wurde erstellt',
 ];

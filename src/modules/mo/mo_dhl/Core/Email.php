@@ -108,4 +108,57 @@ class Email extends Email_parent
         }
         return ['', 0];
     }
+
+    /**
+     * Sets mailer additional settings and sends retoure label mail to customer.
+     * Returns true on success.
+     *
+     * @param \OxidEsales\Eshop\Application\Model\Order $order   Order object
+     *
+     * @return bool
+     */
+    public function moDHLSendRetoureLabelToCustomer($order)
+    {
+        $myConfig = $this->getConfig();
+
+        $orderLang = (int) (isset($order->oxorder__oxlang->value) ? $order->oxorder__oxlang->value : 0);
+
+        $shop = $this->_getShop($orderLang);
+        $this->_setMailParams($shop);
+
+        $lang = \OxidEsales\Eshop\Core\Registry::getLang();
+        $smarty = $this->_getSmarty();
+        $this->setViewData("order", $order);
+        $this->setViewData("labels", $order->moDHLGetLabels());
+
+        $this->_processViewArray();
+
+        $store['INCLUDE_ANY'] = $smarty->security_settings['INCLUDE_ANY'];
+
+        $oldTplLang = $lang->getTplLanguage();
+        $oldBaseLang = $lang->getBaseLanguage();
+        $lang->setTplLanguage($orderLang);
+        $lang->setBaseLanguage($orderLang);
+
+        $smarty->security_settings['INCLUDE_ANY'] = true;
+        $oldIsAdmin = $myConfig->isAdmin();
+        $myConfig->setAdminMode(false);
+
+        $this->setBody($smarty->fetch('mo_dhl__email_retoure_html.tpl'));
+        $this->setAltBody($smarty->fetch('mo_dhl__email_retoure_plain.tpl'));
+        $myConfig->setAdminMode($oldIsAdmin);
+        $lang->setTplLanguage($oldTplLang);
+        $lang->setBaseLanguage($oldBaseLang);
+
+        $smarty->security_settings['INCLUDE_ANY'] = $store['INCLUDE_ANY'];
+
+        $this->setSubject($lang->translateString('MO_DHL__RETOURE_LABELS_EMAIL_SUBJECT'));
+
+        $fullName = $order->oxorder__oxbillfname->getRawValue() . " " . $order->oxorder__oxbilllname->getRawValue();
+
+        $this->setRecipient($order->oxorder__oxbillemail->value, $fullName);
+        $this->setReplyTo($shop->oxshops__oxorderemail->value, $shop->oxshops__oxname->getRawValue());
+
+        return $this->send();
+    }
 }
