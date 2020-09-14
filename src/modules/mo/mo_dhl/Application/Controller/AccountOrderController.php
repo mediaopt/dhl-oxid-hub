@@ -96,7 +96,7 @@ class AccountOrderController extends AccountOrderController_parent
             $this->moDHLHandleError('label is not a retoure', $data);
             return 'account_order';
         }
-        $this->displayRetoure($label, $data);
+        $this->moDHLDisplayRetoure($label, $data);
         return 'account_order';
     }
 
