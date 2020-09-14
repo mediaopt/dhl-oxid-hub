@@ -77,10 +77,12 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
 
     /**
      */
-    public function createRetoure()
+    public function createRetoure($order = null)
     {
         try {
-            $order = $this->getOrder();
+            if (!isset($order)) {
+                $order = $this->getOrder();
+            }
 
             $retoureService = Registry::get(DHLAdapter::class)->buildRetoure();
             $response = $retoureService->createRetoure($order);

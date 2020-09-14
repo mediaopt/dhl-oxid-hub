@@ -24,6 +24,7 @@ $aLang = [
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'Eine Teilnahmenummer besteht aus genau zwei Zeichen und enthält nur Buchstaben und Ziffern.',
     'MO_DHL__OPERATOR'                             => 'Zusteller',
     'HELP_MO_DHL__OPERATOR'                        => 'Tragen Sie hier den Zusteller der Lieferung an. Dieser wird für eine mögliche Retoure außerhalb der EU benötigt.',
+    'MO_DHL__CUSTOMER_RETOURE_REQUEST_STATUS'      => 'Status der Kundenretourenlabelanforderung',
     'MO_DHL__RETOURE_REQUESTED'                    => 'Angefordert',
     'MO_DHL__RETOURE_CREATED'                      => 'Erstellt',
     'MO_DHL__RETOURE_DECLINED'                     => 'Abgelehnt',
@@ -47,6 +48,7 @@ $aLang = [
     'MO_DHL__INSTALL_FOLDER_ERROR'                 => 'Ordner %s konnte nicht erstellt werden. Bitte erstellen Sie den Ordner manuell.',
     'MO_DHL__CREATE_LABEL'                         => 'Neues Versandlabel erstellen',
     'MO_DHL__CREATE_LABELS'                        => 'Neue Labels erstellen',
+    'MO_DHL__CREATE_RETOURE_LABELS'                => 'Neue Retourenlabels erstellen',
     'MO_DHL__DELETE_SHIPMENT'                      => 'Versandlabel stornieren',
 
     'MO_DHL__CUSTOM_LABEL_CREATE'             => 'Individuelles Versandlabel erstellen',
@@ -85,5 +87,5 @@ $aLang = [
     'MO_DHL__ADDITIONAL_INSURANCE'      => 'Transportversicherung',
     'HELP_MO_DHL__ADDITIONAL_INSURANCE' => 'Grundsätzlich haftet DHL für Ihr Paket beim deutschlandweiten Versand gegen Verlust oder Beschädigung bis 500 EUR (nur gegen Vorlage des quittierten Einlieferungsbeleges). Für besonders wertvolle Sendungen bietet DHL Ihnen darüber hinaus eine Transportversicherung bis 2.500 EUR (+6,00 EUR Aufpreis) oder 25.000 EUR  (+18,00 EUR Aufpreis) an. Weiter Informationen finden Sie <a href="https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/services/service-loesungen.html#versicherung">hier</a>',
 
-    'MO_DHL__RETOURE_LABELS_EMAIL_SUBJECT' => 'Ihr Rücksendeetikett wurde erstellt',
+    'MO_DHL__RETOURE_LABELS_EMAIL_SUBJECT' => 'Ihr Retourenlabel wurde erstellt',
 ];

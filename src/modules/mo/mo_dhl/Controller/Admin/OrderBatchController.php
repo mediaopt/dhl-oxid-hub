@@ -14,6 +14,7 @@ use Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Export\CsvExporter;
 use Mediaopt\DHL\Model\MoDHLLabel;
+use Mediaopt\DHL\Model\MoDHLLabelList;
 use Mediaopt\DHL\Shipment\RetoureRequest;
 use Mediaopt\DHL\Shipment\Shipment;
 use OxidEsales\Eshop\Core\Registry;
@@ -57,12 +58,30 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
     {
         parent::render();
 
+        $orderIds = [];
+        foreach ($this->_oList as $item) {
+            $orderIds[] = $item->getId();
+        }
+
+        $labels = \oxNew(MoDHLLabelList::class);
+        $labels->loadOrderLabels($orderIds);
+
+        $orderLabels = [];
+        foreach ($labels as $label) {
+            $orderLabels[$label->getFieldData('orderId')][$label->getFieldData('type')] = true;
+        }
+
+        $this->_aViewData["OrderLabels"] = $orderLabels;
         if (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve')) {
             $retoureRequestStatuses = RetoureRequest::getRetoureRequestStatuses();
             $retoureRequestStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter("RetoureRequestStatusFilter");
+            $deliveryLabelStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter("DeliveryLabelStatusFilter");
+            $retoureLabelStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter("RetoureLabelStatusFilter");
 
             $this->_aViewData["RetoureRequestStatuses"] = $retoureRequestStatuses;
             $this->_aViewData["RetoureRequestStatusFilter"] = $retoureRequestStatusFilter;
+            $this->_aViewData["DeliveryLabelStatusFilter"] = $deliveryLabelStatusFilter;
+            $this->_aViewData["RetoureLabelStatusFilter"] = $retoureLabelStatusFilter ;
             $this->_aViewData["RetoureAdminApprove"] = Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve');
         }
 
@@ -88,6 +107,29 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
             $query .= " and ( oxorder.mo_dhl_retoure_request_status = " . $database->quote($retoureRequestStatusFilter) . " )";
         } elseif ($retoureRequestStatusFilter === '-') {
             $query .= " and ( oxorder.mo_dhl_retoure_request_status IS NULL )";
+        }
+
+        $deliveryLabelStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('DeliveryLabelStatusFilter');
+        $retoureLabelStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('RetoureLabelStatusFilter');
+
+        if (!empty($deliveryLabelStatusFilter)) {
+            $joinQuery = 'from oxorder left join mo_dhl_labels mdl_delivery on oxorder.OXID = mdl_delivery.orderId and mdl_delivery.type = "delivery"';
+            $query = str_replace('from oxorder', $joinQuery, $query);
+            if ("-" === $deliveryLabelStatusFilter) {
+                $query .= ' and mdl_delivery.OXID IS NULL ';
+            } else {
+                $query .= ' and mdl_delivery.type IS NOT NULL ';
+            }
+        }
+
+        if (!empty($retoureLabelStatusFilter)) {
+            $joinQuery = 'from oxorder left join mo_dhl_labels mdl_retoure on oxorder.OXID = mdl_retoure.orderId and mdl_retoure.type = "retoure"';
+            $query = str_replace('from oxorder', $joinQuery, $query);
+            if ("-" === $retoureLabelStatusFilter) {
+                $query .= ' and mdl_retoure.type IS NULL ';
+            } else {
+                $query .= ' and mdl_retoure.type IS NOT NULL  ';
+            }
         }
 
         return $query;
@@ -135,6 +177,27 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
             return;
         }
         $this->handleCreationResponse($this->callCreation($orderIds));
+    }
+
+    /**
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    public function createRetoureLabels()
+    {
+        $orderIds = (array)Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('order');
+        if (empty($orderIds)) {
+            $message = Registry::getLang()->translateString('MO_DHL__BATCH_ERROR_NO_ORDER_SELECTED');
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay(new \OxidEsales\Eshop\Core\Exception\StandardException($message));
+            return;
+        }
+
+        $orderDHLController = oxNew(OrderDHLController::class);
+        $order = oxNew(Order::class);
+        foreach ($orderIds as $orderId) {
+            $order->load($orderId);
+            $orderDHLController->createRetoure($order);
+        }
     }
 
     /**
