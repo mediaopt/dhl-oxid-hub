@@ -118,7 +118,7 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
             if ("-" === $deliveryLabelStatusFilter) {
                 $query .= ' and mdl_delivery.OXID IS NULL ';
             } else {
-                $query .= ' and mdl_delivery.type IS NOT NULL ';
+                $query .= ' and mdl_delivery.OXID IS NOT NULL ';
             }
         }
 
@@ -126,9 +126,9 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
             $joinQuery = 'from oxorder left join mo_dhl_labels mdl_retoure on oxorder.OXID = mdl_retoure.orderId and mdl_retoure.type = "retoure"';
             $query = str_replace('from oxorder', $joinQuery, $query);
             if ("-" === $retoureLabelStatusFilter) {
-                $query .= ' and mdl_retoure.type IS NULL ';
+                $query .= ' and mdl_retoure.OXID IS NULL ';
             } else {
-                $query .= ' and mdl_retoure.type IS NOT NULL  ';
+                $query .= ' and mdl_retoure.OXID IS NOT NULL  ';
             }
         }
 

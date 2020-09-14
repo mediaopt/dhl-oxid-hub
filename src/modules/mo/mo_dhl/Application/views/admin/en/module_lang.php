@@ -49,7 +49,6 @@ $aLang = [
     'MO_DHL__CREATE_LABEL'                         => 'Create a new delivery label',
     'MO_DHL__CREATE_LABELS'                        => 'Create labels',
     'MO_DHL__CREATE_RETOURE_LABELS'                => 'Create Retoure labels',
-
     'MO_DHL__DELETE_SHIPMENT'                      => 'Cancel shipment',
 
     'MO_DHL__CUSTOM_LABEL_CREATE'             => 'Create individual label',
