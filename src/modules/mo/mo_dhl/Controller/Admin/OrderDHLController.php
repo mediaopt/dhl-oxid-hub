@@ -76,6 +76,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
+     * @param \OxidEsales\Eshop\Application\Model\Order|null $order
      */
     public function createRetoure($order = null)
     {
