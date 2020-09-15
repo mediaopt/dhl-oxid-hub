@@ -222,8 +222,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             : null;
         if ($order->moDHLUsesService(Article::MO_DHL__VISUAL_AGE_CHECK18)) {
             $ident->minimumAge = 'A18';
-        }
-        if ($order->moDHLUsesService(Article::MO_DHL__VISUAL_AGE_CHECK16) && !$ident->minimumAge) {
+        } elseif ($order->moDHLUsesService(Article::MO_DHL__VISUAL_AGE_CHECK16) && !$ident->minimumAge) {
             $ident->minimumAge = 'A16';
         }
         return $ident;
