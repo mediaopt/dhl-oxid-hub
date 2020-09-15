@@ -88,11 +88,10 @@
                     <div class="r1">
                         <div class="b1">
                             <select name="DeliveryLabelStatusFilter" class="retourselect" onChange="document.batchForm.submit();">
-                                <option value="" [{if ! isset($DeliveryLabelStatusFilter)}]SELECTED[{/if}]
-                                >[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
+                                <option value="">[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
                                 <option value="-" [{if $DeliveryLabelStatusFilter === '-'}]SELECTED[{/if}]>-</option>
                                 <option value="1" [{if $DeliveryLabelStatusFilter === '1'}]SELECTED[{/if}]>
-                                    [{oxmultilang ident="MO_DHL__RETOURE_CREATED" }]
+                                    [{oxmultilang ident="MO_DHL__CREATED" }]
                                 </option>
                             </select>
                         </div>
@@ -102,11 +101,10 @@
                     <div class="r1">
                         <div class="b1">
                             <select name="RetoureLabelStatusFilter" class="retourselect" onChange="document.batchForm.submit();">
-                                <option value="" [{if ! isset($RetoureLabelStatusFilter)}]SELECTED[{/if}]
-                                >[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
+                                <option value="">[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
                                 <option value="-" [{if $RetoureLabelStatusFilter === '-'}]SELECTED[{/if}]>-</option>
                                 <option value="1" [{if $RetoureLabelStatusFilter === '1'}]SELECTED[{/if}]>
-                                    [{oxmultilang ident="MO_DHL__RETOURE_CREATED" }]
+                                    [{oxmultilang ident="MO_DHL__CREATED" }]
                                 </option>
                             </select>
                         </div>
@@ -128,8 +126,7 @@
                         <div class="r1">
                             <div class="b1">
                                 <select name="RetoureRequestStatusFilter" class="requestselect" onChange="document.batchForm.submit();">
-                                    <option value="-1" [{if $RetoureRequestStatusFilter == -1}]SELECTED[{/if}]
-                                        >[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
+                                    <option value="-1">[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
                                     <option value="-" [{if $RetoureRequestStatusFilter === '-'}]SELECTED[{/if}]>-</option>
                                     [{foreach from=$RetoureRequestStatuses key=RetoureRequestStatus item=label}]
                                         <option value="[{$RetoureRequestStatus}]"
@@ -185,7 +182,7 @@
                 <td valign="top" class="listitem" height="15">
                     <div class="listitemfloating">
                     [{if isset($OrderLabels.$oxid.delivery)}]
-                        [{oxmultilang ident=MO_DHL__RETOURE_CREATED noerror=true}]
+                        [{oxmultilang ident=MO_DHL__CREATED noerror=true}]
                     [{else}]
                         -
                     [{/if}]
@@ -194,7 +191,7 @@
                 <td valign="top" class="listitem" height="15">
                     <div class="listitemfloating">
                         [{if isset($OrderLabels.$oxid.retoure)}]
-                            [{oxmultilang ident=MO_DHL__RETOURE_CREATED noerror=true}]
+                            [{oxmultilang ident=MO_DHL__CREATED noerror=true}]
                         [{else}]
                         -
                         [{/if}]
