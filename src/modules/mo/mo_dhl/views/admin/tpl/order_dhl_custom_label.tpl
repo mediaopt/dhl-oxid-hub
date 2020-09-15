@@ -324,6 +324,133 @@
                                     </td>
                                 </tr>
                                 [{/if}]
+                                [{if $process->supportsBulkyGood()}]
+                                [{assign var="service" value=$shipmentOrder.services.bulkyGoods}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__BULKY_GOOD'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][bulkyGoods][active]" value="false">
+                                        <input type="checkbox" name="data[services][bulkyGoods][active]"
+                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                [{/if}]
+                                [{if $process->supportsAdditionalInsurance()}]
+                                [{assign var="service" value=$shipmentOrder.services.additionalInsurance}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__ADDITIONAL_INSURANCE'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][additionalInsurance][active]" value="false">
+                                        <input type="checkbox" name="data[services][additionalInsurance][active]"
+                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__ADDITIONAL_INSURANCE'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[services][additionalInsurance][insuranceAmount]"
+                                               value="[{$service->getInsuranceAmount()}]">
+                                    </td>
+                                </tr>
+                                [{/if}]
+                                [{if $process->supportsCashOnDelivery()}]
+                                [{assign var="service" value=$shipmentOrder.services.cashOnDelivery}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__CASH_ON_DELIVERY'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][cashOnDelivery][active]" value="false">
+                                        <input type="checkbox" name="data[services][cashOnDelivery][active]"
+                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__CASH_ON_DELIVERY'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[services][cashOnDelivery][codAmount]"
+                                               value="[{$service->getCodAmount()}]">
+                                    </td>
+                                </tr>
+                                [{/if}]
+                                [{if $process->supportsIdentCheck()}]
+                                [{assign var="service" value=$shipmentOrder.services.identCheck}]
+                                [{if $service && $service->getActive()}]
+                                    [{assign var="identDetails" value=$service->getIdent()}]
+                                [{/if}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__IDENT_CHECK'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][identCheck][active]" value="false">
+                                        <input type="checkbox" name="data[services][identCheck][active]"
+                                               value="1" [{if $service && $service->getActive()}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='LAST_NAME'}] [{oxmultilang ident='MO_DHL__FOR_IDENT_CHECK'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[services][identCheck][surname]"
+                                               value="[{if $identDetails}][{$identDetails->surname}][{/if}]">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='FIRST_NAME'}] [{oxmultilang ident='MO_DHL__FOR_IDENT_CHECK'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[services][identCheck][givenName]"
+                                               value="[{if $identDetails}][{$identDetails->givenName}][{/if}]">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='GENERAL_BIRTHDATE'}] [{oxmultilang ident='MO_DHL__FOR_IDENT_CHECK'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[services][identCheck][dateOfBirth]"
+                                               value="[{if $identDetails}][{$identDetails->dateOfBirth}][{/if}]">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__VISUAL_AGE_CHECK'}] [{oxmultilang ident='MO_DHL__FOR_IDENT_CHECK'}]
+                                    </td>
+                                    <td>
+                                        <select name="data[services][identCheck][minimumAge]">
+                                            <option value="">-</option>
+                                            <option value="16" [{if $identDetails && $identDetails->minimumAge === 'A16'}] selected[{/if}]>16</option>
+                                            <option value="18" [{if $identDetails && $identDetails->minimumAge === 'A18'}] selected[{/if}]>18</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                [{/if}]
+                                [{if $process->supportsVisualAgeCheck()}]
+                                [{assign var="service" value=$shipmentOrder.services.visualAgeCheck}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__VISUAL_AGE_CHECK'}]
+                                    </td>
+                                    <td>
+                                        <select name="data[services][visualAgeCheck]">
+                                            <option value="">-</option>
+                                            <option value="16" [{if $service && $service->getActive() && $service->getType() === 'A16'}] selected[{/if}]>16</option>
+                                            <option value="18" [{if $service && $service->getActive() && $service->getType() === 'A18'}] selected[{/if}]>18</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                [{/if}]
                                 [{assign var="service" value=$shipmentOrder.services.printOnlyIfCodeable}]
                                 <tr>
                                     <td>

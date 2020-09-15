@@ -11,10 +11,13 @@ use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Response\DeleteShipmentOrderResponse;
 use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationAdditionalInsurance;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationCashOnDelivery;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationIC;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationVisualAgeCheck;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
 use Mediaopt\DHL\Api\Wunschpaket;
-use Mediaopt\DHL\Exception\WebserviceException;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Shipment\Participation;
@@ -460,6 +463,11 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
                 'parcelOutletRouting' => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getParcelOutletRouting(),
                 'printOnlyIfCodeable' => $shipmentOrder->getPrintOnlyIfCodeable(),
                 'beilegerretoure'     => $shipmentOrder->getShipment()->getShipmentDetails()->getReturnShipmentAccountNumber(),
+                'bulkyGoods'          => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getBulkyGoods(),
+                'additionalInsurance' => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getAdditionalInsurance(),
+                'identCheck'          => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getIdentCheck(),
+                'cashOnDelivery'      => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getCashOnDelivery(),
+                'visualAgeCheck'      => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getVisualCheckOfAge(),
             ],
         ];
     }
@@ -529,6 +537,45 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         if ($process->supportsDHLRetoure() && filter_var($servicesData['beilegerretoure']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $accountNumber = Registry::get(GKVShipmentBuilder::class)->buildReturnAccountNumber($this->getOrder());
             $shipmentOrder->getShipment()->getShipmentDetails()->setReturnShipmentAccountNumber($accountNumber);
+        } else {
+            $shipmentOrder->getShipment()->getShipmentDetails()->setReturnShipmentAccountNumber(null);
+        }
+        if ($process->supportsBulkyGood()) {
+            $isActive = filter_var($servicesData['bulkyGoods']['active'], FILTER_VALIDATE_BOOLEAN);
+            $services->setBulkyGoods(new Serviceconfiguration($isActive));
+        }
+        if ($process->supportsAdditionalInsurance()) {
+            $isActive = filter_var($servicesData['additionalInsurance']['active'], FILTER_VALIDATE_BOOLEAN);
+            $details = $servicesData['additionalInsurance']['insuranceAmount'] ?: null;
+            $services->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance($isActive, $details));
+        }
+        if ($process->supportsCashOnDelivery()) {
+            $isActive = filter_var($servicesData['cashOnDelivery']['active'], FILTER_VALIDATE_BOOLEAN);
+            $details = $servicesData['cashOnDelivery']['codAmount'] ?: null;
+            $services->setCashOnDelivery(new ServiceconfigurationCashOnDelivery($isActive, 0, $details));
+        }
+        if ($process->supportsIdentCheck()) {
+            $isActive = filter_var($servicesData['identCheck']['active'], FILTER_VALIDATE_BOOLEAN);
+            if ($isActive) {
+                $ident = new \stdClass();
+                $ident->surname = $servicesData['identCheck']['surname'];
+                $ident->givenName = $servicesData['identCheck']['givenName'];
+                $ident->dateOfBirth = $servicesData['identCheck']['dateOfBirth'] ? (new \DateTime($servicesData['identCheck']['dateOfBirth']))->format('Y-m-d') : null;
+                $ident->minimumAge = $servicesData['identCheck']['minimumAge']
+                    ? 'A' . $servicesData['identCheck']['minimumAge']
+                    : null;
+                $services->setIdentCheck(new ServiceconfigurationIC($ident, true));
+            } else {
+                $services->setIdentCheck(null);
+            }
+        }
+        if ($process->supportsVisualAgeCheck()) {
+            if (!($process->supportsIdentCheck() && filter_var($servicesData['identCheck']['active'], FILTER_VALIDATE_BOOLEAN)) && $ageCheck = $servicesData['visualAgeCheck'] ?: null) {
+                $services->setVisualCheckOfAge(new ServiceconfigurationVisualAgeCheck(true, 'A' . $ageCheck));
+            } else {
+                $services->setVisualCheckOfAge(null);
+            }
+
         }
 
         $isActive = filter_var($servicesData['printOnlyIfCodeable']['active'], FILTER_VALIDATE_BOOLEAN);
