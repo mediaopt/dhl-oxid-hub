@@ -56,9 +56,9 @@ class RetoureRequest
     public static function getRetoureRequestStatuses()
     {
         return [
-            self::REQUESTED => 'MO_DHL__RETOURE_REQUESTED',
-            self::CREATED   => 'MO_DHL__RETOURE_CREATED',
-            self::DECLINED  => 'MO_DHL__RETOURE_DECLINED',
+            self::REQUESTED => 'MO_DHL__REQUESTED',
+            self::CREATED   => 'MO_DHL__CREATED',
+            self::DECLINED  => 'MO_DHL__DECLINED',
         ];
     }
 }

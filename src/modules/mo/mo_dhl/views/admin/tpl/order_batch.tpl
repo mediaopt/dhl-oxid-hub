@@ -13,6 +13,8 @@
                 <col width="20%">
                 <col width="10%">
                 <col width="17%">
+                <col width="10%">
+                <col width="10%">
                 <col width="17%">
                 [{if $RetoureAdminApprove}]
                     <col width="10%">
@@ -21,7 +23,7 @@
 
             <tr class="listitem">
                 <td></td>
-                <td valign="top" class="listfilter first" height="20">
+                <td valign="center" class="listfilter first" height="20">
                     <div class="r1">
                         <div class="b1">
                             <select name="folder" class="folderselect" onChange="document.batchForm.submit();">
@@ -32,13 +34,14 @@
                                             style="color: [{$color}];">[{oxmultilang ident=$field noerror=true}]</option>
                                 [{/foreach}]
                             </select>
+                            <br/>
                             <input class="listedit" type="text" size="15" maxlength="128"
                                    name="where[oxorder][oxorderdate]"
                                    value="[{$where.oxorder.oxorderdate|oxformdate}]" [{include file="help.tpl" helpid=order_date}]>
                         </div>
                     </div>
                 </td>
-                <td valign="top" class="listfilter" height="20">
+                <td valign="center" class="listfilter" height="20">
                     <div class="r1">
                         <div class="b1">
                             <select name="addsearchfld" class="folderselect">
@@ -51,12 +54,13 @@
                                             [{if $addsearchfld == $table}]SELECTED[{/if}]>[{oxmultilang|oxtruncate:20:"..":true ident=$ident}]</option>
                                 [{/foreach}]
                             </select>
+                            <br/>
                             <input class="listedit" type="text" size="15" maxlength="128" name="addsearch"
                                    value="[{$addsearch}]">
                         </div>
                     </div>
                 </td>
-                <td valign="top" class="listfilter" height="20">
+                <td valign="center" class="listfilter" height="20">
                     <div class="r1">
                         <div class="b1">
                             <input class="listedit" type="text" size="7" maxlength="128"
@@ -64,23 +68,49 @@
                         </div>
                     </div>
                 </td>
-                <td valign="top" class="listfilter" height="20">
+                <td valign="center" class="listfilter" height="20">
                     <div class="r1">
                         <div class="b1">
-                            <input class="listedit" type="text" size="45" maxlength="128"
+                            <input class="listedit" type="text" size="35" maxlength="128"
                                    name="where[oxorder][oxbillfname]" value="[{$where.oxorder.oxbillfname}]">
                         </div>
                     </div>
                 </td>
-                <td valign="top" class="listfilter" height="20">
+                <td valign="center" class="listfilter" height="20">
                     <div class="r1">
                         <div class="b1">
-                            <input class="listedit" type="text" size="45" maxlength="128"
+                            <input class="listedit" type="text" size="35" maxlength="128"
                                    name="where[oxorder][oxbilllname]" value="[{$where.oxorder.oxbilllname}]">
                         </div>
                     </div>
                 </td>
-                <td valign="top" class="listfilter" height="20"  nowrap>
+                <td valign="center" class="listfilter" height="20">
+                    <div class="r1">
+                        <div class="b1">
+                            <select name="DeliveryLabelStatusFilter" onChange="document.batchForm.submit();">
+                                <option value="">[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
+                                <option value="-" [{if $DeliveryLabelStatusFilter === '-'}]SELECTED[{/if}]>-</option>
+                                <option value="1" [{if $DeliveryLabelStatusFilter === '1'}]SELECTED[{/if}]>
+                                    [{oxmultilang ident="MO_DHL__CREATED" }]
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </td>
+                <td valign="center" class="listfilter" height="20">
+                    <div class="r1">
+                        <div class="b1">
+                            <select name="RetoureLabelStatusFilter" onChange="document.batchForm.submit();">
+                                <option value="">[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
+                                <option value="-" [{if $RetoureLabelStatusFilter === '-'}]SELECTED[{/if}]>-</option>
+                                <option value="1" [{if $RetoureLabelStatusFilter === '1'}]SELECTED[{/if}]>
+                                    [{oxmultilang ident="MO_DHL__CREATED" }]
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </td>
+                <td valign="center" class="listfilter" height="20"  nowrap>
                     <div class="r1">
                         <div class="b1">
                             <div class="find"><input class="listedit" type="submit" name="submitit"
@@ -92,12 +122,11 @@
                     </div>
                 </td>
                 [{if $RetoureAdminApprove}]
-                    <td valign="top" class="listfilter" height="20">
+                    <td valign="center" class="listfilter" height="20">
                         <div class="r1">
                             <div class="b1">
-                                <select name="RetoureRequestStatusFilter" class="requestselect" onChange="document.batchForm.submit();">
-                                    <option value="-1" [{if $RetoureRequestStatusFilter == -1}]SELECTED[{/if}]
-                                        >[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
+                                <select name="RetoureRequestStatusFilter" onChange="document.batchForm.submit();">
+                                    <option value="-1">[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
                                     <option value="-" [{if $RetoureRequestStatusFilter === '-'}]SELECTED[{/if}]>-</option>
                                     [{foreach from=$RetoureRequestStatuses key=RetoureRequestStatus item=label}]
                                         <option value="[{$RetoureRequestStatus}]"
@@ -121,13 +150,16 @@
                 <td class="listheader" height="15">[{oxmultilang ident="GENERAL_ORDERNUM" }]</td>
                 <td class="listheader" height="15">[{oxmultilang ident="ORDER_LIST_CUSTOMERFNAME"}]</td>
                 <td class="listheader" height="15">[{oxmultilang ident="ORDER_LIST_CUSTOMERLNAME"}]</td>
+                <td class="listheader" height="15">[{oxmultilang ident="MO_DHL__LABEL" }]</td>
+                <td class="listheader" height="15">[{oxmultilang ident="MO_DHL__RETOURE_LABEL" }]</td>
                 <td class="listheader" height="15">[{oxmultilang ident="MO_DHL__LAST_DHL_STATUS"}]</td>
                 [{if $RetoureAdminApprove}]
-                    <td class="listheader" height="15">[{oxmultilang ident="MO_DHL__RETOURE_LABEL"}]</td>
+                    <td class="listheader" height="15">[{oxmultilang ident="MO_DHL__CUSTOMER_RETOURE_REQUEST_STATUS"}]</td>
                 [{/if}]
             </tr>
             [{foreach from=$mylist item=listitem}]
             <tr>
+                [{assign var="oxid" value=$listitem->oxorder__oxid->value}]
                 <td class="listitem">
                     <input type="checkbox" class="moDHLOrderCheckbox" name="order[]"
                            value="[{$listitem->oxorder__oxid}]"/>
@@ -146,6 +178,24 @@
                 </td>
                 <td valign="top" class="listitem" height="15">
                     <div class="listitemfloating">[{$listitem->oxorder__oxbilllname->value}]</div>
+                </td>
+                <td valign="top" class="listitem" height="15">
+                    <div class="listitemfloating">
+                    [{if isset($OrderLabels.$oxid.delivery)}]
+                        [{oxmultilang ident=MO_DHL__CREATED noerror=true}]
+                    [{else}]
+                        -
+                    [{/if}]
+                    </div>
+                </td>
+                <td valign="top" class="listitem" height="15">
+                    <div class="listitemfloating">
+                        [{if isset($OrderLabels.$oxid.retoure)}]
+                            [{oxmultilang ident=MO_DHL__CREATED noerror=true}]
+                        [{else}]
+                        -
+                        [{/if}]
+                    </div>
                 </td>
                 <td valign="top" class="listitem" height="15">
                     <div class="listitemfloating">[{$listitem->oxorder__mo_dhl_last_label_creation_status->value}]</div>
@@ -167,7 +217,7 @@
 
             [{assign var="whereparam" value=$oView->getFilterStringForLink()}]
             <tr>
-                <td class="pagination" colspan="[{if $RetoureAdminApprove}]8[{else}]7[{/if}]">
+                <td class="pagination" colspan="[{if $RetoureAdminApprove}]10[{else}]9[{/if}]">
                     <div class="r1">
                         <div class="b1">
                             <table cellspacing="0" cellpadding="0" border="0" width="100%">
@@ -221,6 +271,9 @@
     <input type="submit" class="edittext" id="createLabelsButton" name="createLabelsButton"
            value="[{oxmultilang ident="MO_DHL__CREATE_LABELS"}]"
            onClick="Javascript:document.batchForm.fnc.value='createLabels'"/>
+    <input type="submit" class="edittext" id="createRetoureLabelsButton" name="createRetoureLabelsButton"
+           value="[{oxmultilang ident="MO_DHL__CREATE_RETOURE_LABELS"}]"
+           onClick="Javascript:document.batchForm.fnc.value='createRetoureLabels'"/>
     <br>
     <br>
 </form>
