@@ -87,7 +87,7 @@
                 <td valign="center" class="listfilter" height="20">
                     <div class="r1">
                         <div class="b1">
-                            <select name="DeliveryLabelStatusFilter" class="retourselect" onChange="document.batchForm.submit();">
+                            <select name="DeliveryLabelStatusFilter" onChange="document.batchForm.submit();">
                                 <option value="">[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
                                 <option value="-" [{if $DeliveryLabelStatusFilter === '-'}]SELECTED[{/if}]>-</option>
                                 <option value="1" [{if $DeliveryLabelStatusFilter === '1'}]SELECTED[{/if}]>
@@ -100,7 +100,7 @@
                 <td valign="center" class="listfilter" height="20">
                     <div class="r1">
                         <div class="b1">
-                            <select name="RetoureLabelStatusFilter" class="retourselect" onChange="document.batchForm.submit();">
+                            <select name="RetoureLabelStatusFilter" onChange="document.batchForm.submit();">
                                 <option value="">[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
                                 <option value="-" [{if $RetoureLabelStatusFilter === '-'}]SELECTED[{/if}]>-</option>
                                 <option value="1" [{if $RetoureLabelStatusFilter === '1'}]SELECTED[{/if}]>
@@ -125,7 +125,7 @@
                     <td valign="center" class="listfilter" height="20">
                         <div class="r1">
                             <div class="b1">
-                                <select name="RetoureRequestStatusFilter" class="requestselect" onChange="document.batchForm.submit();">
+                                <select name="RetoureRequestStatusFilter" onChange="document.batchForm.submit();">
                                     <option value="-1">[{oxmultilang ident="ORDER_LIST_FOLDER_ALL"}]</option>
                                     <option value="-" [{if $RetoureRequestStatusFilter === '-'}]SELECTED[{/if}]>-</option>
                                     [{foreach from=$RetoureRequestStatuses key=RetoureRequestStatus item=label}]
