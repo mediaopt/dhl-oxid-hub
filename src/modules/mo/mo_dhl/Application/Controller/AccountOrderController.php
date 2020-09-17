@@ -40,7 +40,11 @@ class AccountOrderController extends AccountOrderController_parent
      */
     public function moDHLCreateRetoure()
     {
-        if (!$order = $this->moDHLGetOrderForRetoureCreation()) {
+        $checkUser = filter_var(
+            Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestEscapedParameter('checkUser'),
+            FILTER_VALIDATE_BOOLEAN
+        );
+        if (!$order = $this->moDHLGetOrderForRetoureCreation($checkUser)) {
             return;
         }
         try {
@@ -53,7 +57,6 @@ class AccountOrderController extends AccountOrderController_parent
                 'userId' => $order->getUser()->getId(),
             ]);
         }
-        return 'account_order';
     }
 
     /**
@@ -96,7 +99,7 @@ class AccountOrderController extends AccountOrderController_parent
             $this->moDHLHandleError('label is not a retoure', $data);
             return 'account_order';
         }
-        $this->moDHLDisplayRetoure($label, $data);
+        $this->displayRetoure($label, $data);
         return 'account_order';
     }
 
@@ -166,13 +169,13 @@ class AccountOrderController extends AccountOrderController_parent
         } else {
             $order->setRetoureStatus(RetoureRequest::REQUESTED);
         }
-        return;
     }
 
     /**
+     * @param bool $checkUser
      * @return Order|void
      */
-    protected function moDHLGetOrderForRetoureCreation()
+    protected function moDHLGetOrderForRetoureCreation($checkUser = true)
     {
         if (!$orderId = Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestEscapedParameter('orderId')) {
             $this->moDHLHandleError('orderId is missing');
@@ -184,10 +187,12 @@ class AccountOrderController extends AccountOrderController_parent
             $this->moDHLHandleError('could not load order', $data);
             return;
         }
-        $data['userId'] = $order->getUser()->getId();
-        if ($order->getUser()->getId() !== $this->getUser()->getId()) {
-            $this->moDHLHandleError('invalid order for user', $data);
-            return;
+        if ($checkUser) {
+            $data['userId'] = $order->getUser()->getId();
+            if ($order->getUser()->getId() !== $this->getUser()->getId()) {
+                $this->moDHLHandleError('invalid order for user', $data);
+                return;
+            }
         }
         if ($order->moDHLHasRetoure()) {
             $data['retoureId'] = $order->moDHLGetRetoure()->getId();

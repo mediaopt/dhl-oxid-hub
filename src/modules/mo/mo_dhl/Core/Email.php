@@ -3,6 +3,8 @@
 namespace Mediaopt\DHL\Core;
 
 use Mediaopt\DHL\Api\Wunschpaket;
+use Mediaopt\DHL\Application\Controller\AccountOrderController;
+
 /**
  * @author Mediaopt GmbH
  */
@@ -146,13 +148,13 @@ class Email extends Email_parent
 
         $this->setBody($smarty->fetch('mo_dhl__email_retoure_html.tpl'));
         $this->setAltBody($smarty->fetch('mo_dhl__email_retoure_plain.tpl'));
+        $this->setSubject($lang->translateString('MO_DHL__RETOURE_LABELS_EMAIL_SUBJECT'));
+
         $myConfig->setAdminMode($oldIsAdmin);
         $lang->setTplLanguage($oldTplLang);
         $lang->setBaseLanguage($oldBaseLang);
 
         $smarty->security_settings['INCLUDE_ANY'] = $store['INCLUDE_ANY'];
-
-        $this->setSubject($lang->translateString('MO_DHL__RETOURE_LABELS_EMAIL_SUBJECT'));
 
         $fullName = $order->oxorder__oxbillfname->getRawValue() . " " . $order->oxorder__oxbilllname->getRawValue();
 
@@ -160,5 +162,33 @@ class Email extends Email_parent
         $this->setReplyTo($shop->oxshops__oxorderemail->value, $shop->oxshops__oxname->getRawValue());
 
         return $this->send();
+    }
+
+    /**
+     * Sets mailer additional settings and sends "SendedNowMail" mail to user.
+     * Returns true on success.
+     *
+     * @param \OxidEsales\Eshop\Application\Model\Order $order   order object
+     * @param string                                    $subject user defined subject [optional]
+     *
+     * @return bool
+     */
+    public function sendSendedNowMail($order, $subject = null)
+    {
+        $accountOrderController = oxNew(AccountOrderController::class);
+
+        $user = $order->getOrderUser();
+
+        // Only guest users have no password
+        if (empty($user->oxuser__oxpassword->rawValue) && $accountOrderController->moDHLCanUserCreateRetoure($order)) {
+            $uid = md5($order->getId() . $order->getShopId() . $order->getOrderUser()->getId());
+            if ($accountOrderController->moDHLShouldUserAskForRetoure()) {
+                $this->setViewData("RetoureRequestUID", $uid);
+            } else {
+                $this->setViewData("RetoureCreateUID", $uid);
+            }
+        }
+
+        return parent::sendSendedNowMail($order, $subject);
     }
 }
