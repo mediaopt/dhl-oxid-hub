@@ -42,10 +42,10 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__notification_mode_ALWAYS'             => 'Always',
     'SHOP_MODULE_mo_dhl__notification_mode_ASK'                => 'Ask the customer',
 
-    'SHOP_MODULE_mo_dhl__ident_check_min_age'     => 'Minimal age for Ident-Check',
-    'SHOP_MODULE_mo_dhl__ident_check_min_age_0'   => 'no minimal age',
-    'SHOP_MODULE_mo_dhl__ident_check_min_age_A16' => '16 years',
-    'SHOP_MODULE_mo_dhl__ident_check_min_age_A18' => '18 years',
+    'SHOP_MODULE_mo_dhl__ident_check_min_age'    => 'Minimal age for Ident-Check',
+    'SHOP_MODULE_mo_dhl__ident_check_min_age_0'  => 'no minimal age',
+    'SHOP_MODULE_mo_dhl__ident_check_min_age_16' => '16 years',
+    'SHOP_MODULE_mo_dhl__ident_check_min_age_18' => '18 years',
 
     'SHOP_MODULE_GROUP_mo_dhl__retoure'                            => 'Return Shipment',
     'SHOP_MODULE_mo_dhl__retoure_reference_prefix'                 => 'Prefix for reference number',

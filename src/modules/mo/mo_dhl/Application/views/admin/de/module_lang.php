@@ -79,10 +79,12 @@ $aLang = [
 
     'MO_DHL__ARTICLES_DHL'              => 'DHL',
     'MO_DHL__CATEGORIES_DHL'            => 'DHL',
+    'MO_DHL__VISUAL_AGE_CHECK'          => 'Alterssichtprüfung',
     'MO_DHL__VISUAL_AGE_CHECK16'        => 'Alterssichtprüfung ab 16',
     'MO_DHL__VISUAL_AGE_CHECK18'        => 'Alterssichtprüfung ab 18',
     'MO_DHL__BULKY_GOOD'                => 'Sperrgut',
     'MO_DHL__IDENT_CHECK'               => 'Ident-Check',
+    'MO_DHL__FOR_IDENT_CHECK'           => 'für Ident-Check',
     'MO_DHL__CASH_ON_DELIVERY'          => 'Nachnahme',
     'MO_DHL__ADDITIONAL_INSURANCE'      => 'Transportversicherung',
     'HELP_MO_DHL__ADDITIONAL_INSURANCE' => 'Grundsätzlich haftet DHL für Ihr Paket beim deutschlandweiten Versand gegen Verlust oder Beschädigung bis 500 EUR (nur gegen Vorlage des quittierten Einlieferungsbeleges). Für besonders wertvolle Sendungen bietet DHL Ihnen darüber hinaus eine Transportversicherung bis 2.500 EUR (+6,00 EUR Aufpreis) oder 25.000 EUR  (+18,00 EUR Aufpreis) an. Weiter Informationen finden Sie <a href="https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/services/service-loesungen.html#versicherung">hier</a>',
