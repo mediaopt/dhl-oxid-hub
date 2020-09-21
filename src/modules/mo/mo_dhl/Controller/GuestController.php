@@ -39,6 +39,11 @@ class GuestController extends AccountOrderController
         return 'mo_dhl__guest_order.tpl';
     }
 
+    /**
+     * Returns current order user object
+     *
+     * @return \OxidEsales\Eshop\Application\Model\User
+     */
     public function getUser()
     {
         return $this->order->getOrderUser();
