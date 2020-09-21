@@ -53,7 +53,6 @@ class AccountOrderController extends AccountOrderController_parent
                 'userId' => $order->getUser()->getId(),
             ]);
         }
-        return 'account_order';
     }
 
     /**
@@ -166,7 +165,6 @@ class AccountOrderController extends AccountOrderController_parent
         } else {
             $order->setRetoureStatus(RetoureRequest::REQUESTED);
         }
-        return;
     }
 
     /**

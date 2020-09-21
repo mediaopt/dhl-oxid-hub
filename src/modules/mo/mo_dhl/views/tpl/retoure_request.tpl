@@ -3,8 +3,11 @@
         [{$oViewConf->getHiddenSid()}]
         [{$oViewConf->getNavFormParams()}]
         <input type="hidden" name="fnc" value="moDHLRetoureRequest">
-        <input type="hidden" name="cl" value="account_order">
+        <input type="hidden" name="cl" value="[{$oViewConf->getActiveClassName()}]">
         <input type="hidden" name="orderId" value="[{$order->getId()}]">
+        [{if isset($uid)}]
+            <input type="hidden" name="uid" value="[{$uid}]">
+        [{/if}]
     </div>
 
     [{if ($order->moDHLIsRetoureRequested())}]

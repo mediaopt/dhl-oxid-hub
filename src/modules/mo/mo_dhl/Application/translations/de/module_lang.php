@@ -108,6 +108,8 @@ $aLang = [
     'MO_DHL__RETOURE_DECLINED'                    => 'Retourenlabelanfrage abgelehnt.',
     'MO_DHL__HELLO'                               => 'Guten Tag,',
     'MO_DHL__RETOURE_LABEL_CREATED'               => 'Ihr Rücksendeetikett wurde erstellt.',
+    'MO_DHL__YOU_CAN_CREATE_RETOURE_LABEL'        => 'Sie können Ihre Bestellung in Ihrem Konto zurückgeben.',
+    'MO_DHL__RETOURE_LABELS_EMAIL_SUBJECT'        => 'Ihr Retourenlabel wurde erstellt',
     'MO_DHL__RETOURE_LABEL_HEADING'               => 'Versandbestätigung - Bestellung',
     'MO_DHL__RETOURE_LABEL'                       => 'Retourenlabel',
     'MO_DHL__RETOURE_QR_LABEL'                    => 'Retoure QR Code',
@@ -116,4 +118,5 @@ $aLang = [
     'MO_DHL__BIRTHDAY'                            => 'Bitte geben Sie Ihr Geburtsdatum für den Ident-Check an.',
     'MO_DHL__BIRTHDAY_ERROR_FORMAT'               => 'Das Format für das Geburtsdatum ist dd.mm.yyyy.',
     'MO_DHL__BIRTHDAY_ERROR_AGE'                  => 'Sie müssen mindestens %s Jahre alt sein.',
+    'MO_DHL__GUEST_ORDER'                         => 'Gastbestellung',
 ];

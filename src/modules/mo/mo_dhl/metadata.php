@@ -56,6 +56,7 @@ $aModule = [
         'MoDHLOrderBatch'     => Controller\Admin\OrderBatchController::class,
         'MoDHLOrderDHL'       => Controller\Admin\OrderDHLController::class,
         'MoDHLYellowBox'      => Controller\YellowBoxController::class,
+        'MoDHLGuest'          => Controller\GuestController::class,
     ],
     'events'      => [
         'onActivate'   => Install::class . '::onActivate',
@@ -162,6 +163,21 @@ $aModule = [
             'block'    => 'account_order_history_cart_items',
             'file'     => 'views/blocks/account_order_history_cart_items.tpl',
         ],
+        [
+            'template' => 'mo_dhl__guest_order.tpl',
+            'block'    => 'account_order_history_cart_items',
+            'file'     => 'views/blocks/account_order_history_cart_items.tpl',
+        ],
+        [
+            'template' => 'email/html/ordershipped.tpl',
+            'block'    => 'email_html_ordershipped_shipmenttrackingurl',
+            'file'     => 'views/tpl/email/order_retoure_html.tpl'
+        ],
+        [
+            'template' => 'email/plain/ordershipped.tpl',
+            'block'    => 'email_html_ordershipped_shipmenttrackingurl',
+            'file'     => 'views/tpl/email/order_retoure_plain.tpl'
+        ],
     ],
     'templates'   => [
         'mo_dhl__main.tpl'                   => 'mo/mo_dhl/views/tpl/main.tpl',
@@ -191,6 +207,7 @@ $aModule = [
         'mo_dhl__retoure.tpl'                => 'mo/mo_dhl/views/tpl/retoure.tpl',
         'mo_dhl__email_retoure_html.tpl'     => 'mo/mo_dhl/views/tpl/email/retoure_html.tpl',
         'mo_dhl__email_retoure_plain.tpl'    => 'mo/mo_dhl/views/tpl/email/retoure_plain.tpl',
+        'mo_dhl__guest_order.tpl'            => 'mo/mo_dhl/views/tpl/guest_order.tpl',
     ],
     'settings'    => [
         [
