@@ -220,10 +220,6 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
                 'address'    => new Address('', '', '', 'Nienburg (Saale)', '', ''),
                 'coordinate' => new Coordinate(51.837269, 11.766504),
             ],
-            [
-                'address'    => new Address('', '', '', 'Málaga', '', ''),
-                'coordinate' => new Coordinate(36.721426, -4.421153),
-            ],
         ];
 
         foreach ($inputList as $input) {
@@ -239,6 +235,18 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
             $dist = abs($calculator->getDistance($input['coordinate'], $coordToCheck));
 
             $this->assertLessThanOrEqual($sameCityDistanceThreshold, $dist, 'Request with a dirty address returns coordinates outside the threshold distance.');
+        }
+    }
+
+    public function testGettingEmptyResultOutsideGermany()
+    {
+        $inputList = [
+            new Address('', '', '', 'Málaga', '', ''),
+            new Address('', '', '1100', 'Wien', '', ''),
+        ];
+        foreach ($inputList as $address) {
+            $list = $this->buildStandortsuche()->getParcellocationByAddress($address);
+            $this->assertEmpty($list->toArray(), 'Got result for non german address: ' . implode(' ', $address->toArray()));
         }
     }
 
