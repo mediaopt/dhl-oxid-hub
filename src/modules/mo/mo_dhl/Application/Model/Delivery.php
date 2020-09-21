@@ -19,11 +19,9 @@ class Delivery extends Delivery_parent
     {
         /** @var \Mediaopt\DHL\Application\Model\User|bool $user */
         $user = $basket->getUser();
-        return (!is_object($user)
-                || !$user->moIsForcedToUseDhlDelivery()
-                || !$this->moIsExcluded())
-            && $this->moSupportsSelectedWunschpaketServices($user)
-            && parent::isForBasket($basket);
+        $notExcluded = !is_object($user) || !$user->moIsForcedToUseDhlDelivery() || !$this->moIsExcluded();
+        $selectedServicesSupported = !is_object($user) || $this->moSupportsSelectedWunschpaketServices($user);
+        return $notExcluded && $selectedServicesSupported && parent::isForBasket($basket);
     }
 
     /**
