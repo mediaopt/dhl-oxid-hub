@@ -40,11 +40,7 @@ class AccountOrderController extends AccountOrderController_parent
      */
     public function moDHLCreateRetoure()
     {
-        $checkUser = filter_var(
-            Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestEscapedParameter('checkUser'),
-            FILTER_VALIDATE_BOOLEAN
-        );
-        if (!$order = $this->moDHLGetOrderForRetoureCreation($checkUser)) {
+        if (!$order = $this->moDHLGetOrderForRetoureCreation()) {
             return;
         }
         try {

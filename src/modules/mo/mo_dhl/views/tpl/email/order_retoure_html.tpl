@@ -13,5 +13,6 @@
 </p>
 <br/>
 [{elseif $CreationAllowance }]
-    <p>[{oxmultilang ident="MO_DHL__YOU_CAN_CREATE_RETOURE_LABEL"}]</p>
+<p>[{oxmultilang ident="MO_DHL__YOU_CAN_CREATE_RETOURE_LABEL"}]</p>
+<br/>
 [{/if}]
