@@ -172,10 +172,9 @@ class AccountOrderController extends AccountOrderController_parent
     }
 
     /**
-     * @param bool $checkUser
      * @return Order|void
      */
-    protected function moDHLGetOrderForRetoureCreation($checkUser = true)
+    protected function moDHLGetOrderForRetoureCreation()
     {
         if (!$orderId = Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestEscapedParameter('orderId')) {
             $this->moDHLHandleError('orderId is missing');
@@ -187,12 +186,10 @@ class AccountOrderController extends AccountOrderController_parent
             $this->moDHLHandleError('could not load order', $data);
             return;
         }
-        if ($checkUser) {
-            $data['userId'] = $order->getUser()->getId();
-            if ($order->getUser()->getId() !== $this->getUser()->getId()) {
-                $this->moDHLHandleError('invalid order for user', $data);
-                return;
-            }
+        $data['userId'] = $order->getUser()->getId();
+        if ($order->getUser()->getId() !== $this->getUser()->getId()) {
+            $this->moDHLHandleError('invalid order for user', $data);
+            return;
         }
         if ($order->moDHLHasRetoure()) {
             $data['retoureId'] = $order->moDHLGetRetoure()->getId();

@@ -4,6 +4,7 @@ namespace Mediaopt\DHL\Core;
 
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Application\Controller\AccountOrderController;
+use OxidEsales\Eshop\Core\Registry;
 
 /**
  * @author Mediaopt GmbH
@@ -175,19 +176,23 @@ class Email extends Email_parent
      */
     public function sendSendedNowMail($order, $subject = null)
     {
-        $accountOrderController = oxNew(AccountOrderController::class);
+        $showActions = Registry::getConfig()->getShopConfVar('mo_dhl__retoure_allow_frontend_creation');
+        $creationAllowance = $showActions === AccountOrderController::MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_ALWAYS ||
+            ($showActions === AccountOrderController::MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_ONLY_DHL && $order->oxorder__mo_dhl_process->rawValue);
 
         $user = $order->getOrderUser();
 
         // Only guest users have no password
-        if (empty($user->oxuser__oxpassword->rawValue) && $accountOrderController->moDHLCanUserCreateRetoure($order)) {
+        if (empty($user->oxuser__oxpassword->rawValue) && $creationAllowance) {
             $uid = md5($order->getId() . $order->getShopId() . $order->getOrderUser()->getId());
-            if ($accountOrderController->moDHLShouldUserAskForRetoure()) {
+            if (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve')) {
                 $this->setViewData("RetoureRequestUID", $uid);
             } else {
                 $this->setViewData("RetoureCreateUID", $uid);
             }
         }
+
+        $this->setViewData("CreationAllowance", $creationAllowance);
 
         return parent::sendSendedNowMail($order, $subject);
     }

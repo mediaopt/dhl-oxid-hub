@@ -12,12 +12,8 @@ use OxidEsales\Eshop\Core\Registry;
  */
 class GuestController extends AccountOrderController
 {
-    /**
-     * Current class template name.
-     *
-     * @var string
-     */
-    protected $_sThisTemplate = 'mo_dhl__guest_order.tpl';
+    /** @var Order */
+    protected $order;
 
     /**
      * @extend
@@ -27,18 +23,24 @@ class GuestController extends AccountOrderController
     {
         $uid = Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('uid');
         $oDb = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
-        $sQ = "select * from oxorder where MD5( CONCAT( oxid, oxshopid, oxuserid ) ) = " . $oDb->quote($uid);
+        $sQ = "select oxid from oxorder where MD5( CONCAT( oxid, oxshopid, oxuserid ) ) = " . $oDb->quote($uid);
 
         if ($orderId = $oDb->getOne($sQ)) {
             $order = oxNew(Order::class);
             $order->load($orderId);
+            $this->order = $order;
 
-            $this->addTplParam('order', $order);
+            $this->addTplParam('order', $this->order);
             $this->addTplParam('uid', $uid);
         }
 
-        (oxNew(FrontendController::class))::render();
+        parent::render();
 
-        return $this->_sThisTemplate;
+        return 'mo_dhl__guest_order.tpl';
+    }
+
+    public function getUser()
+    {
+        return $this->order->getOrderUser();
     }
 }

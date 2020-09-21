@@ -1,6 +1,6 @@
 [{capture append="oxidBlock_content"}]
     [{assign var="template_title" value="ORDER_HISTORY"|oxmultilangassign}]
-    <h1 class="page-header">Guest order</h1>
+    <h1 class="page-header">[{oxmultilang ident="MO_DHL__GUEST_ORDER"}]</h1>
 
     [{block name="account_order_history"}]
     [{if $order && !empty($order)}]

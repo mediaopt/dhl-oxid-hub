@@ -118,4 +118,5 @@ $aLang = [
     'MO_DHL__BIRTHDAY'                            => 'Bitte geben Sie Ihr Geburtsdatum für den Ident-Check an.',
     'MO_DHL__BIRTHDAY_ERROR_FORMAT'               => 'Das Format für das Geburtsdatum ist dd.mm.yyyy.',
     'MO_DHL__BIRTHDAY_ERROR_AGE'                  => 'Sie müssen mindestens %s Jahre alt sein.',
+    'MO_DHL__GUEST_ORDER'                         => 'Gastbestellung',
 ];

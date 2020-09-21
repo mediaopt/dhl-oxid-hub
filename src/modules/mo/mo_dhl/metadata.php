@@ -171,12 +171,12 @@ $aModule = [
         [
             'template' => 'email/html/ordershipped.tpl',
             'block'    => 'email_html_ordershipped_shipmenttrackingurl',
-            'file'     => 'views/tpl/email/order_retour_html.tpl'
+            'file'     => 'views/tpl/email/order_retoure_html.tpl'
         ],
         [
             'template' => 'email/plain/ordershipped.tpl',
             'block'    => 'email_html_ordershipped_shipmenttrackingurl',
-            'file'     => 'views/tpl/email/order_retour_plain.tpl'
+            'file'     => 'views/tpl/email/order_retoure_plain.tpl'
         ],
     ],
     'templates'   => [

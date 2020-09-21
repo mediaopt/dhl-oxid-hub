@@ -8,9 +8,6 @@
         <input type="hidden" name="orderId" value="[{$order->getId()}]">
         [{if isset($uid)}]
             <input type="hidden" name="uid" value="[{$uid}]">
-            <input type="hidden" name="checkUser" value=false>
-        [{else}]
-            <input type="hidden" name="checkUser" value=true>
         [{/if}]
     </div>
     <button class="btn btn-primary" type="submit">
