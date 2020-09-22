@@ -17,7 +17,7 @@ $aModule = [
         'en' => '<p>Enable features providing DHL products and services to your OXID shop.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbook</a></p>',
     ],
     'thumbnail'   => 'logo.png',
-    'version'     => '1.2.2',
+    'version'     => '1.2.3',
     'author'      => '<a href="http://www.mediaopt.de" target="_blank">mediaopt.</a>',
     'url'         => 'http://www.mediaopt.de',
     'email'       => 'shopsoftware@deutschepost.de',
@@ -56,6 +56,7 @@ $aModule = [
         'MoDHLOrderBatch'     => Controller\Admin\OrderBatchController::class,
         'MoDHLOrderDHL'       => Controller\Admin\OrderDHLController::class,
         'MoDHLYellowBox'      => Controller\YellowBoxController::class,
+        'MoDHLGuest'          => Controller\GuestController::class,
     ],
     'events'      => [
         'onActivate'   => Install::class . '::onActivate',
@@ -162,6 +163,21 @@ $aModule = [
             'block'    => 'account_order_history_cart_items',
             'file'     => 'views/blocks/account_order_history_cart_items.tpl',
         ],
+        [
+            'template' => 'mo_dhl__guest_order.tpl',
+            'block'    => 'account_order_history_cart_items',
+            'file'     => 'views/blocks/account_order_history_cart_items.tpl',
+        ],
+        [
+            'template' => 'email/html/ordershipped.tpl',
+            'block'    => 'email_html_ordershipped_shipmenttrackingurl',
+            'file'     => 'views/tpl/email/order_retoure_html.tpl'
+        ],
+        [
+            'template' => 'email/plain/ordershipped.tpl',
+            'block'    => 'email_html_ordershipped_shipmenttrackingurl',
+            'file'     => 'views/tpl/email/order_retoure_plain.tpl'
+        ],
     ],
     'templates'   => [
         'mo_dhl__main.tpl'                   => 'mo/mo_dhl/views/tpl/main.tpl',
@@ -187,7 +203,11 @@ $aModule = [
         'mo_dhl__email_order_plain.tpl'      => 'mo/mo_dhl/views/tpl/email/order_plain.tpl',
         'mo_dhl__retoure_links.tpl'          => 'mo/mo_dhl/views/tpl/retoure_links.tpl',
         'mo_dhl__retoure_button.tpl'         => 'mo/mo_dhl/views/tpl/retoure_button.tpl',
+        'mo_dhl__retoure_request.tpl'        => 'mo/mo_dhl/views/tpl/retoure_request.tpl',
         'mo_dhl__retoure.tpl'                => 'mo/mo_dhl/views/tpl/retoure.tpl',
+        'mo_dhl__email_retoure_html.tpl'     => 'mo/mo_dhl/views/tpl/email/retoure_html.tpl',
+        'mo_dhl__email_retoure_plain.tpl'    => 'mo/mo_dhl/views/tpl/email/retoure_plain.tpl',
+        'mo_dhl__guest_order.tpl'            => 'mo/mo_dhl/views/tpl/guest_order.tpl',
     ],
     'settings'    => [
         [
@@ -350,6 +370,12 @@ $aModule = [
             'name'  => 'mo_dhl__retoure_days_limit',
             'type'  => 'str',
             'value' => '30',
+        ],
+        [
+            'group' => 'mo_dhl__retoure',
+            'name'  => 'mo_dhl__retoure_admin_approve',
+            'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__beilegerretoure',

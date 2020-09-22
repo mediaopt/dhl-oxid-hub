@@ -3,6 +3,9 @@
 namespace Mediaopt\DHL\Core;
 
 use Mediaopt\DHL\Api\Wunschpaket;
+use Mediaopt\DHL\Application\Controller\AccountOrderController;
+use OxidEsales\Eshop\Core\Registry;
+
 /**
  * @author Mediaopt GmbH
  */
@@ -107,5 +110,90 @@ class Email extends Email_parent
             return ['MO_DHL__WUNSCHTAG_COSTS', $wunschpaket->getWunschtagSurcharge()];
         }
         return ['', 0];
+    }
+
+    /**
+     * Sets mailer additional settings and sends retoure label mail to customer.
+     * Returns true on success.
+     *
+     * @param \OxidEsales\Eshop\Application\Model\Order $order   Order object
+     *
+     * @return bool
+     */
+    public function moDHLSendRetoureLabelToCustomer($order)
+    {
+        $myConfig = $this->getConfig();
+
+        $orderLang = (int) (isset($order->oxorder__oxlang->value) ? $order->oxorder__oxlang->value : 0);
+
+        $shop = $this->_getShop($orderLang);
+        $this->_setMailParams($shop);
+
+        $lang = \OxidEsales\Eshop\Core\Registry::getLang();
+        $smarty = $this->_getSmarty();
+        $this->setViewData("order", $order);
+        $this->setViewData("labels", $order->moDHLGetLabels());
+
+        $this->_processViewArray();
+
+        $store['INCLUDE_ANY'] = $smarty->security_settings['INCLUDE_ANY'];
+
+        $oldTplLang = $lang->getTplLanguage();
+        $oldBaseLang = $lang->getBaseLanguage();
+        $lang->setTplLanguage($orderLang);
+        $lang->setBaseLanguage($orderLang);
+
+        $smarty->security_settings['INCLUDE_ANY'] = true;
+        $oldIsAdmin = $myConfig->isAdmin();
+        $myConfig->setAdminMode(false);
+
+        $this->setBody($smarty->fetch('mo_dhl__email_retoure_html.tpl'));
+        $this->setAltBody($smarty->fetch('mo_dhl__email_retoure_plain.tpl'));
+        $this->setSubject($lang->translateString('MO_DHL__RETOURE_LABELS_EMAIL_SUBJECT'));
+
+        $myConfig->setAdminMode($oldIsAdmin);
+        $lang->setTplLanguage($oldTplLang);
+        $lang->setBaseLanguage($oldBaseLang);
+
+        $smarty->security_settings['INCLUDE_ANY'] = $store['INCLUDE_ANY'];
+
+        $fullName = $order->oxorder__oxbillfname->getRawValue() . " " . $order->oxorder__oxbilllname->getRawValue();
+
+        $this->setRecipient($order->oxorder__oxbillemail->value, $fullName);
+        $this->setReplyTo($shop->oxshops__oxorderemail->value, $shop->oxshops__oxname->getRawValue());
+
+        return $this->send();
+    }
+
+    /**
+     * Sets mailer additional settings and sends "SendedNowMail" mail to user.
+     * Returns true on success.
+     *
+     * @param \OxidEsales\Eshop\Application\Model\Order $order   order object
+     * @param string                                    $subject user defined subject [optional]
+     *
+     * @return bool
+     */
+    public function sendSendedNowMail($order, $subject = null)
+    {
+        $showActions = Registry::getConfig()->getShopConfVar('mo_dhl__retoure_allow_frontend_creation');
+        $creationAllowance = $showActions === AccountOrderController::MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_ALWAYS ||
+            ($showActions === AccountOrderController::MO_DHL__RETOURE_ALLOW_FRONTEND_CREATION_ONLY_DHL && $order->oxorder__mo_dhl_process->rawValue);
+
+        $user = $order->getOrderUser();
+
+        // Only guest users have no password
+        if (empty($user->oxuser__oxpassword->rawValue) && $creationAllowance) {
+            $uid = md5($order->getId() . $order->getShopId() . $order->getOrderUser()->getId());
+            if (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve')) {
+                $this->setViewData("RetoureRequestUID", $uid);
+            } else {
+                $this->setViewData("RetoureCreateUID", $uid);
+            }
+        }
+
+        $this->setViewData("CreationAllowance", $creationAllowance);
+
+        return parent::sendSendedNowMail($order, $subject);
     }
 }

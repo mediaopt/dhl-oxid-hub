@@ -21,16 +21,23 @@ class MoDHLLabelList extends \OxidEsales\Eshop\Core\Model\ListModel
     protected $_sObjectsInListName = MoDHLLabel::class;
 
     /**
-     * @param string $orderId
+     * @param string|array $orderIds
      */
-    public function loadOrderLabels($orderId)
+    public function loadOrderLabels($orderIds)
     {
         $labelObject = $this->getBaseObject();
         $labelTable = $labelObject->getCoreTableName();
         $fields = $labelObject->getSelectFields();
         $shopId = $this->getConfig()->getShopId();
 
-        $sql = "SELECT $fields  FROM `$labelTable` WHERE `orderid` = ? AND `oxshopid` = ?";
-        $this->selectString($sql, [$orderId, $shopId]);
+        if (is_array($orderIds)) {
+            $statement = "('" . implode("','" , $orderIds) . "')";
+            $sql = "SELECT $fields  FROM `$labelTable` WHERE `orderId` IN " . $statement. " AND `oxshopid` = ?";
+
+            $this->selectString($sql, [$shopId]);
+        } else {
+            $sql = "SELECT $fields  FROM `$labelTable` WHERE `orderid` = ? AND `oxshopid` = ?";
+            $this->selectString($sql, [$orderIds, $shopId]);
+        }
     }
 }

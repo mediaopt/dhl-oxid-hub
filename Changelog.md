@@ -1,4 +1,14 @@
 # Changelog
+## 1.2.3
+* added additional features for return label creation:
+    * option do prevent customers to create return labels and instead let them request them
+    * return label creation link in emails
+    * sending an email with the return label to the customer after it was created
+    * return label creation for guest order
+* change additional services in custom label creation process
+* bugfix for basket without user
+* bugfix don't allow non german packstation in filialfinder results
+
 ## 1.2.2
 * added a list of additional services:
     * bulky goods (assign per product or category)

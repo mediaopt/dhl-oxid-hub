@@ -33,11 +33,6 @@ class Standortsuche extends Base
     const MAXIMUM_DISTANCE_GERMANY = 15000;
 
     /**
-     * Maximum distance (in meters) of service providers abroad that are allowed to be returned.
-     */
-    const MAXIMUM_DISTANCE_ABROAD = 25000;
-
-    /**
      * @var ServiceProviderBuilder
      */
     protected $serviceProviderBuilder;
@@ -192,14 +187,11 @@ class Standortsuche extends Base
      */
     protected function isServiceProviderAllowed($potentialServiceProvider)
     {
-        if ($potentialServiceProvider === null) {
+        if ($potentialServiceProvider === null || $potentialServiceProvider->getAddress()->getCountry() !== 'de') {
             return false;
         }
 
-        $maximumDistance = $potentialServiceProvider->getAddress()->getCountry() === 'de'
-            ? self::MAXIMUM_DISTANCE_GERMANY
-            : self::MAXIMUM_DISTANCE_ABROAD;
-        return $potentialServiceProvider->getLocation()->getDistance() <= $maximumDistance;
+        return $potentialServiceProvider->getLocation()->getDistance() <= self::MAXIMUM_DISTANCE_GERMANY;
     }
 
     /**

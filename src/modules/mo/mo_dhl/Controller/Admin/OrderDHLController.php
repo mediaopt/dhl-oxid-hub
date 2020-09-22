@@ -5,20 +5,25 @@ namespace Mediaopt\DHL\Controller\Admin;
 use GuzzleHttp\Exception\ClientException;
 use Mediaopt\DHL\Adapter\DHLAdapter;
 use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
+use Mediaopt\DHL\Adapter\GKVCustomShipmentBuilder;
 use Mediaopt\DHL\Adapter\GKVShipmentBuilder;
 use Mediaopt\DHL\Api\GKV\CountryType;
 use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Response\DeleteShipmentOrderResponse;
 use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationAdditionalInsurance;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationCashOnDelivery;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationIC;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationVisualAgeCheck;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
 use Mediaopt\DHL\Api\Wunschpaket;
-use Mediaopt\DHL\Exception\WebserviceException;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
+use Mediaopt\DHL\Shipment\RetoureRequest;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
@@ -58,6 +63,10 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $this->addTplParam('process', $this->getProcess());
         $this->addTplParam('remarks', $this->getRemarks());
         $this->addTplParam('labels', $this->getOrder()->moDHLGetLabels());
+        if (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve')) {
+            $this->addTplParam('RetoureRequestStatuses', RetoureRequest::getRetoureRequestStatuses());
+            $this->addTplParam('RetoureRequestStatus', $this->getRetoureRequestStatus());
+        }
         return $templateName;
     }
 
@@ -71,13 +80,22 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
+     * @param \OxidEsales\Eshop\Application\Model\Order|null $order
      */
-    public function createRetoure()
+    public function createRetoure($order = null)
     {
         try {
+            if (!isset($order)) {
+                $order = $this->getOrder();
+            }
+
             $retoureService = Registry::get(DHLAdapter::class)->buildRetoure();
-            $response = $retoureService->createRetoure($this->getOrder());
-            $retoureService->handleResponse($this->getOrder(), $response);
+            $response = $retoureService->createRetoure($order);
+            $retoureService->handleResponse($order, $response);
+
+            if (isset($order->oxorder__mo_dhl_retoure_request_status->rawValue)) {
+                $order->setRetoureStatus(RetoureRequest::CREATED);
+            }
         } catch (\Exception $e) {
             \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($e->getMessage());
             if (!($previous = $e->getPrevious()) || !$previous instanceof ClientException) {
@@ -106,13 +124,10 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $shipmentOrder = $request->getShipmentOrder()[0];
         $data = Registry::getConfig()->getRequestParameter('data');
 
-        $this->useCustomGeneralData($shipmentOrder, $data['general']);
-        $this->useCustomShipper($shipmentOrder, $data['shipper']);
-        $this->useCustomReturnReceiver($shipmentOrder, $data['returnReceiver']);
-        $this->useCustomReceiver($shipmentOrder, $data['receiver']);
-        $this->useCustomServices($shipmentOrder, $data['services']);
+        $customShipmentBuilder = new GKVCustomShipmentBuilder();
+        $customShipmentBuilder->applyCustomDataToShipmentOrder($shipmentOrder, $data, $this->getOrder());
 
-        $this->addTplParam('shipmentOrder', $this->toCustomizableParametersArray($shipmentOrder));
+        $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($shipmentOrder));
         $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
         $response = Registry::get(DHLAdapter::class)->buildGKV()->createShipmentOrder($request);
         $this->handleCreationResponse($response);
@@ -127,8 +142,8 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     public function prepareCustomLabel()
     {
         $shipmentOrder = $this->buildShipmentOrderRequest()->getShipmentOrder()[0];
-
-        $this->addTplParam('shipmentOrder', $this->toCustomizableParametersArray($shipmentOrder));
+        $customShipmentBuilder = new GKVCustomShipmentBuilder();
+        $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($shipmentOrder));
         $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
     }
 
@@ -140,6 +155,12 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $label->load(Registry::getConfig()->getRequestParameter('labelId'));
         if ($label->isRetoure()) {
             $label->delete();
+
+            $order = $this->getOrder();
+            if ($order->oxorder__mo_dhl_retoure_request_status->rawValue === RetoureRequest::CREATED) {
+                $order->setRetoureStatus(RetoureRequest::REQUESTED);
+            }
+
             return;
         }
         $this->handleDeletionResponse($label, $this->callDeleteShipment($label->getFieldData('shipmentNumber')));
@@ -215,6 +236,17 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
+     * @return string|null
+     */
+    protected function getRetoureRequestStatus()
+    {
+        if ($RetoureRequestStatus = $this->getOrder()->oxorder__mo_dhl_retoure_request_status->rawValue) {
+            return RetoureRequest::build($RetoureRequestStatus);
+        }
+        return null;
+    }
+
+    /**
      */
     public function save()
     {
@@ -224,6 +256,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             'MO_DHL_PROCESS' => $this->validateProcessIdentifier(),
             'MO_DHL_PARTICIPATION' => $this->validateParticipationNumber(),
             'MO_DHL_OPERATOR' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('operator'),
+            'MO_DHL_RETOURE_REQUEST_STATUS' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('retoureRequest'),
         ];
         $tuples = [];
         foreach ($information as $column => $value) {
@@ -401,108 +434,4 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         return Registry::get(GKVCreateShipmentOrderRequestBuilder::class)->build([$this->getOrder()->getId()]);
     }
 
-    /**
-     * @param ShipmentOrderType $shipmentOrder
-     * @return array
-     */
-    protected function toCustomizableParametersArray(ShipmentOrderType $shipmentOrder): array
-    {
-        $shipper = $shipmentOrder->getShipment()->getShipper();
-        $receiver = $shipmentOrder->getShipment()->getReceiver();
-        $returnReceiver = $shipmentOrder->getShipment()->getReturnReceiver();
-        return [
-            'general'        => [
-                'weight' => $shipmentOrder->getShipment()->getShipmentDetails()->getShipmentItem()->getWeightInKG(),
-            ],
-            'shipper'        => [
-                'name'    => $shipper->getName()->getName1() . $shipper->getName()->getName2() . $shipper->getName()->getName3(),
-                'address' => $shipper->getAddress(),
-            ],
-            'receiver'       => [
-                'name'    => $receiver->getName1(),
-                'type'    => $receiver->getAddress() !== null ? 'address' : ($receiver->getPackstation() !== null ? 'packstation' : 'poftfiliale'),
-                'address' => $receiver->getAddress() ?: $receiver->getPackstation() ?: $receiver->getPostfiliale(),
-            ],
-            'returnReceiver' => [
-                'name'    => $returnReceiver->getName()->getName1() . $returnReceiver->getName()->getName2() . $returnReceiver->getName()->getName3(),
-                'address' => $returnReceiver->getAddress(),
-            ],
-            'services'       => [
-                'parcelOutletRouting' => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getParcelOutletRouting(),
-                'printOnlyIfCodeable' => $shipmentOrder->getPrintOnlyIfCodeable(),
-                'beilegerretoure'     => $shipmentOrder->getShipment()->getShipmentDetails()->getReturnShipmentAccountNumber(),
-            ],
-        ];
-    }
-
-    /**
-     * @param ShipmentOrderType $shipmentOrder
-     * @param array             $generalData
-     */
-    protected function useCustomGeneralData(ShipmentOrderType $shipmentOrder, $generalData)
-    {
-        $shipmentOrder->getShipment()->getShipmentDetails()->getShipmentItem()->setWeightInKG($generalData['weight']);
-    }
-
-    /**
-     * @param ShipmentOrderType $shipmentOrder
-     * @param array             $shipperData
-     */
-    protected function useCustomShipper(ShipmentOrderType $shipmentOrder, $shipperData)
-    {
-        $shipper = $shipmentOrder->getShipment()->getShipper();
-        $shipper->getName()->setName1($shipperData['name']);
-        $shipperData['Origin'] = new CountryType($shipperData['country']);
-        $shipper->getAddress()->assign($shipperData);
-    }
-
-    /**
-     * @param ShipmentOrderType $shipmentOrder
-     * @param array             $returnReceiverData
-     */
-    protected function useCustomReturnReceiver(ShipmentOrderType $shipmentOrder, $returnReceiverData)
-    {
-        $returnReceiver = $shipmentOrder->getShipment()->getReturnReceiver();
-        $returnReceiver->getName()->setName1($returnReceiverData['name']);
-        $returnReceiverData['Origin'] = new CountryType($returnReceiverData['country']);
-        $returnReceiver->getAddress()->assign($returnReceiverData);
-    }
-
-    /**
-     * @param ShipmentOrderType $shipmentOrder
-     * @param array             $receiverData
-     */
-    protected function useCustomReceiver(ShipmentOrderType $shipmentOrder, $receiverData)
-    {
-        $receiver = $shipmentOrder->getShipment()->getReceiver();
-        $receiver->setName1($receiverData['name']);
-        if ($receiverData['country']) {
-            $receiverData['Origin'] = new CountryType($receiverData['country']);
-        }
-        $receiverAddress = $receiver->getAddress() ?: $receiver->getPackstation() ?: $receiver->getPostfiliale();
-        $receiverAddress->assign($receiverData);
-    }
-
-    /**
-     * @param ShipmentOrderType $shipmentOrder
-     * @param array             $servicesData
-     */
-    protected function useCustomServices(ShipmentOrderType $shipmentOrder, $servicesData)
-    {
-        $process = $this->getProcess();
-        $services = $shipmentOrder->getShipment()->getShipmentDetails()->getService();
-        if ($process->supportsParcelOutletRouting()) {
-            $isActive = filter_var($servicesData['parcelOutletRouting']['active'], FILTER_VALIDATE_BOOLEAN);
-            $details = $servicesData['parcelOutletRouting']['details'] ?: null;
-            $services->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $details));
-        }
-
-        if ($process->supportsDHLRetoure() && filter_var($servicesData['beilegerretoure']['active'], FILTER_VALIDATE_BOOLEAN)) {
-            $accountNumber = Registry::get(GKVShipmentBuilder::class)->buildReturnAccountNumber($this->getOrder());
-            $shipmentOrder->getShipment()->getShipmentDetails()->setReturnShipmentAccountNumber($accountNumber);
-        }
-
-        $isActive = filter_var($servicesData['printOnlyIfCodeable']['active'], FILTER_VALIDATE_BOOLEAN);
-        $shipmentOrder->setPrintOnlyIfCodeable(new Serviceconfiguration($isActive));
-    }
 }

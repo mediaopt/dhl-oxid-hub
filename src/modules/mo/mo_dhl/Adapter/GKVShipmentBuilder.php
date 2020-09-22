@@ -192,14 +192,16 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         } elseif ($order->moDHLUsesService(Article::MO_DHL__VISUAL_AGE_CHECK16) && $process->supportsVisualAgeCheck()) {
             $service->setVisualCheckOfAge(new ServiceconfigurationVisualAgeCheck(true, 'A16'));
         }
-        if ($order->moDHLUsesService(Article::MO_DHL__BULKY_GOOD) && $process->supportsBulkyGood()) {
-            $service->setBulkyGoods(new Serviceconfiguration(true));
+        if ($process->supportsBulkyGood()) {
+            $service->setBulkyGoods(new Serviceconfiguration($order->moDHLUsesService(Article::MO_DHL__BULKY_GOOD)));
         }
-        if ($order->moDHLUsesService(Article::MO_DHL__CASH_ON_DELIVERY) && $process->supportsCashOnDelivery()) {
-            $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery(true, 0, $order->oxorder__oxtotalordersum->value));
+        if ($process->supportsCashOnDelivery()) {
+            $active = $order->moDHLUsesService(Article::MO_DHL__CASH_ON_DELIVERY);
+            $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery($active, 0, $order->oxorder__oxtotalordersum->value));
         }
-        if ($order->moDHLUsesService(Article::MO_DHL__ADDITIONAL_INSURANCE) && $order->oxorder__oxtotalbrutsum->value > 500 & $process->supportsAdditionalInsurance()) {
-            $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance(true, $order->oxorder__oxtotalbrutsum->value));
+        if ($process->supportsAdditionalInsurance()) {
+            $active = $order->moDHLUsesService(Article::MO_DHL__ADDITIONAL_INSURANCE) && $order->oxorder__oxtotalbrutsum->value > 500;
+            $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance($active, $order->oxorder__oxtotalbrutsum->value));
         }
 
         return $service;
@@ -218,6 +220,11 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         $ident->minimumAge = Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
             ? 'A' . Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
             : null;
+        if ($order->moDHLUsesService(Article::MO_DHL__VISUAL_AGE_CHECK18)) {
+            $ident->minimumAge = 'A18';
+        } elseif ($order->moDHLUsesService(Article::MO_DHL__VISUAL_AGE_CHECK16) && !$ident->minimumAge) {
+            $ident->minimumAge = 'A16';
+        }
         return $ident;
     }
 

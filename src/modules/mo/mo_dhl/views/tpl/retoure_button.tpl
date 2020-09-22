@@ -4,8 +4,11 @@
         [{$oViewConf->getHiddenSid()}]
         [{$oViewConf->getNavFormParams()}]
         <input type="hidden" name="fnc" value="moDHLCreateRetoure">
-        <input type="hidden" name="cl" value="account_order">
+        <input type="hidden" name="cl" value="[{$oViewConf->getActiveClassName()}]">
         <input type="hidden" name="orderId" value="[{$order->getId()}]">
+        [{if isset($uid)}]
+            <input type="hidden" name="uid" value="[{$uid}]">
+        [{/if}]
     </div>
     <button class="btn btn-primary" type="submit">
         [{oxmultilang ident="MO_DHL__CREATE_RETOURE"}]
