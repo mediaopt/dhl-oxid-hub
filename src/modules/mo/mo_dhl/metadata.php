@@ -239,6 +239,24 @@ $aModule = [
             'value' => 'false',
         ],
         [
+            'group' => 'mo_dhl__internetmarke',
+            'name'  => 'mo_dhl__internetmarke_user',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__internetmarke',
+            'name'  => 'mo_dhl__internetmarke_password',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__internetmarke',
+            'name'  => 'mo_dhl__internetmarke_check',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
             'group' => 'mo_dhl__delivery',
             'name'  => 'mo_dhl__only_with_leitcode',
             'type'  => 'bool',

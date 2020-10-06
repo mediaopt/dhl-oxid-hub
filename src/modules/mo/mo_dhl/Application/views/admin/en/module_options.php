@@ -15,6 +15,13 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__merchant_ekp'          => 'EKP',
     'HELP_SHOP_MODULE_mo_dhl__merchant_ekp'     => 'The EKP is your DHL customer number',
 
+    'SHOP_MODULE_GROUP_mo_dhl__internetmarke' => 'Internetmarke',
+    'SHOP_MODULE_mo_dhl__internetmarke_user'    => 'Username',
+    'HELP_SHOP_MODULE_mo_dhl__internetmarke_user'     => 'Your E-Mail Adress for the <a href="https://portokasse.deutschepost.de/">Portokasse</a>. Not a customer yet? Then register <a href="https://portokasse.deutschepost.de/portokasse/#!/register/">here</a>.',
+    'SHOP_MODULE_mo_dhl__internetmarke_password' => 'Password',
+    'HELP_SHOP_MODULE_mo_dhl__internetmarke_password'   => 'Your Password for the <a href="https://portokasse.deutschepost.de/">Portokasse</a>.',
+    'SHOP_MODULE_mo_dhl__internetmarke_check' => '',
+
     'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Delivery',
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Allow only Codeable shipping addresses',
     'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => 'If checkbox is enabled, shipment labels will only be created if the DHL delivery address verification succeeds (address is coedable). There is a surcharge for not codeable shipping addresses.',

@@ -20,6 +20,7 @@ use Mediaopt\DHL\Api\GKV\ShipmentItemType;
 use Mediaopt\DHL\Api\GKV\ShipperType;
 use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderType;
 use Mediaopt\DHL\Api\GKV\Version;
+use Mediaopt\DHL\Api\Internetmarke;
 use Mediaopt\DHL\Application\Model\DeliverySetList;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Shipment\BillingNumber;
@@ -162,6 +163,19 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     }
 
     /**
+     */
+    public function moSaveAndCheckInternetmarkeLogin()
+    {
+        $this->save();
+        $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
+        if (Registry::getConfig()->getConfigParam('mo_dhl__account_sandbox')) {
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__CHECK_FOR_SANDBOX_NOT_POSSIBLE');
+            return;
+        }
+        $this->checkInternetmarke($adapter->buildInternetmarke());
+    }
+
+    /**
      * @param string $textVarName
      * @return string[]
      */
@@ -219,6 +233,18 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         }
         if (empty($days)) {
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__INCORRECT_CREDENTIALS');
+        }
+    }
+
+    private function checkInternetmarke(Internetmarke $internetmarke)
+    {
+        try {
+            $response = $internetmarke->authenticateUser();
+            $message = sprintf(Registry::getLang()->translateString('MO_DHL__WALLAT_BALANCE_CHECK'), $response->getWalletBalance());
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($message);
+        } catch (\RuntimeException $e) {
+            $e = $e->getPrevious() ?: $e;
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($e->getMessage());
         }
     }
 

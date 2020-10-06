@@ -14,6 +14,13 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__merchant_ekp'          => 'EKP',
     'HELP_SHOP_MODULE_mo_dhl__merchant_ekp'     => 'Die EKP ist Ihre DHL Kundennummer',
 
+    'SHOP_MODULE_GROUP_mo_dhl__internetmarke' => 'Internetmarke',
+    'SHOP_MODULE_mo_dhl__internetmarke_user'    => 'Benutzername',
+    'HELP_SHOP_MODULE_mo_dhl__internetmarke_user'     => 'Ihre E-Mail Adresse für die <a href="https://portokasse.deutschepost.de/">Portokasse</a>. Noch kein Kunde? Dann registrieren Sie sich <a href="https://portokasse.deutschepost.de/portokasse/#!/register/">hier</a>.',
+    'SHOP_MODULE_mo_dhl__internetmarke_password' => 'Passwort',
+    'HELP_SHOP_MODULE_mo_dhl__internetmarke_password'   => 'Ihr Passwort für die <a href="https://portokasse.deutschepost.de/">Portokasse</a>.',
+    'SHOP_MODULE_mo_dhl__internetmarke_check' => '',
+
     'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Versand',
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Nur leitcodierbare Adressen zulassen',
     'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => 'Aktivieren Sie die Checkbox, wenn Versandetiketten nur für Adressen erstellt werden sollen, die seitens DHL als leitcodierbar gelten. Für nicht-leitcodierbare Adressen berechnet DHL in der Regel einen Aufschlag.',

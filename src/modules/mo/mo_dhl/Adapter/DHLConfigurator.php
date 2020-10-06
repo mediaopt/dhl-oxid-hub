@@ -38,6 +38,18 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const TEST_RETOURE_PASSWORD = 'uBQbZ62!ZiBiVVbhc';
 
+    const TEST_INTERNETMARKE_PARTNER_ID = 'AMHDH';
+
+    const TEST_INTERNETMARKE_SIGNATURE = 'v9hFqrH1JH5vBdtd8f9XXjMpkSNl6UcW';
+
+    const PROD_INTERNETMARKE_PARTNER_ID = 'AMHDH';
+
+    const PROD_INTERNETMARKE_SIGNATURE = 'v9hFqrH1JH5vBdtd8f9XXjMpkSNl6UcW';
+
+    const TEST_INTERNETMARKE_USERNAME = 'testpk_0526@dhldp-test.de';
+
+    const TEST_INTERNETMARKE_PASSWORD = '9W8ixXmjd3XEWg0c';
+
     /**
      * @return mixed
      */
@@ -112,6 +124,58 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
         return $this->isProductionEnvironment()
             ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '')
             : self::TEST_RETOURE_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInternetmarkeProdLogin()
+    {
+        return self::PROD_INTERNETMARKE_PARTNER_ID;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInternetmarkeProdSignature()
+    {
+        return self::PROD_INTERNETMARKE_SIGNATURE;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInternetmarkeSandboxLogin()
+    {
+        return self::TEST_INTERNETMARKE_PARTNER_ID;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInternetmarkeSandboxSignature()
+    {
+        return self::TEST_INTERNETMARKE_SIGNATURE;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerInternetmarkeLogin()
+    {
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_user') ?: '')
+            : self::TEST_INTERNETMARKE_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerInternetmarkePassword()
+    {
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_password') ?: '')
+            : self::TEST_INTERNETMARKE_PASSWORD;
     }
 
     /**
