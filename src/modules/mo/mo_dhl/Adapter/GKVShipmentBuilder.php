@@ -4,7 +4,8 @@ namespace Mediaopt\DHL\Adapter;
 
 use Mediaopt\DHL\Api\GKV\CommunicationType;
 use Mediaopt\DHL\Api\GKV\CountryType;
-use Mediaopt\DHL\Api\GKV\Ident;
+use Mediaopt\DHL\Api\GKV\ExportDocPosition;
+use Mediaopt\DHL\Api\GKV\ExportDocumentType;
 use Mediaopt\DHL\Api\GKV\NameType;
 use Mediaopt\DHL\Api\GKV\NativeAddressType;
 use Mediaopt\DHL\Api\GKV\PackStationType;
@@ -29,6 +30,7 @@ use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Model\MoDHLNotificationMode;
 use Mediaopt\DHL\ServiceProvider\Branch;
 use Mediaopt\DHL\Shipment\BillingNumber;
+use OxidEsales\Eshop\Application\Model\OrderArticle;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
@@ -54,6 +56,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     public function build(Order $order)
     {
         $shipment = new Shipment($this->buildShipmentDetails($order), $this->buildShipper(), $this->buildReceiver($order));
+        $shipment->setExportDocument($this->buildExportDocument($order));
         $shipment->setReturnReceiver($this->buildReturnReceiver());
         return $shipment;
     }
@@ -316,5 +319,34 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             default:
                 return (bool)$order->getFieldData('MO_DHL_ALLOW_NOTIFICATION');
         }
+    }
+
+    /**
+     * @param Order $order
+     */
+    protected function buildExportDocument(Order $order)
+    {
+        if (!$this->getProcess($order)->isInternational()) {
+            return null;
+        }
+
+        $exportDocuments = [];
+
+        /** @var OrderArticle $orderArticle */
+        foreach ($order->getOrderArticles() as $orderArticle) {
+            $count = $orderArticle->getFieldData('oxamount');
+            $exportDocuments[] = new ExportDocPosition(
+                substr($orderArticle->getArticle()->getFieldData('oxtitle'), 0, 50),
+                'DE',
+                '',
+                $count,
+                $orderArticle->getArticle()->getWeight(),
+                $orderArticle->getPrice()->getPrice()
+            );
+        }
+
+        $senderCity = Registry::getConfig()->getShopConfVar('mo_dhl__sender_city');
+        return (new ExportDocumentType('COMMERCIAL_GOODS', $senderCity, $order->oxorder__oxdelcost->value))
+            ->setExportDocPosition($exportDocuments);
     }
 }
