@@ -242,7 +242,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             return $this->buildShipper();
         }
         $name = new NameType($config->getShopConfVar('mo_dhl__retoure_receiver_line1'), $config->getShopConfVar('mo_dhl__retoure_receiver_line2'), $config->getShopConfVar('mo_dhl__retoure_receiver_line3'));
-        $iso2 = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$config->getShopConfVar('mo_dhl__retoure_receiver_country')]);
+        $iso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__retoure_receiver_country'));
         $country = new CountryType($iso2);
         $address = new NativeAddressType($config->getShopConfVar('mo_dhl__retoure_receiver_street'), $config->getShopConfVar('mo_dhl__retoure_receiver_street_number'), $config->getShopConfVar('mo_dhl__retoure_receiver_zip'), $config->getShopConfVar('mo_dhl__retoure_receiver_city'), null, $country);
         return new ShipperType($name, $address);
@@ -257,7 +257,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         $config = Registry::getConfig();
 
         $name = new NameType($config->getShopConfVar('mo_dhl__sender_line1'), $config->getShopConfVar('mo_dhl__sender_line2'), $config->getShopConfVar('mo_dhl__sender_line3'));
-        $iso2 = \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$config->getShopConfVar('mo_dhl__sender_country')]);
+        $iso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__sender_country'));
         $country = new CountryType($iso2);
         $address = new NativeAddressType($config->getShopConfVar('mo_dhl__sender_street'), $config->getShopConfVar('mo_dhl__sender_street_number'), $config->getShopConfVar('mo_dhl__sender_zip'), $config->getShopConfVar('mo_dhl__sender_city'), null, $country);
         return new ShipperType($name, $address);
@@ -329,6 +329,14 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         if (!$this->getProcess($order)->isInternational()) {
             return null;
         }
+        $config = Registry::getConfig();
+        $exportDocumentType = new ExportDocumentType(
+            'COMMERCIAL_GOODS',
+            $config->getShopConfVar('mo_dhl__sender_city'),
+            $order->oxorder__oxdelcost->value
+        );
+
+        $iso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__sender_country'));
 
         $exportDocuments = [];
 
@@ -337,16 +345,24 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $count = $orderArticle->getFieldData('oxamount');
             $exportDocuments[] = new ExportDocPosition(
                 substr($orderArticle->getArticle()->getFieldData('oxtitle'), 0, 50),
-                'DE',
+                $iso2,
                 '',
                 $count,
-                $orderArticle->getArticle()->getWeight(),
+                $this->getArticleWeight($orderArticle, $config),
                 $orderArticle->getPrice()->getPrice()
             );
         }
 
-        $senderCity = Registry::getConfig()->getShopConfVar('mo_dhl__sender_city');
-        return (new ExportDocumentType('COMMERCIAL_GOODS', $senderCity, $order->oxorder__oxdelcost->value))
-            ->setExportDocPosition($exportDocuments);
+        return $exportDocumentType->setExportDocPosition($exportDocuments);
+    }
+
+    /**
+     * @param string $isoalpha3
+     * @return false|string
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     */
+    protected function getIsoalpha2FromIsoalpha3($isoalpha3) {
+        return \OxidEsales\Eshop\Core\DatabaseProvider::getDb()
+            ->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$isoalpha3]);
     }
 }
