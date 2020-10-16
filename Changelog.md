@@ -1,4 +1,7 @@
 # Changelog
+## 1.2.4
+* bugfix for article parent extension
+
 ## 1.2.3
 * added additional features for return label creation:
     * option do prevent customers to create return labels and instead let them request them
