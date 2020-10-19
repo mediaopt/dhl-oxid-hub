@@ -50,6 +50,12 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const TEST_INTERNETMARKE_PASSWORD = '9W8ixXmjd3XEWg0c';
 
+    const PRODWS_USERNAME = 'mediaopt';
+
+    const PRODWS_PASSWORD = 'B&5%bk?dx7';
+
+    const TEST_PRODWS_MANDANT_ID = 'MEDIAOPT';
+
     /**
      * @return mixed
      */
@@ -176,6 +182,32 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
         return $this->isProductionEnvironment()
             ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_password') ?: '')
             : self::TEST_INTERNETMARKE_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProdWSLogin()
+    {
+        return self::PRODWS_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProdWSPassword()
+    {
+        return self::PRODWS_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerProdWSMandantId()
+    {
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_mandant_id') ?: '')
+            : self::TEST_PRODWS_MANDANT_ID;
     }
 
     /**

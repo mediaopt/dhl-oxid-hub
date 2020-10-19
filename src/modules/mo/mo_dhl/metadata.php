@@ -246,6 +246,12 @@ $aModule = [
         ],
         [
             'group' => 'mo_dhl__internetmarke',
+            'name'  => 'mo_dhl__internetmarke_mandant_id',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__internetmarke',
             'name'  => 'mo_dhl__internetmarke_password',
             'type'  => 'str',
             'value' => '',

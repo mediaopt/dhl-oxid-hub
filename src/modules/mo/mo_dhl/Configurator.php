@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Mediaopt\DHL\Api\Credentials;
 use Mediaopt\DHL\Api\Internetmarke;
+use Mediaopt\DHL\Api\ProdWSService;
 use Mediaopt\DHL\Api\Retoure;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
@@ -78,6 +79,22 @@ abstract class Configurator
     /**
      * @return Credentials
      */
+    protected function buildProdWSCredentials()
+    {
+        return Credentials::createProdWSEndpoint($this->getProdWSLogin(), $this->getProdWSPassword());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildCustomerProdWSCredentials()
+    {
+        return Credentials::createCustomerCredentials($this->getCustomerProdWSMandantId(), null);
+    }
+
+    /**
+     * @return Credentials
+     */
     protected function buildCustomerRetoureCredentials()
     {
         return Credentials::createCustomerCredentials($this->getCustomerRetoureLogin(), $this->getCustomerRetourePassword());
@@ -132,6 +149,21 @@ abstract class Configurator
      * @return string
      */
     abstract protected function getCustomerInternetmarkePassword();
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerProdWSMandantId();
+
+    /**
+     * @return string
+     */
+    abstract protected function getProdWSLogin();
+
+    /**
+     * @return string
+     */
+    abstract protected function getProdWSPassword();
 
     /**
      * @return string
@@ -206,7 +238,7 @@ abstract class Configurator
 
     /**
      * @param LoggerInterface|null $logger
-     * @return GKV
+     * @return Internetmarke
      */
     public function buildInternetmarke(LoggerInterface $logger = null)
     {
@@ -216,6 +248,20 @@ abstract class Configurator
             $logger ?: $this->buildLogger()
         );
     }
+
+    /**
+     * @param LoggerInterface|null $logger
+     * @return ProdWSService
+     */
+    public function buildProdWS(LoggerInterface $logger = null)
+    {
+        return new ProdWSService(
+            $this->buildProdWSCredentials(),
+            $this->buildCustomerProdWSCredentials(),
+            $logger ?: $this->buildLogger()
+        );
+    }
+
     /**
      * @param LoggerInterface|null $logger
      * @param ClientInterface|null $client

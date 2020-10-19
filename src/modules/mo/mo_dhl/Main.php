@@ -5,6 +5,7 @@ namespace Mediaopt\DHL;
 use GuzzleHttp\ClientInterface;
 use Mediaopt\DHL\Api\GKV;
 use Mediaopt\DHL\Api\Internetmarke;
+use Mediaopt\DHL\Api\ProdWSService;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Psr\Log\LoggerInterface;
@@ -136,5 +137,13 @@ class Main
     public function buildInternetmarke()
     {
         return $this->getConfigurator()->buildInternetmarke($this->getLogger());
+    }
+
+    /**
+     * @return ProdWSService
+     */
+    public function buildProdWS()
+    {
+        return $this->getConfigurator()->buildProdWS($this->getLogger());
     }
 }
