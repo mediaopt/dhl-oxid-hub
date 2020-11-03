@@ -7,12 +7,12 @@ class AccountProductReferenceList
 {
 
     /**
-     * @var AccountProdReferenceType $accountProductReference
+     * @var AccountProdReferenceType[] $accountProductReference
      */
     protected $accountProductReference = null;
 
     /**
-     * @param AccountProdReferenceType $accountProductReference
+     * @param AccountProdReferenceType[] $accountProductReference
      */
     public function __construct($accountProductReference)
     {
@@ -20,7 +20,7 @@ class AccountProductReferenceList
     }
 
     /**
-     * @return AccountProdReferenceType
+     * @return AccountProdReferenceType[]
      */
     public function getAccountProductReference()
     {
@@ -28,7 +28,7 @@ class AccountProductReferenceList
     }
 
     /**
-     * @param AccountProdReferenceType $accountProductReference
+     * @param AccountProdReferenceType[] $accountProductReference
      * @return AccountProductReferenceList
      */
     public function setAccountProductReference($accountProductReference)

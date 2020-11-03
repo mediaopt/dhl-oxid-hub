@@ -46,17 +46,20 @@ $aModule = [
         \OxidEsales\Eshop\Application\Model\Category::class                       => Application\Model\Category::class,
     ],
     'controllers' => [
-        'MoDHLFinder'         => Controller\FinderController::class,
-        'MoDHLCategoriesDHL'  => Controller\Admin\CategoryDHLController::class,
-        'MoDHLArticlesDHL'    => Controller\Admin\ArticlesDHLController::class,
-        'MoDHLCountryDHL'     => Controller\Admin\CountryDHLController::class,
-        'MoDHLDeliverySetDHL' => Controller\Admin\DeliverySetDHLController::class,
-        'MoDHLDeliveryDHL'    => Controller\Admin\DeliveryDHLController::class,
-        'MoDHLPaymentsDHL'    => Controller\Admin\PaymentsDHLController::class,
-        'MoDHLOrderBatch'     => Controller\Admin\OrderBatchController::class,
-        'MoDHLOrderDHL'       => Controller\Admin\OrderDHLController::class,
-        'MoDHLYellowBox'      => Controller\YellowBoxController::class,
-        'MoDHLGuest'          => Controller\GuestController::class,
+        'MoDHLFinder'               => Controller\FinderController::class,
+        'MoDHLCategoriesDHL'        => Controller\Admin\CategoryDHLController::class,
+        'MoDHLArticlesDHL'          => Controller\Admin\ArticlesDHLController::class,
+        'MoDHLCountryDHL'           => Controller\Admin\CountryDHLController::class,
+        'MoDHLDeliverySetDHL'       => Controller\Admin\DeliverySetDHLController::class,
+        'MoDHLDeliveryDHL'          => Controller\Admin\DeliveryDHLController::class,
+        'MoDHLPaymentsDHL'          => Controller\Admin\PaymentsDHLController::class,
+        'MoDHLOrderBatch'           => Controller\Admin\OrderBatchController::class,
+        'MoDHLOrderDHL'             => Controller\Admin\OrderDHLController::class,
+        'MoDHLYellowBox'            => Controller\YellowBoxController::class,
+        'MoDHLGuest'                => Controller\GuestController::class,
+        'MoDHLInternetmarke'        => Controller\Admin\InternetmarkeController::class,
+        'MoDHLInternetmarkeList'    => Controller\Admin\InternetmarkeListController::class,
+        'MoDHLInternetmarkeDetails' => Controller\Admin\InternetmarkeDetailsController::class,
     ],
     'events'      => [
         'onActivate'   => Install::class . '::onActivate',
@@ -171,12 +174,12 @@ $aModule = [
         [
             'template' => 'email/html/ordershipped.tpl',
             'block'    => 'email_html_ordershipped_shipmenttrackingurl',
-            'file'     => 'views/tpl/email/order_retoure_html.tpl'
+            'file'     => 'views/tpl/email/order_retoure_html.tpl',
         ],
         [
             'template' => 'email/plain/ordershipped.tpl',
             'block'    => 'email_html_ordershipped_shipmenttrackingurl',
-            'file'     => 'views/tpl/email/order_retoure_plain.tpl'
+            'file'     => 'views/tpl/email/order_retoure_plain.tpl',
         ],
     ],
     'templates'   => [
@@ -208,6 +211,9 @@ $aModule = [
         'mo_dhl__email_retoure_html.tpl'     => 'mo/mo_dhl/views/tpl/email/retoure_html.tpl',
         'mo_dhl__email_retoure_plain.tpl'    => 'mo/mo_dhl/views/tpl/email/retoure_plain.tpl',
         'mo_dhl__guest_order.tpl'            => 'mo/mo_dhl/views/tpl/guest_order.tpl',
+        'mo_dhl__internetmarke.tpl'          => 'mo/mo_dhl/views/admin/tpl/internetmarke.tpl',
+        'mo_dhl__internetmarke_list.tpl'     => 'mo/mo_dhl/views/admin/tpl/internetmarke_list.tpl',
+        'mo_dhl__internetmarke_details.tpl'  => 'mo/mo_dhl/views/admin/tpl/internetmarke_details.tpl',
     ],
     'settings'    => [
         [

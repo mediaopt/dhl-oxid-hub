@@ -89,5 +89,19 @@ $aLang = [
     'MO_DHL__ADDITIONAL_INSURANCE'      => 'Transportversicherung',
     'HELP_MO_DHL__ADDITIONAL_INSURANCE' => 'Grundsätzlich haftet DHL für Ihr Paket beim deutschlandweiten Versand gegen Verlust oder Beschädigung bis 500 EUR (nur gegen Vorlage des quittierten Einlieferungsbeleges). Für besonders wertvolle Sendungen bietet DHL Ihnen darüber hinaus eine Transportversicherung bis 2.500 EUR (+6,00 EUR Aufpreis) oder 25.000 EUR  (+18,00 EUR Aufpreis) an. Weiter Informationen finden Sie <a href="https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/services/service-loesungen.html#versicherung">hier</a>',
 
-    'MO_DHL__WALLAT_BALANCE_CHECK'    => 'Die Zugangsdaten für die Portokasse sind korrekt. Ihr Guthaben beträgt %.2f €'
+    'MO_DHL__WALLAT_BALANCE_CHECK'    => 'Die Zugangsdaten für die Portokasse sind korrekt. Ihr Guthaben beträgt %.2f €',
+
+    'MO_DHL'                        => 'DHL',
+    'MO_DHL__INTERNETMARKE'         => 'Internetmarke',
+    'MO_DHL__INTERNETMARKE_DETAILS' => 'Details',
+    'MO_DHL__PRODWSID'              => 'ProdWS-Id',
+    'MO_DHL__NAME'                  => 'Name',
+    'MO_DHL__DESCRIPTION'           => 'Beschreibung',
+    'MO_DHL__PRICE'                 => 'Preis',
+    'MO_DHL__UPDATE_PRODUCTLIST'    => 'Produktliste aktualisieren',
+    'MO_DHL__WEIGHT'                => 'Gewichtsbeschränkungen',
+    'MO_DHL__DIMENSION'             => 'Größenbeschränkungen',
+    'MO_DHL__BASE_SERVICE'          => 'Basisprodukt',
+    'MO_DHL__ADDITIONAL_SERVICES'   => 'Zusatzprodukte',
+
 ];

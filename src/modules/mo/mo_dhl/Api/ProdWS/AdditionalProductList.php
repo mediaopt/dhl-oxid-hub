@@ -7,12 +7,12 @@ class AdditionalProductList
 {
 
     /**
-     * @var AdditionalProductType $AdditionalProduct
+     * @var AdditionalProductType[] $AdditionalProduct
      */
     protected $AdditionalProduct = null;
 
     /**
-     * @param AdditionalProductType $AdditionalProduct
+     * @param AdditionalProductType[] $AdditionalProduct
      */
     public function __construct($AdditionalProduct)
     {
@@ -20,7 +20,7 @@ class AdditionalProductList
     }
 
     /**
-     * @return AdditionalProductType
+     * @return AdditionalProductType[]
      */
     public function getAdditionalProduct()
     {
@@ -28,7 +28,7 @@ class AdditionalProductList
     }
 
     /**
-     * @param AdditionalProductType $AdditionalProduct
+     * @param AdditionalProductType[] $AdditionalProduct
      * @return AdditionalProductList
      */
     public function setAdditionalProduct($AdditionalProduct)

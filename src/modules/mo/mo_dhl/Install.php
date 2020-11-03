@@ -160,6 +160,21 @@ class Install
         PRIMARY KEY (OXID)
         );
         CREATE INDEX MoDhlLabelIndex ON mo_dhl_labels (OXSHOPID, orderId);");
+
+        self::addTable('mo_dhl_internetmarke_products', "(
+        `OXID` VARCHAR(50) NOT NULL COMMENT 'ProdWS-Id',
+        `OXSHOPID` INT DEFAULT 1 NOT NULL,
+        `name` VARCHAR(250) NOT NULL,
+        `type` INT DEFAULT 0 NOT NULL,
+        `isNational` TINYINT DEFAULT 0,
+        `annotation` VARCHAR(2000),
+        `price` FLOAT NOT NULL,
+        `dimension` VARCHAR(100),
+        `weight` VARCHAR(100),
+        `products` VARCHAR(510),
+        PRIMARY KEY (OXID)
+        );
+        CREATE INDEX MoDhlInternetmarkeProducts ON mo_dhl_internetmarke_products (OXSHOPID, OXID);");
     }
 
     /**

@@ -89,5 +89,18 @@ $aLang = [
     'MO_DHL__ADDITIONAL_INSURANCE'        => 'Additional Insurance',
     'HELP_MO_DHL__ADDITIONAL_INSURANCE'   => 'DHL normally insures the delivery inside Germany up to 500 EUR concerning losing or damaging. For deliveries of more expensive products DHL offers an additional insurance up to 2.500 EUR (+6,00 EUR surcharge) or 25.000 EUR  (+18,00 EUR surcharge). You can find more informationens <a href="https://www.dhl.de/content/dam/images/pdf/GK/Services/dhl-transportversicherung-infoblatt-en-052020.pdf">here</a>',
 
-    'MO_DHL__WALLAT_BALANCE_CHECK'    => 'Your credentials for the Portokasse are correct. Your balance is %.2f €'
+    'MO_DHL__WALLAT_BALANCE_CHECK'    => 'Your credentials for the Portokasse are correct. Your balance is %.2f €',
+
+    'MO_DHL'                        => 'DHL',
+    'MO_DHL__INTERNETMARKE'         => 'Internetmarke',
+    'MO_DHL__INTERNETMARKE_DETAILS' => 'Details',
+    'MO_DHL__PRODWSID'              => 'ProdWS-Id',
+    'MO_DHL__NAME'                  => 'Name',
+    'MO_DHL__DESCRIPTION'           => 'Description',
+    'MO_DHL__PRICE'                 => 'Price',
+    'MO_DHL__UPDATE_PRODUCTLIST'    => 'Update productlist',
+    'MO_DHL__WEIGHT'                => 'Weight limits',
+    'MO_DHL__DIMENSION'             => 'Size limits',
+    'MO_DHL__BASE_SERVICE'          => 'Base product',
+    'MO_DHL__ADDITIONAL_SERVICES'   => 'Additional products',
 ];
