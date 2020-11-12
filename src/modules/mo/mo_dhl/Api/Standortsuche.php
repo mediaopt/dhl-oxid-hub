@@ -17,6 +17,8 @@ use Mediaopt\DHL\ServiceProvider\Coordinates;
 use Mediaopt\DHL\ServiceProvider\ServiceProviderList;
 use Mediaopt\DHL\ServiceProvider\ServiceType;
 use Psr\Log\LoggerInterface;
+use OxidEsales\Eshop\Core\Request;
+use OxidEsales\EshopCommunity\Core\Registry;
 
 /**
  * Class that calls the Standortsuche Europa API.
@@ -129,8 +131,9 @@ class Standortsuche extends Base
         if ($addressString === '') {
             return new ServiceProviderList([]);
         }
-        $parameters = $serviceType->getName() . '/' . $addressString;
-        return $this->extractServiceProviders($this->callApi('parcellocationByAddress/' . $parameters));
+        $locations = $this->callApi('find-by-address?' . $addressString);
+        $oldAPIstandart = $this->convert($locations);
+        return $this->extractServiceProviders($oldAPIstandart);
     }
 
     /**
@@ -141,15 +144,17 @@ class Standortsuche extends Base
      */
     protected function buildAddressString($address)
     {
-        if (is_string($address)) {
-            return $this->sanitizeAddressString($address);
-        }
+        [$postalCode, $addressLocality] = explode(' ', (string)Registry::get(Request::class)->getRequestParameter('locality'));
 
-        $components = [];
-        foreach (['zip', 'city', 'street', 'streetNo', 'country'] as $name) {
-            $components[] = trim($address->{'get' . ucfirst($name)}());
-        }
-        return $this->sanitizeAddressString(implode(' ', array_filter($components)));
+        $urlOptions = [
+            "countryCode=DE",
+            "addressLocality=$addressLocality",
+            "postalCode=$postalCode",
+            "streetAddress=" . (string)Registry::get(Request::class)->getRequestParameter('street'),
+            'limit=50'
+        ];
+
+        return $this->sanitizeAddressString(implode('&', $urlOptions));
     }
 
     /**
@@ -202,5 +207,141 @@ class Standortsuche extends Base
     {
         $forbiddenCharacters = ['/', '\\'];
         return trim(str_replace($forbiddenCharacters, '-', $address));
+    }
+
+    protected function buildRequestOptions(){
+        return ['headers' => ['DHL-API-Key' => 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK']];
+    }
+
+    protected function buildUrl($url)
+    {
+        return 'https://api.dhl.com/location-finder/v1/' . $url;
+    }
+
+    private function convert($items)
+    {
+        $newItems = [];
+        foreach ($items->locations as $item) {
+
+            $locationId = $item->location->ids[0]->locationId;
+            [$systemID, $primaryKeyDeliverySystem] = explode('-', $locationId);
+
+            $newItems[] = (object)[
+                'countryCode' => strtolower($item->place->address->countryCode),
+                'zipCode' => $item->place->address->postalCode,
+                'city' => $item->place->address->addressLocality,
+                'district' => '',
+                'additionalInfo' => '',
+                'area' => '',
+                'street' => $item->place->address->streetAddress,
+                'houseNo' => '',
+                'additionalStreet' => '',
+                'format1' => '',
+                'format2' => '',
+                'routingCode' => '',
+                'keyWord' => $item->location->keyword,
+                'partnerType' => '',
+                'shopType' => $this->buildshopType($item->location->type),
+                'shopName' => $item->name,
+                'primaryLanguage' => '',
+                'secondaryLanguage' => '',
+                'tertiaryLanguage' => '',
+                'geoPosition' => (object)[
+                    'latitude' => $item->place->geo->latitude,
+                    'longitude' => $item->place->geo->longitude,
+                    'distance' => $item->distance
+                ],
+                'primaryKeyDeliverySystem' => $primaryKeyDeliverySystem,
+                'primaryKeyZipRegion' => $item->location->keywordId,
+                'systemID' => $systemID,
+                'primaryKeyPSF' => $item->location->ids[0]->locationId,
+                'psfFiles' => [],
+                'psfServicetypes' => $this->buildPsfServicetypes($item->serviceTypes),
+                'psfClosureperiods' => [],
+                'psfWelcometexts' => [],
+                'psfOtherinfos' => $this->convertOpeningHours($item->openingHours)
+            ];
+        }
+
+        return (object)['psfParcellocationList' => $newItems];
+    }
+
+    private function buildPsfServicetypes($array)
+    {
+        $return = [];
+        foreach ($array as $item) {
+            switch ($item) {
+                case 'parcel:pickup':
+                case 'parcel:pick-up-registered':
+                    $return[] = 'parcelpickup';
+                    break;
+                case 'postident':
+                    $return[] = 'postident';
+                    break;
+                case 'handicapped-access':
+                    $return[] = 'handicappedAccess';
+                    break;
+                case 'cash-on-delivery':
+                    $return[] = 'COD';
+                    break;
+                case 'parcel:drop-off':
+                case 'parcel:drop-off-unregistered':
+                    $return[] = 'parcelacceptance';
+                    break;
+                case 'parking':
+                    $return[] = 'parking';
+                    break;
+                case 'age-verification':
+                    $return[] = 'ageVerification';
+                    break;
+                default:
+                    break;
+            }
+        }
+        return $return;
+    }
+
+    private function buildshopType($type)
+    {
+        switch ($type) {
+            case 'postoffice':
+                return 'postOffice';
+            case 'servicepoint':
+                return 'parcelShop';
+            case 'locker':
+                return 'packStation';
+            default:
+                return '';
+        }
+    }
+
+    private function convertOpeningHours($array) {
+        $monday = 'dash';
+        $saturday = 'dash';
+        $sunday = 'dash';
+        foreach ($array as $day) {
+            $workingTiime = substr($day->opens, 0, '-3') . ' - ' . substr($day->closes, 0, '-3');
+            switch ($day->dayOfWeek) {
+                case 'http://schema.org/Monday' :
+                    $monday = $workingTiime;
+                    break;
+                case 'http://schema.org/Saturday' :
+                    $saturday = $workingTiime;
+                    break;
+                case 'http://schema.org/Sunday' :
+                    $sunday = $workingTiime;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return [
+            (object)['type' => 'tt_openinghour_00', 'content' => 'mo-fr'],
+            (object)['type' => 'tt_openinghour_01', 'content' => $monday],
+            (object)['type' => 'tt_openinghour_10', 'content' => 'sa'],
+            (object)['type' => 'tt_openinghour_11', 'content' => $saturday],
+            (object)['type' => 'tt_openinghour_20', 'content' => 'su'],
+            (object)['type' => 'tt_openinghour_21', 'content' => $sunday]
+        ];
     }
 }
