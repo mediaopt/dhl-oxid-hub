@@ -177,6 +177,15 @@
                                                     </td>
                                                 </tr>
                                             [{/if}]
+                                            [{if $label->getFieldData('exportlabelurl')}]
+                                                <tr>
+                                                    <td>[{oxmultilang ident="MO_DHL__EXPORT_LABEL"}]</td>
+                                                    <td>
+                                                        <a target="_blank" rel="noopener noreferrer"
+                                                           href="[{$label->getFieldData('exportlabelurl')}]">[{$label->getFieldData('shipmentNumber')}]</a>
+                                                    </td>
+                                                </tr>
+                                            [{/if}]
                                         [{/if}]
                                         [{if not $smarty.foreach.labels.last}]
                                             <tr>
