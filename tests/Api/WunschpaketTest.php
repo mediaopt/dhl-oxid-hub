@@ -184,13 +184,13 @@ class WunschpaketTest extends \PHPUnit_Framework_TestCase
     public function testThatAHolidayIsNotAPreferredDay()
     {
         $wunschpaket = $this->buildWunschpaket();
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('30.03.2018')));
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('02.04.2018')));
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('01.05.2018')));
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('10.05.2018')));
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('21.05.2018')));
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('25.12.2018')));
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('26.12.2018')));
+        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('10.04.2020')));
+        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('13.04.2020')));
+        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('01.05.2020')));
+        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('21.05.2020')));
+        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('01.06.2020')));
+        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('25.12.2020')));
+        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('26.12.2020')));
     }
 
     public function testThatThereAreAlwaysAsManyPreferredDaysAsDefinedInTheCorrespondingClassConstant()
