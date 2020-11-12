@@ -1,4 +1,7 @@
 # Changelog
+## 1.2.5
+* create export documents for international shipments
+
 ## 1.2.4
 * bugfix for article parent extension
 
