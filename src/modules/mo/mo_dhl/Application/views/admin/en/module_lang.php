@@ -43,6 +43,7 @@ $aLang = [
     'MO_DHL__LOGIN_FAILED'                         => 'Credentials are incorrect. Login failed.',
     'MO_DHL__LABELS'                               => 'Labels',
     'MO_DHL__LABEL'                                => 'Delivery label',
+    'MO_DHL__EXPORT_LABEL'                         => 'Export label',
     'MO_DHL__RETOURE_LABEL'                        => 'Retoure label',
     'MO_DHL__RETOURE_QR_LABEL'                     => 'Retoure QR Code',
     'MO_DHL__INSTALL_FOLDER_ERROR'                 => 'The directory %s could not be created. Please create it manually',

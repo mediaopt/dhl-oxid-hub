@@ -12,6 +12,7 @@ use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Application\Model\OrderArticle;
 
 /**
  * This class transforms an \oxOrder object into a Shipment object.
@@ -66,15 +67,17 @@ class BaseShipmentBuilder
     {
         $config = Registry::getConfig();
         if (!$config->getShopConfVar('mo_dhl__calculate_weight')) {
-            return max(0.1, (float)$config->getShopConfVar('mo_dhl__default_weight'));
+            $amount = 0;
+            foreach ($order->getOrderArticles() as $orderArticle) {
+                $amount +=  $orderArticle->getFieldData('oxamount');
+            }
+
+            return $amount * max(0.1, (float)$config->getShopConfVar('mo_dhl__default_weight'));
         }
         $weight = 0.0;
         foreach ($order->getOrderArticles() as $orderArticle) {
-            /** @var \OxidEsales\Eshop\Application\Model\OrderArticle $orderArticle */
-            $weight += (float)$orderArticle->getArticle()->getWeight() * $orderArticle->getFieldData('oxamount');
-        }
-        if ($weight < 0.1) {
-            $weight = max(0.1, (float)$config->getShopConfVar('mo_dhl__default_weight'));
+            $articleWeight = $this->getArticleWeight($orderArticle, $config);
+            $weight += $articleWeight * $orderArticle->getFieldData('oxamount');
         }
         $weight *= 1 + (float)$config->getShopConfVar('mo_dhl__packing_weight_in_percent') / 100.0;
         $weight += (float)$config->getShopConfVar('mo_dhl__packing_weight_absolute');
@@ -134,5 +137,20 @@ class BaseShipmentBuilder
         } catch (\InvalidArgumentException $exception) {
             return null;
         }
+    }
+
+    /**
+     * @param OrderArticle $orderArticle
+     * @param \OxidEsales\Eshop\Core\Config $config
+     * @return float|mixed
+     */
+    protected function getArticleWeight(OrderArticle $orderArticle, \OxidEsales\Eshop\Core\Config $config)
+    {
+        /** @var OrderArticle $orderArticle */
+        $articleWeight = (float)$orderArticle->getArticle()->getWeight();
+        if ($articleWeight < 0.1) {
+            $articleWeight = max(0.1, (float)$config->getShopConfVar('mo_dhl__default_weight'));
+        }
+        return $articleWeight;
     }
 }
