@@ -40,7 +40,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const STANDORTSUCHE_API_KEY = 'DHL-API-Key';
 
-    const TEST_STANDORTSUCHE_API_PASSWORD = 'RGZ02BtCUBOHkxzMdy1NUm29oxhpHx';
+    const TEST_STANDORTSUCHE_API_PASSWORD = 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK';
 
     const PROD_STANDORTSUCHE_API_PASSWORD = '';
 

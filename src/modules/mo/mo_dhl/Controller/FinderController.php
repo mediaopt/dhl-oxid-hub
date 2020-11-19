@@ -141,8 +141,7 @@ class FinderController extends \OxidEsales\Eshop\Application\Controller\Frontend
     protected function findServiceProviders(\Mediaopt\DHL\FinderQuery $query)
     {
         $standortsuche = $this->getStandortsuche();
-        $pickup = ServiceType::create(ServiceType::PARCEL_PICKUP);
-        $serviceProviders = $standortsuche->getParcellocationByAddressAndServiceType($pickup, $query->getAddress(), $query->getPostalCode(), $query->getCity())->toArray();
+        $serviceProviders = $standortsuche->getParcellocationByAddress($query->getAddress(), $query->getPostalCode(), $query->getCity())->toArray();
         return $this->filterServiceProviders($serviceProviders, $query);
     }
 
