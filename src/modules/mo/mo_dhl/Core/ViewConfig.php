@@ -1,6 +1,8 @@
 <?php
 namespace Mediaopt\DHL\Core;
 
+use OxidEsales\Eshop\Core\Registry;
+
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
@@ -79,7 +81,14 @@ class ViewConfig extends ViewConfig_parent
     public function moIsAnyWunschpaketFeatureActivated()
     {
         $basket = \OxidEsales\Eshop\Core\Registry::getConfig()->getSession()->getBasket();
-        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->canAWunschpaketServiceBeSelected($basket);
+        $user = Registry::getConfig()->getUser();
+        $delAddress = $user ? $user->getSelectedAddress() : null;
+        $paymentid = $basket ? $basket->getPaymentId() : null;
+        $payment = oxNew(\OxidEsales\Eshop\Application\Model\Payment::class);
+        if (!$paymentid || !$payment->load($paymentid)) {
+            $payment = null;
+        }
+        return \OxidEsales\Eshop\Core\Registry::get(\Mediaopt\DHL\Wunschpaket::class)->canAWunschpaketServiceBeSelected($basket, $user, $delAddress, $payment);
     }
 
     /**
