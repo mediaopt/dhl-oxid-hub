@@ -196,13 +196,16 @@ class Order extends Order_parent
 
     /**
      * @param double $amount
-     * @return \OxidEsales\Eshop\Core\Price
+     * @return \OxidEsales\Eshop\Core\Price|null
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
     public function moDHLCalculcateSurcharge($amount)
     {
         /** @var \Mediaopt\DHL\Application\Model\Basket $basket */
         $basket = $this->getBasket();
+        if (!$basket) {
+            return null;
+        }
         return $basket->moDHLCalculateSurcharge($amount);
     }
 
