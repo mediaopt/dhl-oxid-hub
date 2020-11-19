@@ -120,6 +120,16 @@ class Credentials
     }
 
     /**
+     * @param string      $keyName
+     * @param string      $password
+     * @return self
+     */
+    public static function createStandortsucheEndpoint($keyName, $password)
+    {
+        return new static('https://api.dhl.com/location-finder/v1', $keyName, $password);
+    }
+
+    /**
      * @param string      $username
      * @param string      $password
      * @param string|null $ekp

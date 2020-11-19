@@ -17,8 +17,6 @@ use Mediaopt\DHL\ServiceProvider\Coordinates;
 use Mediaopt\DHL\ServiceProvider\ServiceProviderList;
 use Mediaopt\DHL\ServiceProvider\ServiceType;
 use Psr\Log\LoggerInterface;
-use OxidEsales\Eshop\Core\Request;
-use OxidEsales\EshopCommunity\Core\Registry;
 
 /**
  * Class that calls the Standortsuche Europa API.
@@ -60,7 +58,7 @@ class Standortsuche extends Base
      */
     public function getIdentifier()
     {
-        return 'parcelshopfinderrest';
+        return 'find-by-address';
     }
 
     /**
@@ -121,17 +119,19 @@ class Standortsuche extends Base
 
     /**
      * @param ServiceType    $serviceType
-     * @param Address|string $address
+     * @param string $address
+     * @param string $postalCode
+     * @param string $city
      * @return ServiceProviderList
      * @throws WebserviceException
      */
-    public function getParcellocationByAddressAndServiceType(ServiceType $serviceType, $address)
+    public function getParcellocationByAddressAndServiceType(ServiceType $serviceType, $address, $postalCode, $city)
     {
-        $addressString = $this->buildAddressString($address);
+        $addressString = $this->buildAddressString($address, $postalCode, $city);
         if ($addressString === '') {
             return new ServiceProviderList([]);
         }
-        $locations = $this->callApi('find-by-address?' . $addressString);
+        $locations = $this->callApi($addressString);
         $oldAPIstandart = $this->convert($locations);
         return $this->extractServiceProviders($oldAPIstandart);
     }
@@ -139,18 +139,18 @@ class Standortsuche extends Base
     /**
      * Generates a string with basic sanitization from the supplied address.
      *
-     * @param Address|string $address
+     * @param string $address
+     * @param string $postalCode
+     * @param string $city
      * @return string
      */
-    protected function buildAddressString($address)
+    protected function buildAddressString($address, $postalCode, $city)
     {
-        [$postalCode, $addressLocality] = explode(' ', (string)Registry::get(Request::class)->getRequestParameter('locality'));
-
         $urlOptions = [
             "countryCode=DE",
-            "addressLocality=$addressLocality",
+            "addressLocality=$city",
             "postalCode=$postalCode",
-            "streetAddress=" . (string)Registry::get(Request::class)->getRequestParameter('street'),
+            "streetAddress=$address",
             'limit=50'
         ];
 
@@ -209,13 +209,19 @@ class Standortsuche extends Base
         return trim(str_replace($forbiddenCharacters, '-', $address));
     }
 
-    protected function buildRequestOptions(){
-        return ['headers' => ['DHL-API-Key' => 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK']];
+    protected function buildRequestOptions()
+    {
+        $credentials = $this->getCredentials();
+        return ['headers' => [$credentials->getUsername() => $credentials->getPassword()]];
     }
 
-    protected function buildUrl($url)
+    /**
+     * @param string $relativeUrl
+     * @return string
+     */
+    protected function buildUrl($relativeUrl)
     {
-        return 'https://api.dhl.com/location-finder/v1/' . $url;
+        return "{$this->getCredentials()->getEndpoint()}/{$this->getIdentifier()}?$relativeUrl";
     }
 
     private function convert($items)

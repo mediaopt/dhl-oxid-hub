@@ -36,7 +36,7 @@ class FinderController extends \OxidEsales\Eshop\Application\Controller\Frontend
     public function render()
     {
         try {
-            $serviceProviders = $this->resolveQuerySet($this->buildQueries());
+            $serviceProviders = $this->resolveQuery($this->buildQuery());
             if (!empty($serviceProviders)) {
                 $response = ['status' => 'success', 'payload' => $serviceProviders];
             } else {
@@ -86,19 +86,19 @@ class FinderController extends \OxidEsales\Eshop\Application\Controller\Frontend
     /**
      * @return \Mediaopt\DHL\FinderQuery[]
      */
-    protected function buildQueries()
+    protected function buildQuery()
     {
         $config = $this->getConfig();
         $street = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('street');
         $locality = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('locality');
-        $addresses = array_map('trim', [$locality . ' ' . $street, $locality, $street]);
+        [$postalCode, $city] = explode(' ', $locality);
+        $street = trim($street);
+        $postalCode = trim($postalCode);
+        $city = trim($city);
+
         $desiredBranchTypes = array_map('boolval', array_map([$config, 'getRequestParameter'], ['packstation', 'filiale', 'paketshop']));
-        $queries = [];
-        foreach (array_unique($addresses) as $address) {
-            $parameters = array_merge([\Mediaopt\DHL\FinderQuery::class, $address], $desiredBranchTypes);
-            $queries[] = call_user_func_array('oxNew', $parameters);
-        }
-        return $queries;
+        $parameters = array_merge([\Mediaopt\DHL\FinderQuery::class, $street, $postalCode, $city], $desiredBranchTypes);
+        return call_user_func_array('oxNew', $parameters);
     }
 
     /**
@@ -142,7 +142,7 @@ class FinderController extends \OxidEsales\Eshop\Application\Controller\Frontend
     {
         $standortsuche = $this->getStandortsuche();
         $pickup = ServiceType::create(ServiceType::PARCEL_PICKUP);
-        $serviceProviders = $standortsuche->getParcellocationByAddressAndServiceType($pickup, $query->getAddress())->toArray();
+        $serviceProviders = $standortsuche->getParcellocationByAddressAndServiceType($pickup, $query->getAddress(), $query->getPostalCode(), $query->getCity())->toArray();
         return $this->filterServiceProviders($serviceProviders, $query);
     }
 

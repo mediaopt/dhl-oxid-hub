@@ -20,6 +20,16 @@ class FinderQuery
     protected $address;
 
     /**
+     * @var string
+     */
+    protected $postalCode;
+
+    /**
+     * @var string
+     */
+    protected $city;
+
+    /**
      * @var bool
      */
     protected $packstation;
@@ -36,13 +46,17 @@ class FinderQuery
 
     /**
      * @param string $address
+     * @param string $postalCode
+     * @param string $city
      * @param bool $packstation
      * @param bool $postfiliale
      * @param bool $paketshop
      */
-    public function __construct($address, $packstation, $postfiliale, $paketshop)
+    public function __construct($address, $postalCode, $city, $packstation, $postfiliale, $paketshop)
     {
         $this->address = $address;
+        $this->postalCode = $postalCode;
+        $this->city = $city;
         $this->packstation = $packstation;
         $this->postfiliale = $postfiliale;
         $this->paketshop = $paketshop;
@@ -78,5 +92,21 @@ class FinderQuery
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPostalCode()
+    {
+        return $this->postalCode;
     }
 }
