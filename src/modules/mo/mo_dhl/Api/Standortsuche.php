@@ -235,7 +235,12 @@ class Standortsuche extends Base
         foreach ($items->locations as $item) {
 
             $locationId = $item->location->ids[0]->locationId;
-            [$systemID, $primaryKeyDeliverySystem] = explode('-', $locationId);
+
+            $systemID = $locationId;
+            $primaryKeyDeliverySystem = '';
+            if (stripos('-', $locationId)) {
+                [$systemID, $primaryKeyDeliverySystem] = explode('-', $locationId);
+            }
 
             $newItems[] = (object)[
                 'countryCode' => strtolower($item->place->address->countryCode),
