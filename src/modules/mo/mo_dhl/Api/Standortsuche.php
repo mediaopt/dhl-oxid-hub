@@ -130,7 +130,7 @@ class Standortsuche extends Base
             return new ServiceProviderList([]);
         }
         $parameters = $serviceType->getName() . '/' . $addressString;
-        return $this->extractServiceProviders($this->callApi($parameters));
+        return $this->extractServiceProviders($this->callApi('parcellocationByAddress/' . $parameters));
     }
 
     /**
