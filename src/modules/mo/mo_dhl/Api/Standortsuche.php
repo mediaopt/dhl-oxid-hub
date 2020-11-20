@@ -246,9 +246,9 @@ class Standortsuche extends Base
                 'countryCode' => strtolower($item->place->address->countryCode),
                 'zipCode' => $item->place->address->postalCode,
                 'city' => $item->place->address->addressLocality,
-                'district' => '',
-                'additionalInfo' => '',
-                'area' => '',
+                'district' => null,
+                'additionalInfo' => null,
+                'area' => null,
                 'street' => $item->place->address->streetAddress,
                 'houseNo' => '',
                 'keyWord' => $item->location->keyword,
@@ -278,6 +278,8 @@ class Standortsuche extends Base
             switch ($item) {
                 case 'parcel:pick-up':
                 case 'parcel:pick-up-registered':
+                case 'parcel:pick-up-unregistered':
+                case 'express:pick-up':
                     $return[] = 'parcelpickup';
                     break;
                 case 'postident':
@@ -290,14 +292,22 @@ class Standortsuche extends Base
                     $return[] = 'COD';
                     break;
                 case 'parcel:drop-off':
+                case 'express:drop-off':
                 case 'parcel:drop-off-unregistered':
                     $return[] = 'parcelacceptance';
                     break;
                 case 'parking':
-                    $return[] = 'parking';
+                case 'franking' :
+                    $return[] = $item;
                     break;
                 case 'age-verification':
                     $return[] = 'ageVerification';
+                    break;
+                case 'packaging-material' :
+                    $return[] = 'packingMaterial';
+                    break;
+                case 'cash-service' :
+                    $return[] = 'cashService';
                     break;
                 default:
                     break;
@@ -310,6 +320,7 @@ class Standortsuche extends Base
     {
         switch ($type) {
             case 'postoffice':
+            case 'postbank':
                 return 'postOffice';
             case 'servicepoint':
                 return 'parcelShop';
