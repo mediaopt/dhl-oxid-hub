@@ -74,14 +74,29 @@ class TimetableBuilder
     public function build(array $timeInfos)
     {
         $timetable = new Timetable();
-        foreach ($this->groupOpeningHours($timeInfos) as $group) {
-            list($days, $hours) = $group;
-            foreach ($this->parseDaysExpression($days) as $day) {
-                foreach ($this->parseTimeExpression($hours, TimeInfo::OPENING_HOURS) as $timeInfo) {
-                    $timetable->enter($timeInfo, $day);
+
+        $compare = [
+            'http://schema.org/Monday' => 1,
+            'http://schema.org/Tuesday' => 2,
+            'http://schema.org/Wednesday' => 3,
+            'http://schema.org/Thursday' => 4,
+            'http://schema.org/Friday' => 5,
+            'http://schema.org/Saturday' => 6,
+            'http://schema.org/Sunday' => 7,
+        ];
+
+        foreach ($timeInfos as $dayInfo) {
+            if (isset($compare[$dayInfo->dayOfWeek])) {
+                if ($dayInfo->closes === '23:59:59') {
+                    $dayInfo->closes = '24:00';
                 }
+                $timetable->enter(
+                    new PeriodOfTime(Time::fromString($dayInfo->opens), Time::fromString($dayInfo->closes), 0),
+                    $compare[$dayInfo->dayOfWeek]
+                );
             }
         }
+
         return $timetable;
     }
 

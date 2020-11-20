@@ -213,7 +213,7 @@ class ServiceProviderBuilder
     protected function extractTimetable(\stdClass $object)
     {
         try {
-            return $this->getTimetableBuilder()->build($object->psfOtherinfos);
+            return $this->getTimetableBuilder()->build($object->openingHours);
         } catch (\DomainException $exception) {
             return new Timetable();
         }

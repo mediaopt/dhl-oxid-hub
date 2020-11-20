@@ -251,17 +251,9 @@ class Standortsuche extends Base
                 'area' => '',
                 'street' => $item->place->address->streetAddress,
                 'houseNo' => '',
-                'additionalStreet' => '',
-                'format1' => '',
-                'format2' => '',
-                'routingCode' => '',
                 'keyWord' => $item->location->keyword,
-                'partnerType' => '',
                 'shopType' => $this->buildshopType($item->location->type),
                 'shopName' => $item->name,
-                'primaryLanguage' => '',
-                'secondaryLanguage' => '',
-                'tertiaryLanguage' => '',
                 'geoPosition' => (object)[
                     'latitude' => $item->place->geo->latitude,
                     'longitude' => $item->place->geo->longitude,
@@ -271,11 +263,8 @@ class Standortsuche extends Base
                 'primaryKeyZipRegion' => $item->location->keywordId,
                 'systemID' => $systemID,
                 'primaryKeyPSF' => $item->location->ids[0]->locationId,
-                'psfFiles' => [],
                 'psfServicetypes' => $this->buildPsfServicetypes($item->serviceTypes),
-                'psfClosureperiods' => [],
-                'psfWelcometexts' => [],
-                'psfOtherinfos' => $this->convertOpeningHours($item->openingHours)
+                'openingHours' => $item->openingHours,
             ];
         }
 
@@ -329,35 +318,5 @@ class Standortsuche extends Base
             default:
                 return '';
         }
-    }
-
-    private function convertOpeningHours($array) {
-        $monday = 'dash';
-        $saturday = 'dash';
-        $sunday = 'dash';
-        foreach ($array as $day) {
-            $workingTiime = substr($day->opens, 0, '-3') . ' - ' . substr($day->closes, 0, '-3');
-            switch ($day->dayOfWeek) {
-                case 'http://schema.org/Monday' :
-                    $monday = $workingTiime;
-                    break;
-                case 'http://schema.org/Saturday' :
-                    $saturday = $workingTiime;
-                    break;
-                case 'http://schema.org/Sunday' :
-                    $sunday = $workingTiime;
-                    break;
-                default:
-                    break;
-            }
-        }
-        return [
-            (object)['type' => 'tt_openinghour_00', 'content' => 'mo-fr'],
-            (object)['type' => 'tt_openinghour_01', 'content' => $monday],
-            (object)['type' => 'tt_openinghour_10', 'content' => 'sa'],
-            (object)['type' => 'tt_openinghour_11', 'content' => $saturday],
-            (object)['type' => 'tt_openinghour_20', 'content' => 'su'],
-            (object)['type' => 'tt_openinghour_21', 'content' => $sunday]
-        ];
     }
 }
