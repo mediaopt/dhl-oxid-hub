@@ -127,4 +127,63 @@ class TimetableBuilder
         }
         return $groups;
     }
+
+    /**
+    * @param Timetable $timeInfos
+    * @return array
+    */
+    public function buildGrouped(Timetable $timeInfos): array
+    {
+        $groups = [];
+        foreach ($timeInfos->toArray() as $day => $openPeriods) {
+            $key = implode(', ', $openPeriods);
+            isset($groups[$key]) ? $groups[$key][] = $day : $groups[$key] = [$day];
+        }
+
+        $properGroups = [];
+        foreach ($groups as $openPeriods => $group) {
+            $properGroups[$this->getDaysGroupsName($group)] = $openPeriods;
+        }
+
+        return $properGroups;
+    }
+
+    /**
+     * @param array $days
+     * @return string
+     */
+    public function getDaysGroupsName(array $days)
+    {
+        if (count($days) < 3) {
+            return implode(', ', $days);
+        }
+
+        $namePieces = [];
+        $period = [];
+        foreach ($days as $key => $day) {
+            if (empty($period)) {
+                $period[] = $day;
+            } else {
+                if ($day === $period[count($period) - 1] + 1) {
+                    $period[] = $day;
+                } else {
+                    if (count($period) > 2) {
+                        $namePieces[] = $period[0] . ' - ' . $period[count($period) - 1];
+                    } else {
+                        $namePieces = array_merge($namePieces, $period);
+                    }
+                    $period = [$day];
+                }
+
+            }
+        }
+
+        if (count($period) > 1) {
+            $namePieces[] = $period[0] . ' - ' . $period[count($period) - 1];
+        } else {
+            $namePieces[] = $period[0];
+        }
+
+        return implode(', ', $namePieces);
+    }
 }

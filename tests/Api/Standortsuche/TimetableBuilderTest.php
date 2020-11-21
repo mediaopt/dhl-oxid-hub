@@ -72,7 +72,7 @@ class TimetableBuilderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testSamplePackstation1()
+    public function testSamplePackstation()
     {
         $json = '[
         {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Monday"},
@@ -97,4 +97,72 @@ class TimetableBuilderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testSamplePostfilialeGrouped()
+    {
+        $json = '[
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Monday"},
+        {"opens":"13:00:00","closes":"16:00:00","dayOfWeek":"http://schema.org/Tuesday"},
+        {"opens":"08:00:00","closes":"12:00:00","dayOfWeek":"http://schema.org/Tuesday"},
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Wednesday"},
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Thursday"},
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Friday"},
+        {"opens":"08:00:00","closes":"12:00:00","dayOfWeek":"http://schema.org/Saturday"},
+        {"opens":"13:00:00","closes":"16:00:00","dayOfWeek":"http://schema.org/Saturday"},
+        {"opens":"08:00:00","closes":"14:00:00","dayOfWeek":"http://schema.org/Sunday"}]';
+
+        $timeTableBuilder = new TimetableBuilder();
+
+        $this->assertEquals(
+            [
+                Timetable::MONDAY . ', ' . Timetable::WEDNESDAY . ' - ' .   Timetable::FRIDAY  => '6:00-19:00',
+                Timetable::TUESDAY. ', ' . Timetable::SATURDAY  => '8:00-12:00, 13:00-16:00',
+                Timetable::SUNDAY    => '8:00-14:00',
+            ],
+            $timeTableBuilder->buildGrouped($timeTableBuilder->build(json_decode($json)))
+        );
+    }
+
+    public function testDayOfWeeksCombine() {
+        $inputList = [
+            [
+                'input' => [1, 3, 4, 5],
+                'expected' => '1, 3 - 5'
+            ],
+            [
+                'input' => [1, 2, 3, 4, 5, 6, 7],
+                'expected' => '1 - 7'
+            ],
+            [
+                'input' => [1, 2, 4, 5, 6],
+                'expected' => '1, 2, 4 - 6'
+            ],
+            [
+                'input' => [1, 2, 3, 5, 6, 7],
+                'expected' => '1 - 3, 5 - 7'
+            ],
+            [
+                'input' => [1, 2, 4, 5, 6, 7],
+                'expected' => '1, 2, 4 - 7'
+            ],
+            [
+                'input' => [1, 3, 5, 7],
+                'expected' => '1, 3, 5, 7'
+            ],
+            [
+                'input' => [1, 3],
+                'expected' => '1, 3'
+            ],
+            [
+                'input' => [1, 2, 3],
+                'expected' => '1 - 3'
+            ],
+        ];
+
+        foreach ($inputList as $item) {
+            $this->assertEquals(
+                $item['expected'],
+                (new TimetableBuilder())->getDaysGroupsName($item['input'])
+            );
+        }
+    }
 }
