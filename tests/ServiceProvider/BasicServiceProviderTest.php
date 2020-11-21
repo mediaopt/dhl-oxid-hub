@@ -43,6 +43,10 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 '6' => [],
                 '7' => [],
             ],
+            'groupedTimetable' => [
+                '1, 2, 4 - 7' => '',
+                '3' => '18:00'
+            ],
             'remark'    => $this->buildSampleRemark(),
             'services'  => $this->buildSampleServiceTypes(),
         ];
@@ -76,6 +80,10 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 '5' => [],
                 '6' => [],
                 '7' => [],
+            ],
+            'groupedTimetable' => [
+                '1, 2, 4 - 7' => '',
+                '3' => '18:00'
             ],
             'remark'    => $this->buildSampleRemark(),
             'services'  => $this->buildSampleServiceTypes(),
@@ -112,6 +120,10 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 '6' => [],
                 '7' => [],
             ],
+            'groupedTimetable' => [
+                '1, 2, 4 - 7' => '',
+                '3' => '18:00'
+            ],
             'remark'    => $this->buildSampleRemark(),
             'services'  => $this->buildSampleServiceTypes(),
         ];
@@ -146,6 +158,10 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 '5' => [],
                 '6' => [],
                 '7' => [],
+            ],
+            'groupedTimetable' => [
+                '1, 2, 4 - 7' => '',
+                '3' => '18:00'
             ],
             'remark'    => $this->buildSampleRemark(),
             'services'  => $this->buildSampleServiceTypes(),
