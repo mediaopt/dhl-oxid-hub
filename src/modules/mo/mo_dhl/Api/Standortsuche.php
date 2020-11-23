@@ -239,7 +239,7 @@ class Standortsuche extends Base
         foreach ($items->locations as $item) {
             $psfServicetypes = $this->buildPsfServicetypes($item->serviceTypes);
             if ($psfServicetypes === false) {
-                continue;
+                $item->location->type = '';
             }
 
             $locationId = $item->location->ids[0]->locationId;
