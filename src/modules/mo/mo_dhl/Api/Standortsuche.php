@@ -229,10 +229,18 @@ class Standortsuche extends Base
         return "{$this->getCredentials()->getEndpoint()}/{$this->getIdentifier()}?$relativeUrl";
     }
 
+    /**
+     * @param $items
+     * @return object
+     */
     private function convert($items)
     {
         $newItems = [];
         foreach ($items->locations as $item) {
+            $psfServicetypes = $this->buildPsfServicetypes($item->serviceTypes);
+            if ($psfServicetypes === false) {
+                continue;
+            }
 
             $locationId = $item->location->ids[0]->locationId;
 
@@ -263,7 +271,7 @@ class Standortsuche extends Base
                 'primaryKeyZipRegion' => $item->location->keywordId,
                 'systemID' => $systemID,
                 'primaryKeyPSF' => $item->location->ids[0]->locationId,
-                'psfServicetypes' => $this->buildPsfServicetypes($item->serviceTypes),
+                'psfServicetypes' => $psfServicetypes,
                 'openingHours' => $item->openingHours,
             ];
         }
@@ -271,8 +279,13 @@ class Standortsuche extends Base
         return (object)['psfParcellocationList' => $newItems];
     }
 
-    private function buildPsfServicetypes($array)
+    /**
+     * @param $array
+     * @return array|false
+     */
+    private function buildPsfServicetypes(array $array)
     {
+        $pickupAvaliable = false;
         $return = [];
         foreach ($array as $item) {
             switch ($item) {
@@ -280,6 +293,7 @@ class Standortsuche extends Base
                 case 'parcel:pick-up-registered':
                 case 'parcel:pick-up-unregistered':
                 case 'express:pick-up':
+                    $pickupAvaliable = true;
                     $return[] = 'parcelpickup';
                     break;
                 case 'postident':
@@ -313,9 +327,13 @@ class Standortsuche extends Base
                     break;
             }
         }
-        return $return;
+        return $pickupAvaliable ? $return : false;
     }
 
+    /**
+     * @param $type
+     * @return string
+     */
     private function buildshopType($type)
     {
         switch ($type) {

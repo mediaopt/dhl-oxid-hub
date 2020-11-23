@@ -61,11 +61,30 @@
                 informationWindow.find('h5').show().css('margin-bottom', '0px');
                 informationWindow.find('ul').show().css('margin-top', '0px');
 
+                informationWindow.find('ul').html('');
+                var timetableTemplate = $('#mo_grouped_timetable_template');
+                for(var i = 1; i<=Object.keys(provider.groupedTimetable).length; i++) {
+                    var dayGroup = provider.groupedTimetable[i].dayGroup;
+                    var openPeriods = provider.groupedTimetable[i].openPeriods;
+
+                    for (var j = 1; j <= 7; j++) {
+                        dayGroup = dayGroup.replace(j, $('#mo_day_translations').attr('data-day' + j));
+                    }
+                    var newTemplate = timetableTemplate.clone();
+                    newTemplate.find('span.dayname').html(dayGroup + ': ');
+
+                    if (openPeriods.length > 0) {
+                        newTemplate.find('span.opening-hours-day-grouped').html(openPeriods);
+                    }
+                    informationWindow.find('ul').append(newTemplate.html());
+                }
+                /*
                 for (var i = 1; i <= 7; i++) {
                     if (provider.timetable[i].length > 0) {
                         informationWindow.find('span.opening-hours-day-' + i).text(provider.timetable[i].join(", "));
                     }
                 }
+                 */
             }
 
             var info = new google.maps.InfoWindow({

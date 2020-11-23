@@ -44,8 +44,15 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 '7' => [],
             ],
             'groupedTimetable' => [
-                '1, 2, 4 - 7' => '',
-                '3' => '18:00'
+                1 => [
+                    'dayGroup' => '1, 2, 4 - 7',
+                    'openPeriods' => ''
+                ],
+                2 => [
+                    'dayGroup' => '3',
+                    'openPeriods' => '18:00'
+
+                ]
             ],
             'remark'    => $this->buildSampleRemark(),
             'services'  => $this->buildSampleServiceTypes(),
@@ -82,8 +89,15 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 '7' => [],
             ],
             'groupedTimetable' => [
-                '1, 2, 4 - 7' => '',
-                '3' => '18:00'
+                1 => [
+                    'dayGroup' => '1, 2, 4 - 7',
+                    'openPeriods' => ''
+                ],
+                2 => [
+                    'dayGroup' => '3',
+                    'openPeriods' => '18:00'
+
+                ]
             ],
             'remark'    => $this->buildSampleRemark(),
             'services'  => $this->buildSampleServiceTypes(),
@@ -121,8 +135,15 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 '7' => [],
             ],
             'groupedTimetable' => [
-                '1, 2, 4 - 7' => '',
-                '3' => '18:00'
+                1 => [
+                    'dayGroup' => '1, 2, 4 - 7',
+                    'openPeriods' => ''
+                ],
+                2 => [
+                    'dayGroup' => '3',
+                    'openPeriods' => '18:00'
+
+                ]
             ],
             'remark'    => $this->buildSampleRemark(),
             'services'  => $this->buildSampleServiceTypes(),
@@ -160,8 +181,15 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 '7' => [],
             ],
             'groupedTimetable' => [
-                '1, 2, 4 - 7' => '',
-                '3' => '18:00'
+                1 => [
+                    'dayGroup' => '1, 2, 4 - 7',
+                    'openPeriods' => ''
+                ],
+                2 => [
+                    'dayGroup' => '3',
+                    'openPeriods' => '18:00'
+
+                ]
             ],
             'remark'    => $this->buildSampleRemark(),
             'services'  => $this->buildSampleServiceTypes(),

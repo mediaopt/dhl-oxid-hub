@@ -114,9 +114,18 @@ class TimetableBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             [
-                Timetable::MONDAY . ', ' . Timetable::WEDNESDAY . ' - ' .   Timetable::FRIDAY  => '6:00-19:00',
-                Timetable::TUESDAY. ', ' . Timetable::SATURDAY  => '8:00-12:00, 13:00-16:00',
-                Timetable::SUNDAY    => '8:00-14:00',
+                1 => [
+                    'dayGroup' => Timetable::MONDAY . ', ' . Timetable::WEDNESDAY . ' - ' . Timetable::FRIDAY,
+                    'openPeriods' => '6:00-19:00'
+                ],
+                2 => [
+                    'dayGroup' => Timetable::TUESDAY . ', ' . Timetable::SATURDAY,
+                    'openPeriods' => '8:00-12:00, 13:00-16:00'
+                ],
+                3 => [
+                    'dayGroup' => Timetable::SUNDAY,
+                    'openPeriods' => '8:00-14:00'
+                ],
             ],
             $timeTableBuilder->buildGrouped($timeTableBuilder->build(json_decode($json)))
         );

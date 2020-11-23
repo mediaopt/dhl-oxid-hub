@@ -141,8 +141,13 @@ class TimetableBuilder
         }
 
         $properGroups = [];
+        $sortNummer = 1;
         foreach ($groups as $openPeriods => $group) {
-            $properGroups[$this->getDaysGroupsName($group)] = $openPeriods;
+            $properGroups[$sortNummer] = [
+                'dayGroup' => $this->getDaysGroupsName($group),
+                'openPeriods' => $openPeriods
+            ];
+            $sortNummer++;
         }
 
         return $properGroups;
