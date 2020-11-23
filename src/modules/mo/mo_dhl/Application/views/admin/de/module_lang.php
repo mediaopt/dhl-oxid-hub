@@ -43,6 +43,7 @@ $aLang = [
     'MO_DHL__LOGIN_FAILED'                         => 'Zugangsdaten inkorrekt. Login fehlgeschlagen.',
     'MO_DHL__LABELS'                               => 'Labels',
     'MO_DHL__LABEL'                                => 'Versandlabel',
+    'MO_DHL__EXPORT_LABEL'                         => 'Ausfuhrlabel',
     'MO_DHL__RETOURE_LABEL'                        => 'Retourenlabel',
     'MO_DHL__RETOURE_QR_LABEL'                     => 'Retoure QR Code',
     'MO_DHL__INSTALL_FOLDER_ERROR'                 => 'Ordner %s konnte nicht erstellt werden. Bitte erstellen Sie den Ordner manuell.',
