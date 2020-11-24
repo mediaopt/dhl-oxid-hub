@@ -1,6 +1,10 @@
 # Changelog
-## 1.2.5
+## 1.3.0
 * create export documents for international shipments
+* allows international shipments outside the EU
+* bugfix: check for user, address and payment data when showing wunschpaket services
+* bugfix: oxid 6.2 compatible email rendering
+* bugfix: check for basket existance when calculating surcharge in emails
 
 ## 1.2.4
 * bugfix for article parent extension

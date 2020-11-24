@@ -5,6 +5,7 @@ namespace Mediaopt\DHL\Core;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Application\Controller\AccountOrderController;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererBridgeInterface;
 
 /**
  * @author Mediaopt GmbH
@@ -129,33 +130,26 @@ class Email extends Email_parent
         $shop = $this->_getShop($orderLang);
         $this->_setMailParams($shop);
 
-        $lang = \OxidEsales\Eshop\Core\Registry::getLang();
-        $smarty = $this->_getSmarty();
         $this->setViewData("order", $order);
         $this->setViewData("labels", $order->moDHLGetLabels());
-
         $this->_processViewArray();
 
-        $store['INCLUDE_ANY'] = $smarty->security_settings['INCLUDE_ANY'];
-
+        $lang = \OxidEsales\Eshop\Core\Registry::getLang();
         $oldTplLang = $lang->getTplLanguage();
         $oldBaseLang = $lang->getBaseLanguage();
         $lang->setTplLanguage($orderLang);
         $lang->setBaseLanguage($orderLang);
 
-        $smarty->security_settings['INCLUDE_ANY'] = true;
         $oldIsAdmin = $myConfig->isAdmin();
         $myConfig->setAdminMode(false);
 
-        $this->setBody($smarty->fetch('mo_dhl__email_retoure_html.tpl'));
-        $this->setAltBody($smarty->fetch('mo_dhl__email_retoure_plain.tpl'));
+        $this->setBody($this->moDHLRenderTemplate('mo_dhl__email_retoure_html.tpl'));
+        $this->setAltBody($this->moDHLRenderTemplate('mo_dhl__email_retoure_plain.tpl'));
         $this->setSubject($lang->translateString('MO_DHL__RETOURE_LABELS_EMAIL_SUBJECT'));
 
         $myConfig->setAdminMode($oldIsAdmin);
         $lang->setTplLanguage($oldTplLang);
         $lang->setBaseLanguage($oldBaseLang);
-
-        $smarty->security_settings['INCLUDE_ANY'] = $store['INCLUDE_ANY'];
 
         $fullName = $order->oxorder__oxbillfname->getRawValue() . " " . $order->oxorder__oxbilllname->getRawValue();
 
@@ -163,6 +157,20 @@ class Email extends Email_parent
         $this->setReplyTo($shop->oxshops__oxorderemail->value, $shop->oxshops__oxname->getRawValue());
 
         return $this->send();
+    }
+
+    /**
+     * @param  string $template
+     * @return string
+     */
+    protected function moDHLRenderTemplate(string $template)
+    {
+        if (interface_exists('OxidEsales\EshopCommunity\Internal\Framework\Templating\TemplateRendererBridgeInterface')) {
+            $renderer = $this->getContainer()->get(TemplateRendererBridgeInterface::class)->getTemplateRenderer();
+            return $renderer->renderTemplate($template, $this->getViewData());
+        }
+        $smarty = $this->_getSmarty();
+        return $smarty->fetch($template);
     }
 
     /**
