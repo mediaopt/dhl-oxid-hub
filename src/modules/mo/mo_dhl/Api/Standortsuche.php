@@ -99,20 +99,17 @@ class Standortsuche extends Base
      *
      * @param Address|string $address
      * @param string|null $postalCode
-     * @param string|null $city
      * @return string
      */
-    protected function buildAddressString($address, $postalCode = null, $city = null)
+    protected function buildAddressString($address, $postalCode = null)
     {
         if ($address instanceof Address) {
             $postalCode = $address->getZip();
-            $city = $address->getCity();
             $address = $address->getStreet() . " " . $address->getStreetNo();
         }
 
         $urlOptions = [
             "countryCode=DE",
-            "addressLocality=$city",
             "postalCode=$postalCode",
             "streetAddress=$address",
             'limit=50'
@@ -123,12 +120,13 @@ class Standortsuche extends Base
 
     /**
      * @param Address|string $address
+     * @param null $postalCode
      * @return ServiceProviderList
      * @throws WebserviceException
      */
-    public function getParcellocationByAddress($address, $postalCode = null, $city = null)
+    public function getParcellocationByAddress($address, $postalCode = null)
     {
-        $addressString = $this->buildAddressString($address, $postalCode, $city);
+        $addressString = $this->buildAddressString($address, $postalCode);
         if ($addressString === '') {
             return new ServiceProviderList([]);
         }

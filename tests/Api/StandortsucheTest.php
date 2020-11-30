@@ -125,19 +125,19 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
                 'coordinate' => new Coordinate(52.519938, 13.413183),
             ],
             [
-                'address'    => new Address('', '', '', 'Auerbach in der Oberpfalz', '', ''),
+                'address'    => new Address('', '', '91275', '', '', ''),
                 'coordinate' => new Coordinate(49.691990, 11.628689),
             ],
             [
-                'address'    => new Address('', '', '', 'Auerbach/Vogtl.', '', ''),
+                'address'    => new Address('', '', '08209', 'Auerbach/Vogtl.', '', ''),
                 'coordinate' => new Coordinate(50.507884, 12.399722),
             ],
             [
-                'address'    => new Address('', '', '', 'Neukirchen/Pleiße', '', ''),
+                'address'    => new Address('', '', '08459', '', '', ''),
                 'coordinate' => new Coordinate(50.792825, 12.379732),
             ],
             [
-                'address'    => new Address('', '', '', 'Nienburg (Saale)', '', ''),
+                'address'    => new Address('', '', '06429', '', '', ''),
                 'coordinate' => new Coordinate(51.837269, 11.766504),
             ],
         ];

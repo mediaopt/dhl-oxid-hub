@@ -77,10 +77,10 @@ DHLFinder = function ($, tailorer) {
 
     this.preFillInputs = function () {
         var self = this;
-        var locality = ($("[name='deladr[oxaddress__oxzip]']").val() + ' ' + $("[name='deladr[oxaddress__oxcity]']").val()).trim();
+        var locality = ($("[name='deladr[oxaddress__oxzip]']").val()).trim();
         var street = ($("[name='deladr[oxaddress__oxstreet]']").val() + " " + $("[name='deladr[oxaddress__oxstreetnr]']").val()).trim();
         if ($("#showShipAddress").is(':checked') || !street && !locality) {
-            locality = ($("[name='invadr[oxuser__oxzip]']").val() + ' ' + $("[name='invadr[oxuser__oxcity]']").val()).trim();
+            locality = ($("[name='invadr[oxuser__oxzip]']").val()).trim();
             street = ($("[name='invadr[oxuser__oxstreet]']").val() + " " + $("[name='invadr[oxuser__oxstreetnr]']").val()).trim();
         }
         if (street.includes("Postfiliale") || street.includes("Packstation")) {
