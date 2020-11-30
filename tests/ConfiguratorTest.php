@@ -37,15 +37,6 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Standortsuche::class, $standortsuche);
     }
 
-    /*public function testRestEndpointForProductionEnvironment()
-    {
-        $configuratorMock = $this->getConfiguratorMock();
-
-        /** @var Standortsuche $standortsuche *
-        $standortsuche = $configuratorMock->buildStandortsuche(new \Monolog\Logger(__CLASS__));
-        $this->assertContains('production', $standortsuche->getCredentials()->getEndpoint());
-    }*/
-
     public function testSoapEndpointForProductionEnvironment()
     {
         $configuratorMock = $this->getConfiguratorMock();

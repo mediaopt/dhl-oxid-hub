@@ -84,13 +84,6 @@
                     }
                     window.find('ul').append(newTemplate.html());
                 }
-                /*
-                for (var i = 1; i <= 7; i++) {
-                    if (provider.timetable[i].length > 0) {
-                        window.find('span.opening-hours-day-' + i).text(provider.timetable[i].join(", "));
-                    }
-                }
-                */
             }
 
             var info = new google.maps.InfoWindow({

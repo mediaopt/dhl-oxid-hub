@@ -12,7 +12,6 @@ use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Exception\WebserviceException;
 use Mediaopt\DHL\ServiceProvider\BasicServiceProvider;
 use Mediaopt\DHL\ServiceProvider\ServiceProviderList;
-use Mediaopt\DHL\ServiceProvider\ServiceType;
 use Mediaopt\DHL\ServiceProvider\Timetable\TimeInfo;
 
 /** @noinspection LongInheritanceChainInspection */

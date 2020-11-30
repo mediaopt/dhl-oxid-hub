@@ -62,18 +62,6 @@ class Standortsuche extends Base
     }
 
     /**
-     * @param ServiceType $serviceType
-     * @param Coordinates $coordinates
-     * @return ServiceProviderList
-     * @throws WebserviceException
-     */
-    public function getParcellocationByServiceTypeAndCoordinate(ServiceType $serviceType, Coordinates $coordinates)
-    {
-        $parameters = $serviceType->getName() . '/' . $coordinates->getLatitude() . '/' . $coordinates->getLongitude();
-        return $this->extractServiceProviders($this->callApi('parcellocationByCoordinate/' . $parameters));
-    }
-
-    /**
      * @param \stdClass $object
      * @return ServiceProviderList
      */
@@ -104,33 +92,6 @@ class Standortsuche extends Base
     protected function getServiceProviderBuilder()
     {
         return $this->serviceProviderBuilder;
-    }
-
-    /**
-     * @param Coordinates $coordinates
-     * @return ServiceProviderList
-     * @throws WebserviceException
-     */
-    public function getParcellocationByCoordinate(Coordinates $coordinates)
-    {
-        $parameters = $coordinates->getLatitude() . '/' . $coordinates->getLongitude();
-        return $this->extractServiceProviders($this->callApi('parcellocationByCoordinate/' . $parameters));
-    }
-
-    /**
-     * @param ServiceType    $serviceType
-     * @param Address|string $address
-     * @return ServiceProviderList
-     * @throws WebserviceException
-     */
-    public function getParcellocationByAddressAndServiceType(ServiceType $serviceType, $address)
-    {
-        $addressString = $this->buildAddressString($address);
-        if ($addressString === '') {
-            return new ServiceProviderList([]);
-        }
-        $parameters = $serviceType->getName() . '/' . $addressString;
-        return $this->extractServiceProviders($this->callApi('parcellocationByAddress/' . $parameters));
     }
 
     /**
@@ -175,20 +136,6 @@ class Standortsuche extends Base
         $oldAPIstandart = $this->convert($locations);
 
         return $this->extractServiceProviders($oldAPIstandart);
-    }
-
-    /**
-     * @param string $key
-     * @return BasicServiceProvider
-     * @throws WebserviceException
-     */
-    public function getParcellocationByPrimaryKeyPSF($key)
-    {
-        $serviceProvider = $this->buildServiceProvider($this->callApi('parcellocationByPrimaryKeyPSF/' . $key));
-        if ($serviceProvider !== null) {
-            return $serviceProvider;
-        }
-        throw new WebserviceException('NO_RESULT');
     }
 
     /**
