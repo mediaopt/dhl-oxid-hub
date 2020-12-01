@@ -90,11 +90,13 @@ class FinderController extends \OxidEsales\Eshop\Application\Controller\Frontend
         $config = $this->getConfig();
         $street = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('street');
         $postalCode = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('locality');
+        $countryIso2Code = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('countryIso2Code');
         $street = trim($street);
         $postalCode = trim($postalCode);
+        $countryIso2Code = trim($countryIso2Code);
 
         $desiredBranchTypes = array_map('boolval', array_map([$config, 'getRequestParameter'], ['packstation', 'filiale', 'paketshop']));
-        $parameters = array_merge([\Mediaopt\DHL\FinderQuery::class, $street, $postalCode], $desiredBranchTypes);
+        $parameters = array_merge([\Mediaopt\DHL\FinderQuery::class, $street, $postalCode, $countryIso2Code], $desiredBranchTypes);
         return call_user_func_array('oxNew', $parameters);
     }
 
@@ -156,7 +158,7 @@ class FinderController extends \OxidEsales\Eshop\Application\Controller\Frontend
     protected function findServiceProviders(\Mediaopt\DHL\FinderQuery $query)
     {
         $standortsuche = $this->getStandortsuche();
-        $serviceProviders = $standortsuche->getParcellocationByAddress($query->getAddress(), $query->getPostalCode())->toArray();
+        $serviceProviders = $standortsuche->getParcellocationByAddress($query->getAddress(), $query->getPostalCode(), $query->getCountryIso2Code())->toArray();
         return $this->filterServiceProviders($serviceProviders, $query);
     }
 

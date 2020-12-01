@@ -2,6 +2,8 @@
 namespace Mediaopt\DHL\Core;
 
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Application\Model\CountryList;
+use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
@@ -143,5 +145,28 @@ class ViewConfig extends ViewConfig_parent
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
         $query = ' SELECT OXSEOURL' . ' FROM oxcontents' . '   JOIN oxseo ON OXOBJECTID = OXID' . " WHERE OXLOADID = {$db->quote($identifier)} AND OXLANG = {$languageId}";
         return (string) $db->getOne($query);
+    }
+
+    /**
+     * @return array
+     */
+    public function getDHLCountriesList()
+    {
+        $countries = oxnew(CountryList::class);
+        $countries->loadActiveCountries();
+
+        $countriesForSelector = [];
+        foreach ($countries->getArray() as $country) {
+            $isoalpha2 = $country->oxcountry__oxisoalpha2->value;
+            if (isset(ServiceProviderBuilder::DHL_COUNTRIES_LIST[$isoalpha2])) {
+                $countriesForSelector[$country->oxcountry__oxid->value] = [
+                    'isoalpha2' => $isoalpha2,
+                    'oxid' => $country->oxcountry__oxid->value,
+                    'title' => $country->oxcountry__oxtitle->rawValue
+                ];
+            }
+        }
+
+        return $countriesForSelector;
     }
 }

@@ -25,6 +25,11 @@ class FinderQuery
     protected $postalCode;
 
     /**
+     * @var string
+     */
+    protected $countryIso2Code;
+
+    /**
      * @var bool
      */
     protected $packstation;
@@ -42,14 +47,16 @@ class FinderQuery
     /**
      * @param string $address
      * @param string $postalCode
+     * @param string $countryIso2Code
      * @param bool $packstation
      * @param bool $postfiliale
      * @param bool $paketshop
      */
-    public function __construct($address, $postalCode, $packstation, $postfiliale, $paketshop)
+    public function __construct($address, $postalCode, $countryIso2Code, $packstation, $postfiliale, $paketshop)
     {
         $this->address = $address;
         $this->postalCode = $postalCode;
+        $this->countryIso2Code = $countryIso2Code;
         $this->packstation = $packstation;
         $this->postfiliale = $postfiliale;
         $this->paketshop = $paketshop;
@@ -93,5 +100,13 @@ class FinderQuery
     public function getPostalCode()
     {
         return $this->postalCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountryIso2Code()
+    {
+        return $this->countryIso2Code;
     }
 }

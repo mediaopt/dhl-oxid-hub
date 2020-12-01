@@ -1,13 +1,14 @@
 DHLFinder = function ($, tailorer) {
     this.tailorer = tailorer;
 
-    this.addressObject = function (locality, street) {
+    this.addressObject = function (locality, street, countryIso2Code) {
         this.locality = locality !== undefined ? locality : null;
         this.street = street !== undefined ? street : null;
+        this.countryIso2Code = countryIso2Code !== undefined ? countryIso2Code : null;
 
         this.isEmpty = function () {
             var self = this;
-            return (self.locality && self.street) === null
+            return (self.locality && self.street && self.countryIso2Code) === null
         }
     };
 
@@ -79,9 +80,11 @@ DHLFinder = function ($, tailorer) {
         var self = this;
         var locality = ($("[name='deladr[oxaddress__oxzip]']").val()).trim();
         var street = ($("[name='deladr[oxaddress__oxstreet]']").val() + " " + $("[name='deladr[oxaddress__oxstreetnr]']").val()).trim();
+        var countryId = ($("[name='deladr[oxaddress__oxcountryid]']").val()).trim();
         if ($("#showShipAddress").is(':checked') || !street && !locality) {
             locality = ($("[name='invadr[oxuser__oxzip]']").val()).trim();
             street = ($("[name='invadr[oxuser__oxstreet]']").val() + " " + $("[name='invadr[oxuser__oxstreetnr]']").val()).trim();
+            countryId = ($("[name='invadr[oxuser__oxcountryid]']").val()).trim();
         }
         if (street.includes("Postfiliale") || street.includes("Packstation")) {
             street = "";
@@ -89,8 +92,11 @@ DHLFinder = function ($, tailorer) {
 
         $("#moDHLLocality").val(locality);
         $("#moDHLStreet").val(street);
-        if (street && locality) {
-            var address = new self.tailorer.dhlfinder.addressObject(locality, street);
+        $("#moDHLCountry").val(countryId);
+
+        var countryIso2Code = $('#moDHLCountry option:selected').attr('isoalpha2');
+        if (street && locality && countryIso2Code) {
+            var address = new self.tailorer.dhlfinder.addressObject(locality, street, countryIso2Code);
             self.tailorer.dhlfinder.find(address, true);
         }
     };
@@ -104,12 +110,13 @@ DHLFinder = function ($, tailorer) {
     this.find = function (addressObject, recenterMapParameter) {
         var recenterMap = recenterMapParameter !== undefined ? recenterMapParameter : true;
         var self = this;
-        var locality, street;
+        var locality, street, countryIso2Code;
         if (addressObject.isEmpty()) {
             return;
         }
         locality = addressObject.locality;
         street = addressObject.street;
+        countryIso2Code = addressObject.countryIso2Code;
 
         var packstationInput = $("#moDHLPackstation");
         var packstation = packstationInput.length !== 0 && packstationInput.attr('type') === 'hidden'
@@ -123,7 +130,7 @@ DHLFinder = function ($, tailorer) {
         }
 
         self.tailorer.busyFinder = true;
-        $.ajax(self.tailorer.dhl.findCall(locality, street, packstation, filiale)).done(function (response) {
+        $.ajax(self.tailorer.dhl.findCall(locality, street, countryIso2Code, packstation, filiale)).done(function (response) {
             if (response.status === 'success') {
                 $("#moDHLErrors").hide();
                 self.clearMarkers(self.markers);

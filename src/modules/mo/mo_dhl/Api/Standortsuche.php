@@ -13,9 +13,7 @@ use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
 use Mediaopt\DHL\Exception\ServiceProviderException;
 use Mediaopt\DHL\Exception\WebserviceException;
 use Mediaopt\DHL\ServiceProvider\BasicServiceProvider;
-use Mediaopt\DHL\ServiceProvider\Coordinates;
 use Mediaopt\DHL\ServiceProvider\ServiceProviderList;
-use Mediaopt\DHL\ServiceProvider\ServiceType;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -99,17 +97,19 @@ class Standortsuche extends Base
      *
      * @param Address|string $address
      * @param string|null $postalCode
+     * @param string|null $countryIso2Code
      * @return string
      */
-    protected function buildAddressString($address, $postalCode = null)
+    protected function buildAddressString($address, $postalCode = null, $countryIso2Code = null)
     {
         if ($address instanceof Address) {
             $postalCode = $address->getZip();
+            $countryIso2Code = $address->getCountryIso2Code();
             $address = $address->getStreet() . " " . $address->getStreetNo();
         }
 
         $urlOptions = [
-            "countryCode=DE",
+            "countryCode=$countryIso2Code",
             "postalCode=$postalCode",
             "streetAddress=$address",
             'limit=50'
@@ -120,13 +120,14 @@ class Standortsuche extends Base
 
     /**
      * @param Address|string $address
-     * @param null $postalCode
+     * @param string|null $postalCode
+     * @param string|null $countryIso2Code
      * @return ServiceProviderList
      * @throws WebserviceException
      */
-    public function getParcellocationByAddress($address, $postalCode = null)
+    public function getParcellocationByAddress($address, $postalCode = null, $countryIso2Code = null)
     {
-        $addressString = $this->buildAddressString($address, $postalCode);
+        $addressString = $this->buildAddressString($address, $postalCode, $countryIso2Code);
         if ($addressString === '') {
             return new ServiceProviderList([]);
         }
@@ -142,7 +143,7 @@ class Standortsuche extends Base
      */
     protected function isServiceProviderAllowed($potentialServiceProvider)
     {
-        if ($potentialServiceProvider === null || $potentialServiceProvider->getAddress()->getCountry() !== 'de') {
+        if ($potentialServiceProvider === null) {
             return false;
         }
 

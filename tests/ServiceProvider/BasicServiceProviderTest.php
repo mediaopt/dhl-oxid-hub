@@ -28,6 +28,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 'city'     => 'Berlin',
                 'district' => 'Neukölln',
                 'country'  => 'DEU',
+                'countryIso2Code'  => 'DE',
             ],
             'location'  => [
                 'latitude'  => 52.484766,
@@ -73,6 +74,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 'city'     => 'Berlin',
                 'district' => 'Neukölln',
                 'country'  => 'DEU',
+                'countryIso2Code'  => 'DE',
             ],
             'location'  => [
                 'latitude'  => 52.484766,
@@ -119,6 +121,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 'city'     => 'Berlin',
                 'district' => 'Neukölln',
                 'country'  => 'DEU',
+                'countryIso2Code'  => 'DE',
             ],
             'location'  => [
                 'latitude'  => 52.484766,
@@ -165,6 +168,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 'city'     => 'Berlin',
                 'district' => 'Neukölln',
                 'country'  => 'DEU',
+                'countryIso2Code'  => 'DE',
             ],
             'location'  => [
                 'latitude'  => 52.484766,

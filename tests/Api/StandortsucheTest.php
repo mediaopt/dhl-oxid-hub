@@ -42,7 +42,7 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
      */
     public function buildSampleAddress()
     {
-        return new Address('Elbestr.', '28', '12045', 'Berlin');
+        return new Address('Elbestr.', '28', '12045', 'Berlin', '', 'DEU', 'DE');
     }
 
     public function buildSampleAddressString()
@@ -77,7 +77,7 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
     public function testThatNoServiceProviderIsFurtherAwayThan15KmInGermany()
     {
         $standortsuche = $this->buildStandortsuche();
-        $address = new Address('', '', '56290', 'Uhler');
+        $address = new Address('', '', '56290', 'Uhler', '', 'DEU', 'DE');
         $serviceProviders = $standortsuche->getParcellocationByAddress($address);
         foreach ($serviceProviders->toArray() as $serviceProvider) {
             $this->assertLessThanOrEqual(15000, $serviceProvider->getLocation()->getDistance());
@@ -87,7 +87,7 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
     public function testThatNoServiceProviderIsFurtherAwayThan25KmOutsideOfGermany()
     {
         $standortsuche = $this->buildStandortsuche();
-        $address = new Address('', '', '6481', 'Weixmannstall', '', 'at');
+        $address = new Address('', '', '6481', 'Weixmannstall', '', 'at', 'DE');
         $serviceProviders = $standortsuche->getParcellocationByAddress($address);
         foreach ($serviceProviders->toArray() as $serviceProvider) {
             $this->assertLessThanOrEqual(25000, $serviceProvider->getLocation()->getDistance());
@@ -102,7 +102,7 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
 
     public function testGettingParcelLocationByAddressString()
     {
-        $list = $this->buildStandortsuche()->getParcellocationByAddress($this->buildSampleAddressString());
+        $list = $this->buildStandortsuche()->getParcellocationByAddress($this->buildSampleAddressString(), '', 'DE');
         $this->assertNotEmpty($list->toArray());
     }
 
@@ -121,23 +121,23 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
         //List of addresses and right coordinates
         $inputList = [
             [
-                'address'    => new Address('Elbestr.', '28/26', '12045', 'Berlin', '', ''),
+                'address'    => new Address('Elbestr.', '28/26', '12045', 'Berlin', '', '', 'DE'),
                 'coordinate' => new Coordinate(52.519938, 13.413183),
             ],
             [
-                'address'    => new Address('', '', '91275', '', '', ''),
+                'address'    => new Address('', '', '91275', '', '', '', 'DE'),
                 'coordinate' => new Coordinate(49.691990, 11.628689),
             ],
             [
-                'address'    => new Address('', '', '08209', 'Auerbach/Vogtl.', '', ''),
+                'address'    => new Address('', '', '08209', 'Auerbach/Vogtl.', '', '', 'DE'),
                 'coordinate' => new Coordinate(50.507884, 12.399722),
             ],
             [
-                'address'    => new Address('', '', '08459', '', '', ''),
+                'address'    => new Address('', '', '08459', '', '', '', 'DE'),
                 'coordinate' => new Coordinate(50.792825, 12.379732),
             ],
             [
-                'address'    => new Address('', '', '06429', '', '', ''),
+                'address'    => new Address('', '', '06429', '', '', '', 'DE'),
                 'coordinate' => new Coordinate(51.837269, 11.766504),
             ],
         ];

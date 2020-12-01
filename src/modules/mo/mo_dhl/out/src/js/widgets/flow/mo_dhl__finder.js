@@ -28,7 +28,7 @@
             busyFinder = false;
             $('#moDHLFinderForm').submit(function () {
                 self.tailorer.dhlfinder.find(new self.tailorer.dhlfinder.addressObject(
-                    $('#moDHLLocality').val(), $('#moDHLStreet').val()
+                    $('#moDHLLocality').val(), $('#moDHLStreet').val(), $('#moDHLCountry option:selected').attr('isoalpha2')
                 ), true);
                 return false;
             });

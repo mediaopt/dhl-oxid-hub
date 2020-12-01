@@ -48,6 +48,36 @@ class ServiceProviderBuilder
         'shopServices'       => ServiceType::SHOP_SERVICES,
     ];
 
+    public const DHL_COUNTRIES_LIST = [
+         'AT' => 'Austria',
+         'BE' => 'Belgium',
+         'BG' => 'Bulgaria',
+         'CZ' => 'Czechia',
+         'DE' => 'Germany',
+         'DK' => 'Denmark',
+         'EE' => 'Estonia',
+         'ES' => 'Spain',
+         'FI' => 'Finland',
+         'FR' => 'France',
+         'GB' => 'United Kingdom of Great Britain and Northern Ireland',
+         'GR' => 'Greece',
+         'HR' => 'Croatia',
+         'HU' => 'Hungary',
+         'IE' => 'Ireland',
+         'LT' => 'Lithuania',
+         'LU' => 'Luxembourg',
+         'LV' => 'Latvia',
+         'NL' => 'Netherlands',
+         'NO' => 'Norway',
+         'PL' => 'Poland',
+         'PT' => 'Portugal',
+         'RO' => 'Romania',
+         'SE' => 'Sweden',
+         'SI' => 'Slovenia',
+         'SK' => 'Slovakia',
+         'UA' => 'Ukraine',
+    ];
+
     /**
      * @var TimetableBuilder
      */
