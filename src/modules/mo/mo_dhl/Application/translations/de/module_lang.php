@@ -41,7 +41,7 @@ $aLang = [
     'MO_DHL__WUNSCHPAKET_CHECKOUT_HEADER'         => 'Lieferwünsche',
     'MO_DHL__NO_WUNSCHPAKET'                      => 'Kein DHL Wunschpaket ausgewählt',
     'MO_DHL__WUNSCHPAKET_DESCRIPTION_SHORT'       => 'Mit den Services von DHL Wunschpaket entscheiden Sie, wann und wo Sie Ihre Pakete empfangen.',
-    'MO_DHL__WUNSCHPAKET_DESCRIPTION_CHANGE'      => 'Tun Sie es <strong><a href="%s">hier</a></strong>',
+    'MO_DHL__WUNSCHPAKET_DESCRIPTION_CHANGE'      => 'Tun Sie es <strong><a href="%s" target="_blank">hier</a></strong>',
     'MO_DHL__POSTCODE'                            => 'Postleitzahl',
     'MO_DHL__CITY'                                => 'Stadt',
     'MO_DHL__STREET'                              => 'Straße',

@@ -41,7 +41,7 @@ $aLang = [
     'MO_DHL__WUNSCHPAKET_CHECKOUT_HEADER'         => 'Recipient services',
     'MO_DHL__NO_WUNSCHPAKET'                      => 'No recipient services selected',
     'MO_DHL__WUNSCHPAKET_DESCRIPTION_SHORT'       => 'You decide when and where you want to receive your parcels with the recipient services of DHL.',
-    'MO_DHL__WUNSCHPAKET_DESCRIPTION_CHANGE'      => 'Choose one <strong><a href="%s">here</a></strong>',
+    'MO_DHL__WUNSCHPAKET_DESCRIPTION_CHANGE'      => 'Choose one <strong><a href="%s" target="_blank">here</a></strong>',
     'MO_DHL__POSTCODE'                            => 'Postcode',
     'MO_DHL__CITY'                                => 'City',
     'MO_DHL__STREET'                              => 'Street',
