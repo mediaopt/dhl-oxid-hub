@@ -87,7 +87,7 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
     public function testThatNoServiceProviderIsFurtherAwayThan25KmOutsideOfGermany()
     {
         $standortsuche = $this->buildStandortsuche();
-        $address = new Address('', '', '6481', 'Weixmannstall', '', 'at', 'DE');
+        $address = new Address('', '', '6481', 'Weixmannstall', '', 'at', 'AT');
         $serviceProviders = $standortsuche->getParcellocationByAddress($address);
         foreach ($serviceProviders->toArray() as $serviceProvider) {
             $this->assertLessThanOrEqual(25000, $serviceProvider->getLocation()->getDistance());

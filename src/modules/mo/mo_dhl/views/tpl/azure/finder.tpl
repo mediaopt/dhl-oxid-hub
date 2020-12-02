@@ -82,10 +82,13 @@
                    id="moDHLStreet" class="is--azure" name="street"/>
             <input type="text" placeholder="[{oxmultilang ident="MO_DHL__POSTCODE"}]"
                    id="moDHLLocality" class="is--azure" name="locality"/>
-            <select id="moDHLCountry" name="country">
+            [{assign var="countries_list" value=$oViewConf->moGetDHLCountriesList()}]
+            <select id="moDHLCountry" name="country"
+                    [{if count($countries_list) === 1}]style="display: none;"[{/if}]
+            >
                 <option value="">-</option>
-                [{foreach from=$oViewConf->getDHLCountriesList() item=country key=country_id}]
-                    <option value="[{$country.oxid}]" isoalpha2="[{$country.isoalpha2}]">
+                [{foreach from=$countries_list item=country key=country_id}]
+                    <option value="[{$country_id}]" isoalpha2="[{$country.isoalpha2}]">
                         [{$country.title}]
                     </option>
                 [{/foreach}]

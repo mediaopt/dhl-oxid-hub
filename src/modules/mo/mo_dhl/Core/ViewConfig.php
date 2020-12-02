@@ -150,7 +150,7 @@ class ViewConfig extends ViewConfig_parent
     /**
      * @return array
      */
-    public function getDHLCountriesList()
+    public function moGetDHLCountriesList()
     {
         $countries = oxnew(CountryList::class);
         $countries->loadActiveCountries();
@@ -161,7 +161,6 @@ class ViewConfig extends ViewConfig_parent
             if (isset(ServiceProviderBuilder::DHL_COUNTRIES_LIST[$isoalpha2])) {
                 $countriesForSelector[$country->oxcountry__oxid->value] = [
                     'isoalpha2' => $isoalpha2,
-                    'oxid' => $country->oxcountry__oxid->value,
                     'title' => $country->oxcountry__oxtitle->rawValue
                 ];
             }
