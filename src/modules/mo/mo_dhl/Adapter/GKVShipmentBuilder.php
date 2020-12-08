@@ -184,7 +184,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $service->setPreferredLocation(new ServiceconfigurationDetails(1, $locationPart1));
         }
         if ($process->supportsParcelOutletRouting()) {
-            $isActive = (bool)Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active');
+            $isActive = (int) Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active');
             $altEmail = Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null;
             $service->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $altEmail));
         }
@@ -196,14 +196,14 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $service->setVisualCheckOfAge(new ServiceconfigurationVisualAgeCheck(true, 'A16'));
         }
         if ($process->supportsBulkyGood()) {
-            $service->setBulkyGoods(new Serviceconfiguration($order->moDHLUsesService(Article::MO_DHL__BULKY_GOOD)));
+            $service->setBulkyGoods(new Serviceconfiguration((int) $order->moDHLUsesService(Article::MO_DHL__BULKY_GOOD)));
         }
         if ($process->supportsCashOnDelivery()) {
-            $active = $order->moDHLUsesService(Article::MO_DHL__CASH_ON_DELIVERY);
+            $active = (int) $order->moDHLUsesService(Article::MO_DHL__CASH_ON_DELIVERY);
             $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery($active, 0, $order->oxorder__oxtotalordersum->value));
         }
         if ($process->supportsAdditionalInsurance()) {
-            $active = $order->moDHLUsesService(Article::MO_DHL__ADDITIONAL_INSURANCE) && $order->oxorder__oxtotalbrutsum->value > 500;
+            $active = (int) ($order->moDHLUsesService(Article::MO_DHL__ADDITIONAL_INSURANCE) && $order->oxorder__oxtotalbrutsum->value > 500);
             $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance($active, $order->oxorder__oxtotalbrutsum->value));
         }
 
