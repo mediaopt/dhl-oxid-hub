@@ -14,12 +14,20 @@ class Paperwork
 {
     use Validator;
 
+    /**
+     * @var int
+     */
     const COPY_COUNT_MIN = 1;
-    const COPY_COUNT_MAX = 99; //todo check is copy count same with Awb
 
     /**
      * @var int
+     */
+    const COPY_COUNT_MAX = 99; //todo check is copy count same with Awb
+
+    /**
      * Copies of AWB labels.
+     *
+     * @var int
      */
     protected $awbCopyCount;
 

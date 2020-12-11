@@ -16,4 +16,14 @@ class WarenpostException extends \RuntimeException
      */
     const AWB_VALIDATION_ERROR = 1;
 
+    /**
+     * @var int
+     */
+    const PAPERWORK_VALIDATION_ERROR = 2;
+
+    /**
+     * @var int
+     */
+    const CONTENT_VALIDATION_ERROR = 3;
+
 }
