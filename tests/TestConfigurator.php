@@ -70,30 +70,6 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getStandortsucheKeyName()
-    {
-        return \Mediaopt\DHL\Adapter\DHLConfigurator::STANDORTSUCHE_API_KEY;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getProdStandortsuchePassword()
-    {
-        return \Mediaopt\DHL\Adapter\DHLConfigurator::PROD_STANDORTSUCHE_API_PASSWORD;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getSandboxStandortsuchePassword()
-    {
-        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_STANDORTSUCHE_API_PASSWORD;
-    }
-
-    /**
-     * @return string
-     */
     protected function getEkp()
     {
         return '2222222222';
