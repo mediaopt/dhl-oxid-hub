@@ -10,6 +10,7 @@ use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Api\GKV;
+use Mediaopt\DHL\Api\Warenpost;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
@@ -62,6 +63,16 @@ abstract class Configurator
     protected function buildCustomerRetoureCredentials()
     {
         return Credentials::createCustomerCredentials($this->getCustomerRetoureLogin(), $this->getCustomerRetourePassword());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildWarenpostCredentials()
+    {
+        return $this->isProductionEnvironment()
+            ? Credentials::createWarenpostEndpoint($this->getWarenpostProdLogin(), $this->getWarenpostProdPassword(), $this->getEkp())
+            : Credentials::createWarenpostEndpoint($this->getWarenpostSandboxLogin(), $this->getWarenpostSandboxPassword(), $this->getEkp());
     }
 
     /**
@@ -151,6 +162,19 @@ abstract class Configurator
         return new GKV(
             $this->buildSoapCredentials(),
             $this->buildCustomerGKVCredentials(),
+            $logger ?: $this->buildLogger()
+        );
+    }
+
+    /**
+     * @param LoggerInterface|null $logger
+     * @return Warenpost
+     */
+    public function buildWarenpost(LoggerInterface $logger = null)
+    {
+        return new Warenpost(
+            $this->buildWarenpostCredentials(),
+            $this->buildCustomerWarenpostCredentials(),
             $logger ?: $this->buildLogger()
         );
     }
