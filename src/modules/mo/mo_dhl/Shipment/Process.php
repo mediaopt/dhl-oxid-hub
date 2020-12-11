@@ -76,6 +76,11 @@ class Process
     const WARENPOST = 'WARENPOST';
 
     /**
+     * @var string Warenpost international
+     */
+    const WARENPOST_INTERNATIONAL = 'WARENPOST_INTERNATIONAL';
+
+    /**
      * @var string
      */
     const SERVICE_PREFERRED_DAY = "SERVICE_PREFERRED_DAY";
@@ -433,6 +438,7 @@ class Process
             'PAKET_CONNECT_AT'       => 'DHL Paket Connect (Austria)',
             'PAKET_INTERNATIONAL_AT' => 'DHL Paket International (Austria)',
             'WARENPOST'              => 'Warenpost national',
+            'WARENPOST_INTERNATIONAL'=> 'Warenpost International',
         ];
     }
 }

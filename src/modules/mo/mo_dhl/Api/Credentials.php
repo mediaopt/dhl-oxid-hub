@@ -125,6 +125,17 @@ class Credentials
      * @param string|null $ekp
      * @return self
      */
+    public static function createWarenpostEndpoint($username, $password, $ekp)
+    {
+        return new static('api-qa.deutschepost.com/', $username, $password, $ekp, true);
+    }
+
+    /**
+     * @param string      $username
+     * @param string      $password
+     * @param string|null $ekp
+     * @return self
+     */
     public static function createSandboxSoapEndpoint($username, $password, $ekp)
     {
         return new static('https://cig.dhl.de/services/sandbox/soap', $username, $password, $ekp, true);

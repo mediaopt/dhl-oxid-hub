@@ -30,6 +30,14 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const PROD_API_PASSWORD = 'RGZ02BtCUBOHkxzMdy1NUm29oxhpHx';
 
+    const TEST_WARENPOST_API_USERNAME = '';
+
+    const TEST_WARENPOST_API_PASSWORD = '';
+
+    const PROD_WARENPOST_API_USERNAME = '';
+
+    const PROD_WARENPOST_API_PASSWORD = '';
+
     const TEST_GKV_USERNAME = '2222222222_01';
 
     const TEST_GKV_PASSWORD = 'pass';
@@ -76,6 +84,38 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     protected function getSandboxPassword()
     {
         return self::TEST_API_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getWarenpostProdLogin()
+    {
+        return self::PROD_WARENPOST_API_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getWarenpostProdPassword()
+    {
+        return self::PROD_WARENPOST_API_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getWarenpostSandboxLogin()
+    {
+        return self::TEST_WARENPOST_API_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getWarenpostSandboxPassword()
+    {
+        return self::TEST_WARENPOST_API_PASSWORD;
     }
 
     /**
