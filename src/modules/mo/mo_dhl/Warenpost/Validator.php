@@ -91,12 +91,11 @@ trait Validator
         }
 
         if (!in_array($value, $availibleValues, true)) {
-            return [" - unknown $name `$value`"];
+            return ["unknown $name `$value`, availiable values: [" . implode(', ', $availibleValues) . "]"];
         }
 
         return [];
     }
-
 
     /**
      * @param string $serviceLevel
@@ -120,16 +119,13 @@ trait Validator
             ]
         ];
 
-        if (!in_array($product, $compareArray[$serviceLevel])) {
-
+        if (!in_array($product, $compareArray[$serviceLevel], true)) {
             return [
                 "for serviceLevel $serviceLevel product should be "
                 . implode(' or ', $compareArray[$serviceLevel])
-                . ". Current product is $product. "
+                . ", current product is $product. "
             ];
         }
         return [];
-
     }
-
 }

@@ -39,7 +39,7 @@ class WarenpostAwbTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/awbCopyCount should be between/');
-        $awb = new Awb('9012345678', 'Max Mustermann', Awb::AWB_COPY_COUNT_MAX + 13, 'GPP', 'PRIORITY', 'P');
+        $awb = new Awb('9012345678', 'Max Mustermann', Awb::COPY_COUNT_MAX + 13, 'GPP', 'PRIORITY', 'P');
         $awb->validate();
     }
 

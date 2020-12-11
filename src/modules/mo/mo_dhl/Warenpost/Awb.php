@@ -15,66 +15,34 @@ class Awb
     use Validator;
 
     /**
-     * @var string
+     * @var int
      */
-    const ITEM_FORMAT_P = 'P';
-
-    /**
-     * @var string
-     */
-    const ITEM_FORMAT_G = 'G';
-
-    /**
-     * @var string
-     */
-    const ITEM_FORMAT_E = 'E';
-
-    /**
-     * @var string
-     */
-    const ITEM_FORMAT_MIXED = 'MIXED';
-
-    /**
-     * Array containing all item formats.
-     *
-     * @var string[]
-     */
-    public static $ITEM_FORMATS = [
-        self::ITEM_FORMAT_P,
-        self::ITEM_FORMAT_G,
-        self::ITEM_FORMAT_E,
-        self::ITEM_FORMAT_MIXED,
-    ];
+    const COPY_COUNT_MIN = 1;
 
     /**
      * @var int
      */
-    const AWB_COPY_COUNT_MIN = 1;
+    const COPY_COUNT_MAX = 50;
 
     /**
      * @var int
      */
-    const AWB_COPY_COUNT_MAX = 50;
+    const CONTACT_NAME_MIN_LENGTH = 1;
 
     /**
      * @var int
      */
-    const AWB_CONTACT_NAME_MIN_LENGTH = 1;
+    const CONTACT_NAME_MAX_LENGTH = 40;
 
     /**
      * @var int
      */
-    const AWB_CONTACT_NAME_MAX_LENGTH = 40;
+    const JOB_REFERENCE_MIN_LENGTH = 0;
 
     /**
      * @var int
      */
-    const AWB_JOB_REFERENCE_MIN_LENGTH = 0;
-
-    /**
-     * @var int
-     */
-    const AWB_JOB_REFERENCE_MAX_LENGTH = 17;
+    const JOB_REFERENCE_MAX_LENGTH = 17;
 
     /**
      * Copies of AWB labels.
@@ -183,22 +151,20 @@ class Awb
     public function validate(): bool
     {
         //Basic fields validation
-        $errorMessages = array_merge(
-            $this->isIntFieldCorrect('awbCopyCount', $this->awbCopyCount, self::AWB_COPY_COUNT_MIN, self::AWB_COPY_COUNT_MAX, true),
-            $this->isStringFieldCorrect('contactName', $this->contactName, self::AWB_CONTACT_NAME_MIN_LENGTH, self::AWB_CONTACT_NAME_MAX_LENGTH, true),
-            $this->isEnumFieldCorrect('itemFormat', $this->itemFormat, static::$ITEM_FORMATS, true),
-            $this->isStringFieldCorrect('jobReference', $this->jobReference, self::AWB_JOB_REFERENCE_MIN_LENGTH, self::AWB_JOB_REFERENCE_MAX_LENGTH),
+        $errorMessage = implode(' ,', array_merge(
+            $this->isIntFieldCorrect('awbCopyCount', $this->awbCopyCount, self::COPY_COUNT_MIN, self::COPY_COUNT_MAX, true),
+            $this->isStringFieldCorrect('contactName', $this->contactName, self::CONTACT_NAME_MIN_LENGTH, self::CONTACT_NAME_MAX_LENGTH, true),
+            $this->isEnumFieldCorrect('itemFormat', $this->itemFormat, ItemFormat::$ITEM_FORMATS, true),
+            $this->isStringFieldCorrect('jobReference', $this->jobReference, self::JOB_REFERENCE_MIN_LENGTH, self::JOB_REFERENCE_MAX_LENGTH),
             $this->isEnumFieldCorrect('product', $this->product, Product::$PRODUCTS),
             $this->isEnumFieldCorrect('serviceLevel', $this->serviceLevel, ServiceLevel::$SERVICE_LEVELS)
-        );
-        $errorMessage = implode(', ', $errorMessages);
+        ));
 
         //Additional fields validation
         if (empty($errorMessage)) {
-            $errorMessages = array_merge(
+            $errorMessage = implode(', ', array_merge(
                 $this->isProductCorrectForServiceLevel($this->product, $this->serviceLevel)
-            );
-            $errorMessage = implode(', ', $errorMessages);
+            ));
         }
 
         if (empty($errorMessage)) {
@@ -286,7 +252,7 @@ class Awb
      */
     public function toArray(): array
     {
-        $awb = [
+        $array = [
             'customerEkp' => $this->customerEkp,
             'contactName' => $this->contactName,
             'awbCopyCount' => $this->awbCopyCount,
@@ -295,18 +261,18 @@ class Awb
             'itemFormat' => $this->itemFormat
         ];
 
-        if ($this->jobReference !== null) {
-            $awb['jobReference'] = $this->jobReference;
+        $unrequiredFields = [
+            'jobReference',
+            'totalWeight',
+            'telephoneNumber'
+        ];
+
+        foreach ($unrequiredFields as $field) {
+            if ($this->$field !== null) {
+                $array[$field] = $this->$field;
+            }
         }
 
-        if ($this->totalWeight !== null) {
-            $awb['totalWeight'] = $this->totalWeight;
-        }
-
-        if ($this->telephoneNumber !== null) {
-            $awb['telephoneNumber'] = $this->telephoneNumber;
-        }
-
-        return $awb;
+        return $array;
     }
 }
