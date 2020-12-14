@@ -3,7 +3,7 @@
 namespace Mediaopt\DHL\Warenpost;
 
 /**
-  * The product that is used for the shipment of this item. Available products are:
+ * The product that is used for the shipment of this item. Available products are:
  * GPP (Packet Plus),
  * GMP (Packet),
  * GMM (Business Mail Standard),

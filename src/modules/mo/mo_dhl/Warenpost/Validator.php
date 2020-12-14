@@ -98,9 +98,9 @@ trait Validator
     /**
      * @param string $serviceLevel
      * @param string $product
-     * @return string[]
+     * @return string
      */
-    public function isProductCorrectForServiceLevel(string $product, string $serviceLevel): array
+    public function isProductCorrectForServiceLevel(string $product, string $serviceLevel): string
     {
         $compareArray = [
             ServiceLevel::REGISTERED => [
@@ -118,12 +118,11 @@ trait Validator
         ];
 
         if (!in_array($product, $compareArray[$serviceLevel], true)) {
-            return [
-                "for serviceLevel $serviceLevel product should be "
+            return "for serviceLevel $serviceLevel product should be "
                 . implode(' or ', $compareArray[$serviceLevel])
-                . ", current product is $product. "
-            ];
+                . ", current product is $product. ";
         }
-        return [];
+
+        return '';
     }
 }

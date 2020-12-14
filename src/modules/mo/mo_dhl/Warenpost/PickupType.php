@@ -3,6 +3,8 @@
 namespace Mediaopt\DHL\Warenpost;
 
 /**
+ * Pickup type used in pickup information.
+ *
  * @author  Mediaopt GmbH
  * @package Mediaopt\DHL
  */

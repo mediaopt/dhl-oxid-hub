@@ -26,69 +26,70 @@ class Paperwork
 
     /**
      * Copies of AWB labels.
+     * Range 1 - 99
      *
      * @var int
      */
-    protected $awbCopyCount;
+    protected int $awbCopyCount;
 
     /**
      * Contact name for paperwork.
      *
      * @var string
      */
-    protected $contactName;
+    protected string $contactName;
 
     /**
      * Deutsche Post Customer Account number (EKP) of the customer who wants to create an single awb.
      *
      * @var string
      */
-    protected $customerEkp;
+    protected string $customerEkp;
 
     /**
      * Job reference for paperwork.
      *
-     * @var string
+     * @var string|null
      */
-    protected $jobReference;
+    protected ?string $jobReference;
 
     /**
      * Pickup date used in pickup information.
      * Only applicable, if you have chosen Pick-Up Type DHL_GLOBAL_MAIl or DHL_EXPRESS.
      *
-     * @var string
+     * @var string|null
      */
-    protected $pickupDate;
+    protected ?string $pickupDate;
 
     /**
      * Pickup location used in pickup information.
      * Only applicable, if you have chosen Pick-Up Type DHL_GLOBAL_MAIl or DHL_EXPRESS.
      *
-     * @var string
+     * @var string|null
      */
-    protected $pickupLocation;
+    protected ?string $pickupLocation;
 
     /**
      * Pickup location used in pickup information.
      * See PickupTimeSlot class
      *
-     * @var string
+     * @var string|null
      */
-    protected $pickupTimeSlot;
+    protected ?string $pickupTimeSlot;
     /**
      * Pickup type used in pickup information.
      * If not set it defaults to "CUSTOMER_DROP_OFF".
      *
-     * @var string
+     * @var string|null
      */
-    protected $pickupType;
+    protected ?string $pickupType;
 
     /**
      * Telephone number for paperwork. Required for sales channel EXPRESS. //todo what is sales channel
      *
-     * @var string
+     * @var string|null
      */
-    protected $telephoneNumber;
+    protected ?string $telephoneNumber;
 
     /**
      * @param string $contactName

@@ -15,9 +15,17 @@ use Mediaopt\DHL\Warenpost\Content;
  */
 class WarenpostContentTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return Content
+     */
+    public function buildCorrectContent(): Content
+    {
+        return new Content(1234567890, "Trousers", "120.50", 1200, "DE", 2, 1337);
+    }
+
     public function testSuccess()
     {
-        $content = new Content(1234567890, "Trousers", "120.50", 1200, "DE", 2, 1337);
+        $content = $this->buildCorrectContent();
         $content->validate();
         $this->assertEquals(
             $content->toArray(),

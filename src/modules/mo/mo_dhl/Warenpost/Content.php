@@ -54,47 +54,51 @@ class Content
      *
      * @var string
      */
-    protected $contentPieceHsCode;
+    protected string $contentPieceHsCode;
 
     /**
      * The (short) description of this content.
+     * Length 1 - 33
      *
      * @var string
      */
-    protected $contentPieceDescription;
+    protected string $contentPieceDescription;
 
     /**
      * Overall value of the content pieces of one type.
      *
      * @var string
      */
-    protected $contentPieceValue;
+    protected string $contentPieceValue;
 
     /**
      * The net weight of all pieces of this content type.
+     * Range 1 - 2000
      *
      * @var int
      */
-    protected $contentPieceNetweight;
+    protected int $contentPieceNetweight;
 
     /**
      * Country of origin, based on ISO-3166-1.
+     * Length = 2
      *
      * @var string
      */
-    protected $contentPieceOrigin;
+    protected string $contentPieceOrigin;
 
     /**
      * Number of pieces.
+     * Range 1 - 99
      *
      * @var int
      */
-    protected $contentPieceAmount;
+    protected int $contentPieceAmount;
 
     /**
      * @var int|null
      */
-    protected $contentPieceIndexNumber;
+    protected ?int $contentPieceIndexNumber;
 
     /**
      * @param string $contentPieceHsCode
@@ -106,13 +110,13 @@ class Content
      * @param int|null $contentPieceIndexNumber
      */
     public function __construct(
-        $contentPieceHsCode,
-        $contentPieceDescription,
-        $contentPieceValue,
-        $contentPieceNetweight,
-        $contentPieceOrigin,
-        $contentPieceAmount,
-        $contentPieceIndexNumber = null
+        string $contentPieceHsCode,
+        string $contentPieceDescription,
+        string $contentPieceValue,
+        int $contentPieceNetweight,
+        string $contentPieceOrigin,
+        int $contentPieceAmount,
+        ?int $contentPieceIndexNumber = null
     )
     {
         $this->contentPieceHsCode = $contentPieceHsCode;

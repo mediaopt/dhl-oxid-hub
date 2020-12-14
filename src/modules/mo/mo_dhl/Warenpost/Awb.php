@@ -50,57 +50,57 @@ class Awb
      *
      * @var int
      */
-    protected $awbCopyCount;
+    protected int $awbCopyCount;
 
     /**
      * Contact name for paperwork.
-     * MinLength = 1, MaxLength = 40
+     * Lenght 1 - 40
      *
      * @var string
      */
-    protected $contactName;
+    protected string $contactName;
 
     /**
      * Deutsche Post Customer Account number (EKP) of the customer who wants to create an single awb.
      *
      * @var string
      */
-    protected $customerEkp;
+    protected string $customerEkp;
 
     /**
      * The item format for this awb.
      *
      * @var string
      */
-    protected $itemFormat;
+    protected string $itemFormat;
 
     /**
      * Job reference for paperwork.
      *
-     * @var string
+     * @var string|null
      */
-    protected $jobReference;
+    protected ?string $jobReference;
 
     /**
      * See Product class
      *
      * @var string
      */
-    protected $product;
+    protected string $product;
 
     /**
      * See ServiceLevel class
      *
      * @var string
      */
-    protected $serviceLevel;
+    protected string $serviceLevel;
 
     /**
      * Telephone number for paperwork.
      *
-     * @var string
+     * @var string|null
      */
-    protected $telephoneNumber;
+    protected ?string $telephoneNumber;
 
     /**
      * @param string $customerEkp
@@ -139,9 +139,9 @@ class Awb
     /**
      * Total weight of the awb (in kg).
      *
-     * @var double
+     * @var float|null
      */
-    protected $totalWeight;
+    protected ?float $totalWeight;
 
     /**
      * @return bool
@@ -162,9 +162,7 @@ class Awb
 
         //Additional fields validation
         if (empty($errorMessage)) {
-            $errorMessage = implode(', ', array_merge(
-                $this->isProductCorrectForServiceLevel($this->product, $this->serviceLevel)
-            ));
+            $errorMessage = $this->isProductCorrectForServiceLevel($this->product, $this->serviceLevel);
         }
 
         if (empty($errorMessage)) {
