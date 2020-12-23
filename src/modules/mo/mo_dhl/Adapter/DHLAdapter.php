@@ -10,6 +10,7 @@ namespace Mediaopt\DHL\Adapter;
 
 use Mediaopt\DHL\Api\GKV;
 use Mediaopt\DHL\Api\Standortsuche;
+use Mediaopt\DHL\Api\Warenpost;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Main;
 use Psr\Log\LoggerInterface;
@@ -220,5 +221,13 @@ class DHLAdapter
     public function buildRetoure()
     {
         return $this->getSdk()->buildRetoure();
+    }
+
+    /**
+     * @return Warenpost
+     */
+    public function buildWarenpost(): Warenpost
+    {
+        return $this->getSdk()->buildWarenpost();
     }
 }

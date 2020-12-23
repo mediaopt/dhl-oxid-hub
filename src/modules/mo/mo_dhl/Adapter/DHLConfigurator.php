@@ -30,9 +30,11 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const PROD_API_PASSWORD = 'RGZ02BtCUBOHkxzMdy1NUm29oxhpHx';
 
-    const TEST_WARENPOST_API_USERNAME = '';
+    const TEST_WARENPOST_API_USERNAME = 'wapo-test@mediaopt.de';
 
-    const TEST_WARENPOST_API_PASSWORD = '';
+    const TEST_WARENPOST_API_PASSWORD = '#mediaopt20';
+
+    const WARENPOST_API_EKP = '5222500948';
 
     const PROD_WARENPOST_API_USERNAME = '';
 
@@ -89,7 +91,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getWarenpostProdLogin()
+    protected function getWarenpostProdLogin(): string
     {
         return self::PROD_WARENPOST_API_USERNAME;
     }
@@ -97,7 +99,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getWarenpostProdPassword()
+    protected function getWarenpostProdPassword(): string
     {
         return self::PROD_WARENPOST_API_PASSWORD;
     }
@@ -105,7 +107,15 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getWarenpostSandboxLogin()
+    protected function getWarenpostEkp(): string
+    {
+        return self::WARENPOST_API_EKP;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getWarenpostSandboxLogin(): string
     {
         return self::TEST_WARENPOST_API_USERNAME;
     }
@@ -113,7 +123,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getWarenpostSandboxPassword()
+    protected function getWarenpostSandboxPassword(): string
     {
         return self::TEST_WARENPOST_API_PASSWORD;
     }

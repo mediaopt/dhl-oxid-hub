@@ -120,14 +120,25 @@ class Credentials
     }
 
     /**
-     * @param string      $username
-     * @param string      $password
-     * @param string|null $ekp
+     * @param string $username
+     * @param string $password
+     * @param string $ekp
      * @return self
      */
-    public static function createWarenpostEndpoint($username, $password, $ekp)
+    public static function createProductionWarenpostEndpoint(string $username, string $password, string $ekp): self
     {
-        return new static('api-qa.deutschepost.com/', $username, $password, $ekp, true);
+        return new static('https://api.deutschepost.com', $username, $password, $ekp);
+    }
+
+    /**
+     * @param string $username
+     * @param string $password
+     * @param string $ekp
+     * @return self
+     */
+    public static function createSandboxWarenpostEndpoint(string $username, string $password, string $ekp): self
+    {
+        return new static('https://api-qa.deutschepost.com', $username, $password, $ekp, true);
     }
 
     /**

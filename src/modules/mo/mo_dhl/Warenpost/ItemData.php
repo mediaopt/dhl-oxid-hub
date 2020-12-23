@@ -20,7 +20,7 @@ class ItemData
      *
      * @var string
      */
-    protected string $addressLine1;
+    protected $addressLine1;
 
     /**
      * Second line of address information of the recipient."
@@ -28,7 +28,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $addressLine2 = null;
+    protected $addressLine2 = null;
 
     /**
      * Third line of address information of the recipient."
@@ -36,7 +36,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $addressLine3 = null;
+    protected $addressLine3 = null;
 
     /**
      * City of the recipient address.
@@ -44,14 +44,14 @@ class ItemData
      *
      * @var string
      */
-    protected string $city;
+    protected $city;
 
     /**
      * The descriptions of the content pieces.
      *
      * @var array|null
      */
-    protected ?array $contents = null;
+    protected $contents = null;
 
     /**
      * Reference to the customer.
@@ -59,7 +59,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $custRef = null;
+    protected $custRef = null;
 
     /**
      * Generic field to deliver input depending on the given business context.
@@ -68,7 +68,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $custRef2 = null;
+    protected $custRef2 = null;
 
     /**
      * Generic field to deliver input depending on the given business context.
@@ -77,7 +77,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $custRef3 = null;
+    protected $custRef3 = null;
 
     /**
      * Destination country of the item, based on ISO-3166-1.
@@ -86,14 +86,14 @@ class ItemData
      *
      * @var string
      */
-    protected string $destinationCountry;
+    protected $destinationCountry;
 
     /**
      * The id of item //todo check is necessary
      *
      * @var int|null
      */
-    protected ?int $id = null;
+    protected $id = null;
 
     /**
      * Postal code of the recipient address.
@@ -101,14 +101,14 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $postalCode = null;
+    protected $postalCode = null;
 
     /**
      * See Product class
      *
      * @var string
      */
-    protected string $product;
+    protected $product;
 
     /**
      * Name of the recipient.
@@ -116,7 +116,7 @@ class ItemData
      *
      * @var string
      */
-    protected string $recipient;
+    protected $recipient;
 
     /**
      * Email address of the recipient. Used for notification.
@@ -124,7 +124,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $recipientEmail = null;
+    protected $recipientEmail = null;
 
     /**
      * Fax number of the recipient.
@@ -132,7 +132,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $recipientFax = null;
+    protected $recipientFax = null;
 
     /**
      * Phone number of the recipient.
@@ -140,14 +140,14 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $recipientPhone = null;
+    protected $recipientPhone = null;
 
     /**
      * Is Packet Return.
      *
      * @var bool
      */
-    protected bool $returnItemWanted = false;
+    protected $returnItemWanted = false;
 
     /**
      * Frist line of address information of the sender.
@@ -155,7 +155,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $senderAddressLine1 = null;
+    protected $senderAddressLine1 = null;
 
     /**
      * Second line of address information of the sender.
@@ -163,7 +163,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $senderAddressLine2 = null;
+    protected $senderAddressLine2 = null;
 
     /**
      * City of the sender address.
@@ -171,7 +171,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $senderCity = null;
+    protected $senderCity = null;
 
     /**
      * Sender country of the item, based on ISO-3166-1.
@@ -180,7 +180,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $senderCountry = null;
+    protected $senderCountry = null;
 
     /**
      * Email address of the sender. Used for notification.
@@ -188,7 +188,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $senderEmail = null;
+    protected $senderEmail = null;
 
     /**
      * Name of the sender.
@@ -196,7 +196,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $senderName = null;
+    protected $senderName = null;
 
     /**
      * Phone number of the sender.
@@ -204,7 +204,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $senderPhone = null;
+    protected $senderPhone = null;
 
     /**
      * Postal code of the sender address.
@@ -212,21 +212,21 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $senderPostalCode = null;
+    protected $senderPostalCode = null;
 
     /**
      * See ServiceLevel class
      *
      * @var string|null
      */
-    protected ?string $serviceLevel = null;
+    protected $serviceLevel = null;
 
     /**
      * Overall value of all content pieces of the item.
      *
      * @var float|null
      */
-    protected ?float $shipmentAmount = null;
+    protected $shipmentAmount = null;
 
     /**
      * Currency code of the value, based on ISO-4217.
@@ -235,7 +235,7 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $shipmentCurrency = null;
+    protected $shipmentCurrency = null;
 
     /**
      * Gross weight of the item (in g). May not exceed 2000 g.
@@ -243,7 +243,7 @@ class ItemData
      *
      * @var int
      */
-    protected int $shipmentGrossWeight;
+    protected $shipmentGrossWeight;
 
     /**
      * Nature of the pieces in this item, based on UPU code list 136.
@@ -251,14 +251,14 @@ class ItemData
      *
      * @var string|null
      */
-    protected ?string $shipmentNaturetype = null;
+    protected $shipmentNaturetype = null;
 
     /**
      * State of the recipient address.
      *
      * @var string|null
      */
-    protected ?string $state = null;
+    protected $state = null;
 
     /**
      * ItemData constructor.

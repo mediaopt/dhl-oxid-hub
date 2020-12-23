@@ -71,8 +71,16 @@ abstract class Configurator
     protected function buildWarenpostCredentials()
     {
         return $this->isProductionEnvironment()
-            ? Credentials::createWarenpostEndpoint($this->getWarenpostProdLogin(), $this->getWarenpostProdPassword(), $this->getEkp())
-            : Credentials::createWarenpostEndpoint($this->getWarenpostSandboxLogin(), $this->getWarenpostSandboxPassword(), $this->getEkp());
+            ? Credentials::createProductionWarenpostEndpoint(
+                $this->getWarenpostProdLogin(),
+                $this->getWarenpostProdPassword(),
+                $this->getWarenpostEkp()
+            )
+            : Credentials::createSandboxWarenpostEndpoint(
+                $this->getWarenpostSandboxLogin(),
+                $this->getWarenpostSandboxPassword(),
+                $this->getWarenpostEkp()
+            );
     }
 
     /**
@@ -114,6 +122,31 @@ abstract class Configurator
      * @return string
      */
     abstract protected function getProdPassword();
+
+    /**
+     * @return string
+     */
+    abstract protected function getWarenpostSandboxLogin(): string;
+
+    /**
+     * @return string
+     */
+    abstract protected function getWarenpostSandboxPassword(): string;
+
+    /**
+     * @return string
+     */
+    abstract protected function getWarenpostProdLogin(): string;
+
+    /**
+     * @return string
+     */
+    abstract protected function getWarenpostProdPassword(): string;
+
+    /**
+     * @return string
+     */
+    abstract protected function getWarenpostEkp(): string;
 
     /**
      * @return string
@@ -170,12 +203,12 @@ abstract class Configurator
      * @param LoggerInterface|null $logger
      * @return Warenpost
      */
-    public function buildWarenpost(LoggerInterface $logger = null)
+    public function buildWarenpost(LoggerInterface $logger = null, ClientInterface $client = null): Warenpost
     {
         return new Warenpost(
-            $this->buildWarenpostCredentials(),
-            $this->buildCustomerWarenpostCredentials(),
-            $logger ?: $this->buildLogger()
+            $this->buildWarenpostCredentials(true),
+            $logger ?: $this->buildLogger(),
+            $client ?: $this->buildClient()
         );
     }
 

@@ -30,28 +30,28 @@ class Paperwork
      *
      * @var int
      */
-    protected int $awbCopyCount;
+    protected $awbCopyCount;
 
     /**
      * Contact name for paperwork.
      *
      * @var string
      */
-    protected string $contactName;
+    protected $contactName;
 
     /**
      * Deutsche Post Customer Account number (EKP) of the customer who wants to create an single awb.
      *
      * @var string
      */
-    protected string $customerEkp;
+    protected $customerEkp;
 
     /**
      * Job reference for paperwork.
      *
      * @var string|null
      */
-    protected ?string $jobReference;
+    protected $jobReference;
 
     /**
      * Pickup date used in pickup information.
@@ -59,7 +59,7 @@ class Paperwork
      *
      * @var string|null
      */
-    protected ?string $pickupDate;
+    protected $pickupDate;
 
     /**
      * Pickup location used in pickup information.
@@ -67,7 +67,7 @@ class Paperwork
      *
      * @var string|null
      */
-    protected ?string $pickupLocation;
+    protected $pickupLocation;
 
     /**
      * Pickup location used in pickup information.
@@ -75,21 +75,21 @@ class Paperwork
      *
      * @var string|null
      */
-    protected ?string $pickupTimeSlot;
+    protected $pickupTimeSlot;
     /**
      * Pickup type used in pickup information.
      * If not set it defaults to "CUSTOMER_DROP_OFF".
      *
      * @var string|null
      */
-    protected ?string $pickupType;
+    protected $pickupType;
 
     /**
      * Telephone number for paperwork. Required for sales channel EXPRESS. //todo what is sales channel
      *
      * @var string|null
      */
-    protected ?string $telephoneNumber;
+    protected $telephoneNumber;
 
     /**
      * @param string $contactName

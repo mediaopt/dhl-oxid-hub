@@ -8,6 +8,8 @@ use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
 use Mediaopt\DHL\Adapter\GKVCustomShipmentBuilder;
 use Mediaopt\DHL\Adapter\GKVShipmentBuilder;
 use Mediaopt\DHL\Api\GKV\CountryType;
+use Mediaopt\DHL\Api\GKV\CreationState;
+use Mediaopt\DHL\Api\GKV\LabelData;
 use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Response\DeleteShipmentOrderResponse;
@@ -18,12 +20,14 @@ use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationIC;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationVisualAgeCheck;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
+use Mediaopt\DHL\Api\GKV\Statusinformation;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 use Mediaopt\DHL\Shipment\RetoureRequest;
+use Mediaopt\DHL\Adapter\WarenpostShipmentOrderRequestBuilder;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
@@ -76,7 +80,24 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     public function createLabel()
     {
-        $this->handleCreationResponse($this->callCreation());
+        //todo separate this to different methods
+        if ($_POST['processIdentifier'] == Process::WARENPOST_INTERNATIONAL) {
+            $order = Registry::get(DHLAdapter::class)->buildWarenpost()->createShipmentOrder($this->buildWarenpostOrderRequest());
+            if ($awb = $order->shipments[0]->awb) {
+                $status = new Statusinformation(200, 'success');
+                $label = new LabelData($status, $awb);
+                $state = new CreationState('', $label);
+                $state->setShipmentNumber($awb);
+                $this->getOrder()->storeCreationStatus('ok');
+                $label = MoDHLLabel::fromOrderAndCreationState($this->getOrder(), $state);
+                $label->save();
+
+                //todo how to save label without url?
+                Registry::get(DHLAdapter::class)->buildWarenpost()->getLabel($awb);
+            }
+        } else {
+            $this->handleCreationResponse($this->callCreation());
+        }
     }
 
     /**
@@ -432,6 +453,14 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     protected function buildShipmentOrderRequest(): CreateShipmentOrderRequest
     {
         return Registry::get(GKVCreateShipmentOrderRequestBuilder::class)->build([$this->getOrder()->getId()]);
+    }
+
+    /**
+     * @return WarenpostShipmentOrderRequestBuilder
+     */
+    protected function buildWarenpostOrderRequest(): WarenpostShipmentOrderRequestBuilder
+    {
+        return Registry::get(WarenpostShipmentOrderRequestBuilder::class)->build($this->getOrder()->getId());
     }
 
 }
