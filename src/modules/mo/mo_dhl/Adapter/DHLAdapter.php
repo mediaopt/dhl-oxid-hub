@@ -223,6 +223,14 @@ class DHLAdapter
     }
 
     /**
+     * @return \Mediaopt\DHL\Api\InternetmarkeRefund
+     */
+    public function buildInternetmarkeRefund()
+    {
+        return $this->getSdk()->buildInternetmarkeRefund();
+    }
+
+    /**
      * @return \Mediaopt\DHL\Api\Internetmarke
      */
     public function buildInternetmarke()

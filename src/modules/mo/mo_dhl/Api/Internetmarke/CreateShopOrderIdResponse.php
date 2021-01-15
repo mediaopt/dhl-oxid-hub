@@ -7,12 +7,12 @@ class CreateShopOrderIdResponse
 {
 
     /**
-     * @var ShopOrderId $shopOrderId
+     * @var string $shopOrderId
      */
     protected $shopOrderId = null;
 
     /**
-     * @param ShopOrderId $shopOrderId
+     * @param string $shopOrderId
      */
     public function __construct($shopOrderId)
     {
@@ -20,7 +20,7 @@ class CreateShopOrderIdResponse
     }
 
     /**
-     * @return ShopOrderId
+     * @return string
      */
     public function getShopOrderId()
     {
@@ -28,7 +28,7 @@ class CreateShopOrderIdResponse
     }
 
     /**
-     * @param ShopOrderId $shopOrderId
+     * @param string $shopOrderId
      * @return CreateShopOrderIdResponse
      */
     public function setShopOrderId($shopOrderId)

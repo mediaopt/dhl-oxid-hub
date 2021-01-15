@@ -26,6 +26,7 @@ class Install
         static::ensureConfigVariableNameLength();
         static::addTables();
         static::addColumns();
+        static::alterColumns();
         static::ensureDocumentsFolderExists();
         static::cleanUp();
     }
@@ -101,6 +102,18 @@ class Install
             }
             throw $ex;
         }
+    }
+
+    /**
+     * Alter a column with specified type in a table.
+     *
+     * @param string $table
+     * @param string $column
+     * @param string $type
+     */
+    protected static function alterColumn($table, $column, $type)
+    {
+        \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute("ALTER TABLE {$table} MODIFY COLUMN {$column} {$type};");
     }
 
     /**
@@ -218,6 +231,15 @@ class Install
             $oxids = implode(', ', array_map([$db, 'quote'], $paymentsExcludedByDefault));
             $db->execute("UPDATE oxpayments SET MO_DHL_EXCLUDED = 1 WHERE OXID IN ({$oxids})");
         }
+        \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\DbMetaDataHandler::class)->updateViews();
+    }
+
+    /**
+     */
+    protected function alterColumns()
+    {
+        self::alterColumn('oxorder', 'MO_DHL_PARTICIPATION', 'CHAR(5)');
+        self::alterColumn('oxdeliveryset', 'MO_DHL_PARTICIPATION', 'CHAR(5)');
         \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\DbMetaDataHandler::class)->updateViews();
     }
 

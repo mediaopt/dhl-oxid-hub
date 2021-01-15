@@ -64,7 +64,7 @@ class MoDHLInternetmarkeProduct extends BaseModel
 
         $data = [
             'shopId' => Registry::getConfig()->getShopId(),
-            'oxid' => $productType->getExtendedIdentifier()->getProdWSID(),
+            'oxid' => $productType instanceof SalesProductType ? self::extractExternalIdentifier($productType) : $productType->getExtendedIdentifier()->getProdWSID(),
             'name'   => $productType->getExtendedIdentifier()->getName(),
             'isNational' => $productType->getExtendedIdentifier()->getDestination() === 'national',
             'annotation' => trim($productType->getExtendedIdentifier()->getAnnotation() . ' ' . $productType->getExtendedIdentifier()->getDescription()),
@@ -91,6 +91,20 @@ class MoDHLInternetmarkeProduct extends BaseModel
         }
         $product->assign($data);
         return $product;
+    }
+
+    /**
+     * @param SalesProductType|BasicProductType|AdditionalProductType $productType
+     * @return string
+     */
+    protected static function extractExternalIdentifier($productType) {
+        $identifiers = $productType->getExtendedIdentifier()->getExternIdentifier();
+        foreach ($identifiers as $identifier) {
+            if ($identifier->getSource() === 'PPL') {
+                return $identifier->getId();
+            }
+        }
+        throw new \Exception('Could not extract external identifier');
     }
 
     /**

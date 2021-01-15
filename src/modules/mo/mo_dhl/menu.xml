@@ -29,10 +29,12 @@
                 <TAB id="MO_DHL__CATEGORIES_DHL" cl="MoDHLCategoriesDHL"/>
             </SUBMENU>
         </MAINMENU>
-        <MAINMENU id="MO_DHL">
-            <SUBMENU id="MO_DHL__INTERNETMARKE" cl="MoDHLInternetmarke" list="MoDHLInternetmarkeList">
-                <TAB id="MO_DHL__INTERNETMARKE_DETAILS" cl="MoDHLInternetmarkeDetails"/>
-            </SUBMENU>
+    </OXMENU>
+    <OXMENU id="MO_DHL">
+        <MAINMENU id="MO_DHL__INTERNETMARKE">
+                <SUBMENU id="MO_DHL__INTERNETMARKE_PRODUCT" cl="MoDHLInternetmarke" list="MoDHLInternetmarkeList">
+                    <TAB id="MO_DHL__INTERNETMARKE_DETAILS" cl="MoDHLInternetmarkeDetails"/>
+                </SUBMENU>
         </MAINMENU>
     </OXMENU>
 </OX>

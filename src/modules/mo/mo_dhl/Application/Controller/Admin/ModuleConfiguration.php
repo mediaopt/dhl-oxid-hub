@@ -240,7 +240,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     {
         try {
             $response = $internetmarke->authenticateUser();
-            $message = sprintf(Registry::getLang()->translateString('MO_DHL__WALLAT_BALANCE_CHECK'), $response->getWalletBalance());
+            $message = sprintf(Registry::getLang()->translateString('MO_DHL__WALLAT_BALANCE_CHECK'), $response->getWalletBalance()/100.);
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($message);
         } catch (\RuntimeException $e) {
             $e = $e->getPrevious() ?: $e;

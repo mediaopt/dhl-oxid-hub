@@ -5,6 +5,7 @@ namespace Mediaopt\DHL;
 use GuzzleHttp\ClientInterface;
 use Mediaopt\DHL\Api\GKV;
 use Mediaopt\DHL\Api\Internetmarke;
+use Mediaopt\DHL\Api\InternetmarkeRefund;
 use Mediaopt\DHL\Api\ProdWSService;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Wunschpaket;
@@ -129,6 +130,14 @@ class Main
     public function buildRetoure()
     {
         return $this->getConfigurator()->buildRetoure($this->getLogger());
+    }
+
+    /**
+     * @return InternetmarkeRefund
+     */
+    public function buildInternetmarkeRefund()
+    {
+        return $this->getConfigurator()->buildInternetmarkeRefund($this->getLogger());
     }
 
     /**

@@ -20,7 +20,8 @@ $aLang = [
     'MO_DHL__EKP'                                  => 'EKP',
     'MO_DHL__EKP_ERROR'                            => 'Eine EKP besteht aus genau zehn Ziffern.',
     'MO_DHL__FILIALROUTING_EMAIL_ERROR'            => 'Die alternative E-Mail-Adresse für das Filialrouting war nicht valide und wurde zurückgesetzt.',
-    'MO_DHL__PARTICIPATION_NUMBER'                 => 'Teilnahmenummer',
+    'MO_DHL__PARTICIPATION_NUMBER'                 => 'Teilnahmenummer/Produkt-Id',
+    'MO_DHL__INTERNETMARKE_PRODUCT_ERROR'          => 'Das Angegebene Produkt für die Internetmarke wurde nicht gefunden. Bitte verwenden Sie eine ID aus der Liste unter DHL > Internetmarke > Produkte.',
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'Eine Teilnahmenummer besteht aus genau zwei Zeichen und enthält nur Buchstaben und Ziffern.',
     'MO_DHL__OPERATOR'                             => 'Zusteller',
     'HELP_MO_DHL__OPERATOR'                        => 'Tragen Sie hier den Zusteller der Lieferung an. Dieser wird für eine mögliche Retoure außerhalb der EU benötigt.',
@@ -93,6 +94,7 @@ $aLang = [
 
     'MO_DHL'                        => 'DHL',
     'MO_DHL__INTERNETMARKE'         => 'Internetmarke',
+    'MO_DHL__INTERNETMARKE_PRODUCT' => 'Produkte',
     'MO_DHL__INTERNETMARKE_DETAILS' => 'Details',
     'MO_DHL__PRODWSID'              => 'ProdWS-Id',
     'MO_DHL__NAME'                  => 'Name',

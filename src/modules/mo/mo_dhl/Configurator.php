@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Mediaopt\DHL\Api\Credentials;
 use Mediaopt\DHL\Api\Internetmarke;
+use Mediaopt\DHL\Api\InternetmarkeRefund;
 use Mediaopt\DHL\Api\ProdWSService;
 use Mediaopt\DHL\Api\Retoure;
 use Mediaopt\DHL\Api\Standortsuche;
@@ -249,6 +250,18 @@ abstract class Configurator
         );
     }
 
+    /**
+     * @param LoggerInterface|null $logger
+     * @return InternetmarkeRefund
+     */
+    public function buildInternetmarkeRefund(LoggerInterface $logger = null)
+    {
+        return new InternetmarkeRefund(
+            $this->buildInternetmarkeCredentials(),
+            $this->buildCustomerInternetmarkeCredentials(),
+            $logger ?: $this->buildLogger()
+        );
+    }
     /**
      * @param LoggerInterface|null $logger
      * @return ProdWSService

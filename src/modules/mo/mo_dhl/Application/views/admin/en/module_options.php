@@ -21,6 +21,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__internetmarke_password'      => 'Password',
     'HELP_SHOP_MODULE_mo_dhl__internetmarke_password' => 'Your Password for the <a href="https://portokasse.deutschepost.de/">Portokasse</a>.',
     'SHOP_MODULE_mo_dhl__internetmarke_mandant_id'    => 'Mandant Id for the ProdWS Connection',
+    'SHOP_MODULE_mo_dhl__internetmarke_layout'        => 'Layout ID for printing the Internetmarke',
     'SHOP_MODULE_mo_dhl__internetmarke_check'         => '',
 
     'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Delivery',

@@ -7,7 +7,7 @@ class ShoppingCart
 {
 
     /**
-     * @var ShopOrderId $shopOrderId
+     * @var int $shopOrderId
      */
     protected $shopOrderId = null;
 
@@ -17,10 +17,12 @@ class ShoppingCart
     protected $voucherList = null;
 
     /**
+     * @param int         $shopOrderId
      * @param VoucherList $voucherList
      */
-    public function __construct($voucherList)
+    public function __construct($shopOrderId, $voucherList)
     {
+        $this->shopOrderId = $shopOrderId;
       $this->voucherList = $voucherList;
     }
 

@@ -10,6 +10,7 @@ namespace Mediaopt\DHL\Controller\Admin;
 
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
+use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
@@ -62,7 +63,11 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
         $deliverySet->assign($params);
         try {
             $this->validateProcess($params['oxdeliveryset__mo_dhl_process']);
-            $this->validateParticipation($params['oxdeliveryset__mo_dhl_participation']);
+            if ($params['oxdeliveryset__mo_dhl_process'] === Process::INTERNETMARKE) {
+                $this->validateInternetmarkeProduct($params['oxdeliveryset__mo_dhl_participation']);
+            } else {
+                $this->validateParticipation($params['oxdeliveryset__mo_dhl_participation']);
+            }
         } catch (\InvalidArgumentException $exception) {
             $this->setEditObjectId($deliverySet->getId());
             return;
@@ -109,6 +114,19 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
             /** @noinspection PhpParamsInspection */
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PARTICIPATION_NUMBER_ERROR');
             throw $exception;
+        }
+    }
+
+    /**
+     * @param $productCode
+     * @throws \InvalidArgumentException
+     */
+    private function validateInternetmarkeProduct($productCode)
+    {
+        $productExists = DatabaseProvider::getDb()->getOne('SELECT 1 from mo_dhl_internetmarke_products where OXID = ?', [$productCode]);
+        if (!$productExists) {
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__INTERNETMARKE_PRODUCT_ERROR');
+            throw new \InvalidArgumentException('MO_DHL__INTERNETMARKE_PRODUCT_ERROR');
         }
     }
 }
