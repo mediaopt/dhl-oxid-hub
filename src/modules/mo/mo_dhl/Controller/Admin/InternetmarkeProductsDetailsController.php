@@ -11,7 +11,7 @@ use Mediaopt\DHL\Model\MoDHLInternetmarkeProduct;
 use Mediaopt\DHL\Model\MoDHLInternetmarkeProductList;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 
-class InternetmarkeDetailsController extends AbstractAdminDHLController
+class InternetmarkeProductsDetailsController extends AbstractAdminDHLController
 {
 
     /**

@@ -4,7 +4,7 @@
 namespace Mediaopt\DHL\Controller\Admin;
 
 
-class InternetmarkeController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminController
+class InternetmarkeProductsController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminController
 {
     /**
      * Current class template name.

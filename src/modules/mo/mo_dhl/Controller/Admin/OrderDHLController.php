@@ -16,6 +16,7 @@ use Mediaopt\DHL\Api\Internetmarke\ShoppingCartResponseType;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Exception\WebserviceException;
 use Mediaopt\DHL\Merchant\Ekp;
+use Mediaopt\DHL\Model\MoDHLInternetmarkeRefund;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
@@ -180,7 +181,11 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             $shipmentNumber = $label->getFieldData('shipmentNumber');
             $internetMarkeRefund = Registry::get(DHLAdapter::class)->buildInternetmarkeRefund();
             $response = $internetMarkeRefund->retoureVouchers((new InternetmarkeRefundRetoureVouchersRequestBuilder())->build($shipmentNumber));
+            $refund = MoDHLInternetmarkeRefund::fromRetoureVouchersResponse($response);
+            $refund->save();
             $label->delete();
+            $message = sprintf(Registry::getLang()->translateString('MO_DHL__INTERNETMARKE_REFUND_REQUESTED_MESSAGE'), $response->getRetoureTransactionId());
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($message);
         } catch (\Exception $e) {
             $errors = $this->parseInternetmarkeException($e);
             $this->displayErrors($errors);

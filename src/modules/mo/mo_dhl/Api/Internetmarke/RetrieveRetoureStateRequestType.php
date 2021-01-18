@@ -31,14 +31,6 @@ class RetrieveRetoureStateRequestType
     protected $shopRetoureId = null;
 
     /**
-     * @param UserToken $userToken
-     */
-    public function __construct($userToken)
-    {
-      $this->userToken = $userToken;
-    }
-
-    /**
      * @return UserToken
      */
     public function getUserToken()

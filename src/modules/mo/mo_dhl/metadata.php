@@ -57,9 +57,12 @@ $aModule = [
         'MoDHLOrderDHL'             => Controller\Admin\OrderDHLController::class,
         'MoDHLYellowBox'            => Controller\YellowBoxController::class,
         'MoDHLGuest'                => Controller\GuestController::class,
-        'MoDHLInternetmarke'        => Controller\Admin\InternetmarkeController::class,
-        'MoDHLInternetmarkeList'    => Controller\Admin\InternetmarkeListController::class,
-        'MoDHLInternetmarkeDetails' => Controller\Admin\InternetmarkeDetailsController::class,
+        'MoDHLInternetmarkeProducts'        => Controller\Admin\InternetmarkeProductsController::class,
+        'MoDHLInternetmarkeProductsList'    => Controller\Admin\InternetmarkeProductsListController::class,
+        'MoDHLInternetmarkeProductsDetails' => Controller\Admin\InternetmarkeProductsDetailsController::class,
+        'MoDHLInternetmarkeRefunds'        => Controller\Admin\InternetmarkeRefundsController::class,
+        'MoDHLInternetmarkeRefundsList'    => Controller\Admin\InternetmarkeRefundsListController::class,
+        'MoDHLInternetmarkeRefundsDetails' => Controller\Admin\InternetmarkeRefundsDetailsController::class,
     ],
     'events'      => [
         'onActivate'   => Install::class . '::onActivate',
@@ -214,6 +217,9 @@ $aModule = [
         'mo_dhl__internetmarke.tpl'          => 'mo/mo_dhl/views/admin/tpl/internetmarke.tpl',
         'mo_dhl__internetmarke_list.tpl'     => 'mo/mo_dhl/views/admin/tpl/internetmarke_list.tpl',
         'mo_dhl__internetmarke_details.tpl'  => 'mo/mo_dhl/views/admin/tpl/internetmarke_details.tpl',
+        'mo_dhl__internetmarke_refunds.tpl'          => 'mo/mo_dhl/views/admin/tpl/internetmarke_refunds.tpl',
+        'mo_dhl__internetmarke_refunds_list.tpl'     => 'mo/mo_dhl/views/admin/tpl/internetmarke_refunds_list.tpl',
+        'mo_dhl__internetmarke_refunds_details.tpl'  => 'mo/mo_dhl/views/admin/tpl/internetmarke_refunds_details.tpl',
     ],
     'settings'    => [
         [

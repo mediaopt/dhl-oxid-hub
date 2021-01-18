@@ -6,7 +6,7 @@ namespace Mediaopt\DHL\Controller\Admin;
 
 use Mediaopt\DHL\Model\MoDHLInternetmarkeProduct;
 
-class InternetmarkeListController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminListController
+class InternetmarkeProductsListController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminListController
 {
     /**
      * @var string

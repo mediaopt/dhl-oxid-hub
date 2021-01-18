@@ -188,6 +188,14 @@ class Install
         PRIMARY KEY (OXID)
         );
         CREATE INDEX MoDhlInternetmarkeProducts ON mo_dhl_internetmarke_products (OXSHOPID, OXID);");
+
+        self::addTable('mo_dhl_internetmarke_refunds', "(
+        `OXID` INT NOT NULL COMMENT 'retoureTransactionId',
+        `OXSHOPID` INT DEFAULT 1 NOT NULL,
+        `status` VARCHAR(50),
+        PRIMARY KEY (OXID)
+        );
+        CREATE INDEX MoDhlInternetmarkeRefunds ON mo_dhl_internetmarke_refunds (OXSHOPID, OXID);");
     }
 
     /**
