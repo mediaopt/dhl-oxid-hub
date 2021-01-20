@@ -63,7 +63,7 @@
                 [{assign var="listclass" value=listitem4}]
                 [{/if}]
                 <td valign="top" class="[{$listclass}]" height="15"><div class="listitemfloating">&nbsp;<a href="Javascript:top.oxid.admin.editThis('[{$listitem->getId()}]');" class="[{$listclass}]">[{$listitem->getId()}]</a></div></td>
-                <td valign="top" class="[{$listclass}]" height="15"><div class="listitemfloating"><a href="Javascript:top.oxid.admin.editThis('[{$listitem->getId()}]');" class="[{$listclass}]">[{$listitem->getFieldData('status')}]</a></div></td>   <td align="right" class="[{$listclass}]">
+                <td valign="top" class="[{$listclass}]" height="15"><div class="listitemfloating"><a href="Javascript:top.oxid.admin.editThis('[{$listitem->getId()}]');" class="[{$listclass}]">[{oxmultilang ident=$listitem->getFieldData('status')}]</a></div></td>   <td align="right" class="[{$listclass}]">
                     [{if !$readonly && !$listitem->default}]
                     <a href="Javascript:top.oxid.admin.deleteThis('[{$listitem->getId()}]');" class="delete" id="del.[{$_cnt}]" title="" [{include file="help.tpl" helpid=item_delete}]></a>
                     [{/if}]

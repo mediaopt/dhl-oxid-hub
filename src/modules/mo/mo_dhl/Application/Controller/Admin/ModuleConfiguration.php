@@ -168,10 +168,6 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     {
         $this->save();
         $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
-        if (Registry::getConfig()->getConfigParam('mo_dhl__account_sandbox')) {
-            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__CHECK_FOR_SANDBOX_NOT_POSSIBLE');
-            return;
-        }
         $this->checkInternetmarke($adapter->buildInternetmarke());
     }
 

@@ -23,7 +23,7 @@
 
 
     <form name="search" id="search" action="[{$oViewConf->getSelfLink()}]" method="post">
-        [{include file="_formparams.tpl" cl="MoDHLInternetmarkeList" lstrt=$lstrt actedit=$actedit oxid=$oxid fnc="" language=$actlang editlanguage=$actlang}]
+        [{include file="_formparams.tpl" cl="MoDHLInternetmarkeProductsList" lstrt=$lstrt actedit=$actedit oxid=$oxid fnc="" language=$actlang editlanguage=$actlang}]
         <table cellspacing="0" cellpadding="0" border="0" width="100%">
             <colgroup>
             <col width="10%">

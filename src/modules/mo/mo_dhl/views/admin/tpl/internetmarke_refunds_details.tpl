@@ -42,7 +42,7 @@
                             [{oxmultilang ident="MO_DHL__RETOURE_STATUS"}]
                         </td>
                         <td class="edittext">
-                            [{$edit->getFieldData('status')}]
+                            [{oxmultilang ident=$edit->getFieldData('status')}]
                         </td>
                     </tr>
                     [{/if}]

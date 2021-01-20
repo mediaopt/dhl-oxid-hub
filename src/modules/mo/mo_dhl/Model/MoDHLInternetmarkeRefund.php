@@ -22,6 +22,12 @@ use OxidEsales\Eshop\Core\Registry;
 class MoDHLInternetmarkeRefund extends BaseModel
 {
 
+    const MO_DHL__INTERNETMARKE_REFUND_STATUS_REQUESTED = 'MO_DHL__INTERNETMARKE_REFUND_STATUS_REQUESTED';
+
+    const MO_DHL__INTERNETMARKE_REFUND_STATUS_IN_PROGRESS = 'MO_DHL__INTERNETMARKE_REFUND_STATUS_IN_PROGRESS';
+
+    const MO_DHL__INTERNETMARKE_REFUND_STATUS_FINISHED = 'MO_DHL__INTERNETMARKE_REFUND_STATUS_FINISHED';
+
     /**
      * @var string
      */
@@ -46,7 +52,7 @@ class MoDHLInternetmarkeRefund extends BaseModel
         $refund->assign([
             'oxshopid' => Registry::getConfig()->getShopId(),
             'oxid' => $response->getRetoureTransactionId(),
-            'status' => 'Requested',
+            'status' => self::MO_DHL__INTERNETMARKE_REFUND_STATUS_REQUESTED,
         ]);
         return $refund;
     }

@@ -47,7 +47,7 @@ class InternetmarkeRefundsDetailsController extends AbstractAdminDHLController
         ]);
         $refund->save();
         $retoureStatusArray = [
-            'created' =>  \DateTime::createFromFormat('dmY-his', $retoureStatus->getCreationDate())->format(\OxidEsales\Eshop\Core\Registry::getLang()->translateString('fullDateFormat')),
+            'created' =>  $retoureStatus->getCreationDate() ? \DateTime::createFromFormat('dmY-His', $retoureStatus->getCreationDate())->format(\OxidEsales\Eshop\Core\Registry::getLang()->translateString('fullDateFormat')) : null,
             'refunded' => $retoureStatus->getTotalCount() - $retoureStatus->getCountStillOpen(),
             'total' => $retoureStatus->getTotalCount(),
         ];
@@ -62,11 +62,11 @@ class InternetmarkeRefundsDetailsController extends AbstractAdminDHLController
     public function extractStatus(RetoureStateType $response)
     {
         if ($response->getCountStillOpen() === 0) {
-            return 'finished';
+            return MoDHLInternetmarkeRefund::MO_DHL__INTERNETMARKE_REFUND_STATUS_FINISHED;
         }
         if ($response->getCountStillOpen() === $response->getTotalCount()) {
-            return 'requested';
+            return MoDHLInternetmarkeRefund::MO_DHL__INTERNETMARKE_REFUND_STATUS_REQUESTED;
         }
-        return 'in progress';
+        return MoDHLInternetmarkeRefund::MO_DHL__INTERNETMARKE_REFUND_STATUS_IN_PROGRESS;
     }
 }
