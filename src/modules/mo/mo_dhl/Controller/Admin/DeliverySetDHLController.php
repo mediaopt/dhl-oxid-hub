@@ -8,6 +8,7 @@
 namespace Mediaopt\DHL\Controller\Admin;
 
 
+use Mediaopt\DHL\Model\MoDHLInternetmarkeProductList;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 use OxidEsales\Eshop\Core\DatabaseProvider;
@@ -128,5 +129,28 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__INTERNETMARKE_PRODUCT_ERROR');
             throw new \InvalidArgumentException('MO_DHL__INTERNETMARKE_PRODUCT_ERROR');
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function usesInternetmarke()
+    {
+        $deliverySet = oxNew(\OxidEsales\Eshop\Application\Model\DeliverySet::class);
+        $deliverySet->load($this->getEditObjectId());
+        return $deliverySet->getFieldData('mo_dhl_process') === Process::INTERNETMARKE;
+    }
+
+    /**
+     * template function
+     */
+    public function getInternetmarkeProductsBySearchString()
+    {
+        $searchString = Registry::getConfig()->getRequestParameter("search");
+        $productsList = oxNew(MoDHLInternetmarkeProductList::class);
+        $productsList->searchForProduct($searchString);
+
+        $this->addTplParam('suggestions', $productsList->getArray());
+        $this->setTemplateName('mo_dhl__internetmarke_products_search.tpl');
     }
 }

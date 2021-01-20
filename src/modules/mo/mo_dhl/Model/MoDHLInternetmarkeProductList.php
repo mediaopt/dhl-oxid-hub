@@ -32,4 +32,17 @@ class MoDHLInternetmarkeProductList extends \OxidEsales\Eshop\Core\Model\ListMod
 
         $this->selectString($sql, [$shopId]);
     }
+
+    /**
+     * @param string $searchText
+     */
+    public function searchForProduct($searchText)
+    {
+        $baseModel = $this->getBaseObject();
+        $productTable = $baseModel->getCoreTableName();
+        $fields = $baseModel->getSelectFields();
+        $shopId = $this->getConfig()->getShopId();
+        $sql = "SELECT $fields  FROM `$productTable` WHERE `name` like ? AND `oxshopid` = ? and type = ?";
+        $this->selectString($sql, ["%$searchText%", $shopId, MoDHLInternetmarkeProduct::INTERNETMARKE_PRODUCT_TYPE_SALES]);
+    }
 }
