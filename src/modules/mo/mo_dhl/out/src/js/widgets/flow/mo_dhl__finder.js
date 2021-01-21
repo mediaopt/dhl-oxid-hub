@@ -42,7 +42,7 @@
                 + provider.address.city + (provider.address.district !== null ? "-" + provider.address.district : '')
                 + (provider.remark.length ? "<br/><br/>" + provider.remark : '');
             var providerIcon = 'img.' + provider.type.toLowerCase();
-            var providerLabel = this.tailorer.dhl.fromProviderTypeToLabel(provider.type);
+            var providerLabel = provider.type;
             var dhlWindow = $("#moDHLWindow");
             var window = dhlWindow
                 .clone().removeAttr('id')

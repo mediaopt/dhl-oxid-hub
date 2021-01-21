@@ -155,7 +155,7 @@ DHLFinder = function ($, tailorer) {
         });
     };
     this.mark = function (provider) {
-        var title = this.tailorer.dhl.fromProviderTypeToLabel(provider.type) + ' ' + this.tailorer.getProviderId(provider);
+        var title = provider.type + ' ' + this.tailorer.getProviderId(provider);
         var icon = this.tailorer.dhl.thumbs.postfiliale;
         if (provider.type === 'Packstation') {
             icon = this.tailorer.dhl.thumbs.packstation;

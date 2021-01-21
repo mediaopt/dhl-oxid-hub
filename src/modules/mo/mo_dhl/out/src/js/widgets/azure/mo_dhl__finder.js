@@ -31,7 +31,7 @@
         addInfoBox: function (provider, marker) {
             var self = this;
             var providerId = "provider_" + provider.id;
-            var headline = this.tailorer.dhl.fromProviderTypeToLabel(provider.type) + ' ' + mo_dhl.getProviderId(provider);
+            var headline = provider.type + ' ' + mo_dhl.getProviderId(provider);
             var address = (provider.name ? provider.name + "<br/>" : '')
                 + provider.address.street + " " + provider.address.streetNo + "<br/>"
                 + provider.address.zip + " "
