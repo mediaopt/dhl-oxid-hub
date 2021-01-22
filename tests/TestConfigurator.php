@@ -72,7 +72,7 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getStandortsucheKeyName()
     {
-        return \Mediaopt\DHL\Adapter\DHLConfigurator::STANDORTSUCHE_API_KEY;
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::STANDORTSUCHE_API_KEY_NAME;
     }
 
     /**
@@ -80,7 +80,7 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getProdStandortsuchePassword()
     {
-        return \Mediaopt\DHL\Adapter\DHLConfigurator::PROD_STANDORTSUCHE_API_PASSWORD;
+        return 'PROD_STANDORTSUCHE_API_PASSWORD';
     }
 
     /**

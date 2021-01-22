@@ -239,6 +239,11 @@ $aModule = [
             'value' => 'false',
         ],
         [
+            'group' => 'mo_dhl__account',
+            'name'  => 'mo_dhl__prod_standortsuche_password',
+            'type'  => 'password',
+        ],
+        [
             'group' => 'mo_dhl__delivery',
             'name'  => 'mo_dhl__only_with_leitcode',
             'type'  => 'bool',
