@@ -2,7 +2,7 @@
     <ul>
         [{foreach from=$oView->moGetLogs() item='logfile'}]
             <li>
-                <a href="[{$oViewConf->getSslSelfLink()}]cl=mo_dhl__module_config&fnc=moDownload&log=[{$logfile}]">[{$logfile}]</a>
+                <a href="[{$oViewConf->getSslSelfLink()}]cl=module_config&fnc=moDownload&log=[{$logfile}]">[{$logfile}]</a>
             </li>
         [{/foreach}]
     </ul>

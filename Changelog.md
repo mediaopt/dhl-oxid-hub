@@ -1,4 +1,19 @@
 # Changelog
+## 1.3.1
+* open links to dhl from the oxid admin in a new tab
+* set active flag of services in gkv to 0/1 instead of false/true
+* fix links to logs in the module config tab in oxid admin
+
+## 1.3.0
+* create export documents for international shipments
+* allows international shipments outside the EU
+* bugfix: check for user, address and payment data when showing wunschpaket services
+* bugfix: oxid 6.2 compatible email rendering
+* bugfix: check for basket existance when calculating surcharge in emails
+
+## 1.2.4
+* bugfix for article parent extension
+
 ## 1.2.3
 * added additional features for return label creation:
     * option do prevent customers to create return labels and instead let them request them

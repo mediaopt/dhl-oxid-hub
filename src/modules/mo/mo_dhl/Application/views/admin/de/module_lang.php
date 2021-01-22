@@ -46,6 +46,7 @@ $aLang = [
     'MO_DHL__LOGIN_FAILED'                         => 'Zugangsdaten inkorrekt. Login fehlgeschlagen.',
     'MO_DHL__LABELS'                               => 'Labels',
     'MO_DHL__LABEL'                                => 'Versandlabel',
+    'MO_DHL__EXPORT_LABEL'                         => 'Ausfuhrlabel',
     'MO_DHL__RETOURE_LABEL'                        => 'Retourenlabel',
     'MO_DHL__RETOURE_QR_LABEL'                     => 'Retoure QR Code',
     'MO_DHL__INSTALL_FOLDER_ERROR'                 => 'Ordner %s konnte nicht erstellt werden. Bitte erstellen Sie den Ordner manuell.',
@@ -90,7 +91,7 @@ $aLang = [
     'MO_DHL__FOR_IDENT_CHECK'           => 'für Ident-Check',
     'MO_DHL__CASH_ON_DELIVERY'          => 'Nachnahme',
     'MO_DHL__ADDITIONAL_INSURANCE'      => 'Transportversicherung',
-    'HELP_MO_DHL__ADDITIONAL_INSURANCE' => 'Grundsätzlich haftet DHL für Ihr Paket beim deutschlandweiten Versand gegen Verlust oder Beschädigung bis 500 EUR (nur gegen Vorlage des quittierten Einlieferungsbeleges). Für besonders wertvolle Sendungen bietet DHL Ihnen darüber hinaus eine Transportversicherung bis 2.500 EUR (+6,00 EUR Aufpreis) oder 25.000 EUR  (+18,00 EUR Aufpreis) an. Weiter Informationen finden Sie <a href="https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/services/service-loesungen.html#versicherung">hier</a>',
+    'HELP_MO_DHL__ADDITIONAL_INSURANCE' => 'Grundsätzlich haftet DHL für Ihr Paket beim deutschlandweiten Versand gegen Verlust oder Beschädigung bis 500 EUR (nur gegen Vorlage des quittierten Einlieferungsbeleges). Für besonders wertvolle Sendungen bietet DHL Ihnen darüber hinaus eine Transportversicherung bis 2.500 EUR (+6,00 EUR Aufpreis) oder 25.000 EUR  (+18,00 EUR Aufpreis) an. Weiter Informationen finden Sie <a href="https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/services/service-loesungen.html#versicherung" target="_blank" rel="noopener noreferrer">hier</a>',
 
     'MO_DHL__WALLAT_BALANCE_CHECK'    => 'Die Zugangsdaten für die Portokasse sind korrekt. Ihr Guthaben beträgt %.2f €',
 
