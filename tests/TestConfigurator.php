@@ -76,6 +76,78 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     }
 
     /**
+     * @return string
+     */
+    protected function getInternetmarkeProdLogin()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::PROD_INTERNETMARKE_PARTNER_ID;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInternetmarkeProdSignature()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::PROD_INTERNETMARKE_SIGNATURE;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInternetmarkeSandboxLogin()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_INTERNETMARKE_PARTNER_ID;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInternetmarkeSandboxSignature()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_INTERNETMARKE_SIGNATURE;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerInternetmarkeLogin()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_INTERNETMARKE_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerInternetmarkePassword()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_INTERNETMARKE_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProdWSLogin()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::PRODWS_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProdWSPassword()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::PRODWS_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerProdWSMandantId()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_PRODWS_MANDANT_ID;
+    }
+
+    /**
      * @return bool
      */
     protected function isProductionEnvironment()
