@@ -11,10 +11,10 @@ $sMetadataVersion = '2.1';
  */
 $aModule = [
     'id'          => 'mo_dhl',
-    'title'       => 'DHL Produkte und Services',
+    'title'       => 'Post & Paket Versand',
     'description' => [
-        'de' => '<p>Erweitern Sie Ihren Shop um DHL Produkte und Services.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbuch</a></p>',
-        'en' => '<p>Enable features providing DHL products and services to your OXID shop.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbook</a></p>',
+        'de' => '<p>Erweitern Sie Ihren Shop um den Post & Paket Versand.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbuch</a></p>',
+        'en' => '<p>Enable features providing Post & Paket Delivery to your OXID shop.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbook</a></p>',
     ],
     'thumbnail'   => 'logo.png',
     'version'     => '1.2.3',
