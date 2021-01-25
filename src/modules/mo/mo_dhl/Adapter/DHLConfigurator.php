@@ -46,15 +46,9 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const PROD_INTERNETMARKE_SIGNATURE = 'v9hFqrH1JH5vBdtd8f9XXjMpkSNl6UcW';
 
-    const TEST_INTERNETMARKE_USERNAME = 'testpk_0526@dhldp-test.de';
-
-    const TEST_INTERNETMARKE_PASSWORD = '9W8ixXmjd3XEWg0c';
-
     const PRODWS_USERNAME = 'mediaopt';
 
     const PRODWS_PASSWORD = 'B&5%bk?dx7';
-
-    const TEST_PRODWS_MANDANT_ID = 'MEDIAOPT';
 
     /**
      * @return mixed
@@ -169,9 +163,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerInternetmarkeLogin()
     {
-        return $this->isProductionEnvironment()
-            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_user') ?: '')
-            : self::TEST_INTERNETMARKE_USERNAME;
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_user') ?: '';
     }
 
     /**
@@ -179,9 +171,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerInternetmarkePassword()
     {
-        return $this->isProductionEnvironment()
-            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_password') ?: '')
-            : self::TEST_INTERNETMARKE_PASSWORD;
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_password') ?: '';
     }
 
     /**
@@ -205,9 +195,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerProdWSMandantId()
     {
-        return $this->isProductionEnvironment()
-            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_mandant_id') ?: '')
-            : self::TEST_PRODWS_MANDANT_ID;
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_mandant_id') ?: '';
     }
 
     /**

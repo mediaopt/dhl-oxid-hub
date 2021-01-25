@@ -3,6 +3,12 @@
 class TestConfigurator extends \Mediaopt\DHL\Configurator
 {
 
+    const TEST_INTERNETMARKE_USERNAME = 'testpk_0526@dhldp-test.de';
+
+    const TEST_INTERNETMARKE_PASSWORD = '9W8ixXmjd3XEWg0c';
+
+    const TEST_PRODWS_MANDANT_ID = 'MEDIAOPT';
+
     /**
      * @return string
      */
@@ -112,7 +118,7 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerInternetmarkeLogin()
     {
-        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_INTERNETMARKE_USERNAME;
+        return self::TEST_INTERNETMARKE_USERNAME;
     }
 
     /**
@@ -120,7 +126,7 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerInternetmarkePassword()
     {
-        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_INTERNETMARKE_PASSWORD;
+        return self::TEST_INTERNETMARKE_PASSWORD;
     }
 
     /**
@@ -144,7 +150,7 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerProdWSMandantId()
     {
-        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_PRODWS_MANDANT_ID;
+        return self::TEST_PRODWS_MANDANT_ID;
     }
 
     /**
