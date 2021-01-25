@@ -14,6 +14,9 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__merchant_ekp'          => 'EKP',
     'HELP_SHOP_MODULE_mo_dhl__merchant_ekp'     => 'Die EKP ist Ihre DHL Kundennummer',
 
+    'SHOP_MODULE_mo_dhl__prod_standortsuche_password'      => 'DHL Standortsuche Passwort',
+    'HELP_SHOP_MODULE_mo_dhl__prod_standortsuche_password' => 'Ihr Passwort für das <a href="https://developer.dhl.com/api-reference/location-finder" target="_blank">DHL Standortsuche</a>.',
+
     'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Versand',
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Nur leitcodierbare Adressen zulassen',
     'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => 'Aktivieren Sie die Checkbox, wenn Versandetiketten nur für Adressen erstellt werden sollen, die seitens DHL als leitcodierbar gelten. Für nicht-leitcodierbare Adressen berechnet DHL in der Regel einen Aufschlag.',

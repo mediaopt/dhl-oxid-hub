@@ -21,6 +21,7 @@ class AddressTest extends \PHPUnit_Framework_TestCase
             'city' => 'Berlin',
             'district' => 'Neukölln',
             'country' => 'Deutschland',
+            'countryIso2Code' => 'DE',
         ];
     }
 
@@ -32,7 +33,8 @@ class AddressTest extends \PHPUnit_Framework_TestCase
             $information['zip'],
             $information['city'],
             $information['district'],
-            $information['country']
+            $information['country'],
+            $information['countryIso2Code']
         );
     }
 
@@ -46,6 +48,7 @@ class AddressTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($information['city'], $address->getCity());
         $this->assertEquals($information['district'], $address->getDistrict());
         $this->assertEquals($information['country'], $address->getCountry());
+        $this->assertEquals($information['countryIso2Code'], $address->getCountryIso2Code());
     }
 
     public function testToArray()

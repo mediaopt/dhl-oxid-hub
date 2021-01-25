@@ -74,14 +74,29 @@ class TimetableBuilder
     public function build(array $timeInfos)
     {
         $timetable = new Timetable();
-        foreach ($this->groupOpeningHours($timeInfos) as $group) {
-            list($days, $hours) = $group;
-            foreach ($this->parseDaysExpression($days) as $day) {
-                foreach ($this->parseTimeExpression($hours, TimeInfo::OPENING_HOURS) as $timeInfo) {
-                    $timetable->enter($timeInfo, $day);
+
+        $compare = [
+            'http://schema.org/Monday' => 1,
+            'http://schema.org/Tuesday' => 2,
+            'http://schema.org/Wednesday' => 3,
+            'http://schema.org/Thursday' => 4,
+            'http://schema.org/Friday' => 5,
+            'http://schema.org/Saturday' => 6,
+            'http://schema.org/Sunday' => 7,
+        ];
+
+        foreach ($timeInfos as $dayInfo) {
+            if (isset($compare[$dayInfo->dayOfWeek])) {
+                if ($dayInfo->closes === '23:59:59') {
+                    $dayInfo->closes = '24:00';
                 }
+                $timetable->enter(
+                    new PeriodOfTime(Time::fromString($dayInfo->opens), Time::fromString($dayInfo->closes), 0),
+                    $compare[$dayInfo->dayOfWeek]
+                );
             }
         }
+
         return $timetable;
     }
 
@@ -111,5 +126,69 @@ class TimetableBuilder
             $groups[$group][(int)substr($type, -1)] = $timeInfo->content;
         }
         return $groups;
+    }
+
+    /**
+    * @param Timetable $timeInfos
+    * @return array
+    */
+    public function buildGrouped(Timetable $timeInfos): array
+    {
+        $groups = [];
+        foreach ($timeInfos->toArray() as $day => $openPeriods) {
+            $key = implode(', ', $openPeriods);
+            isset($groups[$key]) ? $groups[$key][] = $day : $groups[$key] = [$day];
+        }
+
+        $properGroups = [];
+        $sortNummer = 1;
+        foreach ($groups as $openPeriods => $group) {
+            $properGroups[$sortNummer] = [
+                'dayGroup' => $this->getDaysGroupsName($group),
+                'openPeriods' => $openPeriods
+            ];
+            $sortNummer++;
+        }
+
+        return $properGroups;
+    }
+
+    /**
+     * @param array $days
+     * @return string
+     */
+    public function getDaysGroupsName(array $days)
+    {
+        if (count($days) < 3) {
+            return implode(', ', $days);
+        }
+
+        $namePieces = [];
+        $period = [];
+        foreach ($days as $key => $day) {
+            if (empty($period)) {
+                $period[] = $day;
+            } else {
+                if ($day === $period[count($period) - 1] + 1) {
+                    $period[] = $day;
+                } else {
+                    if (count($period) > 2) {
+                        $namePieces[] = $period[0] . ' - ' . $period[count($period) - 1];
+                    } else {
+                        $namePieces = array_merge($namePieces, $period);
+                    }
+                    $period = [$day];
+                }
+
+            }
+        }
+
+        if (count($period) > 1) {
+            $namePieces[] = $period[0] . ' - ' . $period[count($period) - 1];
+        } else {
+            $namePieces[] = $period[0];
+        }
+
+        return implode(', ', $namePieces);
     }
 }

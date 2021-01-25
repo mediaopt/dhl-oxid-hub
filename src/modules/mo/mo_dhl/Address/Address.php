@@ -41,14 +41,20 @@ class Address
     protected $country;
 
     /**
+     * @var string
+     */
+    protected $countryIso2Code;
+
+    /**
      * @param string $street
      * @param string $streetNo
      * @param string $zip
      * @param string $city
      * @param string $district
      * @param string $country
+     * @param string $countryIso2Code
      */
-    public function __construct($street, $streetNo, $zip, $city, $district = '', $country = 'DEU')
+    public function __construct($street, $streetNo, $zip, $city, $district = '', $country = 'DEU', $countryIso2Code = 'DE')
     {
         $this->street = $street;
         $this->streetNo = $streetNo;
@@ -56,6 +62,7 @@ class Address
         $this->city = $city;
         $this->district = $district;
         $this->country = $country;
+        $this->countryIso2Code = $countryIso2Code;
     }
 
     /**
@@ -74,6 +81,15 @@ class Address
     public function getCountry()
     {
         return $this->country;
+    }
+
+    /**
+     * @see $countryIso2Code
+     * @return string
+     */
+    public function getCountryIso2Code()
+    {
+        return $this->countryIso2Code;
     }
 
     /**
@@ -124,6 +140,7 @@ class Address
             'city'     => $this->getCity(),
             'district' => $this->getDistrict(),
             'country'  => $this->getCountry(),
+            'countryIso2Code'  => $this->getCountryIso2Code(),
         ];
     }
 }

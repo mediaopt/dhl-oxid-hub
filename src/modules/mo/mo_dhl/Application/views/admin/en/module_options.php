@@ -15,6 +15,9 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__merchant_ekp'          => 'EKP',
     'HELP_SHOP_MODULE_mo_dhl__merchant_ekp'     => 'The EKP is your DHL customer number',
 
+    'SHOP_MODULE_mo_dhl__prod_standortsuche_password'      => 'DHL Location Finder Password',
+    'HELP_SHOP_MODULE_mo_dhl__prod_standortsuche_password' => 'Your Password for the <a href="https://developer.dhl.com/api-reference/location-finder" target="_blank">DHL Location Finder API</a>.',
+
     'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Delivery',
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Allow only Codeable shipping addresses',
     'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => 'If checkbox is enabled, shipment labels will only be created if the DHL delivery address verification succeeds (address is coedable). There is a surcharge for not codeable shipping addresses.',
