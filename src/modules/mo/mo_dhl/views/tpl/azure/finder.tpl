@@ -49,29 +49,22 @@
 
         <h5 class="moDHLOpeningHours"
             style="display: none;">[{oxmultilang ident="MO_DHL__OPENING_HOURS"}]</h5>
-        <ul class="moDHLOpeningHours" style="display: none;">
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_1"}]: <span
-                        class="opening-hours-day-1">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
+        <ul class="moDHLOpeningHours" style="display: none;"></ul>
+        <div id = "mo_day_translations" style="display: none;"
+             data-day1="[{oxmultilang ident="MO_DHL__OPENING_HOURS_1"}]"
+             data-day2="[{oxmultilang ident="MO_DHL__OPENING_HOURS_2"}]"
+             data-day3="[{oxmultilang ident="MO_DHL__OPENING_HOURS_3"}]"
+             data-day4="[{oxmultilang ident="MO_DHL__OPENING_HOURS_4"}]"
+             data-day5="[{oxmultilang ident="MO_DHL__OPENING_HOURS_5"}]"
+             data-day6="[{oxmultilang ident="MO_DHL__OPENING_HOURS_6"}]"
+             data-day7="[{oxmultilang ident="MO_DHL__OPENING_HOURS_7"}]"
+        ></div>
+        <div id = "mo_grouped_timetable_template" style="display: none;">
+            <li>
+                <span class="dayname"></span>
+                <span class="opening-hours-day-grouped">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
             </li>
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_2"}]: <span
-                        class="opening-hours-day-2">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
-            </li>
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_3"}]: <span
-                        class="opening-hours-day-3">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
-            </li>
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_4"}]: <span
-                        class="opening-hours-day-4">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
-            </li>
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_5"}]: <span
-                        class="opening-hours-day-5">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
-            </li>
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_6"}]: <span
-                        class="opening-hours-day-6">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
-            </li>
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_7"}]: <span
-                        class="opening-hours-day-7">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
-            </li>
-        </ul>
+        </div>
 
         <button class="submitButton"
                 id="provider_' + provider.id + '">[{oxmultilang ident="MO_DHL__SELECT"}]</button>
@@ -87,8 +80,19 @@
         <div id="moDHLAddressInputs">
             <input type="text" placeholder="[{oxmultilang ident="MO_DHL__STREET"}]"
                    id="moDHLStreet" class="is--azure" name="street"/>
-            <input type="text" placeholder="[{oxmultilang ident="MO_DHL__POSTCODE"}] &amp; [{oxmultilang ident="MO_DHL__CITY"}]"
+            <input type="text" placeholder="[{oxmultilang ident="MO_DHL__POSTCODE"}]"
                    id="moDHLLocality" class="is--azure" name="locality"/>
+            [{assign var="countries_list" value=$oViewConf->moGetDHLCountriesList()}]
+            <select id="moDHLCountry" name="country"
+                    [{if count($countries_list) === 1}]style="display: none;"[{/if}]
+            >
+                <option value="">-</option>
+                [{foreach from=$countries_list item=country key=country_id}]
+                    <option value="[{$country_id}]" isoalpha2="[{$country.isoalpha2}]">
+                        [{$country.title}]
+                    </option>
+                [{/foreach}]
+            </select>
         </div>
         <div id="moDHLProviders" class="is--azure">
         [{if $oViewConf->moCanPackstationBeSelected()}]

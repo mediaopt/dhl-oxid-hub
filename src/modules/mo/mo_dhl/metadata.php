@@ -482,6 +482,11 @@ $aModule = [
             'constraints' => 'DEU|AUT',
         ],
         [
+            'group' => 'mo_dhl__standortsuche',
+            'name'  => 'mo_dhl__prod_standortsuche_password',
+            'type'  => 'str',
+        ],
+        [
             'group'       => 'mo_dhl__standortsuche',
             'name'        => 'mo_dhl__standortsuche_maximumHits',
             'type'        => 'select',

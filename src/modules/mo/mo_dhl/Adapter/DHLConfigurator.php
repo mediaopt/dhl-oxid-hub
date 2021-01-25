@@ -50,6 +50,10 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const PRODWS_PASSWORD = 'B&5%bk?dx7';
 
+    const STANDORTSUCHE_API_KEY_NAME = 'DHL-API-Key';
+
+    const TEST_STANDORTSUCHE_API_PASSWORD = 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK';
+
     /**
      * @return mixed
      */
@@ -88,6 +92,30 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     protected function getSandboxPassword()
     {
         return self::TEST_API_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getStandortsucheKeyName()
+    {
+        return self::STANDORTSUCHE_API_KEY_NAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProdStandortsuchePassword()
+    {
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__prod_standortsuche_password') ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSandboxStandortsuchePassword()
+    {
+        return self::TEST_STANDORTSUCHE_API_PASSWORD;
     }
 
     /**

@@ -20,6 +20,9 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
                 'getCustomerGKVPassword',
                 'getCustomerRetoureLogin',
                 'getCustomerRetourePassword',
+                'getStandortsucheKeyName',
+                'getProdStandortsuchePassword',
+                'getSandboxStandortsuchePassword',
                 'getInternetmarkeProdLogin',
                 'getInternetmarkeProdSignature',
                 'getInternetmarkeSandboxLogin',
@@ -41,15 +44,6 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
         $configurator = new TestConfigurator();
         $standortsuche = $configurator->buildStandortsuche(new \Monolog\Logger(__CLASS__));
         $this->assertInstanceOf(Standortsuche::class, $standortsuche);
-    }
-
-    public function testRestEndpointForProductionEnvironment()
-    {
-        $configuratorMock = $this->getConfiguratorMock();
-
-        /** @var Standortsuche $standortsuche */
-        $standortsuche = $configuratorMock->buildStandortsuche(new \Monolog\Logger(__CLASS__));
-        $this->assertContains('production', $standortsuche->getCredentials()->getEndpoint());
     }
 
     public function testSoapEndpointForProductionEnvironment()

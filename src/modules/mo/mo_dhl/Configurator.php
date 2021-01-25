@@ -42,6 +42,17 @@ abstract class Configurator
     }
 
     /**
+     * @param false $forceUseProd
+     * @return Credentials
+     */
+    protected function buildStandortsucheCredentials($forceUseProd = false)
+    {
+        return $this->isProductionEnvironment() || $forceUseProd
+            ? Credentials::createStandortsucheEndpoint($this->getStandortsucheKeyName(), $this->getProdStandortsuchePassword())
+            : Credentials::createStandortsucheEndpoint($this->getStandortsucheKeyName(), $this->getSandboxStandortsuchePassword());
+    }
+
+    /**
      * @return Credentials
      */
     protected function buildSoapCredentials()
@@ -189,6 +200,21 @@ abstract class Configurator
     /**
      * @return string
      */
+    abstract protected function getStandortsucheKeyName();
+
+    /**
+     * @return string
+     */
+    abstract protected function getProdStandortsuchePassword();
+
+    /**
+     * @return string
+     */
+    abstract protected function getSandboxStandortsuchePassword();
+
+    /**
+     * @return string
+     */
     abstract protected function getEkp();
 
     /**
@@ -203,7 +229,7 @@ abstract class Configurator
         ServiceProviderBuilder $serviceProviderBuilder = null
     ) {
         return new Standortsuche(
-            $this->buildRestCredentials(true),
+            $this->buildStandortsucheCredentials(),
             $logger ?: $this->buildLogger(),
             $client ?: $this->buildClient(),
             $serviceProviderBuilder

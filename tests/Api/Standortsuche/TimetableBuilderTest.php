@@ -50,7 +50,14 @@ class TimetableBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testSamplePostfilialeSample()
     {
-        $json = '[{"type":"tt_openinghour_rows","content":"3"},{"type":"tt_openinghour_cols","content":"2"},{"type":"tt_openinghour_00","content":"mo-fr"},{"type":"tt_openinghour_01","content":"06:00 - 19:00"},{"type":"tt_openinghour_10","content":"sa"},{"type":"tt_openinghour_11","content":"08:00 - 16:00"},{"type":"tt_openinghour_20","content":"su"},{"type":"tt_openinghour_21","content":"08:00 - 14:00"},{"type":"tt_timestamp","content":"29668888744299732"}]';
+        $json = '[
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Monday"},
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Tuesday"},
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Wednesday"},
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Thursday"},
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Friday"},
+        {"opens":"08:00:00","closes":"16:00:00","dayOfWeek":"http://schema.org/Saturday"},
+        {"opens":"08:00:00","closes":"14:00:00","dayOfWeek":"http://schema.org/Sunday"}]';
         $this->assertEquals(
             [
                 Timetable::MONDAY    => ['6:00-19:00'],
@@ -67,7 +74,15 @@ class TimetableBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testSamplePackstation()
     {
-        $json = '[{"type":"tt_openinghour_rows","content":"3"},{"type":"tt_openinghour_cols","content":"2"},{"type":"tt_openinghour_00","content":"mo-fr"},{"type":"tt_openinghour_01","content":"00:00 - 24:00"},{"type":"tt_openinghour_10","content":"sa"},{"type":"tt_openinghour_11","content":"00:00 - 24:00"},{"type":"tt_openinghour_20","content":"su"},{"type":"tt_openinghour_21","content":"00:00 - 04:00|08:00 - 24:00"},{"type":"tt_timestamp","content":"29670850859239880"}]';
+        $json = '[
+        {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Monday"},
+        {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Tuesday"},
+        {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Wednesday"},
+        {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Thursday"},
+        {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Friday"},
+        {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Saturday"},
+        {"opens":"08:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Sunday"},
+        {"opens":"00:00:00","closes":"04:00:00","dayOfWeek":"http://schema.org/Sunday"}]';
         $this->assertEquals(
             [
                 Timetable::MONDAY    => ['0:00-24:00'],
@@ -82,4 +97,81 @@ class TimetableBuilderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testSamplePostfilialeGrouped()
+    {
+        $json = '[
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Monday"},
+        {"opens":"13:00:00","closes":"16:00:00","dayOfWeek":"http://schema.org/Tuesday"},
+        {"opens":"08:00:00","closes":"12:00:00","dayOfWeek":"http://schema.org/Tuesday"},
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Wednesday"},
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Thursday"},
+        {"opens":"06:00:00","closes":"19:00:00","dayOfWeek":"http://schema.org/Friday"},
+        {"opens":"08:00:00","closes":"12:00:00","dayOfWeek":"http://schema.org/Saturday"},
+        {"opens":"13:00:00","closes":"16:00:00","dayOfWeek":"http://schema.org/Saturday"},
+        {"opens":"08:00:00","closes":"14:00:00","dayOfWeek":"http://schema.org/Sunday"}]';
+
+        $timeTableBuilder = new TimetableBuilder();
+
+        $this->assertEquals(
+            [
+                1 => [
+                    'dayGroup' => Timetable::MONDAY . ', ' . Timetable::WEDNESDAY . ' - ' . Timetable::FRIDAY,
+                    'openPeriods' => '6:00-19:00'
+                ],
+                2 => [
+                    'dayGroup' => Timetable::TUESDAY . ', ' . Timetable::SATURDAY,
+                    'openPeriods' => '8:00-12:00, 13:00-16:00'
+                ],
+                3 => [
+                    'dayGroup' => Timetable::SUNDAY,
+                    'openPeriods' => '8:00-14:00'
+                ],
+            ],
+            $timeTableBuilder->buildGrouped($timeTableBuilder->build(json_decode($json)))
+        );
+    }
+
+    public function testDayOfWeeksCombine() {
+        $inputList = [
+            [
+                'input' => [1, 3, 4, 5],
+                'expected' => '1, 3 - 5'
+            ],
+            [
+                'input' => [1, 2, 3, 4, 5, 6, 7],
+                'expected' => '1 - 7'
+            ],
+            [
+                'input' => [1, 2, 4, 5, 6],
+                'expected' => '1, 2, 4 - 6'
+            ],
+            [
+                'input' => [1, 2, 3, 5, 6, 7],
+                'expected' => '1 - 3, 5 - 7'
+            ],
+            [
+                'input' => [1, 2, 4, 5, 6, 7],
+                'expected' => '1, 2, 4 - 7'
+            ],
+            [
+                'input' => [1, 3, 5, 7],
+                'expected' => '1, 3, 5, 7'
+            ],
+            [
+                'input' => [1, 3],
+                'expected' => '1, 3'
+            ],
+            [
+                'input' => [1, 2, 3],
+                'expected' => '1 - 3'
+            ],
+        ];
+
+        foreach ($inputList as $item) {
+            $this->assertEquals(
+                $item['expected'],
+                (new TimetableBuilder())->getDaysGroupsName($item['input'])
+            );
+        }
+    }
 }
