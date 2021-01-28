@@ -5,6 +5,9 @@ namespace Mediaopt\DHL;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Mediaopt\DHL\Api\Credentials;
+use Mediaopt\DHL\Api\Internetmarke;
+use Mediaopt\DHL\Api\InternetmarkeRefund;
+use Mediaopt\DHL\Api\ProdWSService;
 use Mediaopt\DHL\Api\Retoure;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
@@ -70,6 +73,40 @@ abstract class Configurator
     /**
      * @return Credentials
      */
+    protected function buildInternetmarkeCredentials()
+    {
+        return $this->isProductionEnvironment()
+            ? Credentials::createProductionInternetmarkeEndpoint($this->getInternetmarkeProdLogin(), $this->getInternetmarkeProdSignature())
+            : Credentials::createSandboxInternetmarkeEndpoint($this->getInternetmarkeSandboxLogin(), $this->getInternetmarkeSandboxSignature());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildCustomerInternetmarkeCredentials()
+    {
+        return Credentials::createCustomerCredentials($this->getCustomerInternetmarkeLogin(), $this->getCustomerInternetmarkePassword());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildProdWSCredentials()
+    {
+        return Credentials::createProdWSEndpoint($this->getProdWSLogin(), $this->getProdWSPassword());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildCustomerProdWSCredentials()
+    {
+        return Credentials::createCustomerCredentials($this->getCustomerProdWSMandantId(), null);
+    }
+
+    /**
+     * @return Credentials
+     */
     protected function buildCustomerRetoureCredentials()
     {
         return Credentials::createCustomerCredentials($this->getCustomerRetoureLogin(), $this->getCustomerRetourePassword());
@@ -94,6 +131,51 @@ abstract class Configurator
      * @return string
      */
     abstract protected function getCustomerGKVPassword();
+
+    /**
+     * @return string
+     */
+    abstract protected function getInternetmarkeProdLogin();
+
+    /**
+     * @return string
+     */
+    abstract protected function getInternetmarkeProdSignature();
+
+    /**
+     * @return string
+     */
+    abstract protected function getInternetmarkeSandboxLogin();
+
+    /**
+     * @return string
+     */
+    abstract protected function getInternetmarkeSandboxSignature();
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerInternetmarkeLogin();
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerInternetmarkePassword();
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerProdWSMandantId();
+
+    /**
+     * @return string
+     */
+    abstract protected function getProdWSLogin();
+
+    /**
+     * @return string
+     */
+    abstract protected function getProdWSPassword();
 
     /**
      * @return string
@@ -177,6 +259,44 @@ abstract class Configurator
         return new GKV(
             $this->buildSoapCredentials(),
             $this->buildCustomerGKVCredentials(),
+            $logger ?: $this->buildLogger()
+        );
+    }
+
+    /**
+     * @param LoggerInterface|null $logger
+     * @return Internetmarke
+     */
+    public function buildInternetmarke(LoggerInterface $logger = null)
+    {
+        return new Internetmarke(
+            $this->buildInternetmarkeCredentials(),
+            $this->buildCustomerInternetmarkeCredentials(),
+            $logger ?: $this->buildLogger()
+        );
+    }
+
+    /**
+     * @param LoggerInterface|null $logger
+     * @return InternetmarkeRefund
+     */
+    public function buildInternetmarkeRefund(LoggerInterface $logger = null)
+    {
+        return new InternetmarkeRefund(
+            $this->buildInternetmarkeCredentials(),
+            $this->buildCustomerInternetmarkeCredentials(),
+            $logger ?: $this->buildLogger()
+        );
+    }
+    /**
+     * @param LoggerInterface|null $logger
+     * @return ProdWSService
+     */
+    public function buildProdWS(LoggerInterface $logger = null)
+    {
+        return new ProdWSService(
+            $this->buildProdWSCredentials(),
+            $this->buildCustomerProdWSCredentials(),
             $logger ?: $this->buildLogger()
         );
     }

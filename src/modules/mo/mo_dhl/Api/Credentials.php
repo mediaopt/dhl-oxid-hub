@@ -152,6 +152,36 @@ class Credentials
     }
 
     /**
+     * @param string      $username
+     * @param string      $password
+     * @return self
+     */
+    public static function createSandboxInternetmarkeEndpoint($username, $password)
+    {
+        return new static('https://internetmarke.deutschepost.de/OneClickForAppV3', $username, $password, null, true);
+    }
+
+    /**
+     * @param string      $username
+     * @param string      $password
+     * @return self
+     */
+    public static function createProductionInternetmarkeEndpoint($username, $password)
+    {
+        return new static('https://internetmarke.deutschepost.de/OneClickForAppV3', $username, $password, null, false);
+    }
+
+    /**
+     * @param string      $username
+     * @param string      $password
+     * @return self
+     */
+    public static function createProdWSEndpoint($username, $password)
+    {
+        return new static('https://prodws.deutschepost.de:8443/ProdWSProvider_1_1/prodws', $username, $password, null, false);
+    }
+
+    /**
      * @param string $username
      * @param string $password
      * @return static

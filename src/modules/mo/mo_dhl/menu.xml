@@ -30,4 +30,14 @@
             </SUBMENU>
         </MAINMENU>
     </OXMENU>
+    <OXMENU id="MO_DHL">
+        <MAINMENU id="MO_DHL__INTERNETMARKE">
+                <SUBMENU id="MO_DHL__INTERNETMARKE_PRODUCT" cl="MoDHLInternetmarkeProducts" list="MoDHLInternetmarkeProductsList">
+                    <TAB id="MO_DHL__INTERNETMARKE_DETAILS" cl="MoDHLInternetmarkeProductsDetails"/>
+                </SUBMENU>
+            <SUBMENU id="MO_DHL__INTERNETMARKE_REFUND" cl="MoDHLInternetmarkeRefunds" list="MoDHLInternetmarkeRefundsList">
+            <TAB id="MO_DHL__INTERNETMARKE_DETAILS" cl="MoDHLInternetmarkeRefundsDetails"/>
+        </SUBMENU>
+        </MAINMENU>
+    </OXMENU>
 </OX>
