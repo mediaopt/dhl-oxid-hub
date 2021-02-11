@@ -28,7 +28,6 @@ $aModule = [
         \OxidEsales\Eshop\Application\Controller\Admin\ModuleConfiguration::class => Application\Controller\Admin\ModuleConfiguration::class,
         \OxidEsales\Eshop\Application\Controller\Admin\OrderOverview::class       => Application\Controller\Admin\OrderOverview::class,
         \OxidEsales\Eshop\Application\Controller\UserController::class            => Application\Controller\UserController::class,
-        \OxidEsales\Eshop\Application\Controller\ThankYouController::class        => Application\Controller\ThankYouController::class,
         \OxidEsales\Eshop\Application\Controller\OrderController::class           => Application\Controller\OrderController::class,
         \OxidEsales\Eshop\Application\Controller\BasketController::class          => Application\Controller\BasketController::class,
         \OxidEsales\Eshop\Application\Controller\PaymentController::class         => Application\Controller\PaymentController::class,
@@ -133,11 +132,6 @@ $aModule = [
             'template' => 'form/fieldset/user_shipping.tpl',
             'block'    => 'form_user_shipping_country',
             'file'     => 'views/blocks/form_user_shipping_country.tpl',
-        ],
-        [
-            'template' => 'layout/base.tpl',
-            'block'    => 'base_js',
-            'file'     => 'views/blocks/base_js.tpl',
         ],
         [
             'template' => 'layout/base.tpl',
