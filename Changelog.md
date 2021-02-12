@@ -1,4 +1,7 @@
 # Changelog
+## 1.4.1
+* removed tracking pixel
+
 ## 1.4.0
 * integrated the Internetmarke Products
 * new Standortsuche using Location Finder - Unified
