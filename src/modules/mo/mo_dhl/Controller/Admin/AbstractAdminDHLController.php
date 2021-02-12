@@ -8,6 +8,7 @@
 namespace Mediaopt\DHL\Controller\Admin;
 
 
+use Mediaopt\DHL\Model\MoDHLInternetmarkeProduct;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
@@ -33,10 +34,7 @@ abstract class AbstractAdminDHLController extends \OxidEsales\Eshop\Application\
     public function render()
     {
         parent::render();
-        $id = $this->getEditObjectId();
-        if (isset($id) && $id != "-1") {
-            $model = oxNew($this->moDHLGetBaseClassName());
-            $model->load($id);
+        if ($model = $this->getEditObject()) {
             $this->addTplParam("edit", $model);
             if ($model->isDerived()) {
                 $this->addTplParam('readonly', true);
@@ -68,5 +66,19 @@ abstract class AbstractAdminDHLController extends \OxidEsales\Eshop\Application\
         }
         $model->assign($params);
         $model->save();
+    }
+
+    /**
+     * @return object|null
+     */
+    protected function getEditObject()
+    {
+        $id = $this->getEditObjectId();
+        if (!isset($id) || $id === "-1") {
+            return null;
+        }
+        $model = \oxNew($this->moDHLGetBaseClassName());
+        $model->load($id);
+        return $model;
     }
 }

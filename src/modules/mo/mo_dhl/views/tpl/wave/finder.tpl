@@ -95,7 +95,7 @@
                     <div id="moDHLAddressInputs">
                         <input type="text" placeholder="[{oxmultilang ident="MO_DHL__STREET"}]"
                                id="moDHLStreet" name="street"/>
-                        <input type="text" placeholder="[{oxmultilang ident="MO_DHL__POSTCODE"}] &amp; [{oxmultilang ident="MO_DHL__CITY"}]"
+                        <input type="text" placeholder="[{oxmultilang ident="MO_DHL__POSTCODE"}]"
                                id="moDHLLocality" name="locality"/>
                     </div>
                     <div id="moDHLProviders">

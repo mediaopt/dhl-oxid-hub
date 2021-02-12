@@ -5,6 +5,9 @@ namespace Mediaopt\DHL;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Mediaopt\DHL\Api\Credentials;
+use Mediaopt\DHL\Api\Internetmarke;
+use Mediaopt\DHL\Api\InternetmarkeRefund;
+use Mediaopt\DHL\Api\ProdWSService;
 use Mediaopt\DHL\Api\Retoure;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
@@ -39,6 +42,17 @@ abstract class Configurator
     }
 
     /**
+     * @param false $forceUseProd
+     * @return Credentials
+     */
+    protected function buildStandortsucheCredentials($forceUseProd = false)
+    {
+        return $this->isProductionEnvironment() || $forceUseProd
+            ? Credentials::createStandortsucheEndpoint($this->getStandortsucheKeyName(), $this->getProdStandortsuchePassword())
+            : Credentials::createStandortsucheEndpoint($this->getStandortsucheKeyName(), $this->getSandboxStandortsuchePassword());
+    }
+
+    /**
      * @return Credentials
      */
     protected function buildSoapCredentials()
@@ -54,6 +68,40 @@ abstract class Configurator
     protected function buildCustomerGKVCredentials()
     {
         return Credentials::createCustomerCredentials($this->getCustomerGKVLogin(), $this->getCustomerGKVPassword());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildInternetmarkeCredentials()
+    {
+        return $this->isProductionEnvironment()
+            ? Credentials::createProductionInternetmarkeEndpoint($this->getInternetmarkeProdLogin(), $this->getInternetmarkeProdSignature())
+            : Credentials::createSandboxInternetmarkeEndpoint($this->getInternetmarkeSandboxLogin(), $this->getInternetmarkeSandboxSignature());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildCustomerInternetmarkeCredentials()
+    {
+        return Credentials::createCustomerCredentials($this->getCustomerInternetmarkeLogin(), $this->getCustomerInternetmarkePassword());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildProdWSCredentials()
+    {
+        return Credentials::createProdWSEndpoint($this->getProdWSLogin(), $this->getProdWSPassword());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildCustomerProdWSCredentials()
+    {
+        return Credentials::createCustomerCredentials($this->getCustomerProdWSMandantId(), null);
     }
 
     /**
@@ -87,6 +135,51 @@ abstract class Configurator
     /**
      * @return string
      */
+    abstract protected function getInternetmarkeProdLogin();
+
+    /**
+     * @return string
+     */
+    abstract protected function getInternetmarkeProdSignature();
+
+    /**
+     * @return string
+     */
+    abstract protected function getInternetmarkeSandboxLogin();
+
+    /**
+     * @return string
+     */
+    abstract protected function getInternetmarkeSandboxSignature();
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerInternetmarkeLogin();
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerInternetmarkePassword();
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerProdWSMandantId();
+
+    /**
+     * @return string
+     */
+    abstract protected function getProdWSLogin();
+
+    /**
+     * @return string
+     */
+    abstract protected function getProdWSPassword();
+
+    /**
+     * @return string
+     */
     abstract protected function getCustomerRetoureLogin();
 
     /**
@@ -107,6 +200,21 @@ abstract class Configurator
     /**
      * @return string
      */
+    abstract protected function getStandortsucheKeyName();
+
+    /**
+     * @return string
+     */
+    abstract protected function getProdStandortsuchePassword();
+
+    /**
+     * @return string
+     */
+    abstract protected function getSandboxStandortsuchePassword();
+
+    /**
+     * @return string
+     */
     abstract protected function getEkp();
 
     /**
@@ -121,7 +229,7 @@ abstract class Configurator
         ServiceProviderBuilder $serviceProviderBuilder = null
     ) {
         return new Standortsuche(
-            $this->buildRestCredentials(true),
+            $this->buildStandortsucheCredentials(),
             $logger ?: $this->buildLogger(),
             $client ?: $this->buildClient(),
             $serviceProviderBuilder
@@ -151,6 +259,44 @@ abstract class Configurator
         return new GKV(
             $this->buildSoapCredentials(),
             $this->buildCustomerGKVCredentials(),
+            $logger ?: $this->buildLogger()
+        );
+    }
+
+    /**
+     * @param LoggerInterface|null $logger
+     * @return Internetmarke
+     */
+    public function buildInternetmarke(LoggerInterface $logger = null)
+    {
+        return new Internetmarke(
+            $this->buildInternetmarkeCredentials(),
+            $this->buildCustomerInternetmarkeCredentials(),
+            $logger ?: $this->buildLogger()
+        );
+    }
+
+    /**
+     * @param LoggerInterface|null $logger
+     * @return InternetmarkeRefund
+     */
+    public function buildInternetmarkeRefund(LoggerInterface $logger = null)
+    {
+        return new InternetmarkeRefund(
+            $this->buildInternetmarkeCredentials(),
+            $this->buildCustomerInternetmarkeCredentials(),
+            $logger ?: $this->buildLogger()
+        );
+    }
+    /**
+     * @param LoggerInterface|null $logger
+     * @return ProdWSService
+     */
+    public function buildProdWS(LoggerInterface $logger = null)
+    {
+        return new ProdWSService(
+            $this->buildProdWSCredentials(),
+            $this->buildCustomerProdWSCredentials(),
             $logger ?: $this->buildLogger()
         );
     }

@@ -54,56 +54,69 @@
                     </select>
                 </td>
             </tr>
-
-            <tr>
-                <td class="edittext" width="140">
-                [{oxmultilang ident="MO_DHL__PARTICIPATION_NUMBER"}]
-                </td>
-                <td class="edittext" width="250">
-                <input name="editval[oxdeliveryset__mo_dhl_participation]" maxlength="2"
-                       value="[{$edit->oxdeliveryset__mo_dhl_participation->rawValue}]"
-                        [{$readonly}]
-                />
-                [{oxinputhelp ident="HELP_MO_DHL__PARTICIPATION_NUMBER"}]
-                </td>
-            </tr>
-
-            <tr>
-                <td class="edittext">
-                    [{oxmultilang ident="MO_DHL__IDENT_CHECK"}]
-                </td>
-                <td class="edittext">
-                    <input type="hidden" name="editval[oxdeliveryset__mo_dhl_ident_check]" value="0">
-                    <input class="edittext" type="checkbox" name="editval[oxdeliveryset__mo_dhl_ident_check]"
-                           value='1'
-                           [{if $edit->oxdeliveryset__mo_dhl_ident_check->value == 1}]checked[{/if}] [{$readonly}]>
-                    [{oxinputhelp ident="HELP_MO_DHL__IDENT_CHECK"}]
-                </td>
-            </tr>
-            <tr>
-                <td class="edittext">
-                    [{oxmultilang ident="MO_DHL__ADDITIONAL_INSURANCE"}]
-                </td>
-                <td class="edittext">
-                    <input type="hidden" name="editval[oxdeliveryset__mo_dhl_additional_insurance]" value="0">
-                    <input class="edittext" type="checkbox" name="editval[oxdeliveryset__mo_dhl_additional_insurance]"
-                           value='1'
-                           [{if $edit->oxdeliveryset__mo_dhl_additional_insurance->value == 1}]checked[{/if}] [{$readonly}]>
-                    [{oxinputhelp ident="HELP_MO_DHL__ADDITIONAL_INSURANCE"}]
-                </td>
-            </tr>
-            <tr>
-                <td class="edittext" width="140">
-                    [{oxmultilang ident="MO_DHL__OPERATOR"}]
-                </td>
-                <td class="edittext" width="250">
-                    <input name="editval[oxdeliveryset__mo_dhl_operator]" maxlength="40"
-                           value="[{$edit->oxdeliveryset__mo_dhl_operator->rawValue}]"
-                           [{$readonly}]
-                    />
-                    [{oxinputhelp ident="HELP_MO_DHL__OPERATOR"}]
-                </td>
-            </tr>
+            [{if $oView->usesInternetmarke()}]
+                <tr>
+                    <td class="edittext" width="140">
+                        [{oxmultilang ident="MO_DHL__INTERNETMARKE_PRODUCT_NUMBER"}]
+                    </td>
+                    <td class="edittext" width="250">
+                        <input name="editval[oxdeliveryset__mo_dhl_participation]" maxlength="5"
+                               value="[{$edit->oxdeliveryset__mo_dhl_participation->rawValue}]"
+                               [{$readonly}]
+                        />
+                        [{oxinputhelp ident="HELP_MO_DHL__INTERNETMARKE_PRODUCT_NUMBER"}]
+                    </td>
+                </tr>
+            [{else}]
+                <tr>
+                    <td class="edittext" width="140">
+                        [{oxmultilang ident="MO_DHL__PARTICIPATION_NUMBER"}]
+                    </td>
+                    <td class="edittext" width="250">
+                        <input name="editval[oxdeliveryset__mo_dhl_participation]" maxlength="5"
+                               value="[{$edit->oxdeliveryset__mo_dhl_participation->rawValue}]"
+                               [{$readonly}]
+                        />
+                        [{oxinputhelp ident="HELP_MO_DHL__PARTICIPATION_NUMBER"}]
+                    </td>
+                </tr>
+                <tr>
+                    <td class="edittext">
+                        [{oxmultilang ident="MO_DHL__IDENT_CHECK"}]
+                    </td>
+                    <td class="edittext">
+                        <input type="hidden" name="editval[oxdeliveryset__mo_dhl_ident_check]" value="0">
+                        <input class="edittext" type="checkbox" name="editval[oxdeliveryset__mo_dhl_ident_check]"
+                               value='1'
+                               [{if $edit->oxdeliveryset__mo_dhl_ident_check->value == 1}]checked[{/if}] [{$readonly}]>
+                        [{oxinputhelp ident="HELP_MO_DHL__IDENT_CHECK"}]
+                    </td>
+                </tr>
+                <tr>
+                    <td class="edittext">
+                        [{oxmultilang ident="MO_DHL__ADDITIONAL_INSURANCE"}]
+                    </td>
+                    <td class="edittext">
+                        <input type="hidden" name="editval[oxdeliveryset__mo_dhl_additional_insurance]" value="0">
+                        <input class="edittext" type="checkbox" name="editval[oxdeliveryset__mo_dhl_additional_insurance]"
+                               value='1'
+                               [{if $edit->oxdeliveryset__mo_dhl_additional_insurance->value == 1}]checked[{/if}] [{$readonly}]>
+                        [{oxinputhelp ident="HELP_MO_DHL__ADDITIONAL_INSURANCE"}]
+                    </td>
+                </tr>
+                <tr>
+                    <td class="edittext" width="140">
+                        [{oxmultilang ident="MO_DHL__OPERATOR"}]
+                    </td>
+                    <td class="edittext" width="250">
+                        <input name="editval[oxdeliveryset__mo_dhl_operator]" maxlength="40"
+                               value="[{$edit->oxdeliveryset__mo_dhl_operator->rawValue}]"
+                               [{$readonly}]
+                        />
+                        [{oxinputhelp ident="HELP_MO_DHL__OPERATOR"}]
+                    </td>
+                </tr>
+            [{/if}]
             <tr>
                 <td class="edittext">
                 </td>

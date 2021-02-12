@@ -107,6 +107,14 @@ class BasicServiceProvider
     }
 
     /**
+     * @return Timetable
+     */
+    public function getGroupedTimetable()
+    {
+        return $this->getServiceInformation()->getGroupedTimetable();
+    }
+
+    /**
      * @return ServiceType[]
      */
     public function getServiceTypes()
@@ -135,6 +143,7 @@ class BasicServiceProvider
             'address'   => $this->getAddress()->toArray(),
             'location'  => $this->getLocation()->toArray(),
             'timetable' => $this->getTimetable()->toArray(),
+            'groupedTimetable' => $this->getGroupedTimetable(),
             'remark'    => $this->getServiceInformation()->getRemarkInEachLanguage(),
             'services'  => array_map('strval', $this->getServiceInformation()->getServiceTypes()),
         ];

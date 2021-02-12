@@ -14,10 +14,7 @@ use Mediaopt\DHL\Address\Address;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
 use Mediaopt\DHL\Exception\ServiceProviderException;
-use Mediaopt\DHL\Exception\WebserviceException;
-use Mediaopt\DHL\ServiceProvider\BasicServiceProvider;
 use Mediaopt\DHL\ServiceProvider\Coordinates;
-use Mediaopt\DHL\ServiceProvider\ServiceType;
 use Monolog\Logger;
 
 
@@ -45,7 +42,7 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
      */
     public function buildSampleAddress()
     {
-        return new Address('Elbestr.', '28', '12045', 'Berlin');
+        return new Address('Elbestr.', '28', '12045', 'Berlin', '', 'DEU', 'DE');
     }
 
     public function buildSampleAddressString()
@@ -77,35 +74,10 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
             ->getParcellocationByAddress($this->buildSampleAddress());
     }
 
-    public function testThatAFailingBuildCallIsLoggedAndAndExceptionIsRaisedWhenFindingByPrimaryKeyFSF()
-    {
-        $serviceProviderBuilderMock = $this
-            ->getMockBuilder(ServiceProviderBuilder::class)
-            ->setMethods(['build'])
-            ->getMock();
-        $serviceProviderBuilderMock
-            ->expects($this->once())
-            ->method('build')
-            ->willThrowException(new ServiceProviderException());
-
-        $loggerMock = $this->getMockBuilder(Logger::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['debug', 'error'])
-            ->getMock();
-        $loggerMock
-            ->expects($this->once())
-            ->method('error');
-
-        $this->expectException(WebserviceException::class);
-        (new \TestConfigurator())
-            ->buildStandortsuche($loggerMock, null, $serviceProviderBuilderMock)
-            ->getParcellocationByPrimaryKeyPSF('8003-4096851');
-    }
-
     public function testThatNoServiceProviderIsFurtherAwayThan15KmInGermany()
     {
         $standortsuche = $this->buildStandortsuche();
-        $address = new Address('', '', '56290', 'Uhler');
+        $address = new Address('', '', '56290', 'Uhler', '', 'DEU', 'DE');
         $serviceProviders = $standortsuche->getParcellocationByAddress($address);
         foreach ($serviceProviders->toArray() as $serviceProvider) {
             $this->assertLessThanOrEqual(15000, $serviceProvider->getLocation()->getDistance());
@@ -115,56 +87,10 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
     public function testThatNoServiceProviderIsFurtherAwayThan25KmOutsideOfGermany()
     {
         $standortsuche = $this->buildStandortsuche();
-        $address = new Address('', '', '6481', 'Weixmannstall', '', 'at');
+        $address = new Address('', '', '6481', 'Weixmannstall', '', 'at', 'AT');
         $serviceProviders = $standortsuche->getParcellocationByAddress($address);
         foreach ($serviceProviders->toArray() as $serviceProvider) {
             $this->assertLessThanOrEqual(25000, $serviceProvider->getLocation()->getDistance());
-        }
-    }
-
-    public function testGettingParcelLocationByServiceTypeAndCoordinate()
-    {
-        $standortsuche = $this->buildStandortsuche();
-        $coordinates = $this->buildSampleCoordinates();
-        $parcelPickup = ServiceType::create(ServiceType::PARCEL_PICKUP);
-        $list = $standortsuche->getParcellocationByServiceTypeAndCoordinate($parcelPickup, $coordinates);
-        $this->assertNotEmpty($list->toArray());
-        foreach ($list->toArray() as $serviceProvider) {
-            /** @noinspection PhpUnitTestsInspection */
-            $this->assertTrue(in_array($parcelPickup, $serviceProvider->getServiceTypes(), false));
-        }
-    }
-
-    public function testGettingParcelLocationByCoordinate()
-    {
-        $standortsuche = $this->buildStandortsuche();
-        $list = $standortsuche->getParcellocationByCoordinate($this->buildSampleCoordinates());
-        $this->assertNotEmpty($list->toArray());
-    }
-
-    public function testGettingParcelLocationByAddressAndServiceType()
-    {
-        $standortsuche = $this->buildStandortsuche();
-        $address = $this->buildSampleAddress();
-        $parcelPickup = ServiceType::create(ServiceType::PARCEL_PICKUP);
-        $list = $standortsuche->getParcellocationByAddressAndServiceType($parcelPickup, $address);
-        $this->assertNotEmpty($list->toArray());
-        foreach ($list->toArray() as $serviceProvider) {
-            /** @noinspection PhpUnitTestsInspection */
-            $this->assertTrue(in_array($parcelPickup, $serviceProvider->getServiceTypes(), false));
-        }
-    }
-
-    public function testGettingParcelLocationByAddressStringAndServiceType()
-    {
-        $standortsuche = $this->buildStandortsuche();
-        $addressString = $this->buildSampleAddressString();
-        $parcelPickup = ServiceType::create(ServiceType::PARCEL_PICKUP);
-        $list = $standortsuche->getParcellocationByAddressAndServiceType($parcelPickup, $addressString);
-        $this->assertNotEmpty($list->toArray());
-        foreach ($list->toArray() as $serviceProvider) {
-            /** @noinspection PhpUnitTestsInspection */
-            $this->assertTrue(in_array($parcelPickup, $serviceProvider->getServiceTypes(), false));
         }
     }
 
@@ -176,14 +102,8 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
 
     public function testGettingParcelLocationByAddressString()
     {
-        $list = $this->buildStandortsuche()->getParcellocationByAddress($this->buildSampleAddressString());
+        $list = $this->buildStandortsuche()->getParcellocationByAddress($this->buildSampleAddressString(), '', 'DE');
         $this->assertNotEmpty($list->toArray());
-    }
-
-    public function testGettingParcelLocationByPrimaryKeyPSF()
-    {
-        $provider = $this->buildStandortsuche()->getParcellocationByPrimaryKeyPSF('8003-4096851');
-        $this->assertInstanceOf(BasicServiceProvider::class, $provider);
     }
 
     /**
@@ -201,23 +121,23 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
         //List of addresses and right coordinates
         $inputList = [
             [
-                'address'    => new Address('Elbestr.', '28/26', '12045', 'Berlin', '', ''),
+                'address'    => new Address('Elbestr.', '28/26', '12045', 'Berlin', '', '', 'DE'),
                 'coordinate' => new Coordinate(52.519938, 13.413183),
             ],
             [
-                'address'    => new Address('', '', '', 'Auerbach in der Oberpfalz', '', ''),
+                'address'    => new Address('', '', '91275', '', '', '', 'DE'),
                 'coordinate' => new Coordinate(49.691990, 11.628689),
             ],
             [
-                'address'    => new Address('', '', '', 'Auerbach/Vogtl.', '', ''),
+                'address'    => new Address('', '', '08209', 'Auerbach/Vogtl.', '', '', 'DE'),
                 'coordinate' => new Coordinate(50.507884, 12.399722),
             ],
             [
-                'address'    => new Address('', '', '', 'Neukirchen/Pleiße', '', ''),
+                'address'    => new Address('', '', '08459', '', '', '', 'DE'),
                 'coordinate' => new Coordinate(50.792825, 12.379732),
             ],
             [
-                'address'    => new Address('', '', '', 'Nienburg (Saale)', '', ''),
+                'address'    => new Address('', '', '06429', '', '', '', 'DE'),
                 'coordinate' => new Coordinate(51.837269, 11.766504),
             ],
         ];
@@ -257,14 +177,5 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
     {
         $emptyAddress = new Address('', '', '', '', '', '');
         $this->assertEmpty($this->buildStandortsuche()->getParcellocationByAddress($emptyAddress)->toArray());
-    }
-
-    public function testThatThereANoResultsInCaseOfAnEmptyAddressAndServiceType()
-    {
-        $emptyAddress = new Address('', '', '', '', '', '');
-        $serviceProviders = $this
-            ->buildStandortsuche()
-            ->getParcellocationByAddressAndServiceType(ServiceType::create(ServiceType::PARCEL_PICKUP), $emptyAddress);
-        $this->assertEmpty($serviceProviders->toArray());
     }
 }

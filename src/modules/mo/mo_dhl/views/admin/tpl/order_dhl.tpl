@@ -44,7 +44,7 @@
                                         <select id="processIdentifier" name="processIdentifier">
                                             <option value="">-</option>
                                             [{foreach from=$processes key='identifier' item='label'}]
-                                                <option value="[{$identifier}]"[{if $process AND $identifier === $process->getIdentifier()}] selected[{/if}]>
+                                                <option value="[{$identifier}]" [{if $process AND $identifier === $process->getIdentifier()}] selected[{/if}]>
                                                     [{$label}]
                                                 </option>
                                             [{/foreach}]
@@ -57,7 +57,7 @@
                                             :</label>
                                     </td>
                                     <td>
-                                        <input id="participationNumber" name="participationNumber" maxlength="2"
+                                        <input id="participationNumber" name="participationNumber" maxlength="5"
                                                placeholder="[{oxmultilang ident="MO_DHL__PARTICIPATION_NUMBER"}]"
                                                value="[{$participationNumber}]"
                                         />
@@ -87,7 +87,7 @@
                                                     <option value="">-</option>
                                                 [{/if}]
                                                 [{foreach from=$RetoureRequestStatuses key='status' item='label'}]
-                                                    <option value="[{$status}]"[{if $RetoureRequestStatus === $status}] selected[{/if}]>
+                                                    <option value="[{$status}]" [{if $RetoureRequestStatus === $status}] selected[{/if}]>
                                                         [{oxmultilang ident="$label"}]
                                                     </option>
                                                 [{/foreach}]
@@ -204,10 +204,12 @@
     <input type="submit" value="[{oxmultilang ident="GENERAL_SAVE"}]"/>
     <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CREATE_LABEL"}]"
            onClick="Javascript:document.myedit.fnc.value='createLabel'">
+    [{if not $oView->usesInternetmarke()}]
     <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CUSTOM_LABEL_CREATE"}]"
            onClick="Javascript:document.myedit.fnc.value='prepareCustomLabel'">
     <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CREATE_RETOURE"}]"
            onClick="Javascript:document.myedit.fnc.value='createRetoure'">
+    [{/if}]
 </form>
 <br>
 <br>

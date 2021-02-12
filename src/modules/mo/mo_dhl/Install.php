@@ -26,6 +26,7 @@ class Install
         static::ensureConfigVariableNameLength();
         static::addTables();
         static::addColumns();
+        static::alterColumns();
         static::ensureDocumentsFolderExists();
         static::cleanUp();
     }
@@ -104,6 +105,18 @@ class Install
     }
 
     /**
+     * Alter a column with specified type in a table.
+     *
+     * @param string $table
+     * @param string $column
+     * @param string $type
+     */
+    protected static function alterColumn($table, $column, $type)
+    {
+        \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->execute("ALTER TABLE {$table} MODIFY COLUMN {$column} {$type};");
+    }
+
+    /**
      * Deletes every file in the tmp directory.
      */
     protected static function cleanUp()
@@ -160,6 +173,29 @@ class Install
         PRIMARY KEY (OXID)
         );
         CREATE INDEX MoDhlLabelIndex ON mo_dhl_labels (OXSHOPID, orderId);");
+
+        self::addTable('mo_dhl_internetmarke_products', "(
+        `OXID` VARCHAR(50) NOT NULL COMMENT 'ProdWS-Id',
+        `OXSHOPID` INT DEFAULT 1 NOT NULL,
+        `name` VARCHAR(250) NOT NULL,
+        `type` INT DEFAULT 0 NOT NULL,
+        `isNational` TINYINT DEFAULT 0,
+        `annotation` VARCHAR(2000),
+        `price` FLOAT NOT NULL,
+        `dimension` VARCHAR(100),
+        `weight` VARCHAR(100),
+        `products` VARCHAR(510),
+        PRIMARY KEY (OXID)
+        );
+        CREATE INDEX MoDhlInternetmarkeProducts ON mo_dhl_internetmarke_products (OXSHOPID, OXID);");
+
+        self::addTable('mo_dhl_internetmarke_refunds', "(
+        `OXID` INT NOT NULL COMMENT 'retoureTransactionId',
+        `OXSHOPID` INT DEFAULT 1 NOT NULL,
+        `status` VARCHAR(50),
+        PRIMARY KEY (OXID)
+        );
+        CREATE INDEX MoDhlInternetmarkeRefunds ON mo_dhl_internetmarke_refunds (OXSHOPID, OXID);");
     }
 
     /**
@@ -203,6 +239,15 @@ class Install
             $oxids = implode(', ', array_map([$db, 'quote'], $paymentsExcludedByDefault));
             $db->execute("UPDATE oxpayments SET MO_DHL_EXCLUDED = 1 WHERE OXID IN ({$oxids})");
         }
+        \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\DbMetaDataHandler::class)->updateViews();
+    }
+
+    /**
+     */
+    protected function alterColumns()
+    {
+        self::alterColumn('oxorder', 'MO_DHL_PARTICIPATION', 'CHAR(5)');
+        self::alterColumn('oxdeliveryset', 'MO_DHL_PARTICIPATION', 'CHAR(5)');
         \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\DbMetaDataHandler::class)->updateViews();
     }
 

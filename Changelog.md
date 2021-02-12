@@ -1,4 +1,11 @@
 # Changelog
+## 1.4.1
+* removed tracking pixel
+
+## 1.4.0
+* integrated the Internetmarke Products
+* new Standortsuche using Location Finder - Unified
+
 ## 1.3.1
 * open links to dhl from the oxid admin in a new tab
 * set active flag of services in gkv to 0/1 instead of false/true

@@ -38,6 +38,22 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const TEST_RETOURE_PASSWORD = 'uBQbZ62!ZiBiVVbhc';
 
+    const TEST_INTERNETMARKE_PARTNER_ID = 'AMHDH';
+
+    const TEST_INTERNETMARKE_SIGNATURE = 'v9hFqrH1JH5vBdtd8f9XXjMpkSNl6UcW';
+
+    const PROD_INTERNETMARKE_PARTNER_ID = 'AMHDH';
+
+    const PROD_INTERNETMARKE_SIGNATURE = 'v9hFqrH1JH5vBdtd8f9XXjMpkSNl6UcW';
+
+    const PRODWS_USERNAME = 'mediaopt';
+
+    const PRODWS_PASSWORD = 'B&5%bk?dx7';
+
+    const STANDORTSUCHE_API_KEY_NAME = 'DHL-API-Key';
+
+    const TEST_STANDORTSUCHE_API_PASSWORD = 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK';
+
     /**
      * @return mixed
      */
@@ -81,6 +97,30 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
+    protected function getStandortsucheKeyName()
+    {
+        return self::STANDORTSUCHE_API_KEY_NAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProdStandortsuchePassword()
+    {
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__prod_standortsuche_password') ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSandboxStandortsuchePassword()
+    {
+        return self::TEST_STANDORTSUCHE_API_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
     protected function getCustomerGKVLogin()
     {
         return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '') : self::TEST_GKV_USERNAME;
@@ -112,6 +152,78 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
         return $this->isProductionEnvironment()
             ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '')
             : self::TEST_RETOURE_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInternetmarkeProdLogin()
+    {
+        return self::PROD_INTERNETMARKE_PARTNER_ID;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInternetmarkeProdSignature()
+    {
+        return self::PROD_INTERNETMARKE_SIGNATURE;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInternetmarkeSandboxLogin()
+    {
+        return self::TEST_INTERNETMARKE_PARTNER_ID;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getInternetmarkeSandboxSignature()
+    {
+        return self::TEST_INTERNETMARKE_SIGNATURE;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerInternetmarkeLogin()
+    {
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_user') ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerInternetmarkePassword()
+    {
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_password') ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProdWSLogin()
+    {
+        return self::PRODWS_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProdWSPassword()
+    {
+        return self::PRODWS_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerProdWSMandantId()
+    {
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_mandant_id') ?: '';
     }
 
     /**

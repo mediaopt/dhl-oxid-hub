@@ -22,19 +22,63 @@ class ServiceProviderBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function buildSamplePackstation()
     {
-        $json = '{"countryCode":"de","zipCode":"12045","city":"Berlin","district":"Neukölln","additionalInfo":null,"area":null,"street":"Sonnenallee","houseNo":"113","additionalStreet":null,"format1":"csbn7s8n2s3","format2":"csbn2s3n1","routingCode":null,"keyWord":"DHL Packstation","partnerType":"external","shopType":"packStation","shopName":null,"primaryLanguage":"de","secondaryLanguage":null,"tertiaryLanguage":null,"geoPosition":{"latitude":52.4813806,"longitude":13.4412213,"distance":1},"primaryKeyDeliverySystem":"412045103","primaryKeyZipRegion":"103","systemID":"8007","primaryKeyPSF":"8007-412045103","psfFiles":[],"psfServicetypes":["parcelpickup","parcelacceptance"],"psfClosureperiods":[],"psfWelcometexts":[{"language":"de","content":"Standorthinweis:#br#Aral-Tankstelle, Rückseite"},{"language":"en","content":"We are delighted that you would like to use our Packstation service.#br##br#- Your DHL team"}],"psfOtherinfos":[{"type":"tt_openinghour_rows","content":"3"},{"type":"tt_openinghour_cols","content":"2"},{"type":"tt_openinghour_00","content":"mo-fr"},{"type":"tt_openinghour_01","content":"00:00 - 24:00"},{"type":"tt_openinghour_10","content":"sa"},{"type":"tt_openinghour_11","content":"00:00 - 24:00"},{"type":"tt_openinghour_20","content":"su"},{"type":"tt_openinghour_21","content":"00:00 - 24:00"},{"type":"tt_timestamp","content":"29670850859239880"}]}';
+        $json = '{"countryCode":"de","zipCode":"12045","city":"Berlin","district":"Neukölln","additionalInfo":null,
+            "area":null,"street":"Sonnenallee","houseNo":"113","additionalStreet":null,"format1":"csbn7s8n2s3",
+            "format2":"csbn2s3n1","routingCode":null,"keyWord":"DHL Packstation","partnerType":"external",
+            "shopType":"packStation","shopName":null,"primaryLanguage":"de","secondaryLanguage":null,"tertiaryLanguage":null,
+            "geoPosition":{"latitude":52.4813806,"longitude":13.4412213,"distance":1},
+            "primaryKeyDeliverySystem":"412045103","primaryKeyZipRegion":"103","systemID":"8007","primaryKeyPSF":"8007-412045103","psfFiles":[],
+            "psfServicetypes":["parcelpickup","parcelacceptance"],"psfClosureperiods":[],
+            "psfWelcometexts":[{"language":"de","content":"Standorthinweis:#br#Aral-Tankstelle, Rückseite"},
+            {"language":"en","content":"We are delighted that you would like to use our Packstation service.#br##br#- Your DHL team"}],
+            "openingHours":[
+            {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Monday"},
+            {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Tuesday"},
+            {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Wednesday"},
+            {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Thursday"},
+            {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Friday"},
+            {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Saturday"},
+            {"opens":"00:00:00","closes":"23:59:59","dayOfWeek":"http://schema.org/Sunday"}]}';
         return json_decode($json);
     }
 
     public function buildSamplePostfiliale()
     {
-        $json = '{"countryCode":"de","zipCode":"12043","city":"Berlin","district":"Neuk\u00f6lln","additionalInfo":null,"area":null,"street":"Erkstr.","houseNo":"5","additionalStreet":null,"format1":"csbnan7s8n2s3","format2":"csbn2s3n1","routingCode":null,"keyWord":"Postfiliale","partnerType":"external","shopType":"postOffice","shopName":"Getr\u00e4nke-Tabakwaren-Zeitschriften","primaryLanguage":"de","secondaryLanguage":null,"tertiaryLanguage":null,"geoPosition":{"latitude":52.481035,"longitude":13.4370483,"distance":478},"primaryKeyDeliverySystem":"4116371","primaryKeyZipRegion":"556","systemID":"8003","primaryKeyPSF":"8003-4116371","psfFiles":[],"psfServicetypes":["handicappedAccess","parcelacceptance","parcelpickup","parking"],"psfClosureperiods":[],"psfWelcometexts":[{},{"language":"de"},{"content":"foo"}],"psfOtherinfos":[{"type":"tt_openinghour_rows","content":"3"},{"type":"tt_openinghour_cols","content":"2"},{"type":"tt_openinghour_00","content":"mo-fr"},{"type":"tt_openinghour_01","content":"09:00 - 18:00"},{"type":"tt_openinghour_10","content":"sa"},{"type":"tt_openinghour_11","content":"09:00 - 18:00"},{"type":"tt_openinghour_20","content":"su"},{"type":"tt_openinghour_21","content":"dash"},{"type":"tt_inclosureperiod","content":"false"},{"type":"tt_openinghour_today","content":"09:00 - 18:00"},{"type":"tt_timestamp","content":"29777959738779388"}]}';
+        $json = '{"countryCode":"de","zipCode":"12043","city":"Berlin","district":"Neuk\u00f6lln","additionalInfo":null,
+            "area":null,"street":"Erkstr.","houseNo":"5","additionalStreet":null,"format1":"csbnan7s8n2s3",
+            "format2":"csbn2s3n1","routingCode":null,"keyWord":"Postfiliale","partnerType":"external",
+            "shopType":"postOffice","shopName":"Getr\u00e4nke-Tabakwaren-Zeitschriften","primaryLanguage":"de","secondaryLanguage":null,"tertiaryLanguage":null,
+            "geoPosition":{"latitude":52.481035,"longitude":13.4370483,"distance":478},
+            "primaryKeyDeliverySystem":"4116371","primaryKeyZipRegion":"556","systemID":"8003","primaryKeyPSF":"8003-4116371","psfFiles":[],
+            "psfServicetypes":["handicappedAccess","parcelacceptance","parcelpickup","parking"],"psfClosureperiods":[],
+            "psfWelcometexts":[{},{"language":"de"},{"content":"foo"}],
+            "openingHours":[
+            {"opens":"07:00:00","closes":"18:00:00","dayOfWeek":"http://schema.org/Monday"},
+            {"opens":"07:00:00","closes":"18:00:00","dayOfWeek":"http://schema.org/Tuesday"},
+            {"opens":"07:00:00","closes":"18:00:00","dayOfWeek":"http://schema.org/Wednesday"},
+            {"opens":"07:00:00","closes":"18:00:00","dayOfWeek":"http://schema.org/Thursday"},
+            {"opens":"07:00:00","closes":"18:00:00","dayOfWeek":"http://schema.org/Friday"},
+            {"opens":"08:00:00","closes":"13:00:00","dayOfWeek":"http://schema.org/Saturday"}]}';
         return json_decode($json);
     }
 
     public function buildSamplePaketshop()
     {
-        $json = '{"countryCode":"de","zipCode":"12045","city":"Berlin","district":"Neuk\u00f6lln","additionalInfo":"DHL Paketshop","area":null,"street":"Finowstr.","houseNo":"9","additionalStreet":null,"format1":"5sbnan7s8n2s3","format2":"csbn2s3n1","routingCode":null,"keyWord":"Postfiliale","partnerType":"external","shopType":"parcelShop","shopName":"Kiosk Backshop Tunc","primaryLanguage":"de","secondaryLanguage":null,"tertiaryLanguage":null,"geoPosition":{"latitude":52.4823116,"longitude":13.4432779,"distance":330},"primaryKeyDeliverySystem":"4096851","primaryKeyZipRegion":"443","systemID":"8003","primaryKeyPSF":"8003-4096851","psfFiles":[],"psfServicetypes":["parcelacceptance","parcelpickup"],"psfClosureperiods":[],"psfWelcometexts":[],"psfOtherinfos":[{"type":"tt_openinghour_rows","content":"3"},{"type":"tt_openinghour_cols","content":"2"},{"type":"tt_openinghour_00","content":"mo-fr"},{"type":"tt_openinghour_01","content":"06:00 - 19:00"},{"type":"tt_openinghour_10","content":"sa"},{"type":"tt_openinghour_11","content":"06:00 - 19:00"},{"type":"tt_openinghour_20","content":"su"},{"type":"tt_openinghour_21","content":"06:00 - 19:00"},{"type":"tt_inclosureperiod","content":"false"},{"type":"tt_openinghour_today","content":"06:00 - 19:00"},{"type":"tt_timestamp","content":"29777955657739012"}]}';
+        $json = '{"countryCode":"de","zipCode":"12045","city":"Berlin","district":"Neuk\u00f6lln","additionalInfo":"DHL Paketshop",
+            "area":null,"street":"Finowstr.","houseNo":"9","additionalStreet":null,"format1":"5sbnan7s8n2s3",
+            "format2":"csbn2s3n1","routingCode":null,"keyWord":"Postfiliale","partnerType":"external",
+            "shopType":"parcelShop","shopName":"Kiosk Backshop Tunc","primaryLanguage":"de","secondaryLanguage":null,
+            "tertiaryLanguage":null,"geoPosition":{"latitude":52.4823116,"longitude":13.4432779,"distance":330},
+            "primaryKeyDeliverySystem":"4096851","primaryKeyZipRegion":"443","systemID":"8003",
+            "primaryKeyPSF":"8003-4096851","psfFiles":[],"psfServicetypes":["parcelacceptance","parcelpickup"],
+            "psfClosureperiods":[],"psfWelcometexts":[],
+            "openingHours":[
+            {"opens":"09:00:00","closes":"18:00:00","dayOfWeek":"http://schema.org/Monday"},
+            {"opens":"09:00:00","closes":"18:00:00","dayOfWeek":"http://schema.org/Tuesday"},
+            {"opens":"09:00:00","closes":"18:00:00","dayOfWeek":"http://schema.org/Wednesday"},
+            {"opens":"09:00:00","closes":"18:00:00","dayOfWeek":"http://schema.org/Thursday"},
+            {"opens":"09:00:00","closes":"18:00:00","dayOfWeek":"http://schema.org/Friday"},
+            {"opens":"09:00:00","closes":"15:30:00","dayOfWeek":"http://schema.org/Saturday"}]}';
         return json_decode($json);
     }
 
@@ -60,17 +104,17 @@ class ServiceProviderBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $builder = new ServiceProviderBuilder();
         $sample = $this->buildSamplePackstation();
-        $sample->psfOtherinfos[2]->content = 'mo-pt';
+        $sample->openingHours[2]->dayOfWeek = 'potato';
         $packstation = $builder->build($sample);
         $this->assertEquals(
             [
-                Timetable::MONDAY => [],
-                Timetable::TUESDAY => [],
+                Timetable::MONDAY => ['0:00-24:00'],
+                Timetable::TUESDAY => ['0:00-24:00'],
                 Timetable::WEDNESDAY => [],
-                Timetable::THURSDAY => [],
-                Timetable::FRIDAY => [],
-                Timetable::SATURDAY => [],
-                Timetable::SUNDAY => [],
+                Timetable::THURSDAY => ['0:00-24:00'],
+                Timetable::FRIDAY => ['0:00-24:00'],
+                Timetable::SATURDAY => ['0:00-24:00'],
+                Timetable::SUNDAY => ['0:00-24:00'],
             ],
             $packstation->getTimetable()->toArray()
         );
@@ -80,7 +124,8 @@ class ServiceProviderBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $builder = new ServiceProviderBuilder();
         $sample = $this->buildSamplePackstation();
-        $sample->psfOtherinfos[3]->content = '25:00 - 42:00';
+        $sample->openingHours[3]->opens = '25:00';
+        $sample->openingHours[3]->closes = '42:00';
         $packstation = $builder->build($sample);
         $this->assertEquals(
             [
@@ -118,7 +163,7 @@ class ServiceProviderBuilderTest extends \PHPUnit_Framework_TestCase
         $timetableBuilderMock
             ->expects($this->once())
             ->method('build')
-            ->with($sample->psfOtherinfos)
+            ->with($sample->openingHours)
             ->willReturn(new Timetable());
 
         $builder = new ServiceProviderBuilder($timetableBuilderMock);
@@ -154,7 +199,7 @@ class ServiceProviderBuilderTest extends \PHPUnit_Framework_TestCase
         $timetableBuilderMock
             ->expects($this->once())
             ->method('build')
-            ->with($sample->psfOtherinfos)
+            ->with($sample->openingHours)
             ->willReturn(new Timetable());
 
         $builder = new ServiceProviderBuilder($timetableBuilderMock);
@@ -190,7 +235,7 @@ class ServiceProviderBuilderTest extends \PHPUnit_Framework_TestCase
         $timetableBuilderMock
             ->expects($this->once())
             ->method('build')
-            ->with($sample->psfOtherinfos)
+            ->with($sample->openingHours)
             ->willReturn(new Timetable());
 
         $builder = new ServiceProviderBuilder($timetableBuilderMock);

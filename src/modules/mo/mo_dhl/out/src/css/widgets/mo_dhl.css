@@ -76,6 +76,11 @@
     margin-top: 0;
 }
 
+#moDHLCountry {
+    width: 150px;
+    margin: 5px 0 0 0;
+}
+
 #moDHLStreet.is--azure {
     width: 230px;
     margin-top: 15px;
