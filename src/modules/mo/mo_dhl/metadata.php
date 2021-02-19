@@ -11,13 +11,13 @@ $sMetadataVersion = '2.1';
  */
 $aModule = [
     'id'          => 'mo_dhl',
-    'title'       => 'DHL Produkte und Services',
+    'title'       => 'Post & Paket Versand',
     'description' => [
-        'de' => '<p>Erweitern Sie Ihren Shop um DHL Produkte und Services.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbuch</a></p>',
-        'en' => '<p>Enable features providing DHL products and services to your OXID shop.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbook</a></p>',
+        'de' => '<p>Erweitern Sie Ihren Shop um den Post & Paket Versand.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbuch</a></p>',
+        'en' => '<p>Enable features providing Post & Paket Delivery to your OXID shop.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbook</a></p>',
     ],
     'thumbnail'   => 'logo.png',
-    'version'     => '1.3.0',
+    'version'     => '1.4.1',
     'author'      => '<a href="http://www.mediaopt.de" target="_blank">mediaopt.</a>',
     'url'         => 'http://www.mediaopt.de',
     'email'       => 'shopsoftware@deutschepost.de',
@@ -28,7 +28,6 @@ $aModule = [
         \OxidEsales\Eshop\Application\Controller\Admin\ModuleConfiguration::class => Application\Controller\Admin\ModuleConfiguration::class,
         \OxidEsales\Eshop\Application\Controller\Admin\OrderOverview::class       => Application\Controller\Admin\OrderOverview::class,
         \OxidEsales\Eshop\Application\Controller\UserController::class            => Application\Controller\UserController::class,
-        \OxidEsales\Eshop\Application\Controller\ThankYouController::class        => Application\Controller\ThankYouController::class,
         \OxidEsales\Eshop\Application\Controller\OrderController::class           => Application\Controller\OrderController::class,
         \OxidEsales\Eshop\Application\Controller\BasketController::class          => Application\Controller\BasketController::class,
         \OxidEsales\Eshop\Application\Controller\PaymentController::class         => Application\Controller\PaymentController::class,
@@ -46,17 +45,23 @@ $aModule = [
         \OxidEsales\Eshop\Application\Model\Category::class                       => Application\Model\Category::class,
     ],
     'controllers' => [
-        'MoDHLFinder'         => Controller\FinderController::class,
-        'MoDHLCategoriesDHL'  => Controller\Admin\CategoryDHLController::class,
-        'MoDHLArticlesDHL'    => Controller\Admin\ArticlesDHLController::class,
-        'MoDHLCountryDHL'     => Controller\Admin\CountryDHLController::class,
-        'MoDHLDeliverySetDHL' => Controller\Admin\DeliverySetDHLController::class,
-        'MoDHLDeliveryDHL'    => Controller\Admin\DeliveryDHLController::class,
-        'MoDHLPaymentsDHL'    => Controller\Admin\PaymentsDHLController::class,
-        'MoDHLOrderBatch'     => Controller\Admin\OrderBatchController::class,
-        'MoDHLOrderDHL'       => Controller\Admin\OrderDHLController::class,
-        'MoDHLYellowBox'      => Controller\YellowBoxController::class,
-        'MoDHLGuest'          => Controller\GuestController::class,
+        'MoDHLFinder'               => Controller\FinderController::class,
+        'MoDHLCategoriesDHL'        => Controller\Admin\CategoryDHLController::class,
+        'MoDHLArticlesDHL'          => Controller\Admin\ArticlesDHLController::class,
+        'MoDHLCountryDHL'           => Controller\Admin\CountryDHLController::class,
+        'MoDHLDeliverySetDHL'       => Controller\Admin\DeliverySetDHLController::class,
+        'MoDHLDeliveryDHL'          => Controller\Admin\DeliveryDHLController::class,
+        'MoDHLPaymentsDHL'          => Controller\Admin\PaymentsDHLController::class,
+        'MoDHLOrderBatch'           => Controller\Admin\OrderBatchController::class,
+        'MoDHLOrderDHL'             => Controller\Admin\OrderDHLController::class,
+        'MoDHLYellowBox'            => Controller\YellowBoxController::class,
+        'MoDHLGuest'                => Controller\GuestController::class,
+        'MoDHLInternetmarkeProducts'        => Controller\Admin\InternetmarkeProductsController::class,
+        'MoDHLInternetmarkeProductsList'    => Controller\Admin\InternetmarkeProductsListController::class,
+        'MoDHLInternetmarkeProductsDetails' => Controller\Admin\InternetmarkeProductsDetailsController::class,
+        'MoDHLInternetmarkeRefunds'        => Controller\Admin\InternetmarkeRefundsController::class,
+        'MoDHLInternetmarkeRefundsList'    => Controller\Admin\InternetmarkeRefundsListController::class,
+        'MoDHLInternetmarkeRefundsDetails' => Controller\Admin\InternetmarkeRefundsDetailsController::class,
     ],
     'events'      => [
         'onActivate'   => Install::class . '::onActivate',
@@ -130,11 +135,6 @@ $aModule = [
         ],
         [
             'template' => 'layout/base.tpl',
-            'block'    => 'base_js',
-            'file'     => 'views/blocks/base_js.tpl',
-        ],
-        [
-            'template' => 'layout/base.tpl',
             'block'    => 'head_meta_robots',
             'file'     => 'views/blocks/head_meta_robots.tpl',
         ],
@@ -171,12 +171,12 @@ $aModule = [
         [
             'template' => 'email/html/ordershipped.tpl',
             'block'    => 'email_html_ordershipped_shipmenttrackingurl',
-            'file'     => 'views/tpl/email/order_retoure_html.tpl'
+            'file'     => 'views/tpl/email/order_retoure_html.tpl',
         ],
         [
             'template' => 'email/plain/ordershipped.tpl',
             'block'    => 'email_html_ordershipped_shipmenttrackingurl',
-            'file'     => 'views/tpl/email/order_retoure_plain.tpl'
+            'file'     => 'views/tpl/email/order_retoure_plain.tpl',
         ],
     ],
     'templates'   => [
@@ -208,6 +208,13 @@ $aModule = [
         'mo_dhl__email_retoure_html.tpl'     => 'mo/mo_dhl/views/tpl/email/retoure_html.tpl',
         'mo_dhl__email_retoure_plain.tpl'    => 'mo/mo_dhl/views/tpl/email/retoure_plain.tpl',
         'mo_dhl__guest_order.tpl'            => 'mo/mo_dhl/views/tpl/guest_order.tpl',
+        'mo_dhl__internetmarke.tpl'          => 'mo/mo_dhl/views/admin/tpl/internetmarke.tpl',
+        'mo_dhl__internetmarke_list.tpl'     => 'mo/mo_dhl/views/admin/tpl/internetmarke_list.tpl',
+        'mo_dhl__internetmarke_details.tpl'  => 'mo/mo_dhl/views/admin/tpl/internetmarke_details.tpl',
+        'mo_dhl__internetmarke_refunds.tpl'          => 'mo/mo_dhl/views/admin/tpl/internetmarke_refunds.tpl',
+        'mo_dhl__internetmarke_refunds_list.tpl'     => 'mo/mo_dhl/views/admin/tpl/internetmarke_refunds_list.tpl',
+        'mo_dhl__internetmarke_refunds_details.tpl'  => 'mo/mo_dhl/views/admin/tpl/internetmarke_refunds_details.tpl',
+        'mo_dhl__internetmarke_products_search.tpl' => 'mo/mo_dhl/views/admin/tpl/internetmarke_products_search.tpl',
     ],
     'settings'    => [
         [
@@ -235,6 +242,36 @@ $aModule = [
         [
             'group' => 'mo_dhl__account',
             'name'  => 'mo_dhl__account_check',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__internetmarke',
+            'name'  => 'mo_dhl__internetmarke_user',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__internetmarke',
+            'name'  => 'mo_dhl__internetmarke_mandant_id',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__internetmarke',
+            'name'  => 'mo_dhl__internetmarke_password',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__internetmarke',
+            'name'  => 'mo_dhl__internetmarke_layout',
+            'type'  => 'str',
+            'value' => '1',
+        ],
+        [
+            'group' => 'mo_dhl__internetmarke',
+            'name'  => 'mo_dhl__internetmarke_check',
             'type'  => 'bool',
             'value' => 'false',
         ],
@@ -437,6 +474,11 @@ $aModule = [
             'type'        => 'select',
             'value'       => 'DEU',
             'constraints' => 'DEU|AUT',
+        ],
+        [
+            'group' => 'mo_dhl__standortsuche',
+            'name'  => 'mo_dhl__prod_standortsuche_password',
+            'type'  => 'str',
         ],
         [
             'group'       => 'mo_dhl__standortsuche',

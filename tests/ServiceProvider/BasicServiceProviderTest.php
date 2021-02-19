@@ -28,6 +28,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 'city'     => 'Berlin',
                 'district' => 'Neukölln',
                 'country'  => 'DEU',
+                'countryIso2Code'  => 'DE',
             ],
             'location'  => [
                 'latitude'  => 52.484766,
@@ -42,6 +43,17 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 '5' => [],
                 '6' => [],
                 '7' => [],
+            ],
+            'groupedTimetable' => [
+                1 => [
+                    'dayGroup' => '1, 2, 4 - 7',
+                    'openPeriods' => ''
+                ],
+                2 => [
+                    'dayGroup' => '3',
+                    'openPeriods' => '18:00'
+
+                ]
             ],
             'remark'    => $this->buildSampleRemark(),
             'services'  => $this->buildSampleServiceTypes(),
@@ -62,6 +74,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 'city'     => 'Berlin',
                 'district' => 'Neukölln',
                 'country'  => 'DEU',
+                'countryIso2Code'  => 'DE',
             ],
             'location'  => [
                 'latitude'  => 52.484766,
@@ -76,6 +89,17 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 '5' => [],
                 '6' => [],
                 '7' => [],
+            ],
+            'groupedTimetable' => [
+                1 => [
+                    'dayGroup' => '1, 2, 4 - 7',
+                    'openPeriods' => ''
+                ],
+                2 => [
+                    'dayGroup' => '3',
+                    'openPeriods' => '18:00'
+
+                ]
             ],
             'remark'    => $this->buildSampleRemark(),
             'services'  => $this->buildSampleServiceTypes(),
@@ -97,6 +121,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 'city'     => 'Berlin',
                 'district' => 'Neukölln',
                 'country'  => 'DEU',
+                'countryIso2Code'  => 'DE',
             ],
             'location'  => [
                 'latitude'  => 52.484766,
@@ -111,6 +136,17 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 '5' => [],
                 '6' => [],
                 '7' => [],
+            ],
+            'groupedTimetable' => [
+                1 => [
+                    'dayGroup' => '1, 2, 4 - 7',
+                    'openPeriods' => ''
+                ],
+                2 => [
+                    'dayGroup' => '3',
+                    'openPeriods' => '18:00'
+
+                ]
             ],
             'remark'    => $this->buildSampleRemark(),
             'services'  => $this->buildSampleServiceTypes(),
@@ -132,6 +168,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 'city'     => 'Berlin',
                 'district' => 'Neukölln',
                 'country'  => 'DEU',
+                'countryIso2Code'  => 'DE',
             ],
             'location'  => [
                 'latitude'  => 52.484766,
@@ -146,6 +183,17 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 '5' => [],
                 '6' => [],
                 '7' => [],
+            ],
+            'groupedTimetable' => [
+                1 => [
+                    'dayGroup' => '1, 2, 4 - 7',
+                    'openPeriods' => ''
+                ],
+                2 => [
+                    'dayGroup' => '3',
+                    'openPeriods' => '18:00'
+
+                ]
             ],
             'remark'    => $this->buildSampleRemark(),
             'services'  => $this->buildSampleServiceTypes(),

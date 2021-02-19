@@ -8,6 +8,7 @@
 namespace Mediaopt\DHL\ServiceProvider;
 
 
+use Mediaopt\DHL\Api\Standortsuche\TimetableBuilder;
 use Mediaopt\DHL\ServiceProvider\Timetable\Timetable;
 
 /**
@@ -31,6 +32,11 @@ class ServiceInformation
     protected $timetable;
 
     /**
+     * @var array
+     */
+    protected $groupedTimetable;
+
+    /**
      * The key is a ISO 639-1, the value the corresponding remark.
      *
      * @var string[]
@@ -44,7 +50,9 @@ class ServiceInformation
      */
     public function __construct(Timetable $timetable, array $serviceTypes, array $remark = [])
     {
+        $timetableBuilder = new TimetableBuilder();
         $this->timetable = $timetable;
+        $this->groupedTimetable = $timetableBuilder->buildGrouped($timetable);
         $this->setServiceTypes($serviceTypes);
         $this->remark = $remark;
     }
@@ -105,6 +113,13 @@ class ServiceInformation
         return $this->timetable;
     }
 
+    /**
+     * @return Timetable
+     */
+    public function getGroupedTimetable()
+    {
+        return $this->groupedTimetable;
+    }
     /**
      * @param Timetable $timetable
      */

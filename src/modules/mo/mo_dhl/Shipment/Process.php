@@ -76,6 +76,11 @@ class Process
     const WARENPOST = 'WARENPOST';
 
     /**
+     * string Internetmarke
+     */
+    const INTERNETMARKE = 'INTERNETMARKE';
+
+    /**
      * @var string Warenpost international
      */
     const WARENPOST_INTERNATIONAL = 'WARENPOST_INTERNATIONAL';
@@ -197,6 +202,8 @@ class Process
             self::SERVICE_GO_GREEN,
             self::SERVICE_PARCEL_OUTLET_ROUTING,
             self::SERVICE_DHL_RETOURE,
+        ],
+        self::INTERNETMARKE => [
         ],
     ];
 
@@ -423,6 +430,14 @@ class Process
     }
 
     /**
+     * @return bool
+     */
+    public function usesInternetMarke()
+    {
+        return $this->getIdentifier() === self::INTERNETMARKE;
+    }
+
+    /**
      * @return string[]
      */
     public static function getAvailableProcesses()
@@ -438,6 +453,7 @@ class Process
             'PAKET_CONNECT_AT'       => 'DHL Paket Connect (Austria)',
             'PAKET_INTERNATIONAL_AT' => 'DHL Paket International (Austria)',
             'WARENPOST'              => 'Warenpost national',
+            'INTERNETMARKE'          => 'Internetmarke',
             'WARENPOST_INTERNATIONAL'=> 'Warenpost International',
         ];
     }

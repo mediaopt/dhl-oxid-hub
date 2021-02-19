@@ -6,27 +6,22 @@ use GuzzleHttp\Exception\ClientException;
 use Mediaopt\DHL\Adapter\DHLAdapter;
 use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
 use Mediaopt\DHL\Adapter\GKVCustomShipmentBuilder;
-use Mediaopt\DHL\Adapter\GKVShipmentBuilder;
-use Mediaopt\DHL\Api\GKV\CountryType;
-use Mediaopt\DHL\Api\GKV\CreationState;
-use Mediaopt\DHL\Api\GKV\LabelData;
+use Mediaopt\DHL\Adapter\InternetmarkeRefundRetoureVouchersRequestBuilder;
+use Mediaopt\DHL\Adapter\InternetmarkeShoppingCartPDFRequestBuilder;
 use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Response\DeleteShipmentOrderResponse;
-use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
-use Mediaopt\DHL\Api\GKV\ServiceconfigurationAdditionalInsurance;
-use Mediaopt\DHL\Api\GKV\ServiceconfigurationCashOnDelivery;
-use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
-use Mediaopt\DHL\Api\GKV\ServiceconfigurationIC;
-use Mediaopt\DHL\Api\GKV\ServiceconfigurationVisualAgeCheck;
-use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
-use Mediaopt\DHL\Api\GKV\Statusinformation;
+use Mediaopt\DHL\Api\Internetmarke\RetrieveRetoureStateRequestType;
+use Mediaopt\DHL\Api\Internetmarke\ShoppingCartResponseType;
 use Mediaopt\DHL\Api\Wunschpaket;
+use Mediaopt\DHL\Exception\WebserviceException;
 use Mediaopt\DHL\Merchant\Ekp;
+use Mediaopt\DHL\Model\MoDHLInternetmarkeRefund;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 use Mediaopt\DHL\Shipment\RetoureRequest;
+use OxidEsales\Eshop\Core\DatabaseProvider;
 use Mediaopt\DHL\Adapter\WarenpostShipmentOrderRequestBuilder;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsView;
@@ -82,7 +77,9 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     public function createLabel()
     {
-        if ($_POST['processIdentifier'] == Process::WARENPOST_INTERNATIONAL) {
+        if ($this->usesInternetmarke()) {
+            $this->createInternetmarkeLabel();
+        } elseif ($_POST['processIdentifier'] === Process::WARENPOST_INTERNATIONAL) {
             $this->createWarenpostLabel();
         } else {
             $this->handleCreationResponse($this->callCreation());
@@ -173,7 +170,31 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
 
             return;
         }
-        $this->handleDeletionResponse($label, $this->callDeleteShipment($label->getFieldData('shipmentNumber')));
+        if ($this->usesInternetmarke()) {
+            $this->refundInternetmarkeLabel($label);
+        } else {
+            $this->handleDeletionResponse($label, $this->callDeleteShipment($label->getFieldData('shipmentNumber')));
+        }
+    }
+
+    /**
+     * @param MoDHLLabel $label
+     */
+    protected function refundInternetmarkeLabel($label)
+    {
+        try {
+            $shipmentNumber = $label->getFieldData('shipmentNumber');
+            $internetMarkeRefund = Registry::get(DHLAdapter::class)->buildInternetmarkeRefund();
+            $response = $internetMarkeRefund->retoureVouchers((new InternetmarkeRefundRetoureVouchersRequestBuilder())->build($shipmentNumber));
+            $refund = MoDHLInternetmarkeRefund::fromRetoureVouchersResponse($response);
+            $refund->save();
+            $label->delete();
+            $message = sprintf(Registry::getLang()->translateString('MO_DHL__INTERNETMARKE_REFUND_REQUESTED_MESSAGE'), $response->getRetoureTransactionId());
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($message);
+        } catch (\Exception $e) {
+            $errors = $this->parseInternetmarkeException($e);
+            $this->displayErrors($errors);
+        }
     }
 
     /**
@@ -185,7 +206,6 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $gkvClient = Registry::get(DHLAdapter::class)->buildGKV();
         return $gkvClient->deleteShipmentOrder(new DeleteShipmentOrderRequest($gkvClient->buildVersion(), $shipmentNumber));
     }
-
 
     /**
      * @param Order|null $order
@@ -352,8 +372,17 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     {
         try {
             $participationNumber = Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('participationNumber');
-            Participation::build($participationNumber);
-            return $participationNumber;
+            if (Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('processIdentifier') === Process::INTERNETMARKE) {
+                $productExists = DatabaseProvider::getDb()->getOne('SELECT 1 from mo_dhl_internetmarke_products where OXID = ?', [$participationNumber]);
+                if (!$productExists) {
+                    Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__INTERNETMARKE_PRODUCT_ERROR');
+                    return '';
+                }
+                return $participationNumber;
+            } else {
+                Participation::build($participationNumber);
+                return $participationNumber;
+            }
         } catch (\InvalidArgumentException $exception) {
             /** @noinspection PhpParamsInspection */
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PARTICIPATION_NUMBER_ERROR');
@@ -435,6 +464,13 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $label->save();
     }
 
+    protected function handleInternetmarkeCreationResponse(ShoppingCartResponseType $response)
+    {
+        $this->getOrder()->storeCreationStatus('ok');
+        $label = MoDHLLabel::fromOrderAndInternetmarkeResponse($this->getOrder(), $response);
+        $label->save();
+    }
+
     /**
      * @param MoDHLLabel                  $label
      * @param DeleteShipmentOrderResponse $response
@@ -472,6 +508,50 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     protected function buildShipmentOrderRequest(): CreateShipmentOrderRequest
     {
         return Registry::get(GKVCreateShipmentOrderRequestBuilder::class)->build([$this->getOrder()->getId()]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function usesInternetmarke()
+    {
+        return $this->getProcess() && $this->getProcess()->usesInternetMarke();
+    }
+
+    /**
+     */
+    protected function createInternetmarkeLabel()
+    {
+        try {
+            $request = Registry::get(InternetmarkeShoppingCartPDFRequestBuilder::class)->build([$this->getOrder()->getId()]);
+            $internetMarke = Registry::get(DHLAdapter::class)->buildInternetmarke();
+            $response = $internetMarke->checkoutShoppingCartPDF($request);
+            $this->handleInternetmarkeCreationResponse($response);
+        } catch (\Exception $e) {
+            $errors = $this->parseInternetmarkeError($e);
+            $this->displayErrors($errors);
+        }
+    }
+
+    /**
+     * @param \Exception $e
+     * @return string[]
+     */
+    protected function parseInternetmarkeException(\Exception $e): array
+    {
+        $errors = [$e->getMessage()];
+        if ($e->getPrevious() instanceof \SoapFault) {
+            /** @var \SoapFault $fault */
+            $fault = $e->getPrevious();
+            $errors[] = $fault->getMessage();
+            if ($fault->detail->ShoppingCartValidationException->errors->message) {
+                $errors[] = $fault->detail->ShoppingCartValidationException->errors->message;
+            }
+            if ($fault->detail->RetoureVoucherException->errors->message) {
+                $errors[] = $fault->detail->RetoureVoucherException->errors->message;
+            }
+        }
+        return $errors;
     }
 
     /**

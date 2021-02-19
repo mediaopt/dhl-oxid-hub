@@ -12,7 +12,6 @@ use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Exception\WebserviceException;
 use Mediaopt\DHL\ServiceProvider\BasicServiceProvider;
 use Mediaopt\DHL\ServiceProvider\ServiceProviderList;
-use Mediaopt\DHL\ServiceProvider\ServiceType;
 use Mediaopt\DHL\ServiceProvider\Timetable\TimeInfo;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -36,7 +35,7 @@ class FinderController extends \OxidEsales\Eshop\Application\Controller\Frontend
     public function render()
     {
         try {
-            $serviceProviders = $this->resolveQuerySet($this->buildQueries());
+            $serviceProviders = $this->resolveQuery($this->buildQuery());
             if (!empty($serviceProviders)) {
                 $response = ['status' => 'success', 'payload' => $serviceProviders];
             } else {
@@ -81,6 +80,24 @@ class FinderController extends \OxidEsales\Eshop\Application\Controller\Frontend
         header('Content-Type: application/json');
         header('Content-Length: ' . strlen($responseJson));
         \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Utils::class)->showMessageAndExit($responseJson);
+    }
+
+    /**
+     * @return \Mediaopt\DHL\FinderQuery
+     */
+    protected function buildQuery()
+    {
+        $config = $this->getConfig();
+        $street = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('street');
+        $postalCode = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('locality');
+        $countryIso2Code = (string) \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('countryIso2Code');
+        $street = trim($street);
+        $postalCode = trim($postalCode);
+        $countryIso2Code = trim($countryIso2Code);
+
+        $desiredBranchTypes = array_map('boolval', array_map([$config, 'getRequestParameter'], ['packstation', 'filiale', 'paketshop']));
+        $parameters = array_merge([\Mediaopt\DHL\FinderQuery::class, $street, $postalCode, $countryIso2Code], $desiredBranchTypes);
+        return call_user_func_array('oxNew', $parameters);
     }
 
     /**
@@ -141,8 +158,7 @@ class FinderController extends \OxidEsales\Eshop\Application\Controller\Frontend
     protected function findServiceProviders(\Mediaopt\DHL\FinderQuery $query)
     {
         $standortsuche = $this->getStandortsuche();
-        $pickup = ServiceType::create(ServiceType::PARCEL_PICKUP);
-        $serviceProviders = $standortsuche->getParcellocationByAddressAndServiceType($pickup, $query->getAddress())->toArray();
+        $serviceProviders = $standortsuche->getParcellocationByAddress($query->getAddress(), $query->getPostalCode(), $query->getCountryIso2Code())->toArray();
         return $this->filterServiceProviders($serviceProviders, $query);
     }
 

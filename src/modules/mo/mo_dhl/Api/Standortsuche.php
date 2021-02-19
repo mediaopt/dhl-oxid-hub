@@ -13,9 +13,7 @@ use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
 use Mediaopt\DHL\Exception\ServiceProviderException;
 use Mediaopt\DHL\Exception\WebserviceException;
 use Mediaopt\DHL\ServiceProvider\BasicServiceProvider;
-use Mediaopt\DHL\ServiceProvider\Coordinates;
 use Mediaopt\DHL\ServiceProvider\ServiceProviderList;
-use Mediaopt\DHL\ServiceProvider\ServiceType;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -58,19 +56,7 @@ class Standortsuche extends Base
      */
     public function getIdentifier()
     {
-        return 'parcelshopfinderrest';
-    }
-
-    /**
-     * @param ServiceType $serviceType
-     * @param Coordinates $coordinates
-     * @return ServiceProviderList
-     * @throws WebserviceException
-     */
-    public function getParcellocationByServiceTypeAndCoordinate(ServiceType $serviceType, Coordinates $coordinates)
-    {
-        $parameters = $serviceType->getName() . '/' . $coordinates->getLatitude() . '/' . $coordinates->getLongitude();
-        return $this->extractServiceProviders($this->callApi('parcellocationByCoordinate/' . $parameters));
+        return 'find-by-address';
     }
 
     /**
@@ -107,78 +93,48 @@ class Standortsuche extends Base
     }
 
     /**
-     * @param Coordinates $coordinates
-     * @return ServiceProviderList
-     * @throws WebserviceException
-     */
-    public function getParcellocationByCoordinate(Coordinates $coordinates)
-    {
-        $parameters = $coordinates->getLatitude() . '/' . $coordinates->getLongitude();
-        return $this->extractServiceProviders($this->callApi('parcellocationByCoordinate/' . $parameters));
-    }
-
-    /**
-     * @param ServiceType    $serviceType
-     * @param Address|string $address
-     * @return ServiceProviderList
-     * @throws WebserviceException
-     */
-    public function getParcellocationByAddressAndServiceType(ServiceType $serviceType, $address)
-    {
-        $addressString = $this->buildAddressString($address);
-        if ($addressString === '') {
-            return new ServiceProviderList([]);
-        }
-        $parameters = $serviceType->getName() . '/' . $addressString;
-        return $this->extractServiceProviders($this->callApi('parcellocationByAddress/' . $parameters));
-    }
-
-    /**
      * Generates a string with basic sanitization from the supplied address.
      *
      * @param Address|string $address
+     * @param string|null $postalCode
+     * @param string|null $countryIso2Code
      * @return string
      */
-    protected function buildAddressString($address)
+    protected function buildAddressString($address, $postalCode = null, $countryIso2Code = null)
     {
-        if (is_string($address)) {
-            return $this->sanitizeAddressString($address);
+        if ($address instanceof Address) {
+            $postalCode = $address->getZip();
+            $countryIso2Code = $address->getCountryIso2Code();
+            $address = $address->getStreet() . " " . $address->getStreetNo();
         }
 
-        $components = [];
-        foreach (['zip', 'city', 'street', 'streetNo', 'country'] as $name) {
-            $components[] = trim($address->{'get' . ucfirst($name)}());
-        }
-        return $this->sanitizeAddressString(implode(' ', array_filter($components)));
+        $urlOptions = [
+            "countryCode=$countryIso2Code",
+            "postalCode=$postalCode",
+            "streetAddress=$address",
+            'limit=50'
+        ];
+
+        return $this->sanitizeAddressString(implode('&', $urlOptions));
     }
 
     /**
      * @param Address|string $address
+     * @param string|null $postalCode
+     * @param string|null $countryIso2Code
      * @return ServiceProviderList
      * @throws WebserviceException
      */
-    public function getParcellocationByAddress($address)
+    public function getParcellocationByAddress($address, $postalCode = null, $countryIso2Code = null)
     {
-        $addressString = $this->buildAddressString($address);
+        $addressString = $this->buildAddressString($address, $postalCode, $countryIso2Code);
         if ($addressString === '') {
             return new ServiceProviderList([]);
         }
+        $locations = $this->callApi($addressString);
+        $oldAPIstandart = $this->convert($locations);
 
-        return $this->extractServiceProviders($this->callApi('parcellocationByAddress/' . $addressString));
-    }
-
-    /**
-     * @param string $key
-     * @return BasicServiceProvider
-     * @throws WebserviceException
-     */
-    public function getParcellocationByPrimaryKeyPSF($key)
-    {
-        $serviceProvider = $this->buildServiceProvider($this->callApi('parcellocationByPrimaryKeyPSF/' . $key));
-        if ($serviceProvider !== null) {
-            return $serviceProvider;
-        }
-        throw new WebserviceException('NO_RESULT');
+        return $this->extractServiceProviders($oldAPIstandart);
     }
 
     /**
@@ -187,7 +143,7 @@ class Standortsuche extends Base
      */
     protected function isServiceProviderAllowed($potentialServiceProvider)
     {
-        if ($potentialServiceProvider === null || $potentialServiceProvider->getAddress()->getCountry() !== 'de') {
+        if ($potentialServiceProvider === null) {
             return false;
         }
 
@@ -202,5 +158,140 @@ class Standortsuche extends Base
     {
         $forbiddenCharacters = ['/', '\\'];
         return trim(str_replace($forbiddenCharacters, '-', $address));
+    }
+
+    protected function buildRequestOptions()
+    {
+        $credentials = $this->getCredentials();
+        return ['headers' => [$credentials->getUsername() => $credentials->getPassword()]];
+    }
+
+    /**
+     * @param string $relativeUrl
+     * @return string
+     */
+    protected function buildUrl($relativeUrl)
+    {
+        return "{$this->getCredentials()->getEndpoint()}/{$this->getIdentifier()}?$relativeUrl";
+    }
+
+    /**
+     * @param $items
+     * @return object
+     */
+    private function convert($items)
+    {
+        $newItems = [];
+        foreach ($items->locations as $item) {
+            $psfServicetypes = $this->buildPsfServicetypes($item->serviceTypes);
+            if ($psfServicetypes === false) {
+                $item->location->type = '';
+            }
+
+            $locationId = $item->location->ids[0]->locationId;
+
+            $systemID = $locationId;
+            $primaryKeyDeliverySystem = '';
+            if (stripos('-', $locationId)) {
+                [$systemID, $primaryKeyDeliverySystem] = explode('-', $locationId);
+            }
+
+            $newItems[] = (object)[
+                'countryCode' => strtolower($item->place->address->countryCode),
+                'zipCode' => $item->place->address->postalCode,
+                'city' => $item->place->address->addressLocality,
+                'district' => null,
+                'additionalInfo' => null,
+                'area' => null,
+                'street' => $item->place->address->streetAddress,
+                'houseNo' => '',
+                'keyWord' => $item->location->keyword,
+                'shopType' => $this->buildshopType($item->location->type),
+                'shopName' => $item->name,
+                'geoPosition' => (object)[
+                    'latitude' => $item->place->geo->latitude,
+                    'longitude' => $item->place->geo->longitude,
+                    'distance' => $item->distance
+                ],
+                'primaryKeyDeliverySystem' => $primaryKeyDeliverySystem,
+                'primaryKeyZipRegion' => $item->location->keywordId,
+                'systemID' => $systemID,
+                'primaryKeyPSF' => $item->location->ids[0]->locationId,
+                'psfServicetypes' => $psfServicetypes,
+                'openingHours' => $item->openingHours,
+            ];
+        }
+
+        return (object)['psfParcellocationList' => $newItems];
+    }
+
+    /**
+     * @param $array
+     * @return array|false
+     */
+    private function buildPsfServicetypes(array $array)
+    {
+        $pickupAvaliable = false;
+        $return = [];
+        foreach ($array as $item) {
+            switch ($item) {
+                case 'parcel:pick-up':
+                case 'parcel:pick-up-registered':
+                case 'parcel:pick-up-unregistered':
+                case 'express:pick-up':
+                    $pickupAvaliable = true;
+                    $return[] = 'parcelpickup';
+                    break;
+                case 'postident':
+                    $return[] = 'postident';
+                    break;
+                case 'handicapped-access':
+                    $return[] = 'handicappedAccess';
+                    break;
+                case 'cash-on-delivery':
+                    $return[] = 'COD';
+                    break;
+                case 'parcel:drop-off':
+                case 'express:drop-off':
+                case 'parcel:drop-off-unregistered':
+                    $return[] = 'parcelacceptance';
+                    break;
+                case 'parking':
+                case 'franking' :
+                    $return[] = $item;
+                    break;
+                case 'age-verification':
+                    $return[] = 'ageVerification';
+                    break;
+                case 'packaging-material' :
+                    $return[] = 'packingMaterial';
+                    break;
+                case 'cash-service' :
+                    $return[] = 'cashService';
+                    break;
+                default:
+                    break;
+            }
+        }
+        return $pickupAvaliable ? $return : false;
+    }
+
+    /**
+     * @param $type
+     * @return string
+     */
+    private function buildshopType($type)
+    {
+        switch ($type) {
+            case 'postoffice':
+            case 'postbank':
+                return 'postOffice';
+            case 'servicepoint':
+                return 'parcelShop';
+            case 'locker':
+                return 'packStation';
+            default:
+                return '';
+        }
     }
 }

@@ -120,6 +120,16 @@ class Credentials
     }
 
     /**
+     * @param string      $keyName
+     * @param string      $password
+     * @return self
+     */
+    public static function createStandortsucheEndpoint($keyName, $password)
+    {
+        return new static('https://api.dhl.com/location-finder/v1', $keyName, $password);
+    }
+
+    /**
      * @param string $username
      * @param string $password
      * @param string $ekp
@@ -161,6 +171,36 @@ class Credentials
     public static function createProductionSoapEndpoint($username, $password, $ekp)
     {
         return new static('https://cig.dhl.de/services/production/soap', $username, $password, $ekp, false);
+    }
+
+    /**
+     * @param string      $username
+     * @param string      $password
+     * @return self
+     */
+    public static function createSandboxInternetmarkeEndpoint($username, $password)
+    {
+        return new static('https://internetmarke.deutschepost.de/OneClickForAppV3', $username, $password, null, true);
+    }
+
+    /**
+     * @param string      $username
+     * @param string      $password
+     * @return self
+     */
+    public static function createProductionInternetmarkeEndpoint($username, $password)
+    {
+        return new static('https://internetmarke.deutschepost.de/OneClickForAppV3', $username, $password, null, false);
+    }
+
+    /**
+     * @param string      $username
+     * @param string      $password
+     * @return self
+     */
+    public static function createProdWSEndpoint($username, $password)
+    {
+        return new static('https://prodws.deutschepost.de:8443/ProdWSProvider_1_1/prodws', $username, $password, null, false);
     }
 
     /**
