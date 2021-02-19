@@ -201,12 +201,13 @@ abstract class Configurator
 
     /**
      * @param LoggerInterface|null $logger
+     * @param ClientInterface|null $client
      * @return Warenpost
      */
     public function buildWarenpost(LoggerInterface $logger = null, ClientInterface $client = null): Warenpost
     {
         return new Warenpost(
-            $this->buildWarenpostCredentials(true),
+            $this->buildWarenpostCredentials(),
             $logger ?: $this->buildLogger(),
             $client ?: $this->buildClient()
         );

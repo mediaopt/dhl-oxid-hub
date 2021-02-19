@@ -13,12 +13,12 @@ trait Validator
     /**
      * @param string $name
      * @param mixed $value
-     * @param int|null $minLength
-     * @param int|null $maxLengt
+     * @param int|null $minValue
+     * @param int|null $maxValue
      * @param bool $required
      * @return string[]
      */
-    protected function isIntFieldCorrect(string $name, $value, $minLength = null, $maxLengt = null, $required = false): array
+    protected function isIntFieldCorrect(string $name, $value, $minValue = null, $maxValue = null, $required = false): array
     {
 
         if ($value === null && !$required) {
@@ -29,12 +29,12 @@ trait Validator
             return ["type of $name should be an int"];
         }
 
-        if  ($minLength === null && $maxLengt === null) {
+        if  ($minValue === null && $maxValue === null) {
             return[];
         }
 
-        if ($value < $minLength || $value > $maxLengt) {
-            return ["$name should be between $minLength and $maxLengt, current value is $value"];
+        if ($value < $minValue || $value > $maxValue) {
+            return ["$name should be between $minValue and $maxValue, current value is $value"];
         }
 
         return[];

@@ -29,6 +29,8 @@ use Mediaopt\DHL\Shipment\Process;
 use Mediaopt\DHL\Shipment\RetoureRequest;
 use Mediaopt\DHL\Adapter\WarenpostShipmentOrderRequestBuilder;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\UtilsView;
+use OxidEsales\Eshop\Application\Model\Order;
 
 /**
  * @author Mediaopt GmbH
@@ -80,21 +82,8 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     public function createLabel()
     {
-        //todo separate this to different methods
         if ($_POST['processIdentifier'] == Process::WARENPOST_INTERNATIONAL) {
-            $order = Registry::get(DHLAdapter::class)->buildWarenpost()->createShipmentOrder($this->buildWarenpostOrderRequest());
-            if ($awb = $order->shipments[0]->awb) {
-                $status = new Statusinformation(200, 'success');
-                $label = new LabelData($status, $awb);
-                $state = new CreationState('', $label);
-                $state->setShipmentNumber($awb);
-                $this->getOrder()->storeCreationStatus('ok');
-                $label = MoDHLLabel::fromOrderAndCreationState($this->getOrder(), $state);
-                $label->save();
-
-                //todo how to save label without url?
-                Registry::get(DHLAdapter::class)->buildWarenpost()->getLabel($awb);
-            }
+            $this->createWarenpostLabel();
         } else {
             $this->handleCreationResponse($this->callCreation());
         }
@@ -195,6 +184,36 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     {
         $gkvClient = Registry::get(DHLAdapter::class)->buildGKV();
         return $gkvClient->deleteShipmentOrder(new DeleteShipmentOrderRequest($gkvClient->buildVersion(), $shipmentNumber));
+    }
+
+
+    /**
+     * @param Order|null $order
+     */
+    protected function createWarenpostLabel(Order $order = null)
+    {
+        try {
+            if (!isset($order)) {
+                $order = $this->getOrder();
+            }
+
+            $warenpostService = Registry::get(DHLAdapter::class)->buildWarenpost();
+            $response = $warenpostService->createWarenpost($order);
+            $warenpostService->handleResponse($order, $response);
+        } catch (\Exception $e) {
+            Registry::get(UtilsView::class)->addErrorToDisplay($e->getMessage());
+            if (!($previous = $e->getPrevious()) || !$previous instanceof ClientException) {
+                return;
+            }
+            $response = $previous->getResponse();
+            if (!$response->getBody()) {
+                return;
+            }
+            $data = json_decode($response->getBody()->getContents());
+            if ($data->detail) {
+                Registry::get(UtilsView::class)->addErrorToDisplay($data->detail);
+            }
+        }
     }
 
     /**

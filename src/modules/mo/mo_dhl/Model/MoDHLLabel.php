@@ -15,6 +15,7 @@ use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\ViewConfig;
+use Mediaopt\DHL\Api\Warenpost\WarenpostResponse;
 
 /**
  * @author Mediaopt GmbH
@@ -31,6 +32,11 @@ class MoDHLLabel extends BaseModel
      * @var string
      */
     const TYPE_RETOURE = 'retoure';
+
+    /**
+     * @var string
+     */
+    const TYPE_WARENPOST = 'warenpost';
 
     /**
      * Object core table name
@@ -104,14 +110,43 @@ class MoDHLLabel extends BaseModel
     }
 
     /**
+     * @param Order           $order
+     * @param WarenpostResponse $warenpostResponse
+     * @return MoDHLLabel
+     */
+    public static function fromOrderAndWarenpost(Order $order, WarenpostResponse $warenpostResponse): MoDHLLabel
+    {
+        $label = new self();
+        $label->storeData(
+            $warenpostResponse->getShipmentNumber() . '.pdf',
+            $warenpostResponse->getLabelData(),
+            false
+        );
+        $fileName = 'documents' . DIRECTORY_SEPARATOR . $warenpostResponse->getShipmentNumber();
+        $label->assign([
+            'oxshopid'       => $order->getShopId(),
+            'orderId'        => $order->getId(),
+            'type'           => self::TYPE_WARENPOST,
+            'shipmentNumber' => $warenpostResponse->getShipmentNumber(),
+            'labelUrl'       => Registry::get(ViewConfig::class)->getModuleUrl('mo_dhl', $fileName . '.pdf'),
+        ]);
+
+        return $label;
+    }
+
+    /**
      * @param string $fileName
      * @param array  $data
+     * @param bool $encode
      * @throws \OxidEsales\EshopCommunity\Core\Exception\FileException
      */
-    protected function storeData($fileName, $data)
+    protected function storeData($fileName, $data, $encode = true)
     {
         $path = Registry::get(ViewConfig::class)->getModulePath('mo_dhl', 'documents');
-        file_put_contents($path . DIRECTORY_SEPARATOR . $fileName, base64_decode($data));
+        if ($encode) {
+            $data = base64_decode($data);
+        }
+        file_put_contents($path . DIRECTORY_SEPARATOR . $fileName, $data);
     }
 
     /**

@@ -3,9 +3,13 @@
 namespace Mediaopt\DHL\Adapter;
 
 use Mediaopt\DHL\Api\Retoure\Country;
-use Mediaopt\DHL\Application\Model\Order;
+use OxidEsales\Eshop\Application\Model\Order;
 use Mediaopt\DHL\Warenpost\ItemData;
 use Mediaopt\DHL\Warenpost\Paperwork;
+use OxidEsales\Eshop\Core\DatabaseProvider;
+use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
+use OxidEsales\Eshop\Core\Registry;
+use function oxNew;
 
 class WarenpostShipmentOrderRequestBuilder
 {
@@ -20,19 +24,22 @@ class WarenpostShipmentOrderRequestBuilder
     protected $order;
 
     /**
-     * @param string $orderId
+     * @param Order $order
      * @return WarenpostShipmentOrderRequestBuilder
      */
-    public function build(string $orderId): WarenpostShipmentOrderRequestBuilder
+    public function build(Order $order): WarenpostShipmentOrderRequestBuilder
     {
-        $order = \oxNew(Order::class);
-        $order->load($orderId);
+        $config = Registry::getConfig();
 
-        //todo get store contact person
+        $contactName = $config->getShopConfVar('mo_dhl__sender_line1')
+            . ' ' . $config->getShopConfVar('mo_dhl__sender_line2')
+            . ' ' . $config->getShopConfVar('mo_dhl__sender_line3');
+
         $paperwork = new Paperwork(
-            'Store contact person',
+            $contactName,
             1
         );
+        $paperwork->validate();
 
         $country = $this->buildCountry($order->getFieldData('oxbillcountryid'));
 
@@ -42,21 +49,29 @@ class WarenpostShipmentOrderRequestBuilder
             $order->getFieldData('oxbillstreet') . ' ' . $order->getFieldData('oxbillstreetnr'),
             $order->getFieldData('oxbillcity'),
             $country->getCountryISOCode(),
-            '500' //todo weight
+            2000 //todo weight
         );
+        $itemData->setServiceLevel('REGISTERED');
 
         $itemData->setPostalCode($order->getFieldData('oxbillzip'));
 
-        //todo sender info
-        $itemData->setSenderCity('Berlin');
-        $itemData->setSenderCountry('DE');
-        $itemData->setSenderAddressLine1('Address');
-        $itemData->setSenderName('Store contact person');
-        $itemData->setSenderPostalCode('14557');
+        $senderCity = $config->getShopConfVar('mo_dhl__sender_city');
+        $senderIso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__retoure_receiver_country'));
+        $senderAddressLine1 = $config->getShopConfVar('mo_dhl__sender_street')
+            . ' ' . $config->getShopConfVar('mo_dhl__sender_street_number');
+        $senderZip = $config->getShopConfVar('mo_dhl__sender_zip');
+
+        $itemData->setSenderCity($senderCity);
+        $itemData->setSenderCountry($senderIso2);
+        $itemData->setSenderAddressLine1($senderAddressLine1);
+        $itemData->setSenderName($contactName);
+        $itemData->setSenderPostalCode($senderZip);
+
+        $itemData->validate();
         $items[] = $itemData->toArray();
 
         $this->order = [
-            "orderStatus"=>"FINALIZE",
+            "orderStatus" => "FINALIZE",
             "paperwork" => $paperwork->toArray(),
             "items" => $items
         ];
@@ -76,12 +91,23 @@ class WarenpostShipmentOrderRequestBuilder
      * @param string $countryId
      * @return Country
      */
-    protected function buildCountry(string $countryId)
+    protected function buildCountry(string $countryId): Country
     {
-        $country = \oxNew(\OxidEsales\Eshop\Application\Model\Country::class);
+        $country = oxNew(\OxidEsales\Eshop\Application\Model\Country::class);
         $country->load($countryId);
         return (new Country())
             ->setCountryISOCode($country->getFieldData('oxisoalpha2'))
             ->setCountry($country->getFieldData('oxtitle'));
+    }
+
+    /**
+     * @param string $isoalpha3
+     * @return false|string
+     * @throws DatabaseConnectionException
+     */
+    protected function getIsoalpha2FromIsoalpha3(string $isoalpha3)
+    {
+        return DatabaseProvider::getDb()
+            ->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$isoalpha3]);
     }
 }

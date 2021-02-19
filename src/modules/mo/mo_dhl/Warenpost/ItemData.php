@@ -48,6 +48,7 @@ class ItemData
 
     /**
      * The descriptions of the content pieces.
+     * See Content class
      *
      * @var array|null
      */
@@ -97,7 +98,7 @@ class ItemData
 
     /**
      * Postal code of the recipient address.
-     * Length = 2
+     * Length 0 - 20
      *
      * @var string|null
      */
@@ -267,9 +268,9 @@ class ItemData
      * @param string $addressLine1
      * @param string $city
      * @param string $destinationCountry
-     * @param string $shipmentGrossWeight
+     * @param int $shipmentGrossWeight
      */
-    public function __construct(string $product, string $recipient, string $addressLine1, string $city, string $destinationCountry, string $shipmentGrossWeight)
+    public function __construct(string $product, string $recipient, string $addressLine1, string $city, string $destinationCountry, int $shipmentGrossWeight)
     {
         $this->product = $product;
         $this->recipient = $recipient;
@@ -490,7 +491,7 @@ class ItemData
     {
         //Basic fields validation
         $errorMessage = implode(' ,', array_merge(
-            $this->isEnumFieldCorrect('product', $this->product, Product::$PRODUCTS),
+      //      $this->isEnumFieldCorrect('product', $this->product, Product::$PRODUCTS),
             $this->isStringFieldCorrect('recipient', $this->recipient, 1, 30, true),
             $this->isStringFieldCorrect('addressLine1', $this->addressLine1, 1, 30, true),
             $this->isStringFieldCorrect('city', $this->city, 1, 30, true),
