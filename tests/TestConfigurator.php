@@ -100,6 +100,46 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
+    protected function getWarenpostSandboxLogin(): string
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_WARENPOST_API_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getWarenpostSandboxPassword(): string
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_WARENPOST_API_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getWarenpostProdLogin(): string
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::PROD_WARENPOST_API_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getWarenpostProdPassword(): string
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::PROD_WARENPOST_API_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getWarenpostEkp(): string
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::WARENPOST_API_EKP;
+    }
+
+    /**
+     * @return string
+     */
     protected function getEkp()
     {
         return '2222222222';
