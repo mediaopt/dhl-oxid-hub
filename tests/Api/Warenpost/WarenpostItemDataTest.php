@@ -131,14 +131,6 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testWrongProductThrowAnException()
-    {
-        $this->expectException(WarenpostException::class);
-        $this->expectExceptionMessageRegExp('/unknown product/');
-        $itemData = new ItemData("GPU", "Alfred J. Quack Jr.", "Main street 1", "Roma", "IT", 1500);
-        $itemData->validate();
-    }
-
     public function testShortRecipientThrowAnException()
     {
         $this->expectException(WarenpostException::class);

@@ -50,7 +50,7 @@ class Awb
      *
      * @var int
      */
-    protected int $awbCopyCount;
+    protected $awbCopyCount;
 
     /**
      * Contact name for paperwork.
@@ -58,49 +58,49 @@ class Awb
      *
      * @var string
      */
-    protected string $contactName;
+    protected $contactName;
 
     /**
      * Deutsche Post Customer Account number (EKP) of the customer who wants to create an single awb.
      *
      * @var string
      */
-    protected string $customerEkp;
+    protected $customerEkp;
 
     /**
      * The item format for this awb.
      *
      * @var string
      */
-    protected string $itemFormat;
+    protected $itemFormat;
 
     /**
      * Job reference for paperwork.
      *
      * @var string|null
      */
-    protected ?string $jobReference;
+    protected $jobReference;
 
     /**
      * See Product class
      *
      * @var string
      */
-    protected string $product;
+    protected $product;
 
     /**
      * See ServiceLevel class
      *
      * @var string
      */
-    protected string $serviceLevel;
+    protected $serviceLevel;
 
     /**
      * Telephone number for paperwork.
      *
      * @var string|null
      */
-    protected ?string $telephoneNumber;
+    protected $telephoneNumber;
 
     /**
      * @param string $customerEkp
@@ -141,7 +141,7 @@ class Awb
      *
      * @var float|null
      */
-    protected ?float $totalWeight;
+    protected $totalWeight;
 
     /**
      * @return bool

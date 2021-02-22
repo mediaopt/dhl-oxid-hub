@@ -54,7 +54,7 @@ class Content
      *
      * @var string
      */
-    protected string $contentPieceHsCode;
+    protected $contentPieceHsCode;
 
     /**
      * The (short) description of this content.
@@ -62,14 +62,14 @@ class Content
      *
      * @var string
      */
-    protected string $contentPieceDescription;
+    protected $contentPieceDescription;
 
     /**
      * Overall value of the content pieces of one type.
      *
      * @var string
      */
-    protected string $contentPieceValue;
+    protected $contentPieceValue;
 
     /**
      * The net weight of all pieces of this content type.
@@ -77,7 +77,7 @@ class Content
      *
      * @var int
      */
-    protected int $contentPieceNetweight;
+    protected $contentPieceNetweight;
 
     /**
      * Country of origin, based on ISO-3166-1.
@@ -85,7 +85,7 @@ class Content
      *
      * @var string
      */
-    protected string $contentPieceOrigin;
+    protected $contentPieceOrigin;
 
     /**
      * Number of pieces.
@@ -93,12 +93,12 @@ class Content
      *
      * @var int
      */
-    protected int $contentPieceAmount;
+    protected $contentPieceAmount;
 
     /**
      * @var int|null
      */
-    protected ?int $contentPieceIndexNumber;
+    protected $contentPieceIndexNumber;
 
     /**
      * @param string $contentPieceHsCode
