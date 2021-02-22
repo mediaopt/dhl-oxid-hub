@@ -374,15 +374,6 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
         $itemData->validate();
     }
 
-    public function testWrongProductForServiceLevelThrowAnException()
-    {
-        $this->expectException(WarenpostException::class);
-        $this->expectExceptionMessageRegExp('/for serviceLevel/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setServiceLevel('REGISTERED');
-        $itemData->validate();
-    }
-
     public function testWrongShipmentCurrencyThrowAnException()
     {
         $this->expectException(WarenpostException::class);

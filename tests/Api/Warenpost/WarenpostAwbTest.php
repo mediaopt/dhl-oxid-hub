@@ -124,12 +124,4 @@ class WarenpostAwbTest extends \PHPUnit_Framework_TestCase
         $awb = new Awb('9012345678', 'Max Mustermann', 3, 'GPP', 'error', 'P');
         $awb->validate();
     }
-
-    public function testWrongProductForServiceLevelThrowAnException()
-    {
-        $this->expectException(WarenpostException::class);
-        $this->expectExceptionMessageRegExp('/for serviceLevel/');
-        $awb = new Awb('9012345678', 'Max Mustermann', 3, 'GPP', 'REGISTERED', 'P');
-        $awb->validate();
-    }
 }

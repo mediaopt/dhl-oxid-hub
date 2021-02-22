@@ -160,11 +160,6 @@ class Awb
             $this->isEnumFieldCorrect('serviceLevel', $this->serviceLevel, ServiceLevel::$SERVICE_LEVELS)
         ));
 
-        //Additional fields validation
-        if (empty($errorMessage)) {
-            $errorMessage = $this->isProductCorrectForServiceLevel($this->product, $this->serviceLevel);
-        }
-
         if (empty($errorMessage)) {
             return true;
         }

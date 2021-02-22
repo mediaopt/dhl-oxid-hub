@@ -491,7 +491,6 @@ class ItemData
     {
         //Basic fields validation
         $errorMessage = implode(' ,', array_merge(
-      //      $this->isEnumFieldCorrect('product', $this->product, Product::$PRODUCTS),
             $this->isStringFieldCorrect('recipient', $this->recipient, 1, 30, true),
             $this->isStringFieldCorrect('addressLine1', $this->addressLine1, 1, 30, true),
             $this->isStringFieldCorrect('city', $this->city, 1, 30, true),
@@ -519,11 +518,6 @@ class ItemData
             $this->isEnumFieldCorrect('shipmentNaturetype', $this->shipmentNaturetype, ShipmentNatureType::$TYPES),
             $this->isStringFieldCorrect('state', $this->state, 0, 20)
         ));
-
-        //Additional fields validation
-        if (empty($errorMessage) && !empty($this->serviceLevel)) {
-            $errorMessage = $this->isProductCorrectForServiceLevel($this->product, $this->serviceLevel);
-        }
 
         if (empty($errorMessage)) {
             return true;
