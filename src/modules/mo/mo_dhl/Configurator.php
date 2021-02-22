@@ -273,7 +273,7 @@ abstract class Configurator
         ServiceProviderBuilder $serviceProviderBuilder = null
     ) {
         return new Standortsuche(
-            $this->buildRestCredentials(true),
+            $this->buildStandortsucheCredentials(),
             $logger ?: $this->buildLogger(),
             $client ?: $this->buildClient(),
             $serviceProviderBuilder
