@@ -9,6 +9,7 @@ use Mediaopt\DHL\Api\Warenpost\Paperwork;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\Config;
 use function oxNew;
 
 class WarenpostShipmentOrderRequestBuilder
@@ -30,27 +31,60 @@ class WarenpostShipmentOrderRequestBuilder
     public function build(Order $order): WarenpostShipmentOrderRequestBuilder
     {
         $config = Registry::getConfig();
+        $sender = $this->buildSender($config);
 
-        $contactName = $config->getShopConfVar('mo_dhl__sender_line1')
+        $this->order = [
+            "orderStatus" => "FINALIZE",
+            "paperwork" => $this->buildPaperwork($sender),
+            "items" => $this->buildItems($order, $config, $sender)
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrder(): array
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param Config $config
+     * @return string
+     */
+    protected function buildSender(Config $config): string
+    {
+        return $config->getShopConfVar('mo_dhl__sender_line1')
             . ' ' . $config->getShopConfVar('mo_dhl__sender_line2')
             . ' ' . $config->getShopConfVar('mo_dhl__sender_line3');
+    }
 
-        $paperwork = new Paperwork(
-            $contactName,
-            1
-        );
+    /**
+     * @param string $contactName
+     * @return array
+     */
+    protected function buildPaperwork(string $contactName): array
+    {
+        $paperwork = new Paperwork($contactName, 1);
+
         $paperwork->validate();
 
-        $country = $this->buildCountry($order->getFieldData('oxbillcountryid'));
+        return $paperwork->toArray();
+    }
 
-        $itemData = new ItemData(
-            self::DHL_WARENPOST_PRODUCT_ID,
-            $order->getFieldData('oxbillfname') . ' ' . $order->getFieldData('oxbilllname'),
-            $order->getFieldData('oxbillstreet') . ' ' . $order->getFieldData('oxbillstreetnr'),
-            $order->getFieldData('oxbillcity'),
-            $country->getCountryISOCode(),
-            2000 //todo weight
-        );
+    /**
+     * @param Order $order
+     * @param Config $config
+     * @param string $contactName
+     * @return array
+     * @throws DatabaseConnectionException
+     */
+    protected function buildItems(Order $order, Config $config, string $contactName): array
+    {
+        $itemData = $this->buildItemData($order);
+
         $itemData->setServiceLevel('REGISTERED');
 
         $itemData->setPostalCode($order->getFieldData('oxbillzip'));
@@ -68,23 +102,50 @@ class WarenpostShipmentOrderRequestBuilder
         $itemData->setSenderPostalCode($senderZip);
 
         $itemData->validate();
-        $items[] = $itemData->toArray();
-
-        $this->order = [
-            "orderStatus" => "FINALIZE",
-            "paperwork" => $paperwork->toArray(),
-            "items" => $items
-        ];
-
-        return $this;
+        return [$itemData->toArray()];
     }
 
     /**
-     * @return array
+     * @param Order $order
+     * @return ItemData
      */
-    public function getOrder(): array
+    protected function buildItemData(Order $order): ItemData
     {
-        return $this->order;
+        $requiredFields = [
+            'countryid',
+            'city',
+            'zip',
+            'street',
+            'streetnr',
+            'fname',
+            'lname'
+        ];
+        $customerDataDelivery = [];
+        $customerDataBill = [];
+        foreach ($requiredFields as $field) {
+            $customerDataBill[$field] = $order->getFieldData('oxbill' . $field);
+            if (!empty($order->getFieldData('oxdel' . $field))) {
+                $customerDataDelivery[$field] = $order->getFieldData('oxdel' . $field);
+            }
+        }
+
+        if (count($customerDataDelivery) < count($requiredFields)) {
+            $customerData = $customerDataBill;
+        } else {
+            $customerData = $customerDataDelivery;
+        }
+
+        $country = $this->buildCountry($customerData['countryid']);
+        $itemData = new ItemData(
+            self::DHL_WARENPOST_PRODUCT_ID,
+            $customerData['fname'] . ' ' . $customerData['lname'],
+            $customerData['street'] . ' ' . $customerData['streetnr'],
+            $customerData['city'],
+            $country->getCountryISOCode(),
+            2000 //todo weight
+        );
+        $itemData->setPostalCode($customerData['zip']);
+        return $itemData;
     }
 
     /**
