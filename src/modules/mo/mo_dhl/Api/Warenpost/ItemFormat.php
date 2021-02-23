@@ -1,6 +1,6 @@
 <?php
 
-namespace Mediaopt\DHL\Warenpost;
+namespace Mediaopt\DHL\Api\Warenpost;
 
 /**
  * @author  Mediaopt GmbH

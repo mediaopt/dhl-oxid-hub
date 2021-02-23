@@ -1,6 +1,6 @@
 <?php
 
-namespace Mediaopt\DHL\Warenpost;
+namespace Mediaopt\DHL\Api\Warenpost;
 
 /**
  * The service level that is used for the shipment of this item.

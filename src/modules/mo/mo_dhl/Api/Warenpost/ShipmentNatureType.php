@@ -1,6 +1,6 @@
 <?php
 
-namespace Mediaopt\DHL\Warenpost;
+namespace Mediaopt\DHL\Api\Warenpost;
 
 /**
  * Nature of the pieces in this item, based on UPU code list 136.

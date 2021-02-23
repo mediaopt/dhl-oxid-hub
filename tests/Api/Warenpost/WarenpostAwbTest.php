@@ -8,7 +8,7 @@
 namespace sdk\Warenspost;
 
 use Mediaopt\DHL\Exception\WarenpostException;
-use Mediaopt\DHL\Warenpost\Awb;
+use Mediaopt\DHL\Api\Warenpost\Awb;
 
 /**
  * @author Mediaopt GmbH

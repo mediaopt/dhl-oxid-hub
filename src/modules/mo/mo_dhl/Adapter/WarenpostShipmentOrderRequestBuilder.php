@@ -4,8 +4,8 @@ namespace Mediaopt\DHL\Adapter;
 
 use Mediaopt\DHL\Api\Retoure\Country;
 use OxidEsales\Eshop\Application\Model\Order;
-use Mediaopt\DHL\Warenpost\ItemData;
-use Mediaopt\DHL\Warenpost\Paperwork;
+use Mediaopt\DHL\Api\Warenpost\ItemData;
+use Mediaopt\DHL\Api\Warenpost\Paperwork;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Registry;
