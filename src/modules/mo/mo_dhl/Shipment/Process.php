@@ -438,6 +438,14 @@ class Process
     }
 
     /**
+     * @return bool
+     */
+    public function usesWarenpostInternational(): bool
+    {
+        return $this->getIdentifier() === self::WARENPOST_INTERNATIONAL;
+    }
+
+    /**
      * @return string[]
      */
     public static function getAvailableProcesses()

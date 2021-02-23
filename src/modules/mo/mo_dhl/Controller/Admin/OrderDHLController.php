@@ -79,7 +79,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     {
         if ($this->usesInternetmarke()) {
             $this->createInternetmarkeLabel();
-        } elseif ($_POST['processIdentifier'] === Process::WARENPOST_INTERNATIONAL) {
+        } elseif ($this->usesWarenpostInternational()) {
             $this->createWarenpostLabel();
         } else {
             $this->handleCreationResponse($this->callCreation());
@@ -172,6 +172,8 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         }
         if ($this->usesInternetmarke()) {
             $this->refundInternetmarkeLabel($label);
+        } elseif($this->usesWarenpostInternational()) {
+            $label->delete();
         } else {
             $this->handleDeletionResponse($label, $this->callDeleteShipment($label->getFieldData('shipmentNumber')));
         }
@@ -516,6 +518,14 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     public function usesInternetmarke()
     {
         return $this->getProcess() && $this->getProcess()->usesInternetMarke();
+    }
+
+    /**
+     * @return bool
+     */
+    protected function usesWarenpostInternational(): bool
+    {
+        return $this->getProcess() && $this->getProcess()->usesWarenpostInternational();
     }
 
     /**

@@ -193,6 +193,9 @@ class MoDHLLabel extends BaseModel
             $this->deleteData($this->getFieldData('shipmentNumber') . '.jpeg');
             $this->deleteData($this->getFieldData('shipmentNumber') . '.pdf');
         }
+        if ($this->isWarenpost()){
+            $this->deleteData($this->getFieldData('shipmentNumber') . '.pdf');
+        }
         return parent::delete();
     }
 
@@ -224,6 +227,14 @@ class MoDHLLabel extends BaseModel
     public function isDelivery()
     {
         return $this->getFieldData('type') === self::TYPE_DELIVERY;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWarenpost(): bool
+    {
+        return $this->getFieldData('type') === self::TYPE_WARENPOST;
     }
 
     /**
