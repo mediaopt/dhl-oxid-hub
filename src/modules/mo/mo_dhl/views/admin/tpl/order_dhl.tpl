@@ -101,7 +101,7 @@
                                             :</label>
                                     </td>
                                     <td>
-                                        <uest_></uest_><select id="warenpostRegion" name="warenpostRegion">
+                                        <select id="warenpostRegion" name="warenpostRegion">
                                             [{if !isset($warenpostRegionValue) }]
                                                 <option value="">-</option>
                                             [{/if}]
