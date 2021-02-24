@@ -6,6 +6,7 @@ use Exception;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use Mediaopt\DHL\Adapter\WarenpostShipmentOrderRequestBuilder;
+use Mediaopt\DHL\Api\Warenpost\Product;
 use Mediaopt\DHL\Api\Warenpost\WarenpostResponse;
 use Mediaopt\DHL\Exception\WebserviceException;
 use OxidEsales\Eshop\Core\Registry;
@@ -273,5 +274,29 @@ class Warenpost extends Base
     protected function buildUrl($relativeUrl): string
     {
         return "{$this->getCredentials()->getEndpoint()}/$relativeUrl";
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getWarenpostRegions(): array
+    {
+        return Product::$REGIONS;
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getWarenpostTrackingTypes(): array
+    {
+        return Product::$TRACKING_TYPES;
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getWarenpostPackageTypes(): array
+    {
+        return Product::$PACKAGE_TYPES;
     }
 }

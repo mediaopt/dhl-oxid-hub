@@ -75,6 +75,10 @@ $aLang = [
     'MO_DHL__CUSTOM_LABEL_SHIPPER'            => 'Shipper',
     'MO_DHL__CUSTOM_LABEL_SERVICES'           => 'Shipment Services',
 
+    'MO_DHL__WARENPOST_PRODUCT_REGION'        => 'Customer region',
+    'MO_DHL__WARENPOST_PRODUCT_TRACKING_TYPE' => 'Tracking type',
+    'MO_DHL__WARENPOST_PRODUCT_PACKAGE_TYPE'  => 'Package type',
+
     'MO_DHL__COUNTRY_DHL'              => 'DHL',
     'MO_DHL__RETOURE_RECEIVER_ID'      => 'Retoure receiver (receiverID)',
     'HELP_MO_DHL__RETOURE_RECEIVER_ID' => 'You can find the retoure receivers (receiverID) in the DHL Business Customer Portal (https://www.dhl-geschaeftskundenportal.de) at "Retoure" > "Settings" > "Receiver ID".',

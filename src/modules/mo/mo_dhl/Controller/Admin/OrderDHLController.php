@@ -13,6 +13,7 @@ use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Response\DeleteShipmentOrderResponse;
 use Mediaopt\DHL\Api\Internetmarke\RetrieveRetoureStateRequestType;
 use Mediaopt\DHL\Api\Internetmarke\ShoppingCartResponseType;
+use Mediaopt\DHL\Api\Warenpost;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Exception\WebserviceException;
 use Mediaopt\DHL\Merchant\Ekp;
@@ -26,6 +27,7 @@ use Mediaopt\DHL\Adapter\WarenpostShipmentOrderRequestBuilder;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsView;
 use OxidEsales\Eshop\Application\Model\Order;
+use OxidEsales\Eshop\Core\Request;
 
 /**
  * @author Mediaopt GmbH
@@ -68,6 +70,13 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             $this->addTplParam('RetoureRequestStatuses', RetoureRequest::getRetoureRequestStatuses());
             $this->addTplParam('RetoureRequestStatus', $this->getRetoureRequestStatus());
         }
+        $this->addTplParam('warenpostRegions', Warenpost::getWarenpostRegions());
+        $this->addTplParam('warenpostRegionValue', $this->getWarenpostRegion());
+        $this->addTplParam('warenpostTrackingTypes', Warenpost::getWarenpostTrackingTypes());
+        $this->addTplParam('warenpostTrackingTypeValue', $this->getWarenpostTrackingType());
+        $this->addTplParam('warenpostPackageTypes', Warenpost::getWarenpostPackageTypes());
+        $this->addTplParam('warenpostPackageTypeValue', $this->getWarenpostPackageType());
+
         return $templateName;
     }
 
@@ -309,6 +318,39 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
+     * @return string|null
+     */
+    protected function getWarenpostRegion()
+    {
+        if ($value = $this->getOrder()->oxorder__mo_dhl_warenpost_product_region->rawValue) {
+            return $value;
+        }
+        return null;
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getWarenpostTrackingType()
+    {
+        if ($value = $this->getOrder()->oxorder__mo_dhl_warenpost_product_tracking_type->rawValue) {
+            return $value;
+        }
+        return null;
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getWarenpostPackageType()
+    {
+        if ($value = $this->getOrder()->oxorder__mo_dhl_warenpost_product_package_type->rawValue) {
+            return $value;
+        }
+        return null;
+    }
+
+    /**
      */
     public function save()
     {
@@ -319,6 +361,9 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             'MO_DHL_PARTICIPATION' => $this->validateParticipationNumber(),
             'MO_DHL_OPERATOR' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('operator'),
             'MO_DHL_RETOURE_REQUEST_STATUS' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('retoureRequest'),
+            'MO_DHL_WARENPOST_PRODUCT_REGION' => Registry::get(Request::class)->getRequestParameter('warenpostRegion'),
+            'MO_DHL_WARENPOST_PRODUCT_TRACKING_TYPE' => Registry::get(Request::class)->getRequestParameter('warenpostTrackingType'),
+            'MO_DHL_WARENPOST_PRODUCT_PACKAGE_TYPE' => Registry::get(Request::class)->getRequestParameter('warenpostPackageType'),
         ];
         $tuples = [];
         foreach ($information as $column => $value) {

@@ -94,35 +94,4 @@ trait Validator
 
         return [];
     }
-
-    /**
-     * @param string $serviceLevel
-     * @param string $product
-     * @return string
-     */
-    public function isProductCorrectForServiceLevel(string $product, string $serviceLevel): string
-    {
-        $compareArray = [
-            ServiceLevel::REGISTERED => [
-                Product::GMR
-            ],
-            ServiceLevel::STANDARD => [
-                Product::GMM,
-                Product::GMP
-            ],
-            ServiceLevel::PRIORITY => [
-                Product::GPT,
-                Product::GPP,
-                Product::GMP
-            ]
-        ];
-
-        if (!in_array($product, $compareArray[$serviceLevel], true)) {
-            return "for serviceLevel $serviceLevel product should be "
-                . implode(' or ', $compareArray[$serviceLevel])
-                . ", current product is $product. ";
-        }
-
-        return '';
-    }
 }

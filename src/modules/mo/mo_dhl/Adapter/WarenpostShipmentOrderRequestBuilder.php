@@ -3,6 +3,7 @@
 namespace Mediaopt\DHL\Adapter;
 
 use Mediaopt\DHL\Api\Retoure\Country;
+use Mediaopt\DHL\Api\Warenpost\Product;
 use OxidEsales\Eshop\Application\Model\Order;
 use Mediaopt\DHL\Api\Warenpost\ItemData;
 use Mediaopt\DHL\Api\Warenpost\Paperwork;
@@ -15,14 +16,9 @@ use function oxNew;
 class WarenpostShipmentOrderRequestBuilder
 {
     /**
-     * @var string
-     */
-    const DHL_WARENPOST_PRODUCT_ID = '10292';
-
-    /**
      * @var array
      */
-    protected $order;
+    protected $warenpostOrder;
 
     /**
      * @param Order $order
@@ -33,7 +29,7 @@ class WarenpostShipmentOrderRequestBuilder
         $config = Registry::getConfig();
         $sender = $this->buildSender($config);
 
-        $this->order = [
+        $this->warenpostOrder = [
             "orderStatus" => "FINALIZE",
             "paperwork" => $this->buildPaperwork($sender),
             "items" => $this->buildItems($order, $config, $sender)
@@ -47,7 +43,7 @@ class WarenpostShipmentOrderRequestBuilder
      */
     public function getOrder(): array
     {
-        return $this->order;
+        return $this->warenpostOrder;
     }
 
     /**
@@ -137,7 +133,7 @@ class WarenpostShipmentOrderRequestBuilder
 
         $country = $this->buildCountry($customerData['countryid']);
         $itemData = new ItemData(
-            self::DHL_WARENPOST_PRODUCT_ID,
+            $this->getProductId($order),
             $customerData['fname'] . ' ' . $customerData['lname'],
             $customerData['street'] . ' ' . $customerData['streetnr'],
             $customerData['city'],
@@ -171,4 +167,20 @@ class WarenpostShipmentOrderRequestBuilder
         return DatabaseProvider::getDb()
             ->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$isoalpha3]);
     }
+
+    /**
+     * @param Order $order
+     * @return string
+     */
+    protected function getProductId(Order $order): string
+    {
+        $product = new Product(
+            $order->getFieldData('MO_DHL_WARENPOST_PRODUCT_REGION'),
+            $order->getFieldData('MO_DHL_WARENPOST_PRODUCT_TRACKING_TYPE'),
+            $order->getFieldData('MO_DHL_WARENPOST_PRODUCT_PACKAGE_TYPE')
+        );
+        $product->validate();
+        return $product->getProduct();
+    }
+
 }

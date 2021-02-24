@@ -31,4 +31,9 @@ class WarenpostException extends \RuntimeException
      */
     const ITEM_DATA_VALIDATION_ERROR = 4;
 
+    /**
+     * @var int
+     */
+    const PRODUCT_VALIDATION_ERROR = 5;
+
 }
