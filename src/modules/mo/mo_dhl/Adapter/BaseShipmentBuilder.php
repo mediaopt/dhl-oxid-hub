@@ -72,7 +72,7 @@ class BaseShipmentBuilder
                 $amount +=  $orderArticle->getFieldData('oxamount');
             }
 
-            return $amount * max(0.1, (float)$config->getShopConfVar('mo_dhl__default_weight'));
+            return $amount * max(0.01, (float)$config->getShopConfVar('mo_dhl__default_weight'));
         }
         $weight = 0.0;
         foreach ($order->getOrderArticles() as $orderArticle) {
@@ -148,8 +148,8 @@ class BaseShipmentBuilder
     {
         /** @var OrderArticle $orderArticle */
         $articleWeight = (float)$orderArticle->getArticle()->getWeight();
-        if ($articleWeight < 0.1) {
-            $articleWeight = max(0.1, (float)$config->getShopConfVar('mo_dhl__default_weight'));
+        if ($articleWeight < 0.01) {
+            $articleWeight = max(0.01, (float)$config->getShopConfVar('mo_dhl__default_weight'));
         }
         return $articleWeight;
     }
