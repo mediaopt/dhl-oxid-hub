@@ -10,6 +10,7 @@ namespace Mediaopt\DHL\Application\Model;
 
 use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Model\MoDHLLabelList;
+use Mediaopt\DHL\Model\MoDHLService;
 use Mediaopt\DHL\ServiceProvider\Branch;
 use Mediaopt\DHL\Shipment\RetoureRequest;
 use OxidEsales\Eshop\Application\Model\DeliverySet;
@@ -310,18 +311,18 @@ class Order extends Order_parent
     public function moDHLUsesService(string $service) : bool
     {
         switch ($service) {
-            case Article::MO_DHL__IDENT_CHECK:
-            case Article::MO_DHL__ADDITIONAL_INSURANCE:
+            case MoDHLService::MO_DHL__IDENT_CHECK:
+            case MoDHLService::MO_DHL__ADDITIONAL_INSURANCE:
                 $deliveryset = oxNew(DeliverySet::class);
                 $deliveryset->load($this->oxorder__oxdeltype->value);
                 return $deliveryset->moDHLUsesService($service);
-            case Article::MO_DHL__CASH_ON_DELIVERY:
+            case MoDHLService::MO_DHL__CASH_ON_DELIVERY:
                 $payment = oxNew(Payment::class);
                 $payment->load($this->oxorder__oxpaymenttype->value);
                 return (bool) $payment->getFieldData($service);
-            case Article::MO_DHL__VISUAL_AGE_CHECK16:
-            case Article::MO_DHL__VISUAL_AGE_CHECK18:
-            case Article::MO_DHL__BULKY_GOOD:
+            case MoDHLService::MO_DHL__VISUAL_AGE_CHECK16:
+            case MoDHLService::MO_DHL__VISUAL_AGE_CHECK18:
+            case MoDHLService::MO_DHL__BULKY_GOOD:
                 /** @var OrderArticle $orderArticle */
                 foreach ($this->getOrderArticles() as $orderArticle) {
                     if ($orderArticle->getArticle()->moDHLUsesService($service)) {

@@ -28,6 +28,7 @@ use Mediaopt\DHL\Api\GKV\ShipperType;
 use Mediaopt\DHL\Application\Model\Article;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Model\MoDHLNotificationMode;
+use Mediaopt\DHL\Model\MoDHLService;
 use Mediaopt\DHL\ServiceProvider\Branch;
 use Mediaopt\DHL\Shipment\BillingNumber;
 use OxidEsales\Eshop\Application\Model\OrderArticle;
@@ -189,22 +190,22 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $altEmail = Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_alternative_email') ?: null;
             $service->setParcelOutletRouting(new ServiceconfigurationDetailsOptional($isActive, $altEmail));
         }
-        if ($order->moDHLUsesService(Article::MO_DHL__IDENT_CHECK) && $process->supportsIdentCheck()) {
+        if ($order->moDHLUsesService(MoDHLService::MO_DHL__IDENT_CHECK) && $process->supportsIdentCheck()) {
             $service->setIdentCheck(new ServiceconfigurationIC($this->createIdent($order), true));
-        } elseif ($order->moDHLUsesService(Article::MO_DHL__VISUAL_AGE_CHECK18) && $process->supportsVisualAgeCheck()) {
+        } elseif ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK18) && $process->supportsVisualAgeCheck()) {
             $service->setVisualCheckOfAge(new ServiceconfigurationVisualAgeCheck(true, 'A18'));
-        } elseif ($order->moDHLUsesService(Article::MO_DHL__VISUAL_AGE_CHECK16) && $process->supportsVisualAgeCheck()) {
+        } elseif ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK16) && $process->supportsVisualAgeCheck()) {
             $service->setVisualCheckOfAge(new ServiceconfigurationVisualAgeCheck(true, 'A16'));
         }
         if ($process->supportsBulkyGood()) {
-            $service->setBulkyGoods(new Serviceconfiguration((int) $order->moDHLUsesService(Article::MO_DHL__BULKY_GOOD)));
+            $service->setBulkyGoods(new Serviceconfiguration((int) $order->moDHLUsesService(MoDHLService::MO_DHL__BULKY_GOOD)));
         }
         if ($process->supportsCashOnDelivery()) {
-            $active = (int) $order->moDHLUsesService(Article::MO_DHL__CASH_ON_DELIVERY);
+            $active = (int) $order->moDHLUsesService(MoDHLService::MO_DHL__CASH_ON_DELIVERY);
             $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery($active, 0, $order->oxorder__oxtotalordersum->value));
         }
         if ($process->supportsAdditionalInsurance()) {
-            $active = (int) ($order->moDHLUsesService(Article::MO_DHL__ADDITIONAL_INSURANCE) && $order->oxorder__oxtotalbrutsum->value > 500);
+            $active = (int) ($order->moDHLUsesService(MoDHLService::MO_DHL__ADDITIONAL_INSURANCE) && $order->oxorder__oxtotalbrutsum->value > 500);
             $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance($active, $order->oxorder__oxtotalbrutsum->value));
         }
 
@@ -224,9 +225,9 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         $ident->minimumAge = Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
             ? 'A' . Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
             : null;
-        if ($order->moDHLUsesService(Article::MO_DHL__VISUAL_AGE_CHECK18)) {
+        if ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK18)) {
             $ident->minimumAge = 'A18';
-        } elseif ($order->moDHLUsesService(Article::MO_DHL__VISUAL_AGE_CHECK16) && !$ident->minimumAge) {
+        } elseif ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK16) && !$ident->minimumAge) {
             $ident->minimumAge = 'A16';
         }
         return $ident;
