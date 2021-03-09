@@ -202,9 +202,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $active = (int) $order->moDHLUsesService(Article::MO_DHL__CASH_ON_DELIVERY);
             $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery($active, 0, $order->oxorder__oxtotalordersum->value));
         }
+        $brutSum = $this->getOrderSum($order);
         if ($process->supportsAdditionalInsurance()) {
-            $active = (int) ($order->moDHLUsesService(Article::MO_DHL__ADDITIONAL_INSURANCE) && $order->oxorder__oxtotalbrutsum->value > 500);
-            $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance($active, $order->oxorder__oxtotalbrutsum->value));
+            $active = (int) ($order->moDHLUsesService(Article::MO_DHL__ADDITIONAL_INSURANCE) && $brutSum > 500);
+            $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance($active, $brutSum));
         }
 
         return $service;
@@ -364,5 +365,19 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     protected function getIsoalpha2FromIsoalpha3($isoalpha3) {
         return \OxidEsales\Eshop\Core\DatabaseProvider::getDb()
             ->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$isoalpha3]);
+    }
+
+    /**
+     * @param Order $order
+     * @param string $currency
+     * @return float|int
+     */
+    protected function getOrderSum(Order $order, $currency = 'EUR'): float
+    {
+        if ($order->oxorder__oxcurrency->value === $currency) {
+            return $order->oxorder__oxtotalbrutsum->value;
+        }
+
+        return $order->oxorder__oxtotalbrutsum->value / $order->oxorder__oxcurrate->value;
     }
 }
