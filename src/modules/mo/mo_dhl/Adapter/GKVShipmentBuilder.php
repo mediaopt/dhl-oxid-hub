@@ -369,12 +369,11 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
 
     /**
      * @param Order $order
-     * @param string $currency
      * @return float|int
      */
-    protected function getOrderBrutSum(Order $order, $currency = 'EUR'): float
+    protected function getOrderBrutSum(Order $order): float
     {
-        if ($order->oxorder__oxcurrency->value === $currency) {
+        if ($order->oxorder__oxcurrency->value === 'EUR') {
             return $order->oxorder__oxtotalbrutsum->value;
         }
 
