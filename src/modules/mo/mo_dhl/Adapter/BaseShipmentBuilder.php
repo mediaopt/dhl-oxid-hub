@@ -66,22 +66,14 @@ class BaseShipmentBuilder
     protected function calculateWeight(Order $order): float
     {
         $config = Registry::getConfig();
-        if (!$config->getShopConfVar('mo_dhl__calculate_weight')) {
-            $amount = 0;
-            foreach ($order->getOrderArticles() as $orderArticle) {
-                $amount +=  $orderArticle->getFieldData('oxamount');
-            }
-
-            return $amount * max(0.01, (float)$config->getShopConfVar('mo_dhl__default_weight'));
-        }
         $weight = 0.0;
         foreach ($order->getOrderArticles() as $orderArticle) {
-            $articleWeight = $this->getArticleWeight($orderArticle, $config);
+            $articleWeight = $this->getArticleWeight($orderArticle, $config, $this->isInternational($order));
             $weight += $articleWeight * $orderArticle->getFieldData('oxamount');
         }
         $weight *= 1 + (float)$config->getShopConfVar('mo_dhl__packing_weight_in_percent') / 100.0;
         $weight += (float)$config->getShopConfVar('mo_dhl__packing_weight_absolute');
-        return $weight;
+        return max(0.01, $weight);
     }
 
     /**
@@ -142,15 +134,27 @@ class BaseShipmentBuilder
     /**
      * @param OrderArticle $orderArticle
      * @param \OxidEsales\Eshop\Core\Config $config
+     * @param bool $isInternationalShipment
      * @return float|mixed
      */
-    protected function getArticleWeight(OrderArticle $orderArticle, \OxidEsales\Eshop\Core\Config $config)
+    protected function getArticleWeight(OrderArticle $orderArticle, \OxidEsales\Eshop\Core\Config $config, bool $isInternationalShipment)
     {
         /** @var OrderArticle $orderArticle */
-        $articleWeight = (float)$orderArticle->getArticle()->getWeight();
-        if ($articleWeight < 0.01) {
-            $articleWeight = max(0.01, (float)$config->getShopConfVar('mo_dhl__default_weight'));
+        $articleWeight = $config->getShopConfVar('mo_dhl__calculate_weight')
+            ? (float)$orderArticle->getArticle()->getWeight()
+            : (float)$config->getShopConfVar('mo_dhl__default_weight');
+        if ($isInternationalShipment && $articleWeight < 0.001) {
+            $articleWeight = max(0.001, (float)$config->getShopConfVar('mo_dhl__default_weight'));
         }
         return $articleWeight;
+    }
+
+    /**
+     * @param Order $order
+     * @return bool
+     */
+    protected function isInternational(Order $order): bool
+    {
+        return $this->getProcess($order)->isInternational();
     }
 }

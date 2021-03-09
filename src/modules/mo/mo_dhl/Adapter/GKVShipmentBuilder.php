@@ -328,7 +328,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     protected function buildExportDocument(Order $order)
     {
-        if (!$this->getProcess($order)->isInternational()) {
+        if (!$this->isInternational($order)) {
             return null;
         }
         $config = Registry::getConfig();
@@ -350,7 +350,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
                 $iso2,
                 '',
                 $count,
-                $this->getArticleWeight($orderArticle, $config),
+                $this->getArticleWeight($orderArticle, $config, true),
                 $orderArticle->getPrice()->getPrice()
             );
         }
