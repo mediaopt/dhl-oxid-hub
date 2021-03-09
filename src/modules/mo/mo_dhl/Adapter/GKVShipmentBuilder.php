@@ -74,6 +74,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         if ($this->sendNotificationAllowed($order)) {
             $details->setNotification(new ShipmentNotificationType($order->getFieldData('oxbillemail')));
         }
+        $details->setCustomerReference(Registry::getLang()->translateString('GENERAL_ORDERNUM') . ' ' .$order->getFieldData('oxordernr'));
         $details->setService($this->buildService($order));
         return $details;
     }
