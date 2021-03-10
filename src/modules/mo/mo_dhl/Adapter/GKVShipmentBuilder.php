@@ -206,6 +206,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $active = (int) ($order->moDHLUsesService(Article::MO_DHL__ADDITIONAL_INSURANCE) && $order->oxorder__oxtotalbrutsum->value > 500);
             $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance($active, $order->oxorder__oxtotalbrutsum->value));
         }
+        if ($process->supportsPremium()) {
+            $active = (bool) ($order->moDHLUsesService(Article::MO_DHL__PREMIUM));
+            $service->setPremium(new Serviceconfiguration($active));
+        }
 
         return $service;
     }

@@ -141,6 +141,11 @@ class Process
     const SERVICE_IDENT_CHECK = "SERVICE_IDENT_CHECK";
 
     /**
+     * @var string
+     */
+    const SERVICE_PREMIUM = "SERVICE_PREMIUM";
+
+    /**
      * @var string[]
      */
     const SUPPORTED_SERVICES = [
@@ -177,6 +182,7 @@ class Process
             self::SERVICE_ADDITIONAL_INSURANCE,
             self::SERVICE_BULKY_GOOD,
             self::SERVICE_CASH_ON_DELIVERY,
+            self::SERVICE_PREMIUM,
         ],
         self::EUROPAKET => [
             self::SERVICE_NOTIFICATION,
@@ -386,6 +392,14 @@ class Process
     public function supportsCashOnDelivery() : bool
     {
         return in_array(self::SERVICE_CASH_ON_DELIVERY, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsPremium() : bool
+    {
+        return in_array(self::SERVICE_PREMIUM, self::SUPPORTED_SERVICES[$this->identifier]);
     }
 
     /**
