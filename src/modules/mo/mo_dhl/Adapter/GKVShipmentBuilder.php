@@ -30,6 +30,7 @@ use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Model\MoDHLNotificationMode;
 use Mediaopt\DHL\Model\MoDHLService;
 use Mediaopt\DHL\ServiceProvider\Branch;
+use Mediaopt\DHL\ServiceProvider\Currency;
 use Mediaopt\DHL\Shipment\BillingNumber;
 use OxidEsales\Eshop\Application\Model\OrderArticle;
 use OxidEsales\Eshop\Core\Registry;
@@ -204,9 +205,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $active = (int) $order->moDHLUsesService(MoDHLService::MO_DHL__CASH_ON_DELIVERY);
             $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery($active, 0, $order->oxorder__oxtotalordersum->value));
         }
+        $orderBrutSum = $this->getOrderBrutSum($order);
         if ($process->supportsAdditionalInsurance()) {
-            $active = (int) ($order->moDHLUsesService(MoDHLService::MO_DHL__ADDITIONAL_INSURANCE) && $order->oxorder__oxtotalbrutsum->value > 500);
-            $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance($active, $order->oxorder__oxtotalbrutsum->value));
+            $active = (int) ($order->moDHLUsesService(MoDHLService::MO_DHL__ADDITIONAL_INSURANCE) && $orderBrutSum > 500);
+            $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance($active, $orderBrutSum));
         }
 
         return $service;
@@ -366,5 +368,18 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     protected function getIsoalpha2FromIsoalpha3($isoalpha3) {
         return \OxidEsales\Eshop\Core\DatabaseProvider::getDb()
             ->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$isoalpha3]);
+    }
+
+    /**
+     * @param Order $order
+     * @return float|int
+     */
+    protected function getOrderBrutSum(Order $order): float
+    {
+        if ($order->oxorder__oxcurrency->value === Currency::MO_DHL__EUR) {
+            return $order->oxorder__oxtotalbrutsum->value;
+        }
+
+        return $order->oxorder__oxtotalbrutsum->value / $order->oxorder__oxcurrate->value;
     }
 }
