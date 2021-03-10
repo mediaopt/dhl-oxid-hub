@@ -29,6 +29,7 @@ use Mediaopt\DHL\Application\Model\Article;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Model\MoDHLNotificationMode;
 use Mediaopt\DHL\ServiceProvider\Branch;
+use Mediaopt\DHL\ServiceProvider\Currency;
 use Mediaopt\DHL\Shipment\BillingNumber;
 use OxidEsales\Eshop\Application\Model\OrderArticle;
 use OxidEsales\Eshop\Core\Registry;
@@ -373,7 +374,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     protected function getOrderBrutSum(Order $order): float
     {
-        if ($order->oxorder__oxcurrency->value === 'EUR') {
+        if ($order->oxorder__oxcurrency->value === Currency::MO_DHL_EUR) {
             return $order->oxorder__oxtotalbrutsum->value;
         }
 

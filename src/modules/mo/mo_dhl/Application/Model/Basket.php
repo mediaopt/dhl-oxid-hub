@@ -1,6 +1,7 @@
 <?php
 namespace Mediaopt\DHL\Application\Model;
 
+use Mediaopt\DHL\ServiceProvider\Currency;
 use Mediaopt\DHL\Shipment\Process;
 
 /**
@@ -119,7 +120,7 @@ class Basket extends Basket_parent
         $surcharge->setBruttoPriceMode();
         $surcharge->setPrice((float) $amount);
         $surcharge->setVat($this->getAdditionalServicesVatPercent());
-        $surcharge->divide(\OxidEsales\Eshop\Core\Registry::getConfig()->getCurrencyObject('EUR')->rate);
+        $surcharge->divide(\OxidEsales\Eshop\Core\Registry::getConfig()->getCurrencyObject(Currency::MO_DHL_EUR)->rate);
         $surcharge->multiply(\OxidEsales\Eshop\Core\Registry::getConfig()->getActShopCurrencyObject()->rate);
         return $surcharge;
     }
