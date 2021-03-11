@@ -49,6 +49,11 @@ class Article extends Article_parent
     /**
      * @var string
      */
+    const MO_DHL__PREMIUM = 'mo_dhl_premium';
+
+    /**
+     * @var string
+     */
     const MO_DHL__ZOLLTARIF = 'mo_dhl_zolltarif';
 
     /**
