@@ -346,7 +346,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $exportDocuments[] = new ExportDocPosition(
                 substr($orderArticle->getArticle()->getFieldData('oxtitle'), 0, 50),
                 $iso2,
-                '',
+                $orderArticle->getArticle()->getFieldData(Article::MO_DHL__ZOLLTARIF),
                 $count,
                 $this->getArticleWeight($orderArticle, $config),
                 $orderArticle->getPrice()->getPrice()

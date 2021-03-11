@@ -225,7 +225,8 @@ class Install
             + self::addColumn('mo_dhl_labels', 'qrLabelUrl', 'VARCHAR(512)');
         $articles = self::addColumn('oxarticles', 'MO_DHL_VISUAL_AGE_CHECK16', 'TINYINT(1) NOT NULL DEFAULT 0')
             + self::addColumn('oxarticles', 'MO_DHL_VISUAL_AGE_CHECK18', 'TINYINT(1) NOT NULL DEFAULT 0')
-            + self::addColumn('oxarticles', 'MO_DHL_BULKY_GOOD', 'TINYINT(1) NOT NULL DEFAULT 0');
+            + self::addColumn('oxarticles', 'MO_DHL_BULKY_GOOD', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxarticles', 'MO_DHL_ZOLLTARIF', 'VARCHAR(10)');
         $categories = self::addColumn('oxcategories', 'MO_DHL_VISUAL_AGE_CHECK16', 'TINYINT(1) NOT NULL DEFAULT 0')
             + self::addColumn('oxcategories', 'MO_DHL_VISUAL_AGE_CHECK18', 'TINYINT(1) NOT NULL DEFAULT 0')
             + self::addColumn('oxcategories', 'MO_DHL_BULKY_GOOD', 'TINYINT(1) NOT NULL DEFAULT 0');

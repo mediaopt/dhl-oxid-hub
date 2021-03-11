@@ -92,6 +92,8 @@ $aLang = [
     'MO_DHL__CASH_ON_DELIVERY'          => 'Nachnahme',
     'MO_DHL__ADDITIONAL_INSURANCE'      => 'Transportversicherung',
     'HELP_MO_DHL__ADDITIONAL_INSURANCE' => 'Grundsätzlich haftet DHL für Ihr Paket beim deutschlandweiten Versand gegen Verlust oder Beschädigung bis 500 EUR (nur gegen Vorlage des quittierten Einlieferungsbeleges). Für besonders wertvolle Sendungen bietet DHL Ihnen darüber hinaus eine Transportversicherung bis 2.500 EUR (+6,00 EUR Aufpreis) oder 25.000 EUR  (+18,00 EUR Aufpreis) an. Weiter Informationen finden Sie <a href="https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/services/service-loesungen.html#versicherung" target="_blank" rel="noopener noreferrer">hier</a>',
+    'MO_DHL__ZOLLTARIF'                 => 'Zolltarif nummer',
+    'HELP_MO_DHL__ZOLLTARIF'            => 'International standardisiertes System von Namen und Nummern zur Klassifizierung gehandelter Produkte. ',
 
     'MO_DHL__WALLAT_BALANCE_CHECK'    => 'Die Zugangsdaten für die Portokasse sind korrekt. Ihr Guthaben beträgt %.2f €',
 
