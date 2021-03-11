@@ -95,7 +95,7 @@ $aLang = [
     'MO_DHL__PREMIUM'                     => 'Premium Service',
     'HELP_MO_DHL__PREMIUM'                => 'The DHL Paket International with Service Premium is preferred and always transported by the fastest route. Your package always takes the next possible flight or truck to the destination and gets priority status in the destination country. So it reaches its destination much faster.',
     'MO_DHL__ZOLLTARIF'                   => 'HS tariff number',
-    'HELP_MO_DHL__ZOLLTARIF'              => 'Internationally standardized system of names and numbers to classify traded products.',
+    'HELP_MO_DHL__ZOLLTARIF'              => 'Optional parameter used for the creation of export document for DHL Paket International. Internationally standardized system of names and numbers to classify traded products.',
 
     'MO_DHL__WALLAT_BALANCE_CHECK'    => 'Your credentials for the Portokasse are correct. Your balance is %.2f €',
 
