@@ -32,6 +32,7 @@ use Mediaopt\DHL\ServiceProvider\Branch;
 use Mediaopt\DHL\Shipment\BillingNumber;
 use OxidEsales\Eshop\Application\Model\OrderArticle;
 use OxidEsales\Eshop\Core\Registry;
+use Mediaopt\DHL\ServiceProvider\CountriesLanguages;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
@@ -338,13 +339,15 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
 
         $iso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__sender_country'));
 
+        $receiverAvailiableLanguages = $this->getReceiverAvailiableLanguages($order);
+
         $exportDocuments = [];
 
         /** @var OrderArticle $orderArticle */
         foreach ($order->getOrderArticles() as $orderArticle) {
             $count = $orderArticle->getFieldData('oxamount');
             $exportDocuments[] = new ExportDocPosition(
-                substr($orderArticle->getArticle()->getFieldData('oxtitle'), 0, 50),
+                $this->getArticleTitle($orderArticle, $receiverAvailiableLanguages),
                 $iso2,
                 '',
                 $count,
@@ -364,5 +367,64 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     protected function getIsoalpha2FromIsoalpha3($isoalpha3) {
         return \OxidEsales\Eshop\Core\DatabaseProvider::getDb()
             ->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$isoalpha3]);
+    }
+
+    /**
+     * @param Order $order
+     * @return array
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    protected function getReceiverAvailiableLanguages(Order $order): array
+    {
+        $recieverCountryISO2 = strtolower(
+            $this->buildCountry($order->moDHLGetAddressData('countryid'))->getCountryISOCode()
+        );
+
+        $storeLanguageIDs = [];
+        foreach (Registry::getLang()->getLanguageArray() as $language) {
+            $storeLanguageIDs[$language->oxid] = $language->id;
+        }
+
+        if (!array_key_exists($recieverCountryISO2, CountriesLanguages::$LIST))
+        {
+            // If we have no list of languages for receiver country we will use default language
+            return [];
+        }
+
+        // If we have a list we will use avaliable languages by order from CountriesLanguages
+        $avaliableLanguages = [];
+        foreach (CountriesLanguages::$LIST[$recieverCountryISO2] as $language) {
+            if (array_key_exists($language, $storeLanguageIDs)) {
+                $avaliableLanguages[$language] = $storeLanguageIDs[$language];
+            }
+        }
+
+        return $avaliableLanguages;
+    }
+
+    /**
+     * @param OrderArticle $orderArticle
+     * @param array $receiverAvailiableLanguages
+     * @return false|string
+     */
+    protected function getArticleTitle(OrderArticle $orderArticle, array $receiverAvailiableLanguages)
+    {
+        $articleId = $orderArticle->getArticle()->getId();
+        $ArticleModel = oxNew(\OxidEsales\EshopCommunity\Application\Model\Article::class);
+
+        $title = '';
+        foreach ($receiverAvailiableLanguages as $languageId) {
+            $ArticleModel->loadInLang($languageId, $articleId);
+            $title = $ArticleModel->getFieldData('oxtitle');
+            if (!empty($title)) {
+                break;
+            }
+        }
+
+        if (empty($title)) {
+            $title = $orderArticle->getArticle()->getFieldData('oxtitle');
+        }
+
+        return substr($title, 0, 50);
     }
 }
