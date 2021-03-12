@@ -270,6 +270,9 @@ class ModuleConfiguration extends ModuleConfiguration_parent
                     return;
                 default:
                     Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($response->getStatus()->getStatusText());
+                    if (!isset($response->getValidationState()[0])) {
+                        return;
+                    }
                     $errors = array_unique($response->getValidationState()[0]->getStatus()->getStatusMessage());
                     foreach ($errors as $error) {
                         Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($error);
