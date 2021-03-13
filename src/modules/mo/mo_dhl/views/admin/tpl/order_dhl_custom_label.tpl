@@ -476,6 +476,19 @@
                                     </td>
                                 </tr>
                                 [{/if}]
+                                [{if $process->supportsPremium()}]
+                                    [{assign var="service" value=$shipmentOrder.services.premium}]
+                                    <tr>
+                                        <td>
+                                            [{oxmultilang ident='MO_DHL__PREMIUM'}]
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="data[services][premium][active]" value="false">
+                                            <input type="checkbox" name="data[services][premium][active]"
+                                                   value="1" [{if $service->getActive()}]checked[{/if}]>
+                                        </td>
+                                    </tr>
+                                [{/if}]
                             </table>
                         </td>
                     </tr>
