@@ -20,7 +20,7 @@
     </select>
 [{elseif $oViewConf->moHasAncestorTheme('flow') && $oViewConf->isDhlFinderAvailable()}]
     <div class="row dd-available-addresses" data-toggle="buttons">
-        [{foreach from=$aUserAddresses item=address}]
+        [{foreach from=$aUserAddresses item=address name="shippingAdresses"}]
             <div class="col-xs-12 col-md-6 col-lg-4">
                 <div class="panel panel-default">
                     <div class="panel-body">
@@ -33,7 +33,12 @@
                                     </button>
                                 [{/block}]
                                 [{block name="form_user_shipping_address_delete_action"}]
-                                    [{$smarty.block.parent}]
+                                    <button class="btn btn-danger btn-xs hasTooltip pull-right dd-action dd-delete-shipping-address"
+                                            title="[{oxmultilang ident="DD_DELETE"}]"
+                                            data-toggle="modal"
+                                            data-target="#delete_shipping_address_[{$smarty.foreach.shippingAdresses.iteration}]">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
                                 [{/block}]
                             [{/if}]
                         [{/block}]
