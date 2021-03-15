@@ -395,30 +395,22 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     protected function getReceiverLanguages(Order $order): array
     {
-        $recieverCountryISO2 = strtolower(
+        $receiverCountryISO2 = strtolower(
             $this->buildCountry($order->moDHLGetAddressData('countryid'))->getCountryISOCode()
         );
 
-        $storeLanguageIDs = [];
+        $storeLanguages = [];
         foreach (Registry::getLang()->getLanguageArray() as $language) {
-            $storeLanguageIDs[$language->oxid] = $language->id;
+            $storeLanguages[$language->id] = $language->oxid;
         }
 
-        if (!array_key_exists($recieverCountryISO2, CountriesLanguages::$LIST))
-        {
+        if (!array_key_exists($receiverCountryISO2, CountriesLanguages::$LIST)) {
             // If we have no list of languages for receiver country we will use default language
             return [];
         }
 
-        // If we have a list we will use receiver languages by order from CountriesLanguages
-        $receiverLanguages = [];
-        foreach (CountriesLanguages::$LIST[$recieverCountryISO2] as $language) {
-            if (array_key_exists($language, $storeLanguageIDs)) {
-                $receiverLanguages[$language] = $storeLanguageIDs[$language];
-            }
-        }
-
-        return $receiverLanguages;
+        // If we have a list we will use receiver languages from CountriesLanguages
+        return array_intersect($storeLanguages, CountriesLanguages::$LIST[$receiverCountryISO2]);
     }
 
     /**
@@ -429,12 +421,12 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     protected function getArticleTitle(OrderArticle $orderArticle, array $receiverLanguages)
     {
         $articleId = $orderArticle->getArticle()->getId();
-        $ArticleModel = oxNew(\OxidEsales\EshopCommunity\Application\Model\Article::class);
+        $articleModel = oxNew(\OxidEsales\EshopCommunity\Application\Model\Article::class);
 
         $title = '';
         foreach ($receiverLanguages as $languageId) {
-            $ArticleModel->loadInLang($languageId, $articleId);
-            $title = $ArticleModel->getFieldData('oxtitle');
+            $articleModel->loadInLang($languageId, $articleId);
+            $title = $articleModel->getFieldData('oxtitle');
             if (!empty($title)) {
                 break;
             }
