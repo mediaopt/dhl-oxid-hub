@@ -424,7 +424,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         $articleModel = oxNew(\OxidEsales\EshopCommunity\Application\Model\Article::class);
 
         $title = '';
-        foreach ($receiverLanguages as $languageId) {
+        foreach ($receiverLanguages as $languageId => $languageISO2) {
             $articleModel->loadInLang($languageId, $articleId);
             $title = $articleModel->getFieldData('oxtitle');
             if (!empty($title)) {
