@@ -410,7 +410,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         }
 
         // If we have a list we will use receiver languages from CountriesLanguages
-        return array_intersect($storeLanguages, CountriesLanguages::$LIST[$receiverCountryISO2]);
+        return array_keys(array_intersect($storeLanguages, CountriesLanguages::$LIST[$receiverCountryISO2]));
     }
 
     /**
