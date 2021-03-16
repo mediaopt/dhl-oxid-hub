@@ -410,7 +410,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         }
 
         // If we have a list we will use receiver languages from CountriesLanguages
-        return array_intersect($storeLanguages, CountriesLanguages::$LIST[$receiverCountryISO2]);
+        return array_keys(array_intersect($storeLanguages, CountriesLanguages::$LIST[$receiverCountryISO2]));
     }
 
     /**
@@ -424,7 +424,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         $articleModel = oxNew(\OxidEsales\EshopCommunity\Application\Model\Article::class);
 
         $title = '';
-        foreach ($receiverLanguages as $languageId => $languageISO2) {
+        foreach ($receiverLanguages as $languageId) {
             $articleModel->loadInLang($languageId, $articleId);
             $title = $articleModel->getFieldData('oxtitle');
             if (!empty($title)) {
