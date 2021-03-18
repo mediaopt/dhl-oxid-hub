@@ -87,7 +87,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     protected function buildReceiver($order): ReceiverType
     {
-        $receiver = new ReceiverType($order->moDHLGetAddressData('fname') . ' ' . $order->moDHLGetAddressData('lname'));
+        $receiver = new ReceiverType(
+            $this->convertSpecialChars($order->moDHLGetAddressData('fname'))
+            . ' ' . $this->convertSpecialChars($order->moDHLGetAddressData('lname'))
+        );
         if (Branch::isPackstation($order->moDHLGetAddressData('street'))) {
             $receiver->setPackstation($this->buildPackstation($order));
         } else if (Branch::isFiliale($order->moDHLGetAddressData('street'))) {
@@ -263,10 +266,21 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     {
         $config = Registry::getConfig();
 
-        $name = new NameType($config->getShopConfVar('mo_dhl__sender_line1'), $config->getShopConfVar('mo_dhl__sender_line2'), $config->getShopConfVar('mo_dhl__sender_line3'));
+        $name = new NameType(
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line1')),
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line2')),
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line3'))
+        );
         $iso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__sender_country'));
         $country = new CountryType($iso2);
-        $address = new NativeAddressType($config->getShopConfVar('mo_dhl__sender_street'), $config->getShopConfVar('mo_dhl__sender_street_number'), $config->getShopConfVar('mo_dhl__sender_zip'), $config->getShopConfVar('mo_dhl__sender_city'), null, $country);
+        $address = new NativeAddressType(
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_street')),
+            $config->getShopConfVar('mo_dhl__sender_street_number'),
+            $config->getShopConfVar('mo_dhl__sender_zip'),
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')),
+            null,
+            $country
+        );
         return new ShipperType($name, $address);
     }
 
@@ -297,12 +311,16 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     protected function buildAddress(Order $order): ReceiverNativeAddressType
     {
         $address = new ReceiverNativeAddressType(
-            $order->moDHLGetAddressData('company') ?: null,
-            $order->moDHLGetAddressData('addinfo') ?: null,
-            $order->moDHLGetAddressData('street'),
+            $order->moDHLGetAddressData('company')
+                ? $this->convertSpecialChars($order->moDHLGetAddressData('company'))
+                : null,
+            $order->moDHLGetAddressData('addinfo')
+                ? $this->convertSpecialChars($order->moDHLGetAddressData('addinfo'))
+                : null,
+            $this->convertSpecialChars($order->moDHLGetAddressData('street')),
             $order->moDHLGetAddressData('streetnr'),
             $order->moDHLGetAddressData('zip'),
-            $order->moDHLGetAddressData('city'),
+            $this->convertSpecialChars($order->moDHLGetAddressData('city')),
             null,
             $this->buildCountry($order->moDHLGetAddressData('countryid'))
         );
@@ -339,7 +357,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         $config = Registry::getConfig();
         $exportDocumentType = new ExportDocumentType(
             'COMMERCIAL_GOODS',
-            $config->getShopConfVar('mo_dhl__sender_city'),
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')),
             $order->oxorder__oxdelcost->value
         );
 
@@ -401,7 +419,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
 
         $storeLanguages = [];
         foreach (Registry::getLang()->getLanguageArray() as $language) {
-            $storeLanguages[$language->id] = $language->oxid;
+            $storeLanguages[$language->oxid] = $language->id;
         }
 
         if (!array_key_exists($receiverCountryISO2, CountriesLanguages::$LIST)) {
@@ -409,8 +427,15 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             return [];
         }
 
-        // If we have a list we will use receiver languages from CountriesLanguages
-        return array_keys(array_intersect($storeLanguages, CountriesLanguages::$LIST[$receiverCountryISO2]));
+        $receiverLanguages = [];
+        foreach (CountriesLanguages::$LIST[$receiverCountryISO2] as $language) {
+            if (array_key_exists($language, $storeLanguages)) {
+                $receiverLanguages[$language] = $storeLanguages[$language];
+            }
+        }
+
+        // If we have a list we will use receiver languages in order from CountriesLanguages
+        return $receiverLanguages;
     }
 
     /**
@@ -436,6 +461,15 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $title = $orderArticle->getArticle()->getFieldData('oxtitle');
         }
 
-        return substr($title, 0, 50);
+        return substr($this->convertSpecialChars($title), 0, 50);
+    }
+
+    /**
+     * @param string $string
+     * @return string
+     */
+    public static function convertSpecialChars(string $string): string
+    {
+        return mb_convert_encoding($string, "UTF-8", "HTML-ENTITIES");
     }
 }
