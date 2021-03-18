@@ -419,7 +419,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
 
         $storeLanguages = [];
         foreach (Registry::getLang()->getLanguageArray() as $language) {
-            $storeLanguages[$language->id] = $language->oxid;
+            $storeLanguages[$language->oxid] = $language->id;
         }
 
         if (!array_key_exists($receiverCountryISO2, CountriesLanguages::$LIST)) {
@@ -427,8 +427,15 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             return [];
         }
 
-        // If we have a list we will use receiver languages from CountriesLanguages
-        return array_keys(array_intersect($storeLanguages, CountriesLanguages::$LIST[$receiverCountryISO2]));
+        $receiverLanguages = [];
+        foreach (CountriesLanguages::$LIST[$receiverCountryISO2] as $language) {
+            if (array_key_exists($language, $storeLanguages)) {
+                $receiverLanguages[$language] = $storeLanguages[$language];
+            }
+        }
+
+        // If we have a list we will use receiver languages in order from CountriesLanguages
+        return $receiverLanguages;
     }
 
     /**
