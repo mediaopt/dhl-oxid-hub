@@ -23,7 +23,6 @@ use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 use Mediaopt\DHL\Shipment\RetoureRequest;
 use OxidEsales\Eshop\Core\DatabaseProvider;
-use Mediaopt\DHL\Adapter\WarenpostShipmentOrderRequestBuilder;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsView;
 use OxidEsales\Eshop\Application\Model\Order;
@@ -221,7 +220,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     /**
      * @param Order|null $order
      */
-    protected function createWarenpostLabel(Order $order = null)
+    public function createWarenpostLabel(Order $order = null)
     {
         try {
             if (!isset($order)) {
@@ -608,13 +607,4 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         }
         return $errors;
     }
-
-    /**
-     * @return WarenpostShipmentOrderRequestBuilder
-     */
-    protected function buildWarenpostOrderRequest(): WarenpostShipmentOrderRequestBuilder
-    {
-        return Registry::get(WarenpostShipmentOrderRequestBuilder::class)->build($this->getOrder()->getId());
-    }
-
 }
