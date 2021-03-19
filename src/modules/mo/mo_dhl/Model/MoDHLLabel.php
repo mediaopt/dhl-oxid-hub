@@ -193,6 +193,14 @@ class MoDHLLabel extends BaseModel
             $this->deleteData($this->getFieldData('shipmentNumber') . '.jpeg');
             $this->deleteData($this->getFieldData('shipmentNumber') . '.pdf');
         }
+        if ($this->isDelivery()) {
+            $order = oxNew(Order::class);
+            $order->load($this->getFieldData('orderId'));
+            if ($this->getFieldData('shipmentNumber') === $order->getFieldData('oxtrackcode')) {
+                $order->oxorder__oxtrackcode = oxNew(Field::class, '');
+                $order->save();
+            }
+        }
         if ($this->isWarenpost()){
             $this->deleteData($this->getFieldData('shipmentNumber') . '.pdf');
         }

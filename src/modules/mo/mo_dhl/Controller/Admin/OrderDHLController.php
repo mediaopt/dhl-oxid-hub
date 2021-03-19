@@ -33,6 +33,9 @@ use OxidEsales\Eshop\Core\Request;
  */
 class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDetailsController
 {
+
+    use ErrorDisplayTrait;
+
     /**
      * @var \OxidEsales\Eshop\Application\Model\Order|null
      */
@@ -85,13 +88,18 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     public function createLabel()
     {
-        if ($this->usesInternetmarke()) {
-            $this->createInternetmarkeLabel();
-        } elseif ($this->usesWarenpostInternational()) {
-            $this->createWarenpostLabel();
-        } else {
-            $this->handleCreationResponse($this->callCreation());
+        try {
+            if ($this->usesInternetmarke()) {
+                $this->createInternetmarkeLabel();
+            } elseif ($this->usesWarenpostInternational()) {
+                $this->createWarenpostLabel();
+            } else {
+                $this->handleCreationResponse($this->callCreation());
+            }
+        } catch (\Exception $e) {
+            $this->displayErrors($e);
         }
+
     }
 
     /**
@@ -112,18 +120,23 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
                 $order->setRetoureStatus(RetoureRequest::CREATED);
             }
         } catch (\Exception $e) {
-            \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($e->getMessage());
+            $errors = [
+                $e->getMessage()
+            ];
             if (!($previous = $e->getPrevious()) || !$previous instanceof ClientException) {
+                $this->displayErrors($errors);
                 return;
             }
             $response = $previous->getResponse();
             if (!$response->getBody()) {
+                $this->displayErrors($errors);
                 return;
             }
             $data = json_decode($response->getBody()->getContents());
             if ($data->detail) {
-                \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($data->detail);
+                $errors[] = $data->detail;
             }
+            $this->displayErrors($errors);
         }
     }
 
@@ -135,17 +148,22 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     public function createCustomLabel()
     {
-        $request = $this->buildShipmentOrderRequest();
-        $shipmentOrder = $request->getShipmentOrder()[0];
-        $data = Registry::getConfig()->getRequestParameter('data');
+        try {
+            $request = $this->buildShipmentOrderRequest();
+            $shipmentOrder = $request->getShipmentOrder()[0];
+            $data = Registry::getConfig()->getRequestParameter('data');
 
-        $customShipmentBuilder = new GKVCustomShipmentBuilder();
-        $customShipmentBuilder->applyCustomDataToShipmentOrder($shipmentOrder, $data, $this->getOrder());
+            $customShipmentBuilder = new GKVCustomShipmentBuilder();
+            $customShipmentBuilder->applyCustomDataToShipmentOrder($shipmentOrder, $data, $this->getOrder());
 
-        $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($shipmentOrder));
-        $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
-        $response = Registry::get(DHLAdapter::class)->buildGKV()->createShipmentOrder($request);
-        $this->handleCreationResponse($response);
+            $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($shipmentOrder));
+            $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
+            $response = Registry::get(DHLAdapter::class)->buildGKV()->createShipmentOrder($request);
+            $this->handleCreationResponse($response);
+        } catch (\Exception $e) {
+            $this->displayErrors($e);
+        }
+
     }
 
     /**
@@ -166,25 +184,30 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     public function deleteShipment()
     {
-        $label = \oxNew(MoDHLLabel::class);
-        $label->load(Registry::getConfig()->getRequestParameter('labelId'));
-        if ($label->isRetoure()) {
-            $label->delete();
+        try {
+            $label = \oxNew(MoDHLLabel::class);
+            $label->load(Registry::getConfig()->getRequestParameter('labelId'));
+            if ($label->isRetoure()) {
+                $label->delete();
 
-            $order = $this->getOrder();
-            if ($order->oxorder__mo_dhl_retoure_request_status->rawValue === RetoureRequest::CREATED) {
-                $order->setRetoureStatus(RetoureRequest::REQUESTED);
+                $order = $this->getOrder();
+                if ($order->oxorder__mo_dhl_retoure_request_status->rawValue === RetoureRequest::CREATED) {
+                    $order->setRetoureStatus(RetoureRequest::REQUESTED);
+                }
+
+                return;
             }
+            if ($this->usesInternetmarke()) {
+                $this->refundInternetmarkeLabel($label);
+            } elseif($this->usesWarenpostInternational()) {
+                $label->delete();
+            } else {
+                $this->handleDeletionResponse($label, $this->callDeleteShipment($label->getFieldData('shipmentNumber')));
+            }
+        } catch (\Exception $e) {
+            $this->displayErrors($e);
+        }
 
-            return;
-        }
-        if ($this->usesInternetmarke()) {
-            $this->refundInternetmarkeLabel($label);
-        } elseif($this->usesWarenpostInternational()) {
-            $label->delete();
-        } else {
-            $this->handleDeletionResponse($label, $this->callDeleteShipment($label->getFieldData('shipmentNumber')));
-        }
     }
 
     /**
@@ -353,30 +376,36 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     public function save()
     {
-        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
-        $information = [
-            'MO_DHL_EKP' => $this->validateEkp(),
-            'MO_DHL_PROCESS' => $this->validateProcessIdentifier(),
-            'MO_DHL_PARTICIPATION' => $this->validateParticipationNumber(),
-            'MO_DHL_OPERATOR' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('operator'),
-            'MO_DHL_RETOURE_REQUEST_STATUS' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('retoureRequest'),
-            'MO_DHL_WARENPOST_PRODUCT_REGION' => Registry::get(Request::class)->getRequestParameter('warenpostRegion'),
-            'MO_DHL_WARENPOST_PRODUCT_TRACKING_TYPE' => Registry::get(Request::class)->getRequestParameter('warenpostTrackingType'),
-            'MO_DHL_WARENPOST_PRODUCT_PACKAGE_TYPE' => Registry::get(Request::class)->getRequestParameter('warenpostPackageType'),
-        ];
-        $tuples = [];
-        foreach ($information as $column => $value) {
-            if (empty($value)) {
-                continue;
+        try {
+            $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
+            $information = [
+                'MO_DHL_EKP' => $this->validateEkp(),
+                'MO_DHL_PROCESS' => $this->validateProcessIdentifier(),
+                'MO_DHL_PARTICIPATION' => $this->validateParticipationNumber(),
+                'MO_DHL_OPERATOR' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('operator'),
+                'MO_DHL_RETOURE_REQUEST_STATUS' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('retoureRequest'),
+                'MO_DHL_WARENPOST_PRODUCT_REGION' => Registry::get(Request::class)->getRequestParameter('warenpostRegion'),
+                'MO_DHL_WARENPOST_PRODUCT_TRACKING_TYPE' => Registry::get(Request::class)->getRequestParameter('warenpostTrackingType'),
+                'MO_DHL_WARENPOST_PRODUCT_PACKAGE_TYPE' => Registry::get(Request::class)->getRequestParameter('warenpostPackageType'),
+            ];
+            $tuples = [];
+            foreach ($information as $column => $value) {
+                if (empty($value)) {
+                    continue;
+                }
+                $tuples[] = "{$column} = {$db->quote($value)}";
             }
-            $tuples[] = "{$column} = {$db->quote($value)}";
-        }
-        if ($tuples === []) {
-            return;
+            if ($tuples === []) {
+                return;
+            }
+
+            $viewName = \OxidEsales\Eshop\Core\TableViewNameGenerator::getViewName('oxorder');
+            $query = ' UPDATE ' . $viewName . ' SET ' . implode(', ', $tuples) . " WHERE OXID = {$db->quote($this->getEditObjectId())}";
+            $db->execute($query);
+        } catch (\Exception $e) {
+            $this->displayErrors($e);
         }
 
-        $query = ' UPDATE ' . \getViewName('oxorder') . ' SET ' . implode(', ', $tuples) . " WHERE OXID = {$db->quote($this->getEditObjectId())}";
-        $db->execute($query);
     }
 
     /**
@@ -535,16 +564,6 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $label->delete();
     }
 
-    /**
-     * @param string[] $errors
-     */
-    protected function displayErrors(array $errors)
-    {
-        $utilsView = Registry::get(\OxidEsales\Eshop\Core\UtilsView::class);
-        foreach ($errors as $error) {
-            $utilsView->addErrorToDisplay($error);
-        }
-    }
 
     /**
      * @return CreateShipmentOrderRequest

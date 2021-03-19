@@ -129,4 +129,8 @@ $aLang = [
     'MO_DHL__DIMENSION'                              => 'Size limits',
     'MO_DHL__BASE_SERVICE'                           => 'Base product',
     'MO_DHL__ADDITIONAL_SERVICES'                    => 'Additional products',
+
+    'MO_DHL__ERROR_PRINT_FORMAT'       => 'An Error %s occured in line %d in file %s',
+    'MO_DHL__ERROR_WHILE_EXECUTION'    => 'An error occured while processing your action:',
+    'MO_DHL__ERROR_PROCESS_IS_MISSING' => 'The delivery set is missing a reference to a DHL product using the process number.',
 ];

@@ -269,7 +269,7 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         assert(!empty($orderIds));
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
         $sanitizedIds = implode(', ', array_map([$db, 'quote'], $orderIds));
-        $orderView = \getViewName('oxorder');
+        $orderView = \OxidEsales\Eshop\Core\TableViewNameGenerator::getViewName('oxorder');
         $query = "SELECT * FROM  {$orderView} WHERE OXID IN ({$sanitizedIds})";
         $orderList = \oxNew(\OxidEsales\Eshop\Core\Model\ListModel::class);
         $orderList->init('oxOrder');

@@ -45,7 +45,7 @@ $aLang = [
     'MO_DHL__CHECKING_DELIVERYSET'                 => 'Teste Versandart ',
     'MO_DHL__CORRECT_CREDENTIALS'                  => 'Zugangsdaten korrekt',
     'MO_DHL__INCORRECT_CREDENTIALS'                => 'Zugangsdaten inkorrekt. Bitte überprüfen Sie ihre Zugangsdaten.',
-    'MO_DHL__CHECK_FOR_SANDBOX_NOT_POSSIBLE'       => 'Du Überprüfung ihrer Zugangsdaten ist bei aktiviertem Testing-Webservice nicht möglich.',
+    'MO_DHL__CHECK_FOR_SANDBOX_NOT_POSSIBLE'       => 'Die Überprüfung Ihrer Zugangsdaten ist bei aktiviertem Testing-Webservice nicht möglich.',
     'MO_DHL__LOGIN_FAILED'                         => 'Zugangsdaten inkorrekt. Login fehlgeschlagen.',
     'MO_DHL__LABELS'                               => 'Labels',
     'MO_DHL__LABEL'                                => 'Versandlabel',
@@ -130,4 +130,7 @@ $aLang = [
     'MO_DHL__BASE_SERVICE'                           => 'Basisprodukt',
     'MO_DHL__ADDITIONAL_SERVICES'                    => 'Zusatzprodukte',
 
+    'MO_DHL__ERROR_PRINT_FORMAT'       => 'Ein Fehler %s ist aufgetreten in Zeile %d in der Datei %s',
+    'MO_DHL__ERROR_WHILE_EXECUTION'    => 'Bei der Ausführung ist folgender Fehler aufgetreten:',
+    'MO_DHL__ERROR_PROCESS_IS_MISSING' => 'Der Versandart fehlt die Zuordnung zu einem DHL-Produkt anhand einer Verfahrensnummer.',
 ];

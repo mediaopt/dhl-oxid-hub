@@ -20,16 +20,28 @@
     </select>
 [{elseif $oViewConf->moHasAncestorTheme('flow') && $oViewConf->isDhlFinderAvailable()}]
     <div class="row dd-available-addresses" data-toggle="buttons">
-        [{foreach from=$aUserAddresses item=address}]
+        [{foreach from=$aUserAddresses item=address name="shippingAdresses"}]
             <div class="col-xs-12 col-md-6 col-lg-4">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        [{if $address->isSelected()}]
-                            <button class="btn btn-warning btn-xs hasTooltip pull-right dd-edit-shipping-address"
-                                    title="[{oxmultilang ident="CHANGE"}]">
-                                <i class="fa fa-pencil"></i>
-                            </button>
-                        [{/if}]
+                        [{block name="form_user_shipping_address_actions"}]
+                            [{if $address->isSelected()}]
+                                [{block name="form_user_shipping_address_edit_action"}]
+                                    <button class="btn btn-warning btn-xs hasTooltip pull-right dd-edit-shipping-address"
+                                            title="[{oxmultilang ident="CHANGE"}]">
+                                        <i class="fa fa-pencil"></i>
+                                    </button>
+                                [{/block}]
+                                [{block name="form_user_shipping_address_delete_action"}]
+                                    <button class="btn btn-danger btn-xs hasTooltip pull-right dd-action dd-delete-shipping-address"
+                                            title="[{oxmultilang ident="DD_DELETE"}]"
+                                            data-toggle="modal"
+                                            data-target="#delete_shipping_address_[{$smarty.foreach.shippingAdresses.iteration}]">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                [{/block}]
+                            [{/if}]
+                        [{/block}]
                         [{include file="widget/address/shipping_address.tpl" delivadr=$address}]
                     </div>
                     <div class="panel-footer">

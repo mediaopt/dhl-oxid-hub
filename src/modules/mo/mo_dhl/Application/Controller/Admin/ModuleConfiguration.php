@@ -22,6 +22,7 @@ use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderType;
 use Mediaopt\DHL\Api\GKV\Version;
 use Mediaopt\DHL\Api\Internetmarke;
 use Mediaopt\DHL\Application\Model\DeliverySetList;
+use Mediaopt\DHL\Controller\Admin\ErrorDisplayTrait;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Shipment\BillingNumber;
 use Mediaopt\DHL\Shipment\Participation;
@@ -37,6 +38,8 @@ use OxidEsales\Eshop\Core\Registry;
  */
 class ModuleConfiguration extends ModuleConfiguration_parent
 {
+
+    use ErrorDisplayTrait;
 
     /**
      * @var string[]
@@ -143,32 +146,41 @@ class ModuleConfiguration extends ModuleConfiguration_parent
      */
     public function moSaveAndCheckLogin()
     {
-        $this->save();
-        $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
-        if (Registry::getConfig()->getConfigParam('mo_dhl__account_sandbox')) {
-            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__CHECK_FOR_SANDBOX_NOT_POSSIBLE');
-            return;
+        try {
+            $this->save();
+            $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
+            if (Registry::getConfig()->getConfigParam('mo_dhl__account_sandbox')) {
+                Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__CHECK_FOR_SANDBOX_NOT_POSSIBLE');
+                return;
+            }
+            $this->checkWunschpaket($adapter);
+            $deliveries = oxNew(DeliverySetList::class);
+            $deliveries = array_filter((array) $deliveries->getDeliverySetList(null, null), function ($deliverySet) { return !$deliverySet->oxdeliveryset__mo_dhl_excluded->value;});
+            if ($deliveries === []) {
+                Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__NO_DELIVERYSET');
+                return;
+            }
+            $gkv = $adapter->buildGKV();
+            foreach ($deliveries as $delivery) {
+                $this->checkGKV($gkv, $delivery);
+            }
+        } catch (\Exception $e) {
+            $this->displayErrors($e);
         }
-        $this->checkWunschpaket($adapter);
-        $deliveries = oxNew(DeliverySetList::class);
-        $deliveries = array_filter((array) $deliveries->getDeliverySetList(null, null), function ($deliverySet) { return !$deliverySet->oxdeliveryset__mo_dhl_excluded->value;});
-        if ($deliveries === []) {
-            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__NO_DELIVERYSET');
-            return;
-        }
-        $gkv = $adapter->buildGKV();
-        foreach ($deliveries as $delivery) {
-            $this->checkGKV($gkv, $delivery);
-        }
+
     }
 
     /**
      */
     public function moSaveAndCheckInternetmarkeLogin()
     {
-        $this->save();
-        $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
-        $this->checkInternetmarke($adapter->buildInternetmarke());
+        try {
+            $this->save();
+            $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
+            $this->checkInternetmarke($adapter->buildInternetmarke());
+        } catch (\Exception $e) {
+            $this->displayErrors($e);
+        }
     }
 
     /**
@@ -253,6 +265,13 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         $lang = Registry::getLang();
         Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($lang->translateString('MO_DHL__CHECKING_DELIVERYSET') . $deliveryset->oxdeliveryset__oxtitle->value);
         try {
+            if (!$deliveryset->oxdeliveryset__mo_dhl_process->value) {
+                throw new \InvalidArgumentException('MO_DHL__ERROR_PROCESS_IS_MISSING');
+            }
+            $process = Process::build($deliveryset->oxdeliveryset__mo_dhl_process->value);
+            if ($process->usesInternetMarke()) {
+                return;
+            }
             $shipment = $this->createTestShipment($gkv, $deliveryset);
             $shipmentOrder = new ValidateShipmentOrderType('123', $shipment);
             $request = new ValidateShipmentOrderRequest(new Version(3, 0, null), $shipmentOrder);
