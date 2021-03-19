@@ -232,7 +232,6 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     protected function callCreation()
     {
-        throw new \Exception('Error');
         return Registry::get(DHLAdapter::class)->buildGKV()->createShipmentOrder($this->buildShipmentOrderRequest());
     }
 
