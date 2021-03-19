@@ -234,10 +234,10 @@
                 .find("div.card-body")
                 .html(function () {
                     var buttons = $(this).find("button");
-                    var prefix = buttons.length > 0 ? buttons[0].outerHTML : '';
+                    var editButton = buttons.length > 0 ? buttons[0].outerHTML : '';
                     var deleteButton = buttons.length > 1 ? buttons[1].outerHTML : '';
                     buttons.remove();
-                    return prefix + deleteButton + mo_dhl__deliveryAddress.reformatAdressString($(this).html());
+                    return editButton + deleteButton + mo_dhl__deliveryAddress.reformatAdressString($(this).html());
                 });
             $('.dd-edit-shipping-address').click(function() {
                 $('#shippingAddressForm').show();
