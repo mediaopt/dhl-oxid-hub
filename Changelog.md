@@ -4,6 +4,11 @@
 * added address delete button to flow template
 * fixed javascript to not delete address delete button
 * resized logo
+* correct insurance rules for non-EUR currencies
+* premium service available for DHL International delivery
+* display article title in a language dependant on the receiver country in export documents
+* tarif number can be assigned to articles and will be displayed in export documents
+* bugfix: corect special chars in lables for name, articles and address
 
 ## 1.4.1
 * removed tracking pixel
