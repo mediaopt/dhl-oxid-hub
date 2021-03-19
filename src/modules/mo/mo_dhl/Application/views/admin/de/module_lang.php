@@ -42,7 +42,7 @@ $aLang = [
     'MO_DHL__CHECKING_DELIVERYSET'                 => 'Teste Versandart ',
     'MO_DHL__CORRECT_CREDENTIALS'                  => 'Zugangsdaten korrekt',
     'MO_DHL__INCORRECT_CREDENTIALS'                => 'Zugangsdaten inkorrekt. Bitte überprüfen Sie ihre Zugangsdaten.',
-    'MO_DHL__CHECK_FOR_SANDBOX_NOT_POSSIBLE'       => 'Du Überprüfung ihrer Zugangsdaten ist bei aktiviertem Testing-Webservice nicht möglich.',
+    'MO_DHL__CHECK_FOR_SANDBOX_NOT_POSSIBLE'       => 'Die Überprüfung Ihrer Zugangsdaten ist bei aktiviertem Testing-Webservice nicht möglich.',
     'MO_DHL__LOGIN_FAILED'                         => 'Zugangsdaten inkorrekt. Login fehlgeschlagen.',
     'MO_DHL__LABELS'                               => 'Labels',
     'MO_DHL__LABEL'                                => 'Versandlabel',
@@ -63,7 +63,7 @@ $aLang = [
     'MO_DHL__CUSTOM_LABEL_RECEIVER'           => 'Empfänger',
     'MO_DHL__CUSTOM_LABEL_RETURN_RECEIVER'    => 'Retoure - Empfängerdaten',
     'MO_DHL__CUSTOM_LABEL_NAME'               => 'Name',
-    'MO_DHL__CUSTOM_LABEL_ADRESS_ADDITION'    => 'Addresszusatz',
+    'MO_DHL__CUSTOM_LABEL_ADRESS_ADDITION'    => 'Adresszusatz',
     'MO_DHL__CUSTOM_LABEL_STREETNAME'         => 'Straßenname',
     'MO_DHL__CUSTOM_LABEL_STREETNUMBER'       => 'Hausnummer',
     'MO_DHL__CUSTOM_LABEL_ZIP'                => 'Postleitzahl',
@@ -92,6 +92,10 @@ $aLang = [
     'MO_DHL__CASH_ON_DELIVERY'          => 'Nachnahme',
     'MO_DHL__ADDITIONAL_INSURANCE'      => 'Transportversicherung',
     'HELP_MO_DHL__ADDITIONAL_INSURANCE' => 'Grundsätzlich haftet DHL für Ihr Paket beim deutschlandweiten Versand gegen Verlust oder Beschädigung bis 500 EUR (nur gegen Vorlage des quittierten Einlieferungsbeleges). Für besonders wertvolle Sendungen bietet DHL Ihnen darüber hinaus eine Transportversicherung bis 2.500 EUR (+6,00 EUR Aufpreis) oder 25.000 EUR  (+18,00 EUR Aufpreis) an. Weiter Informationen finden Sie <a href="https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/services/service-loesungen.html#versicherung" target="_blank" rel="noopener noreferrer">hier</a>',
+    'MO_DHL__PREMIUM'                   => 'Service Premium',
+    'HELP_MO_DHL__PREMIUM'              => 'Das DHL Paket International mit Service Premium wird bevorzugt und immer auf dem schnellsten Weg transportiert. Ihr Paket nimmt immer den nächstmöglichen Flug oder LKW in Richtung Zieldestination und wird auch im Zielland prioritär behandelt. So erreicht es deutlich schneller seinen Bestimmungsort.',
+    'MO_DHL__ZOLLTARIF'                 => 'Zolltarifnummer',
+    'HELP_MO_DHL__ZOLLTARIF'            => 'Optionaler Parameter bei der Erzeugung von Exportdokumenten für DHL Paket International. International standardisiertes System von Namen und Nummern zur Klassifizierung gehandelter Produkte.',
 
     'MO_DHL__WALLAT_BALANCE_CHECK'    => 'Die Zugangsdaten für die Portokasse sind korrekt. Ihr Guthaben beträgt %.2f €',
 
@@ -119,4 +123,7 @@ $aLang = [
     'MO_DHL__BASE_SERVICE'                           => 'Basisprodukt',
     'MO_DHL__ADDITIONAL_SERVICES'                    => 'Zusatzprodukte',
 
+    'MO_DHL__ERROR_PRINT_FORMAT'       => 'Ein Fehler %s ist aufgetreten in Zeile %d in der Datei %s',
+    'MO_DHL__ERROR_WHILE_EXECUTION'    => 'Bei der Ausführung ist folgender Fehler aufgetreten:',
+    'MO_DHL__ERROR_PROCESS_IS_MISSING' => 'Der Versandart fehlt die Zuordnung zu einem DHL-Produkt anhand einer Verfahrensnummer.',
 ];
