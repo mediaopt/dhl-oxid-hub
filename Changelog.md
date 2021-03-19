@@ -4,6 +4,11 @@
 * added address delete button to flow template
 * fixed javascript to not delete address delete button
 * resized logo
+* correct insurance rules for non-EUR currencies
+* premium service for delivery
+* article have recipient language in lables
+* tarif number presents in labels
+* bugfix: corect special chars in lables for name, articles and address
 
 ## 1.4.1
 * removed tracking pixel
