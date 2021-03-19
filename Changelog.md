@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.2
+## develop
 * added address delete button to flow template
 * fixed javascript to not delete address delete button
 * resized logo
