@@ -180,7 +180,6 @@ class Product
         $this->size = $size;
     }
 
-
     /**
      * @return string
      */

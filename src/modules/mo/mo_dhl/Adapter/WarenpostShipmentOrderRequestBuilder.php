@@ -3,10 +3,13 @@
 namespace Mediaopt\DHL\Adapter;
 
 use Mediaopt\DHL\Api\Retoure\Country;
+use Mediaopt\DHL\Api\Warenpost\Content;
 use Mediaopt\DHL\Api\Warenpost\Product;
+use Mediaopt\DHL\Api\Warenpost\ShipmentNatureType;
 use OxidEsales\Eshop\Application\Model\Order;
 use Mediaopt\DHL\Api\Warenpost\ItemData;
 use Mediaopt\DHL\Api\Warenpost\Paperwork;
+use OxidEsales\Eshop\Application\Model\OrderArticle;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
 use OxidEsales\Eshop\Core\Registry;
@@ -73,39 +76,56 @@ class WarenpostShipmentOrderRequestBuilder
     /**
      * @param Order $order
      * @param Config $config
-     * @param string $contactName
+     * @param string $senderName
      * @return array
      * @throws DatabaseConnectionException
      */
-    protected function buildItems(Order $order, Config $config, string $contactName): array
+    protected function buildItems(Order $order, Config $config, string $senderName): array
     {
-        $itemData = $this->buildItemData($order);
+        $customerData = $this->buildCustomerData($order);
 
-        $itemData->setServiceLevel('REGISTERED');
-
-        $itemData->setPostalCode($order->getFieldData('oxbillzip'));
-
-        $senderCity = $config->getShopConfVar('mo_dhl__sender_city');
-        $senderIso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__retoure_receiver_country'));
+        $recipient = $customerData['fname'] . ' ' . $customerData['lname'];
+        $addressLine1 = $customerData['street'] . ' ' . $customerData['streetnr'];
+        $country = $this->buildCountry($customerData['countryid']);
         $senderAddressLine1 = $config->getShopConfVar('mo_dhl__sender_street')
             . ' ' . $config->getShopConfVar('mo_dhl__sender_street_number');
-        $senderZip = $config->getShopConfVar('mo_dhl__sender_zip');
+        $senderCountry = $this->getIsoalpha2FromIsoalpha3(
+            $config->getShopConfVar('mo_dhl__retoure_receiver_country')
+        );
 
-        $itemData->setSenderCity($senderCity);
-        $itemData->setSenderCountry($senderIso2);
-        $itemData->setSenderAddressLine1($senderAddressLine1);
-        $itemData->setSenderName($contactName);
-        $itemData->setSenderPostalCode($senderZip);
+        [$contetns, $shipmentGrossWeight] = $this->buildContetns($order);
+
+        $itemData = new ItemData(
+            $this->getProductId($order),
+            $recipient,
+            $addressLine1,
+            $customerData['zip'],
+            $customerData['city'],
+            $country->getCountryISOCode(),
+            $senderName,
+            $senderAddressLine1,
+            $config->getShopConfVar('mo_dhl__sender_zip'),
+            $config->getShopConfVar('mo_dhl__sender_city'),
+            $senderCountry,
+            ShipmentNatureType::SALE_GOODS,
+            $shipmentGrossWeight
+        );
+
+        $itemData->setShipmentCurrency($order->getFieldData('oxcurrency'));
+        $itemData->setContents($contetns);
 
         $itemData->validate();
+
         return [$itemData->toArray()];
     }
 
     /**
+     * Return customer delivery data if set or bill data if not
+     *
      * @param Order $order
-     * @return ItemData
+     * @return array
      */
-    protected function buildItemData(Order $order): ItemData
+    protected function buildCustomerData(Order $order): array
     {
         $requiredFields = [
             'countryid',
@@ -131,17 +151,7 @@ class WarenpostShipmentOrderRequestBuilder
             $customerData = $customerDataDelivery;
         }
 
-        $country = $this->buildCountry($customerData['countryid']);
-        $itemData = new ItemData(
-            $this->getProductId($order),
-            $customerData['fname'] . ' ' . $customerData['lname'],
-            $customerData['street'] . ' ' . $customerData['streetnr'],
-            $customerData['city'],
-            $country->getCountryISOCode(),
-            2000 //todo weight
-        );
-        $itemData->setPostalCode($customerData['zip']);
-        return $itemData;
+        return $customerData;
     }
 
     /**
@@ -183,4 +193,35 @@ class WarenpostShipmentOrderRequestBuilder
         return $product->getProduct();
     }
 
+    /**
+     * @param Order $order
+     * @return array
+     */
+    protected function buildContetns(Order $order): array
+    {
+        $contents = [];
+        $shipmentGrossWeight = 0;
+        /**
+         * @var OrderArticle $orderArticle
+         */
+        foreach ($order->getOrderArticles() as $orderArticle) {
+            $weightInGrams = $orderArticle->getFieldData('oxweight') * 1000;
+            $amount = $orderArticle->getFieldData('oxamount');
+            $shipmentGrossWeight += $weightInGrams * $amount;
+
+            $content = new Content(
+                $orderArticle->getPrice()->getPrice(),
+                $weightInGrams,
+                $amount
+            );
+
+            $content->setContentPieceDescription($orderArticle->getArticle()->getFieldData('oxtitle'));
+
+            $content->validate();
+
+            $contents[] = $content->toArray();
+        }
+
+        return [$contents, $shipmentGrossWeight];
+    }
 }

@@ -50,6 +50,16 @@ class Content
     const ORIGIN_LENGTH = 2;
 
     /**
+     * @var int
+     */
+    const HS_CODE_MIN = 1000;
+
+    /**
+     * @var int
+     */
+    const HS_CODE_MAX = 9999999999;
+
+    /**
      * The HS code of this content.
      *
      * @var string
@@ -101,31 +111,19 @@ class Content
     protected $contentPieceIndexNumber;
 
     /**
-     * @param string $contentPieceHsCode
-     * @param string $contentPieceDescription
      * @param string $contentPieceValue
      * @param int $contentPieceNetweight
-     * @param string $contentPieceOrigin
      * @param int $contentPieceAmount
-     * @param int|null $contentPieceIndexNumber
      */
     public function __construct(
-        string $contentPieceHsCode,
-        string $contentPieceDescription,
         string $contentPieceValue,
         int $contentPieceNetweight,
-        string $contentPieceOrigin,
-        int $contentPieceAmount,
-        ?int $contentPieceIndexNumber = null
+        int $contentPieceAmount
     )
     {
-        $this->contentPieceHsCode = $contentPieceHsCode;
-        $this->contentPieceDescription = $contentPieceDescription;
         $this->contentPieceValue = $contentPieceValue;
         $this->contentPieceNetweight = $contentPieceNetweight;
-        $this->contentPieceOrigin = $contentPieceOrigin;
         $this->contentPieceAmount = $contentPieceAmount;
-        $this->contentPieceIndexNumber = $contentPieceIndexNumber;
     }
 
     /**
@@ -136,10 +134,11 @@ class Content
     public function validate(): bool
     {
         $errorMessage = implode(' ,', array_merge(
-            $this->isStringFieldCorrect('contentPieceDescription', $this->contentPieceDescription, self::DESCRIPTION_LINGTH_MIN, self::DESCRIPTION_LINGTH_MAX, true),
+            $this->isStringFieldCorrect('contentPieceDescription', $this->contentPieceDescription, self::DESCRIPTION_LINGTH_MIN, self::DESCRIPTION_LINGTH_MAX),
             $this->isIntFieldCorrect('contentPieceNetweight', $this->contentPieceNetweight, self::NETWEIGHT_MIN, self::NETWEIGHT_MAX, true),
-            $this->isStringFieldCorrect('contentPieceOrigin', $this->contentPieceOrigin, self::ORIGIN_LENGTH, null, true),
-            $this->isIntFieldCorrect('contentPieceAmount', $this->contentPieceAmount, self::AMOUNT_MIN, self::AMOUNT_MAX, true)
+            $this->isStringFieldCorrect('contentPieceOrigin', $this->contentPieceOrigin, self::ORIGIN_LENGTH),
+            $this->isIntFieldCorrect('contentPieceAmount', $this->contentPieceAmount, self::AMOUNT_MIN, self::AMOUNT_MAX, true),
+            $this->isIntFieldCorrect('contentPieceHsCode', $this->contentPieceHsCode, self::HS_CODE_MIN, self::HS_CODE_MAX)
         ));
 
         if (empty($errorMessage)) {
@@ -151,17 +150,49 @@ class Content
     }
 
     /**
-     * @return string
+     * @param string $contentPieceOrigin
      */
-    public function getContentPieceHsCode(): string
+    public function setContentPieceOrigin(string $contentPieceOrigin)
+    {
+        $this->contentPieceOrigin = $contentPieceOrigin;
+    }
+
+    /**
+     * @param int $contentPieceIndexNumber
+     */
+    public function setContentPieceIndexNumber(int $contentPieceIndexNumber)
+    {
+        $this->contentPieceIndexNumber = $contentPieceIndexNumber;
+    }
+
+    /**
+     * @param string $contentPieceHsCode
+     */
+    public function setContentPieceHsCode(string $contentPieceHsCode)
+    {
+        $this->contentPieceHsCode = $contentPieceHsCode;
+    }
+
+    /**
+     * @param string $contentPieceDescription
+     */
+    public function setContentPieceDescription(string $contentPieceDescription)
+    {
+        $this->contentPieceDescription = $contentPieceDescription;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getContentPieceHsCode(): ?string
     {
         return $this->contentPieceHsCode;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getContentPieceDescription(): string
+    public function getContentPieceDescription(): ?string
     {
         return $this->contentPieceDescription;
     }
@@ -183,9 +214,9 @@ class Content
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getContentPieceOrigin(): string
+    public function getContentPieceOrigin(): ?string
     {
         return $this->contentPieceOrigin;
     }
@@ -212,16 +243,22 @@ class Content
     public function toArray(): array
     {
         $array = [
-            'contentPieceHsCode' => $this->contentPieceHsCode,
-            'contentPieceDescription' => $this->contentPieceDescription,
             'contentPieceValue' => $this->contentPieceValue,
             'contentPieceNetweight' => $this->contentPieceNetweight,
-            'contentPieceOrigin' => $this->contentPieceOrigin,
             'contentPieceAmount' => $this->contentPieceAmount
         ];
 
-        if ($this->contentPieceIndexNumber !== null) {
-            $array['contentPieceIndexNumber'] = $this->contentPieceIndexNumber;
+        $unrequiredFields = [
+            'contentPieceHsCode',
+            'contentPieceDescription',
+            'contentPieceOrigin',
+            'contentPieceIndexNumber',
+        ];
+
+        foreach ($unrequiredFields as $field) {
+            if ($this->$field !== null) {
+                $array[$field] = $this->$field;
+            }
         }
 
         return $array;
