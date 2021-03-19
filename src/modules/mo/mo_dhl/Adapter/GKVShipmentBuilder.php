@@ -34,6 +34,7 @@ use Mediaopt\DHL\ServiceProvider\Currency;
 use Mediaopt\DHL\Shipment\BillingNumber;
 use OxidEsales\Eshop\Application\Model\OrderArticle;
 use OxidEsales\Eshop\Core\Registry;
+use Mediaopt\DHL\ServiceProvider\CountriesLanguages;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
@@ -88,7 +89,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     protected function buildReceiver($order): ReceiverType
     {
-        $receiver = new ReceiverType($order->moDHLGetAddressData('fname') . ' ' . $order->moDHLGetAddressData('lname'));
+        $receiver = new ReceiverType(
+            $this->convertSpecialChars($order->moDHLGetAddressData('fname'))
+            . ' ' . $this->convertSpecialChars($order->moDHLGetAddressData('lname'))
+        );
         if (Branch::isPackstation($order->moDHLGetAddressData('street'))) {
             $receiver->setPackstation($this->buildPackstation($order));
         } else if (Branch::isFiliale($order->moDHLGetAddressData('street'))) {
@@ -210,6 +214,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $active = (int) ($order->moDHLUsesService(MoDHLService::MO_DHL__ADDITIONAL_INSURANCE) && $orderBrutSum > 500);
             $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance($active, $orderBrutSum));
         }
+        if ($process->supportsPremium()) {
+            $active = (bool) ($order->moDHLUsesService(Article::MO_DHL__PREMIUM));
+            $service->setPremium(new Serviceconfiguration($active));
+        }
 
         return $service;
     }
@@ -260,10 +268,21 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     {
         $config = Registry::getConfig();
 
-        $name = new NameType($config->getShopConfVar('mo_dhl__sender_line1'), $config->getShopConfVar('mo_dhl__sender_line2'), $config->getShopConfVar('mo_dhl__sender_line3'));
+        $name = new NameType(
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line1')),
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line2')),
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line3'))
+        );
         $iso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__sender_country'));
         $country = new CountryType($iso2);
-        $address = new NativeAddressType($config->getShopConfVar('mo_dhl__sender_street'), $config->getShopConfVar('mo_dhl__sender_street_number'), $config->getShopConfVar('mo_dhl__sender_zip'), $config->getShopConfVar('mo_dhl__sender_city'), null, $country);
+        $address = new NativeAddressType(
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_street')),
+            $config->getShopConfVar('mo_dhl__sender_street_number'),
+            $config->getShopConfVar('mo_dhl__sender_zip'),
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')),
+            null,
+            $country
+        );
         return new ShipperType($name, $address);
     }
 
@@ -294,12 +313,16 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     protected function buildAddress(Order $order): ReceiverNativeAddressType
     {
         $address = new ReceiverNativeAddressType(
-            $order->moDHLGetAddressData('company') ?: null,
-            $order->moDHLGetAddressData('addinfo') ?: null,
-            $order->moDHLGetAddressData('street'),
+            $order->moDHLGetAddressData('company')
+                ? $this->convertSpecialChars($order->moDHLGetAddressData('company'))
+                : null,
+            $order->moDHLGetAddressData('addinfo')
+                ? $this->convertSpecialChars($order->moDHLGetAddressData('addinfo'))
+                : null,
+            $this->convertSpecialChars($order->moDHLGetAddressData('street')),
             $order->moDHLGetAddressData('streetnr'),
             $order->moDHLGetAddressData('zip'),
-            $order->moDHLGetAddressData('city'),
+            $this->convertSpecialChars($order->moDHLGetAddressData('city')),
             null,
             $this->buildCountry($order->moDHLGetAddressData('countryid'))
         );
@@ -336,11 +359,13 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         $config = Registry::getConfig();
         $exportDocumentType = new ExportDocumentType(
             'COMMERCIAL_GOODS',
-            $config->getShopConfVar('mo_dhl__sender_city'),
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')),
             $order->oxorder__oxdelcost->value
         );
 
         $iso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__sender_country'));
+
+        $receiverLanguages = $this->getReceiverLanguages($order);
 
         $exportDocuments = [];
 
@@ -348,9 +373,9 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         foreach ($order->getOrderArticles() as $orderArticle) {
             $count = $orderArticle->getFieldData('oxamount');
             $exportDocuments[] = new ExportDocPosition(
-                substr($orderArticle->getArticle()->getFieldData('oxtitle'), 0, 50),
+                $this->getArticleTitle($orderArticle, $receiverLanguages),
                 $iso2,
-                '',
+                $orderArticle->getArticle()->getFieldData(Article::MO_DHL__ZOLLTARIF),
                 $count,
                 $this->getArticleWeight($orderArticle, $config, true),
                 $orderArticle->getPrice()->getPrice()
@@ -381,5 +406,72 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         }
 
         return $order->oxorder__oxtotalbrutsum->value / $order->oxorder__oxcurrate->value;
+    }
+
+    /**
+     * @param Order $order
+     * @return array
+     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
+     */
+    protected function getReceiverLanguages(Order $order): array
+    {
+        $receiverCountryISO2 = strtolower(
+            $this->buildCountry($order->moDHLGetAddressData('countryid'))->getCountryISOCode()
+        );
+
+        $storeLanguages = [];
+        foreach (Registry::getLang()->getLanguageArray() as $language) {
+            $storeLanguages[$language->oxid] = $language->id;
+        }
+
+        if (!array_key_exists($receiverCountryISO2, CountriesLanguages::$LIST)) {
+            // If we have no list of languages for receiver country we will use default language
+            return [];
+        }
+
+        $receiverLanguages = [];
+        foreach (CountriesLanguages::$LIST[$receiverCountryISO2] as $language) {
+            if (array_key_exists($language, $storeLanguages)) {
+                $receiverLanguages[$language] = $storeLanguages[$language];
+            }
+        }
+
+        // If we have a list we will use receiver languages in order from CountriesLanguages
+        return $receiverLanguages;
+    }
+
+    /**
+     * @param OrderArticle $orderArticle
+     * @param array $receiverLanguages
+     * @return false|string
+     */
+    protected function getArticleTitle(OrderArticle $orderArticle, array $receiverLanguages)
+    {
+        $articleId = $orderArticle->getArticle()->getId();
+        $articleModel = oxNew(\OxidEsales\EshopCommunity\Application\Model\Article::class);
+
+        $title = '';
+        foreach ($receiverLanguages as $languageId) {
+            $articleModel->loadInLang($languageId, $articleId);
+            $title = $articleModel->getFieldData('oxtitle');
+            if (!empty($title)) {
+                break;
+            }
+        }
+
+        if (empty($title)) {
+            $title = $orderArticle->getArticle()->getFieldData('oxtitle');
+        }
+
+        return substr($this->convertSpecialChars($title), 0, 50);
+    }
+
+    /**
+     * @param string $string
+     * @return string
+     */
+    public static function convertSpecialChars(string $string): string
+    {
+        return mb_convert_encoding($string, "UTF-8", "HTML-ENTITIES");
     }
 }

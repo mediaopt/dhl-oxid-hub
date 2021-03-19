@@ -67,6 +67,16 @@
                         </tr>
                         <tr>
                             <td class="edittext">
+                                [{oxmultilang ident="MO_DHL__ZOLLTARIF"}]
+                            </td>
+                            <td class="edittext">
+                                <input class="edittext" name="editval[oxarticles__mo_dhl_zolltarif]" maxlength="10"
+                                       value="[{$edit->oxarticles__mo_dhl_zolltarif->value}]">
+                                [{oxinputhelp ident="HELP_MO_DHL__ZOLLTARIF"}]
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="edittext">
                             </td>
                             <td class="edittext"><br>
                                 <input type="submit" class="edittext" name="save"

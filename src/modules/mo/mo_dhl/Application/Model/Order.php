@@ -313,6 +313,7 @@ class Order extends Order_parent
         switch ($service) {
             case MoDHLService::MO_DHL__IDENT_CHECK:
             case MoDHLService::MO_DHL__ADDITIONAL_INSURANCE:
+            case MoDHLService::MO_DHL__PREMIUM:
                 $deliveryset = oxNew(DeliverySet::class);
                 $deliveryset->load($this->oxorder__oxdeltype->value);
                 return $deliveryset->moDHLUsesService($service);

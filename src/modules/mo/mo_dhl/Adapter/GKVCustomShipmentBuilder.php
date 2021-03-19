@@ -61,6 +61,7 @@ class GKVCustomShipmentBuilder
                 'identCheck'          => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getIdentCheck(),
                 'cashOnDelivery'      => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getCashOnDelivery(),
                 'visualAgeCheck'      => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getVisualCheckOfAge(),
+                'premium'             => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getPremium(),
             ],
         ];
     }
@@ -180,6 +181,10 @@ class GKVCustomShipmentBuilder
                 $services->setVisualCheckOfAge(null);
             }
 
+        }
+        if ($process->supportsPremium()) {
+            $isActive = filter_var($servicesData['premium']['active'], FILTER_VALIDATE_BOOLEAN);
+            $services->setPremium(new Serviceconfiguration($isActive));
         }
 
         $isActive = filter_var($servicesData['printOnlyIfCodeable']['active'], FILTER_VALIDATE_BOOLEAN);
