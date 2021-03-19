@@ -266,7 +266,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($lang->translateString('MO_DHL__CHECKING_DELIVERYSET') . $deliveryset->oxdeliveryset__oxtitle->value);
         try {
             if (!$deliveryset->oxdeliveryset__mo_dhl_process->value) {
-                throw new \Exception('MO_DHL__ERROR_PROCESS_IS_MISSING');
+                throw new \InvalidArgumentException('MO_DHL__ERROR_PROCESS_IS_MISSING');
             }
             $process = Process::build($deliveryset->oxdeliveryset__mo_dhl_process->value);
             if ($process->usesInternetMarke()) {

@@ -22,6 +22,15 @@ use OxidEsales\Eshop\Application\Model\OrderArticle;
 class BaseShipmentBuilder
 {
     /**
+     * @var float minimum weight for the order
+     */
+    const MO_DHL__MIN_WEIGHT_FOR_ORDER = 0.01;
+
+    /**
+     * @var float minimum weight for order items in export documents
+     */
+    const MO_DHL__MIN_WEIGHT_FOR_ORDERITEMS = 0.001;
+    /**
      * @var string
      */
     protected $ekp;
@@ -73,7 +82,7 @@ class BaseShipmentBuilder
         }
         $weight *= 1 + (float)$config->getShopConfVar('mo_dhl__packing_weight_in_percent') / 100.0;
         $weight += (float)$config->getShopConfVar('mo_dhl__packing_weight_absolute');
-        return max(0.01, $weight);
+        return max(self::MO_DHL__MIN_WEIGHT_FOR_ORDER, $weight);
     }
 
     /**
@@ -143,8 +152,8 @@ class BaseShipmentBuilder
         $articleWeight = $config->getShopConfVar('mo_dhl__calculate_weight')
             ? (float)$orderArticle->getArticle()->getWeight()
             : (float)$config->getShopConfVar('mo_dhl__default_weight');
-        if ($isInternationalShipment && $articleWeight < 0.001) {
-            $articleWeight = max(0.001, (float)$config->getShopConfVar('mo_dhl__default_weight'));
+        if ($isInternationalShipment && $articleWeight < self::MO_DHL__MIN_WEIGHT_FOR_ORDERITEMS) {
+            $articleWeight = max(self::MO_DHL__MIN_WEIGHT_FOR_ORDERITEMS, (float)$config->getShopConfVar('mo_dhl__default_weight'));
         }
         return $articleWeight;
     }
