@@ -215,7 +215,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance($active, $orderBrutSum));
         }
         if ($process->supportsPremium()) {
-            $active = (bool) ($order->moDHLUsesService(Article::MO_DHL__PREMIUM));
+            $active = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__PREMIUM));
             $service->setPremium(new Serviceconfiguration($active));
         }
 
@@ -375,7 +375,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $exportDocuments[] = new ExportDocPosition(
                 $this->getArticleTitle($orderArticle, $receiverLanguages),
                 $iso2,
-                $orderArticle->getArticle()->getFieldData(Article::MO_DHL__ZOLLTARIF),
+                $orderArticle->getArticle()->getFieldData(MoDHLService::MO_DHL__ZOLLTARIF),
                 $count,
                 $this->getArticleWeight($orderArticle, $config, true),
                 $orderArticle->getPrice()->getPrice()

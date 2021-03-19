@@ -36,4 +36,14 @@ class MoDHLService
      * @var string
      */
     const MO_DHL__ADDITIONAL_INSURANCE = 'mo_dhl_additional_insurance';
+
+    /**
+     * @var string
+     */
+    const MO_DHL__PREMIUM = 'mo_dhl_premium';
+
+    /**
+     * @var string
+     */
+    const MO_DHL__ZOLLTARIF = 'mo_dhl_zolltarif';
 }
