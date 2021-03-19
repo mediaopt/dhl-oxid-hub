@@ -1,4 +1,11 @@
 # Changelog
+## develop
+* error handling in admin controllers
+* delete tracking code from order if corresponding label is deleted
+* improved weight calculation
+* set ordernr as customer reference
+* smaller logo
+
 ## 1.4.1
 * removed tracking pixel
 

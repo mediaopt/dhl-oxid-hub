@@ -149,7 +149,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         try {
             $this->save();
             $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
-            if (false && Registry::getConfig()->getConfigParam('mo_dhl__account_sandbox')) {
+            if (Registry::getConfig()->getConfigParam('mo_dhl__account_sandbox')) {
                 Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__CHECK_FOR_SANDBOX_NOT_POSSIBLE');
                 return;
             }
