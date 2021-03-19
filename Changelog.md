@@ -1,4 +1,10 @@
 # Changelog
+
+## develop
+* added address delete button to flow template
+* fixed javascript to not delete address delete button
+* resized logo
+
 ## 1.4.1
 * removed tracking pixel
 
