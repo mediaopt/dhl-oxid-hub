@@ -4,6 +4,10 @@
 * added address delete button to flow template
 * fixed javascript to not delete address delete button
 * resized logo
+* error handling in admin controllers
+* delete tracking code from order if corresponding label is deleted
+* improved weight calculation
+* set ordernr as customer reference
 * correct insurance rules for non-EUR currencies
 * premium service available for DHL International delivery
 * display article title in a language dependant on the receiver country in export documents
