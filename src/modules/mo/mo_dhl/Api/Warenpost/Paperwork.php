@@ -15,6 +15,11 @@ class Paperwork
     use Validator;
 
     /**
+     * @var int
+     */
+    const JOB_REFERENCE_LENGTH_MAX = 17;
+
+    /**
      * Copies of the AWB label (not yet enabled for Warenpost)
      * Сan be only 1 now
      *
@@ -41,25 +46,19 @@ class Paperwork
      * Irrelevant to Warenpost International
      * For Warenpost International only CUSTOMER_DROP_OFF is possible
      *
-     * @var string|null
+     * @var string
      */
     protected $pickupType;
 
     /**
      * @param string $contactName
-     * @param int $awbCopyCount
      * @param string|null $jobReference
-     * @param string|null $pickupType
      */
-    public function __construct(
-        string $contactName,
-        int $awbCopyCount,
-        $jobReference = null
-    )
+    public function __construct(string $contactName, $jobReference = null)
     {
         $this->contactName = $contactName;
-        $this->awbCopyCount = $awbCopyCount;
         $this->jobReference = $jobReference;
+        $this->awbCopyCount = 1;
         $this->pickupType = PickupType::CUSTOMER_DROP_OFF;
     }
 
@@ -70,13 +69,13 @@ class Paperwork
      */
     public function validate(): bool
     {
-        $errorMessage = $this->isStringFieldCorrect('jobReference', $this->jobReference, 0, 17);
+        $errorMessage = $this->isStringFieldCorrect('jobReference', $this->jobReference, 0, self::JOB_REFERENCE_LENGTH_MAX);
 
         if (empty($errorMessage)) {
             return true;
         }
 
-        $message = __CLASS__ . '::' . __METHOD__ . " " . $errorMessage;
+        $message = __CLASS__ . '::' . __METHOD__ . " " . $errorMessage[0];
         throw new WarenpostException($message, WarenpostException::PAPERWORK_VALIDATION_ERROR);
     }
 
@@ -123,8 +122,8 @@ class Paperwork
             'pickupType' => $this->pickupType
         ];
 
-        if ($this->pickupType !== null){
-            $array['pickupType'] = $this->pickupType;
+        if ($this->jobReference !== null){
+            $array['jobReference'] = $this->jobReference;
         }
 
         return $array;

@@ -399,7 +399,8 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
                 return;
             }
 
-            $viewName = \OxidEsales\Eshop\Core\TableViewNameGenerator::getViewName('oxorder');
+            $tableViewNameGenerator = oxNew(\OxidEsales\Eshop\Core\TableViewNameGenerator::class);
+            $viewName = $tableViewNameGenerator->getViewName('oxorder');
             $query = ' UPDATE ' . $viewName . ' SET ' . implode(', ', $tuples) . " WHERE OXID = {$db->quote($this->getEditObjectId())}";
             $db->execute($query);
         } catch (\Exception $e) {

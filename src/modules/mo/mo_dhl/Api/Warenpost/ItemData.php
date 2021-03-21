@@ -309,12 +309,12 @@ class ItemData
      *
      * @var string
      */
-    protected $serviceLevel;
+    protected $serviceLevel = ServiceLevel::STANDARD;
 
     /**
      * Total value of all items included with the article.
      *
-     * @var float|null
+     * @var int|null
      */
     protected $shipmentAmount = null;
 
@@ -396,7 +396,6 @@ class ItemData
         $this->senderCity = $senderCity;
         $this->senderCountry = $senderCountry;
         $this->shipmentNaturetype = $shipmentNaturetype;
-        $this->serviceLevel = ServiceLevel::STANDARD;
     }
 
     /**
@@ -520,9 +519,9 @@ class ItemData
     }
 
     /**
-     * @param float $shipmentAmount
+     * @param int $shipmentAmount
      */
-    public function setShipmentAmount(float $shipmentAmount)
+    public function setShipmentAmount(int $shipmentAmount)
     {
         $this->shipmentAmount = $shipmentAmount;
     }
@@ -760,7 +759,7 @@ class ItemData
     }
 
     /**
-     * @return float|null
+     * @return int|null
      */
     public function getShipmentAmount(): ?float
     {
@@ -824,7 +823,7 @@ class ItemData
             $this->isStringFieldCorrect('senderAddressLine2', $this->senderAddressLine2, 0, self::ADDRESS_LINE_LENGTH_MAX),
             $this->isStringFieldCorrect('senderAddressLine3', $this->senderAddressLine3, 0, self::ADDRESS_LINE_LENGTH_MAX),
             $this->isStringFieldCorrect('senderCity', $this->senderCity, 0, self::CITY_LENGTH_MAX, true),
-            $this->isStringFieldCorrect('senderCountry', $this->senderCountry, self::COUNTRY_LENGTH, true),
+            $this->isStringFieldCorrect('senderCountry', $this->senderCountry, self::COUNTRY_LENGTH, null, true),
             $this->isStringFieldCorrect('senderEmail', $this->senderEmail, 0, self::EMAIL_LENGTH_MAX),
             $this->isStringFieldCorrect('senderName', $this->senderName, 0, self::NAME_LENGTH_MAX, true),
             $this->isStringFieldCorrect('senderPhone', $this->senderPhone, 0, self::PHONE_LENGTH_MAX),

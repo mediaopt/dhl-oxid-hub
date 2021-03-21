@@ -7,6 +7,9 @@
 
 namespace sdk\Warenspost;
 
+use Mediaopt\DHL\Api\Warenpost\Content;
+use Mediaopt\DHL\Api\Warenpost\Product;
+use Mediaopt\DHL\Api\Warenpost\ShipmentNatureType;
 use Mediaopt\DHL\Exception\WarenpostException;
 use Mediaopt\DHL\Api\Warenpost\ItemData;
 
@@ -16,143 +19,159 @@ use Mediaopt\DHL\Api\Warenpost\ItemData;
 class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @param array $customValues
      * @return ItemData
      */
-    public function buildSuccessItemData(): ItemData
+    public function buildItemData($customValues = []): ItemData
     {
-        return new ItemData("GPP", "Alfred J. Quack Jr.", "Main street 1", "Roma", "IT", 1500);
-    }
+        $product = new Product(Product::REGION_EU, Product::TRACKING_TYPE_SIGNATURE, Product::PACKAGE_TYPE_L);
 
+        $defaultValues = [
+            'product' => $product->getProduct(),
+            'recipient' => 'Floppa',
+            'addressLine1' => 'Main street 1',
+            'postalCode' => '25487',
+            'city' => 'Roma',
+            'destinationCountry' => 'IT',
+            'senderName' => 'Alfred J. Quack',
+            'senderAddressLine1' => 'Alexanderplztz 1',
+            'senderPostalCode' => '10179',
+            'senderCity' => 'Berlin',
+            'senderCountry' => 'DE',
+            'shipmentNaturetype' => ShipmentNatureType::SALE_GOODS,
+            'shipmentGrossWeight' => 1900,
+        ];
+
+        foreach ($customValues as $key=>$value){
+            $defaultValues[$key] = $value;
+        }
+
+        return new ItemData(
+            $defaultValues['product'],
+            $defaultValues['recipient'],
+            $defaultValues['addressLine1'],
+            $defaultValues['postalCode'],
+            $defaultValues['city'],
+            $defaultValues['destinationCountry'],
+            $defaultValues['senderName'],
+            $defaultValues['senderAddressLine1'],
+            $defaultValues['senderPostalCode'],
+            $defaultValues['senderCity'],
+            $defaultValues['senderCountry'],
+            $defaultValues['shipmentNaturetype'],
+            $defaultValues['shipmentGrossWeight']
+        );
+    }
 
     public function testSuccessItemData()
     {
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setId(1);
+        $itemData = $this->buildItemData();
         $itemData->setAddressLine2('Hinterhaus');
         $itemData->setAddressLine3('1. Etage');
-        $itemData->setContents([
-            (new WarenpostContentTest())->buildCorrectContent()->toArray(),
-            (new WarenpostContentTest())->buildCorrectContent()->toArray(),
-        ]);
-        $itemData->setCustRef("REF-2361890-AB");
-        $itemData->setCustRef2("EFI");
-        $itemData->setCustRef3("123456");
-        $itemData->setPostalCode('794');
+        $itemData->setId(1);
+        $itemData->setImporterTaxId('ImporterTaxId');
         $itemData->setRecipientEmail('alfred.j.quack@somewhere.eu');
         $itemData->setRecipientFax('+4935120681234');
         $itemData->setRecipientPhone('+4935120681234');
-        $itemData->setReturnItemWanted(true);
-        $itemData->setSenderAddressLine1('Mustergasse 12');
         $itemData->setSenderAddressLine2('Hinterhaus');
-        $itemData->setSenderCity('Dresden');
-        $itemData->setSenderCountry('DE');
+        $itemData->setSenderAddressLine3('2. Etage');
         $itemData->setSenderEmail('alfred.j.quack@somewhere.eu');
-        $itemData->setSenderName('Alfred J. Quack');
         $itemData->setSenderPhone('+4935120681234');
-        $itemData->setSenderPostalCode('794');
-        $itemData->setServiceLevel('PRIORITY');
-        $itemData->setShipmentAmount(100.00);
+        $itemData->setSenderTaxId('SenderTaxId');
+        $itemData->setShipmentAmount(4);
         $itemData->setShipmentCurrency('EUR');
-        $itemData->setShipmentNaturetype('GIFT');
         $itemData->setState('Sachsen');
+        $itemData->setCustRef("REF-2361890-AB");
+        $itemData->setContents([
+            (new Content(120.50, 600, 2))->toArray(),
+            (new Content(120.50, 350, 2))->toArray(),
+        ]);
         $itemData->validate();
 
         $this->assertEquals(
             $itemData->toArray(),
             [
-                'product' => 'GPP',
-                'recipient' => 'Alfred J. Quack Jr.',
+                'product' => '10287',
+                'recipient' => 'Floppa',
                 'addressLine1' => 'Main street 1',
+                'postalCode' => '25487',
                 'city' => 'Roma',
                 'destinationCountry' => 'IT',
-                'shipmentGrossWeight' => 1500,
+                'senderName' => 'Alfred J. Quack',
+                'senderAddressLine1' => 'Alexanderplztz 1',
+                'senderPostalCode' => '10179',
+                'senderCity' => 'Berlin',
+                'senderCountry' => 'DE',
+                'shipmentNaturetype' => 'SALE_GOODS',
+                'shipmentGrossWeight' => 1900,
+                'serviceLevel' => 'STANDARD',
+                'returnItemWanted' => false,
+
                 'addressLine2' => 'Hinterhaus',
                 'addressLine3' => '1. Etage',
-                'contents' => [
-                    [
-                        'contentPieceHsCode' => 1234567890,
-                        'contentPieceDescription' => 'Trousers',
-                        'contentPieceValue' => '120.50',
-                        'contentPieceNetweight' => 1200,
-                        'contentPieceOrigin' => 'DE',
-                        'contentPieceAmount' => 2,
-                        'contentPieceIndexNumber' => 1337,
-                    ],
-                    [
-                        'contentPieceHsCode' => 1234567890,
-                        'contentPieceDescription' => 'Trousers',
-                        'contentPieceValue' => '120.50',
-                        'contentPieceNetweight' => 1200,
-                        'contentPieceOrigin' => 'DE',
-                        'contentPieceAmount' => 2,
-                        'contentPieceIndexNumber' => 1337,
-                    ]
-                ],
-                'custRef' => 'REF-2361890-AB',
-                'custRef2' => 'EFI',
-                'custRef3' => '123456',
                 'id' => 1,
-                'postalCode' => '794',
+                'importerTaxId' => 'ImporterTaxId',
                 'recipientEmail' => 'alfred.j.quack@somewhere.eu',
                 'recipientFax' => '+4935120681234',
                 'recipientPhone' => '+4935120681234',
-                'returnItemWanted' => true,
-                'senderAddressLine1' => 'Mustergasse 12',
                 'senderAddressLine2' => 'Hinterhaus',
-                'senderCity' => 'Dresden',
-                'senderCountry' => 'DE',
+                'senderAddressLine3' => '2. Etage',
                 'senderEmail' => 'alfred.j.quack@somewhere.eu',
-                'senderName' => 'Alfred J. Quack',
                 'senderPhone' => '+4935120681234',
-                'senderPostalCode' => '794',
-                'serviceLevel' => 'PRIORITY',
-                'shipmentAmount' => 100.0,
+                'senderTaxId' => 'SenderTaxId',
+                'shipmentAmount' => 4,
                 'shipmentCurrency' => 'EUR',
-                'shipmentNaturetype' => 'GIFT',
                 'state' => 'Sachsen',
+                'custRef' => 'REF-2361890-AB',
+
+                'contents' => [
+                    [
+                        'contentPieceValue' => 120.50,
+                        'contentPieceNetweight' => 600,
+                        'contentPieceAmount' => 2,
+                    ],
+                    [
+                        'contentPieceValue' => 120.50,
+                        'contentPieceNetweight' => 350,
+                        'contentPieceAmount' => 2,
+                    ]
+                ],
             ]
         );
     }
 
     public function testSuccessMinimalItemData()
     {
-        $itemData = $this->buildSuccessItemData();
+        $itemData = $this->buildItemData();
+        $itemData->validate();
+
         $this->assertEquals(
             $itemData->toArray(),
             [
-                'product' => 'GPP',
-                'recipient' => 'Alfred J. Quack Jr.',
+                'product' => '10287',
+                'recipient' => 'Floppa',
                 'addressLine1' => 'Main street 1',
+                'postalCode' => '25487',
                 'city' => 'Roma',
                 'destinationCountry' => 'IT',
-                'shipmentGrossWeight' => 1500,
-                'returnItemWanted' => false
+                'senderName' => 'Alfred J. Quack',
+                'senderAddressLine1' => 'Alexanderplztz 1',
+                'senderPostalCode' => '10179',
+                'senderCity' => 'Berlin',
+                'senderCountry' => 'DE',
+                'shipmentNaturetype' => 'SALE_GOODS',
+                'shipmentGrossWeight' => 1900,
+                'serviceLevel' => 'STANDARD',
+                'returnItemWanted' => false,
             ]
         );
-    }
-
-    public function testShortRecipientThrowAnException()
-    {
-        $this->expectException(WarenpostException::class);
-        $this->expectExceptionMessageRegExp('/length should be between/');
-        $itemData = new ItemData("GPP", "", "Main street 1", "Roma", "IT", 1500);
-        $itemData->validate();
     }
 
     public function testBigRecipientThrowAnException()
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/length should be between/');
-        $itemData = new ItemData("GPP", "Big recepient name, more than enough for an error", "Main street 1", "Roma", "IT", 1500);
-        $itemData->validate();
-    }
-
-
-    public function testShortAddressLine1ThrowAnException()
-    {
-        $this->expectException(WarenpostException::class);
-        $this->expectExceptionMessageRegExp('/length should be between/');
-        $itemData = new ItemData("GPP", "Alfred J. Quack Jr.", "", "Roma", "IT", 1500);
+        $itemData = $this->buildItemData(['recipient' => "Big recepient name, more than enough for an error"]);
         $itemData->validate();
     }
 
@@ -160,15 +179,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/length should be between/');
-        $itemData = new ItemData("GPP", "Alfred J. Quack Jr.", "Big address line 1, more than enough for an error", "Roma", "IT", 1500);
-        $itemData->validate();
-    }
-
-    public function testShortCityThrowAnException()
-    {
-        $this->expectException(WarenpostException::class);
-        $this->expectExceptionMessageRegExp('/length should be between/');
-        $itemData = new ItemData("GPP", "Alfred J. Quack Jr.", "Main street 1", "", "IT", 1500);
+        $itemData = $this->buildItemData(['addressLine1' => "Big address line 1, more than enough for an error"]);
         $itemData->validate();
     }
 
@@ -176,7 +187,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/length should be between/');
-        $itemData = new ItemData("GPP", "Alfred J. Quack Jr.", "Main street 1", "Big city, more than enough for an error", "IT", 1500);
+        $itemData = $this->buildItemData(['city' => "Big city, more than enough for an error"]);
         $itemData->validate();
     }
 
@@ -184,7 +195,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/length should be exactly/');
-        $itemData = new ItemData("GPP", "Alfred J. Quack Jr.", "Main street 1", "Roma", "I", 1500);
+        $itemData = $this->buildItemData(['destinationCountry' => "DEU"]);
         $itemData->validate();
     }
 
@@ -192,7 +203,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = new ItemData("GPP", "Alfred J. Quack Jr.", "Main street 1", "Roma", "IT", 0);
+        $itemData = $this->buildItemData(['shipmentGrossWeight' => 0]);
         $itemData->validate();
     }
 
@@ -200,7 +211,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = new ItemData("GPP", "Alfred J. Quack Jr.", "Main street 1", "Roma", "IT", 2350);
+        $itemData = $this->buildItemData(['shipmentGrossWeight' => 2100]);
         $itemData->validate();
     }
 
@@ -208,8 +219,8 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setAddressLine2('Big address line 2, more than enough for an error');
+        $itemData = $this->buildItemData();
+        $itemData->setAddressLine2('Big address line 3, more than enough for an error');
         $itemData->validate();
     }
 
@@ -217,7 +228,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
+        $itemData = $this->buildItemData();
         $itemData->setAddressLine3('Big address line 3, more than enough for an error');
         $itemData->validate();
     }
@@ -226,26 +237,8 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
+        $itemData = $this->buildItemData(['custRef' => 'Big address line 2, more than enough for an error']);
         $itemData->setCustRef('Big custRef, more than enough for an error');
-        $itemData->validate();
-    }
-
-    public function testBigCust2RefThrowAnException()
-    {
-        $this->expectException(WarenpostException::class);
-        $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setCustRef2('Big custRef2, more than enough for an error');
-        $itemData->validate();
-    }
-
-    public function testBigCust3RefThrowAnException()
-    {
-        $this->expectException(WarenpostException::class);
-        $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setCustRef3('Big custRef3, more than enough for an error');
         $itemData->validate();
     }
 
@@ -253,8 +246,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setPostalCode('Big postalCode, more than enough for an error');
+        $itemData = $this->buildItemData(['postalCode' => 'Big postalCode']);
         $itemData->validate();
     }
 
@@ -262,7 +254,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
+        $itemData = $this->buildItemData();
         $itemData->setRecipientEmail("Big recipientEmail, more than enough for an error. But let's make it bigger.");
         $itemData->validate();
     }
@@ -271,7 +263,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
+        $itemData = $this->buildItemData();
         $itemData->setRecipientFax('Big recipientFax, more than enough for an error');
         $itemData->validate();
     }
@@ -280,8 +272,8 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setRecipientPhone('Big recipientPhone, more than enough for an error');
+        $itemData = $this->buildItemData();
+        $itemData->setRecipientPhone('Big recipientPhone, more than enough for an error. Or not?');
         $itemData->validate();
     }
 
@@ -289,8 +281,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setSenderAddressLine1('Big senderAddressLine1, more than enough for an error');
+        $itemData = $this->buildItemData(['senderAddressLine1' => 'Big senderAddressLine1, more than enough for an error']);
         $itemData->validate();
     }
 
@@ -298,8 +289,8 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setSenderAddressLine1('Big senderAddressLine2, more than enough for an error');
+        $itemData = $this->buildItemData();
+        $itemData->setSenderAddressLine2('Big senderAddressLine2, more than enough for an error');
         $itemData->validate();
     }
 
@@ -307,8 +298,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setSenderCity('Big senderCity, more than enough for an error');
+        $itemData = $this->buildItemData(['senderCity'=>'Big senderCity, more than enough for an error']);
         $itemData->validate();
     }
 
@@ -316,8 +306,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/length should be exactly/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setSenderCountry('D');
+        $itemData = $this->buildItemData(['senderCountry' => 'DEU']);
         $itemData->validate();
     }
 
@@ -325,7 +314,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
+        $itemData = $this->buildItemData();
         $itemData->setSenderEmail("Big senderEmail, more than enough for an error. But let's make it bigger.");
         $itemData->validate();
     }
@@ -334,8 +323,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setSenderName('Big senderName, more than enough for an error');
+        $itemData = $this->buildItemData(['senderName' => 'Big senderName, more than enough for an error']);
         $itemData->validate();
     }
 
@@ -343,7 +331,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
+        $itemData = $this->buildItemData();
         $itemData->setSenderPhone("Big senderPhone, more than enough for an error. But let's make it bigger.");
         $itemData->validate();
     }
@@ -352,17 +340,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/should be between/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setSenderPostalCode('Big senderPostalCode, more than enough for an error');
-        $itemData->validate();
-    }
-
-    public function testWrongServiceLevelThrowAnException()
-    {
-        $this->expectException(WarenpostException::class);
-        $this->expectExceptionMessageRegExp('/unknown serviceLevel/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setServiceLevel('error');
+        $itemData = $this->buildItemData(['senderPostalCode' => 'Big senderPostalCode, more than enough for an error']);
         $itemData->validate();
     }
 
@@ -370,7 +348,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/length should be exactly/');
-        $itemData = $this->buildSuccessItemData();
+        $itemData = $this->buildItemData();
         $itemData->setShipmentCurrency('E');
         $itemData->validate();
     }
@@ -379,8 +357,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/unknown shipmentNaturetype/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setShipmentNaturetype('Present');
+        $itemData = $this->buildItemData(['shipmentNaturetype' => 'Present']);
         $itemData->validate();
     }
 
@@ -388,8 +365,7 @@ class WarenpostItemDataTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(WarenpostException::class);
         $this->expectExceptionMessageRegExp('/length should be between/');
-        $itemData = $this->buildSuccessItemData();
-        $itemData->setState('Big senderPostalCode, more than enough for an error');
+        $itemData = $this->buildItemData(['senderPostalCode' => 'Big senderPostalCode, more than enough for an error']);
         $itemData->validate();
     }
 }

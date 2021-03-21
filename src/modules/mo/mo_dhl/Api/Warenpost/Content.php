@@ -27,12 +27,12 @@ class Content
     /**
      * @var int
      */
-    const DESCRIPTION_LINGTH_MIN = 1;
+    const DESCRIPTION_LENGTH_MIN = 1;
 
     /**
      * @var int
      */
-    const DESCRIPTION_LINGTH_MAX = 33;
+    const DESCRIPTION_LENGTH_MAX = 33;
 
     /**
      * @var int
@@ -52,12 +52,12 @@ class Content
     /**
      * @var int
      */
-    const HS_CODE_MIN = 1000;
+    const HS_CODE_LENGTH_MIN = 4;
 
     /**
      * @var int
      */
-    const HS_CODE_MAX = 9999999999;
+    const HS_CODE_LENGTH_MAX = 10;
 
     /**
      * The HS code of this content.
@@ -134,11 +134,11 @@ class Content
     public function validate(): bool
     {
         $errorMessage = implode(' ,', array_merge(
-            $this->isStringFieldCorrect('contentPieceDescription', $this->contentPieceDescription, self::DESCRIPTION_LINGTH_MIN, self::DESCRIPTION_LINGTH_MAX),
+            $this->isStringFieldCorrect('contentPieceDescription', $this->contentPieceDescription, self::DESCRIPTION_LENGTH_MIN, self::DESCRIPTION_LENGTH_MAX),
             $this->isIntFieldCorrect('contentPieceNetweight', $this->contentPieceNetweight, self::NETWEIGHT_MIN, self::NETWEIGHT_MAX, true),
             $this->isStringFieldCorrect('contentPieceOrigin', $this->contentPieceOrigin, self::ORIGIN_LENGTH),
             $this->isIntFieldCorrect('contentPieceAmount', $this->contentPieceAmount, self::AMOUNT_MIN, self::AMOUNT_MAX, true),
-            $this->isIntFieldCorrect('contentPieceHsCode', $this->contentPieceHsCode, self::HS_CODE_MIN, self::HS_CODE_MAX)
+            $this->isStringFieldCorrect('contentPieceHsCode', $this->contentPieceHsCode, self::HS_CODE_LENGTH_MIN, self::HS_CODE_LENGTH_MAX)
         ));
 
         if (empty($errorMessage)) {

@@ -66,7 +66,7 @@ class WarenpostShipmentOrderRequestBuilder
      */
     protected function buildPaperwork(string $contactName): array
     {
-        $paperwork = new Paperwork($contactName, 1);
+        $paperwork = new Paperwork($contactName);
 
         $paperwork->validate();
 
