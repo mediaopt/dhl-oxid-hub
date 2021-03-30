@@ -250,6 +250,7 @@ class Install
     {
         self::alterColumn('oxorder', 'MO_DHL_PARTICIPATION', 'CHAR(5)');
         self::alterColumn('oxdeliveryset', 'MO_DHL_PARTICIPATION', 'CHAR(5)');
+        self::alterColumn('mo_dhl_internetmarke_products', 'OXID', "VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ProdWS-Id'");
         \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\DbMetaDataHandler::class)->updateViews();
     }
 
