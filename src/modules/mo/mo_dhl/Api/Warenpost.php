@@ -21,11 +21,8 @@ class Warenpost extends Base
 {
     /**
      * @var string
-     */
-    const PARTNER_ID = 'DP_LT';
-
-    /**
-     * @var string
+     *
+     * Agreed version of the secret (default: 1)
      */
     const KEY_PHASE = '1';
 
@@ -61,9 +58,10 @@ class Warenpost extends Base
     }
 
     /**
+     * Only for parent compatibility.
      * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return '';
     }
@@ -175,15 +173,17 @@ class Warenpost extends Base
         file_put_contents($path . DIRECTORY_SEPARATOR . $fileName, base64_decode($data));
     }
 
-    protected function buildRequestOptions()
+    protected function buildRequestOptions(): array
     {
         $requestTimestamp = date('dmY-His');
-        $partnerSignature = $this->buildPartnerSignature($requestTimestamp);
+        $additionalFields = $this->getCredentials()->getAdditionalFields();
+        $partnerId = $additionalFields['partnerId'];
 
+        $partnerSignature = $this->buildPartnerSignature($partnerId, $requestTimestamp);
         return [
             'headers' => [
                 'KEY_PHASE' => self::KEY_PHASE,
-                'PARTNER_ID' => self::PARTNER_ID,
+                'PARTNER_ID' => $partnerId,
                 'REQUEST_TIMESTAMP' => $requestTimestamp,
                 'PARTNER_SIGNATURE' => $partnerSignature,
                 'Authorization' => "$this->authorizationName $this->authorizationKey",
@@ -192,12 +192,13 @@ class Warenpost extends Base
     }
 
     /**
-     * @param $requestTimestamp
+     * @param string $partnerId
+     * @param string $requestTimestamp
      * @return string
      */
-    protected function buildPartnerSignature($requestTimestamp): string
+    protected function buildPartnerSignature(string $partnerId, string $requestTimestamp): string
     {
-        $string = implode('::', [self::PARTNER_ID, $requestTimestamp, self::KEY_PHASE, $this->authorizationKey]);
+        $string = implode('::', [$partnerId, $requestTimestamp, self::KEY_PHASE, $this->authorizationKey]);
         $md5 = md5($string);
         return substr($md5, 0, 8);
     }

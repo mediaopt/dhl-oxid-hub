@@ -15,14 +15,19 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__merchant_ekp'          => 'EKP',
     'HELP_SHOP_MODULE_mo_dhl__merchant_ekp'     => 'The EKP is your DHL customer number',
 
+    'SHOP_MODULE_mo_dhl__portokasse_user'          => 'Portokasse Username (for Internetmarke and Warenpost)',
+    'HELP_SHOP_MODULE_mo_dhl__portokasse_user'     => 'Your E-Mail Adress for the <a href="https://portokasse.deutschepost.de/">Portokasse</a>. Not a customer yet? Then register <a href="https://portokasse.deutschepost.de/portokasse/#!/register/">here</a>.',
+    'SHOP_MODULE_mo_dhl__portokasse_password'      => 'Portokasse Password',
+    'HELP_SHOP_MODULE_mo_dhl__portokasse_password' => 'Your Password for the <a href="https://portokasse.deutschepost.de/">Portokasse</a>.',
+
     'SHOP_MODULE_GROUP_mo_dhl__internetmarke'         => 'Internetmarke',
-    'SHOP_MODULE_mo_dhl__internetmarke_user'          => 'Username',
-    'HELP_SHOP_MODULE_mo_dhl__internetmarke_user'     => 'Your E-Mail Adress for the <a href="https://portokasse.deutschepost.de/">Portokasse</a>. Not a customer yet? Then register <a href="https://portokasse.deutschepost.de/portokasse/#!/register/">here</a>.',
-    'SHOP_MODULE_mo_dhl__internetmarke_password'      => 'Password',
-    'HELP_SHOP_MODULE_mo_dhl__internetmarke_password' => 'Your Password for the <a href="https://portokasse.deutschepost.de/">Portokasse</a>.',
     'SHOP_MODULE_mo_dhl__internetmarke_mandant_id'    => 'Mandant Id for the ProdWS Connection',
     'SHOP_MODULE_mo_dhl__internetmarke_layout'        => 'Layout ID for printing the Internetmarke',
     'SHOP_MODULE_mo_dhl__internetmarke_check'         => '',
+
+    'SHOP_MODULE_GROUP_mo_dhl__warenpost'           => 'Warenpost',
+    'SHOP_MODULE_mo_dhl__warenpost_partner_id'      => 'Partner ID',
+    'HELP_SHOP_MODULE_mo_dhl__warenpost_partner_id' => 'Partner ID available to Deutsche Post partners who already use the Internetmarke program.</br>If necessary, the data can be re-requested from the Internetmarke team.',
 
     'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Delivery',
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Allow only Codeable shipping addresses',

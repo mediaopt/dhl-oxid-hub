@@ -86,7 +86,7 @@ abstract class Configurator
      */
     protected function buildCustomerInternetmarkeCredentials()
     {
-        return Credentials::createCustomerCredentials($this->getCustomerInternetmarkeLogin(), $this->getCustomerInternetmarkePassword());
+        return Credentials::createCustomerCredentials($this->getCustomerPortokasseProdLogin(), $this->getCustomerPortokasseProdPassword());
     }
 
     /**
@@ -116,18 +116,20 @@ abstract class Configurator
     /**
      * @return Credentials
      */
-    protected function buildWarenpostCredentials()
+    protected function buildWarenpostCredentials(): Credentials
     {
         return $this->isProductionEnvironment()
             ? Credentials::createProductionWarenpostEndpoint(
-                $this->getWarenpostProdLogin(),
-                $this->getWarenpostProdPassword(),
-                $this->getWarenpostEkp()
+                $this->getCustomerPortokasseProdLogin(),
+                $this->getCustomerPortokasseProdPassword(),
+                $this->getEkp(),
+                $this->getWarenpostProdAdditionalFields()
             )
             : Credentials::createSandboxWarenpostEndpoint(
-                $this->getWarenpostSandboxLogin(),
-                $this->getWarenpostSandboxPassword(),
-                $this->getWarenpostEkp()
+                $this->getCustomerPortokasseSandboxLogin(),
+                $this->getCustomerPortokasseSandboxPassword(),
+                $this->getEkp(),
+                $this->getWarenpostSandboxAdditionalFields()
             );
     }
 
@@ -174,12 +176,22 @@ abstract class Configurator
     /**
      * @return string
      */
-    abstract protected function getCustomerInternetmarkeLogin();
+    abstract protected function getCustomerPortokasseProdLogin(): string;
 
     /**
      * @return string
      */
-    abstract protected function getCustomerInternetmarkePassword();
+    abstract protected function getCustomerPortokasseProdPassword(): string;
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerPortokasseSandboxLogin(): string;
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerPortokasseSandboxPassword(): string;
 
     /**
      * @return string
@@ -232,29 +244,14 @@ abstract class Configurator
     abstract protected function getSandboxStandortsuchePassword();
 
     /**
-     * @return string
+     * @return array
      */
-    abstract protected function getWarenpostSandboxLogin(): string;
+    abstract protected function getWarenpostProdAdditionalFields(): array;
 
     /**
-     * @return string
+     * @return array
      */
-    abstract protected function getWarenpostSandboxPassword(): string;
-
-    /**
-     * @return string
-     */
-    abstract protected function getWarenpostProdLogin(): string;
-
-    /**
-     * @return string
-     */
-    abstract protected function getWarenpostProdPassword(): string;
-
-    /**
-     * @return string
-     */
-    abstract protected function getWarenpostEkp(): string;
+    abstract protected function getWarenpostSandboxAdditionalFields(): array;
 
     /**
      * @return string

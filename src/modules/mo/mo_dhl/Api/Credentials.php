@@ -37,6 +37,11 @@ class Credentials
     protected $ekp;
 
     /**
+     * @var array|null
+     */
+    protected $additionalFields;
+
+    /**
      * @var bool
      */
     protected $isSandbox;
@@ -47,14 +52,16 @@ class Credentials
      * @param string      $password
      * @param string|null $ekp
      * @param bool        $isSandbox
+     * @param array       $additionalFields
      */
-    public function __construct($endpoint, $username, $password, $ekp = null, $isSandbox = false)
+    public function __construct($endpoint, $username, $password, $ekp = null, $isSandbox = false, $additionalFields = [])
     {
         $this->endpoint = $endpoint;
         $this->username = $username;
         $this->password = $password;
         $this->ekp = $ekp;
         $this->isSandbox = $isSandbox;
+        $this->additionalFields = $additionalFields;
     }
 
     /**
@@ -98,6 +105,14 @@ class Credentials
     }
 
     /**
+     * @return null|array
+     */
+    public function getAdditionalFields()
+    {
+        return $this->additionalFields;
+    }
+
+    /**
      * @param string      $username
      * @param string      $password
      * @param string|null $ekp
@@ -133,22 +148,24 @@ class Credentials
      * @param string $username
      * @param string $password
      * @param string $ekp
+     * @param array $additionalFields
      * @return self
      */
-    public static function createProductionWarenpostEndpoint(string $username, string $password, string $ekp): self
+    public static function createProductionWarenpostEndpoint(string $username, string $password, string $ekp, array $additionalFields): self
     {
-        return new static('https://api.deutschepost.com', $username, $password, $ekp);
+        return new static('https://api.deutschepost.com', $username, $password, $ekp, false, $additionalFields);
     }
 
     /**
      * @param string $username
      * @param string $password
      * @param string $ekp
+     * @param array $additionalFields
      * @return self
      */
-    public static function createSandboxWarenpostEndpoint(string $username, string $password, string $ekp): self
+    public static function createSandboxWarenpostEndpoint(string $username, string $password, string $ekp, array $additionalFields): self
     {
-        return new static('https://api-qa.deutschepost.com', $username, $password, $ekp, true);
+        return new static('https://api-qa.deutschepost.com', $username, $password, $ekp, true, $additionalFields);
     }
 
     /**

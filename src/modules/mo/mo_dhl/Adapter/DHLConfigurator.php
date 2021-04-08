@@ -30,15 +30,11 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const PROD_API_PASSWORD = 'RGZ02BtCUBOHkxzMdy1NUm29oxhpHx';
 
-    const TEST_WARENPOST_API_USERNAME = 'wapo-test@mediaopt.de';
+    const TEST_CUSTOMER_PROTKASSE_API_USERNAME = 'wapo-test@mediaopt.de';
 
-    const TEST_WARENPOST_API_PASSWORD = '#mediaopt20';
+    const TEST_CUSTOMER_PROTKASSE_API_PASSWORD = '#mediaopt20';
 
-    const WARENPOST_API_EKP = '5222500948';
-
-    const PROD_WARENPOST_API_USERNAME = '';
-
-    const PROD_WARENPOST_API_PASSWORD = '';
+    const TEST_WARENPOST_API_PARTNER_ID = 'DP_LT';
 
     const TEST_GKV_USERNAME = '2222222222_01';
 
@@ -129,43 +125,23 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     }
 
     /**
-     * @return string
+     * @return array
      */
-    protected function getWarenpostProdLogin(): string
+    protected function getWarenpostProdAdditionalFields(): array
     {
-        return self::PROD_WARENPOST_API_USERNAME;
+        return [
+            'partnerId' => \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__prod_warenpost_partner_id') ?: ''
+        ];
     }
 
     /**
-     * @return string
+     * @return array
      */
-    protected function getWarenpostProdPassword(): string
+    protected function getWarenpostSandboxAdditionalFields(): array
     {
-        return self::PROD_WARENPOST_API_PASSWORD;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getWarenpostEkp(): string
-    {
-        return self::WARENPOST_API_EKP;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getWarenpostSandboxLogin(): string
-    {
-        return self::TEST_WARENPOST_API_USERNAME;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getWarenpostSandboxPassword(): string
-    {
-        return self::TEST_WARENPOST_API_PASSWORD;
+        return [
+            'partnerId' => self::TEST_WARENPOST_API_PARTNER_ID
+        ];
     }
 
     /**
@@ -239,17 +215,33 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getCustomerInternetmarkeLogin()
+    protected function getCustomerPortokasseProdLogin(): string
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_user') ?: '';
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__portokasse_user') ?: '';
     }
 
     /**
      * @return string
      */
-    protected function getCustomerInternetmarkePassword()
+    protected function getCustomerPortokasseProdPassword(): string
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_password') ?: '';
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__portokasse_password') ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerPortokasseSandboxLogin(): string
+    {
+        return self::TEST_CUSTOMER_PROTKASSE_API_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerPortokasseSandboxPassword(): string
+    {
+        return self::TEST_CUSTOMER_PROTKASSE_API_PASSWORD;
     }
 
     /**
