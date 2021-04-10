@@ -213,10 +213,6 @@ class Warenpost extends Base
      */
     protected function callApi($relativeUrl, $options = [], $method = 'get')
     {
-        if ($options === [] && array_key_exists($relativeUrl, $this->memoizations)) {
-            return $this->memoizations[$relativeUrl];
-        }
-
         $url = $this->buildUrl($relativeUrl);
         $requestOptions = array_merge($options, $this->buildRequestOptions());
         $this->getLogger()->debug(__METHOD__ . " - API call with $url", ['options' => $requestOptions]);

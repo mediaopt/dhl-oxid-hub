@@ -16,7 +16,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Config;
 use function oxNew;
 
-class WarenpostShipmentOrderRequestBuilder
+class WarenpostShipmentOrderRequestBuilder extends BaseShipmentBuilder
 {
     /**
      * @var array
@@ -90,10 +90,8 @@ class WarenpostShipmentOrderRequestBuilder
         $senderAddressLine1 = $config->getShopConfVar('mo_dhl__sender_street')
             . ' ' . $config->getShopConfVar('mo_dhl__sender_street_number');
         $senderCountry = $this->getIsoalpha2FromIsoalpha3(
-            $config->getShopConfVar('mo_dhl__retoure_receiver_country')
+            $config->getShopConfVar('mo_dhl__sender_country')
         );
-
-        [$contetns, $shipmentGrossWeight] = $this->buildContetns($order);
 
         $itemData = new ItemData(
             $this->getProductId($order),
@@ -108,11 +106,11 @@ class WarenpostShipmentOrderRequestBuilder
             $config->getShopConfVar('mo_dhl__sender_city'),
             $senderCountry,
             ShipmentNatureType::SALE_GOODS,
-            $shipmentGrossWeight
+            $this->calculateWeight($order) * 1000
         );
 
         $itemData->setShipmentCurrency($order->getFieldData('oxcurrency'));
-        $itemData->setContents($contetns);
+        $itemData->setContents($this->buildContetns($order));
 
         $itemData->validate();
 
@@ -199,15 +197,15 @@ class WarenpostShipmentOrderRequestBuilder
      */
     protected function buildContetns(Order $order): array
     {
+        $config = Registry::getConfig();
+
         $contents = [];
-        $shipmentGrossWeight = 0;
         /**
          * @var OrderArticle $orderArticle
          */
         foreach ($order->getOrderArticles() as $orderArticle) {
-            $weightInGrams = $orderArticle->getFieldData('oxweight') * 1000;
+            $weightInGrams = $this->getArticleWeight($orderArticle, $config, true) * 1000;
             $amount = $orderArticle->getFieldData('oxamount');
-            $shipmentGrossWeight += $weightInGrams * $amount;
 
             $content = new Content(
                 $orderArticle->getPrice()->getPrice(),
@@ -222,6 +220,6 @@ class WarenpostShipmentOrderRequestBuilder
             $contents[] = $content->toArray();
         }
 
-        return [$contents, $shipmentGrossWeight];
+        return $contents;
     }
 }

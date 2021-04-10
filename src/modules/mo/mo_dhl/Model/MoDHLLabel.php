@@ -156,13 +156,13 @@ class MoDHLLabel extends BaseModel
     /**
      * @param string $fileName
      * @param array  $data
-     * @param bool $encode
+     * @param bool $decode
      * @throws \OxidEsales\EshopCommunity\Core\Exception\FileException
      */
-    protected function storeData($fileName, $data, $encode = true)
+    protected function storeData($fileName, $data, $decode = true)
     {
         $path = Registry::get(ViewConfig::class)->getModulePath('mo_dhl', 'documents');
-        if ($encode) {
+        if ($decode) {
             $data = base64_decode($data);
         }
         file_put_contents($path . DIRECTORY_SEPARATOR . $fileName, $data);
