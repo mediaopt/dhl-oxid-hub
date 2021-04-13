@@ -397,10 +397,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
 
     /**
      * @param Order $order
-     * @param $price
-     * @return float|int
+     * @param float $price
+     * @return float
      */
-    protected function getEURPrice(Order $order, $price): float
+    protected function getEURPrice(Order $order, float $price): float
     {
         if ($order->oxorder__oxcurrency->value === Currency::MO_DHL__EUR) {
             return $price;
