@@ -23,6 +23,7 @@ use Mediaopt\DHL\Shipment\Process;
 use Mediaopt\DHL\Shipment\RetoureRequest;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\TableViewNameGenerator;
 
 /**
  * @author Mediaopt GmbH
@@ -319,7 +320,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
                 return;
             }
 
-            $viewName = \OxidEsales\Eshop\Core\TableViewNameGenerator::getViewName('oxorder');
+            $viewName = oxnew(TableViewNameGenerator::class)->getViewName('oxorder');
             $query = ' UPDATE ' . $viewName . ' SET ' . implode(', ', $tuples) . " WHERE OXID = {$db->quote($this->getEditObjectId())}";
             $db->execute($query);
         } catch (\Exception $e) {
