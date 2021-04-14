@@ -207,9 +207,9 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         }
         if ($process->supportsCashOnDelivery()) {
             $active = (int) $order->moDHLUsesService(MoDHLService::MO_DHL__CASH_ON_DELIVERY);
-            $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery($active, 0, $order->oxorder__oxtotalordersum->value));
+            $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery($active, 0, $this->getEURPrice($order, $order->oxorder__oxtotalordersum->value)));
         }
-        $orderBrutSum = $this->getOrderBrutSum($order);
+        $orderBrutSum = $this->getEURPrice($order, $order->oxorder__oxtotalbrutsum->value);
         if ($process->supportsAdditionalInsurance()) {
             $active = (int) ($order->moDHLUsesService(MoDHLService::MO_DHL__ADDITIONAL_INSURANCE) && $orderBrutSum > 500);
             $service->setAdditionalInsurance(new ServiceconfigurationAdditionalInsurance($active, $orderBrutSum));
@@ -360,7 +360,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         $exportDocumentType = new ExportDocumentType(
             'COMMERCIAL_GOODS',
             $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')),
-            $order->oxorder__oxdelcost->value
+            $this->getEURPrice($order, $order->oxorder__oxdelcost->value)
         );
 
         $iso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__sender_country'));
@@ -378,7 +378,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
                 $orderArticle->getArticle()->getFieldData(MoDHLService::MO_DHL__ZOLLTARIF),
                 $count,
                 $this->getArticleWeight($orderArticle, $config, true),
-                $orderArticle->getPrice()->getPrice()
+                $this->getEURPrice($order, $orderArticle->getPrice()->getPrice())
             );
         }
 
@@ -397,15 +397,16 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
 
     /**
      * @param Order $order
-     * @return float|int
+     * @param float $price
+     * @return float
      */
-    protected function getOrderBrutSum(Order $order): float
+    protected function getEURPrice(Order $order, float $price): float
     {
         if ($order->oxorder__oxcurrency->value === Currency::MO_DHL__EUR) {
-            return $order->oxorder__oxtotalbrutsum->value;
+            return $price;
         }
 
-        return $order->oxorder__oxtotalbrutsum->value / $order->oxorder__oxcurrate->value;
+        return $price / $order->oxorder__oxcurrate->value;
     }
 
     /**

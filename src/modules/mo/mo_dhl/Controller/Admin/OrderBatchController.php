@@ -19,6 +19,7 @@ use Mediaopt\DHL\Shipment\RetoureRequest;
 use Mediaopt\DHL\Shipment\Shipment;
 use Mediaopt\DHL\Shipment\Process;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\TableViewNameGenerator;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -272,9 +273,7 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         assert(!empty($orderIds));
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
         $sanitizedIds = implode(', ', array_map([$db, 'quote'], $orderIds));
-
-        $tableViewNameGenerator = oxNew(\OxidEsales\Eshop\Core\TableViewNameGenerator::class);
-        $orderView = $tableViewNameGenerator->getViewName('oxorder');
+        $orderView = oxnew(TableViewNameGenerator::class)->getViewName('oxorder');
         $query = "SELECT * FROM  {$orderView} WHERE OXID IN ({$sanitizedIds})";
         $orderList = \oxNew(\OxidEsales\Eshop\Core\Model\ListModel::class);
         $orderList->init('oxOrder');

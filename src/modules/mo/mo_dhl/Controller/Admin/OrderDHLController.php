@@ -27,6 +27,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsView;
 use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\Request;
+use OxidEsales\Eshop\Core\TableViewNameGenerator;
 
 /**
  * @author Mediaopt GmbH
@@ -402,8 +403,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
                 return;
             }
 
-            $tableViewNameGenerator = oxNew(\OxidEsales\Eshop\Core\TableViewNameGenerator::class);
-            $viewName = $tableViewNameGenerator->getViewName('oxorder');
+            $viewName = oxnew(TableViewNameGenerator::class)->getViewName('oxorder');
             $query = ' UPDATE ' . $viewName . ' SET ' . implode(', ', $tuples) . " WHERE OXID = {$db->quote($this->getEditObjectId())}";
             $db->execute($query);
         } catch (\Exception $e) {
