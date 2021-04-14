@@ -14,7 +14,7 @@ class WarenpostException extends \RuntimeException
     /**
      * @var int
      */
-    const AWB_VALIDATION_ERROR = 1;
+    const API_VALIDATION_ERROR = 1;
 
     /**
      * @var int

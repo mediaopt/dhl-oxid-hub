@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\RequestException;
 use Mediaopt\DHL\Adapter\WarenpostShipmentOrderRequestBuilder;
 use Mediaopt\DHL\Api\Warenpost\Product;
 use Mediaopt\DHL\Api\Warenpost\WarenpostResponse;
+use Mediaopt\DHL\Exception\WarenpostException;
 use Mediaopt\DHL\Exception\WebserviceException;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\ViewConfig;
@@ -25,6 +26,11 @@ class Warenpost extends Base
      * Agreed version of the secret (default: 1)
      */
     const KEY_PHASE = '1';
+
+    /**
+     * @var int
+     */
+    const ERROR_WITH_MESSAGE_CODE = 422;
 
     /**
      * @var string
@@ -229,10 +235,14 @@ class Warenpost extends Base
 
             return $payload;
         } catch (RequestException $exception) {
-            $message = __METHOD__ . " - The API call to $url failed due to {$exception->getMessage()}";
+            if ($exception->getCode() === self::ERROR_WITH_MESSAGE_CODE) {
+                throw new WarenpostException($exception->getMessage(), WarenpostException::API_VALIDATION_ERROR);
+            } else {
+                $message = __METHOD__ . " - The API call to $url failed due to {$exception->getMessage()}";
 
-            $this->getLogger()->error($message, ['exception' => $exception]);
-            throw new WebserviceException('Failed API call.', 0, $exception);
+                $this->getLogger()->error($message, ['exception' => $exception]);
+                throw new WebserviceException('Failed API call.', 0, $exception);
+            }
         }
     }
 

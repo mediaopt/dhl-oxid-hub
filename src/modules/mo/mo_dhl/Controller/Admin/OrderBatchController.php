@@ -183,6 +183,9 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         if (array_key_exists(Process::WARENPOST_INTERNATIONAL, $splittedOrderIds)) {
             $this->createWarenpostInternationalLabels($splittedOrderIds[Process::WARENPOST_INTERNATIONAL]);
         }
+        if (array_key_exists(Process::INTERNETMARKE, $splittedOrderIds)) {
+            $this->createIntermarkeLabels($splittedOrderIds[Process::INTERNETMARKE]);
+        }
         if (array_key_exists('default', $splittedOrderIds)) {
             $this->handleCreationResponse($this->callCreation($splittedOrderIds['default']));
         }
@@ -341,6 +344,8 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
     /**
      * @param array $orderIds
      * @return array
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseErrorException
      */
     protected function splitOrderIdsByProcess(array $orderIds): array
     {
@@ -350,9 +355,15 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
 
         $idsByProcess = [];
         foreach ($orders as $orderData) {
-            $process = 'default';
-            if ($orderData['MO_DHL_PROCESS'] === Process::WARENPOST_INTERNATIONAL) {
-                $process = Process::WARENPOST_INTERNATIONAL;
+            switch ($orderData['MO_DHL_PROCESS']) {
+                case Process::WARENPOST_INTERNATIONAL:
+                case Process::INTERNETMARKE: {
+                    $process = $orderData['MO_DHL_PROCESS'];
+                    break;
+                }
+                default: {
+                    $process = 'default';
+                }
             }
             $idsByProcess[$process][] = $orderData['oxid'];
         }
@@ -366,10 +377,25 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
     protected function createWarenpostInternationalLabels(array $orderIds)
     {
         $orderDHLController = oxNew(OrderDHLController::class);
-        $order =  oxNew(Order::class);
+        $order = oxNew(Order::class);
         foreach ($orderIds as $orderId) {
             $order->load($orderId);
-            $orderDHLController->createWarenpostLabel($order);
+            $orderDHLController->setOrder($order);
+            $orderDHLController->createWarenpostLabel();
+        }
+    }
+
+    /**
+     * @param array $orderIds
+     */
+    protected function createIntermarkeLabels(array $orderIds)
+    {
+        $orderDHLController = oxNew(OrderDHLController::class);
+        $order = oxNew(Order::class);
+        foreach ($orderIds as $orderId) {
+            $order->load($orderId);
+            $orderDHLController->setOrder($order);
+            $orderDHLController->createInternetmarkeLabel();
         }
     }
 }

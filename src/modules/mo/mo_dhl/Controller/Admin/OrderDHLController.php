@@ -241,18 +241,13 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @param Order|null $order
      */
-    public function createWarenpostLabel(Order $order = null)
+    public function createWarenpostLabel()
     {
         try {
-            if (!isset($order)) {
-                $order = $this->getOrder();
-            }
-
             $warenpostService = Registry::get(DHLAdapter::class)->buildWarenpost();
-            $response = $warenpostService->createWarenpost($order);
-            $warenpostService->handleResponse($order, $response);
+            $response = $warenpostService->createWarenpost($this->getOrder());
+            $warenpostService->handleResponse($this->getOrder(), $response);
         } catch (\Exception $e) {
             Registry::get(UtilsView::class)->addErrorToDisplay($e->getMessage());
             if (!($previous = $e->getPrevious()) || !$previous instanceof ClientException) {
@@ -299,6 +294,14 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $this->order = \oxNew(\OxidEsales\Eshop\Application\Model\Order::class);
         $this->order->load($this->getEditObjectId());
         return $this->order;
+    }
+
+    /**
+     * @param \OxidEsales\Eshop\Application\Model\Order
+     */
+    public function setOrder(Order $order)
+    {
+        $this->order = $order;
     }
 
     /**
@@ -594,7 +597,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
 
     /**
      */
-    protected function createInternetmarkeLabel()
+    public function createInternetmarkeLabel()
     {
         try {
             $request = Registry::get(InternetmarkeShoppingCartPDFRequestBuilder::class)->build([$this->getOrder()->getId()]);
@@ -602,7 +605,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             $response = $internetMarke->checkoutShoppingCartPDF($request);
             $this->handleInternetmarkeCreationResponse($response);
         } catch (\Exception $e) {
-            $errors = $this->parseInternetmarkeError($e);
+            $errors = $this->parseInternetmarkeException($e);
             $this->displayErrors($errors);
         }
     }
