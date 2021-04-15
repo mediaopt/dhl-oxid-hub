@@ -30,9 +30,9 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const PROD_API_PASSWORD = 'RGZ02BtCUBOHkxzMdy1NUm29oxhpHx';
 
-    const TEST_CUSTOMER_PROTKASSE_API_USERNAME = 'wapo-test@mediaopt.de';
+    const TEST_CUSTOMER_PORTOKASSE_API_USERNAME = 'wapo-test@mediaopt.de';
 
-    const TEST_CUSTOMER_PROTKASSE_API_PASSWORD = '#mediaopt20';
+    const TEST_CUSTOMER_PORTOKASSE_API_PASSWORD = '#mediaopt20';
 
     const TEST_WARENPOST_API_PARTNER_ID = 'DP_LT';
 
@@ -233,7 +233,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerPortokasseSandboxLogin(): string
     {
-        return self::TEST_CUSTOMER_PROTKASSE_API_USERNAME;
+        return self::TEST_CUSTOMER_PORTOKASSE_API_USERNAME;
     }
 
     /**
@@ -241,7 +241,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerPortokasseSandboxPassword(): string
     {
-        return self::TEST_CUSTOMER_PROTKASSE_API_PASSWORD;
+        return self::TEST_CUSTOMER_PORTOKASSE_API_PASSWORD;
     }
 
     /**

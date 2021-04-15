@@ -178,7 +178,7 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerPortokasseSandboxLogin(): string
     {
-        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_CUSTOMER_PROTKASSE_API_USERNAME;
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_CUSTOMER_PORTOKASSE_API_USERNAME;
     }
 
     /**
@@ -186,7 +186,7 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerPortokasseSandboxPassword(): string
     {
-        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_CUSTOMER_PROTKASSE_API_PASSWORD;
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_CUSTOMER_PORTOKASSE_API_PASSWORD;
     }
 
     /**

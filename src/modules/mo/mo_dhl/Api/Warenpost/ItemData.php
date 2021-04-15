@@ -810,7 +810,7 @@ class ItemData
             $this->isStringFieldCorrect('addressLine1', $this->addressLine1, 0, self::ADDRESS_LINE_LENGTH_MAX, true),
             $this->isStringFieldCorrect('addressLine2', $this->addressLine2, 0, self::ADDRESS_LINE_LENGTH_MAX),
             $this->isStringFieldCorrect('addressLine3', $this->addressLine3, 0, self::ADDRESS_LINE_LENGTH_MAX),
-            $this->isStringFieldCorrect('city', $this->city, 0, self::CITY_LENGTH_MAX, true),
+            $this->isStringFieldCorrect('city', $this->city, 1, self::CITY_LENGTH_MAX, true),
             $this->isStringFieldCorrect('custRef', $this->custRef, 0, self::CUST_REF_LENGTH_MAX),
             $this->isStringFieldCorrect('destinationCountry', $this->destinationCountry, self::COUNTRY_LENGTH, null, true),
             $this->isStringFieldCorrect('importerTaxId', $this->importerTaxId, 0, self::TAX_ID_LENGTH_MAX),

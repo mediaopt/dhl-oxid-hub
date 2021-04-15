@@ -168,17 +168,6 @@ class Warenpost extends Base
         return $this->curlApi($url, $headers);
     }
 
-    /**
-     * @param string $fileName
-     * @param array  $data
-     * @throws FileException
-     */
-    protected function storeData($fileName, $data)
-    {
-        $path = Registry::get(ViewConfig::class)->getModulePath('mo_dhl', 'documents');
-        file_put_contents($path . DIRECTORY_SEPARATOR . $fileName, base64_decode($data));
-    }
-
     protected function buildRequestOptions(): array
     {
         $requestTimestamp = date('dmY-His');

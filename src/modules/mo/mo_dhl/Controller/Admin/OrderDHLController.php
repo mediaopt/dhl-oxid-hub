@@ -250,18 +250,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             $response = $warenpostService->createWarenpost($this->getOrder());
             $warenpostService->handleResponse($this->getOrder(), $response);
         } catch (\Exception $e) {
-            Registry::get(UtilsView::class)->addErrorToDisplay($e->getMessage());
-            if (!($previous = $e->getPrevious()) || !$previous instanceof ClientException) {
-                return;
-            }
-            $response = $previous->getResponse();
-            if (!$response->getBody()) {
-                return;
-            }
-            $data = json_decode($response->getBody()->getContents());
-            if ($data->detail) {
-                Registry::get(UtilsView::class)->addErrorToDisplay($data->detail);
-            }
+            $this->displayErrors($e);
         }
     }
 
