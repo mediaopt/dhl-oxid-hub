@@ -241,20 +241,20 @@ $aModule = [
         ],
         [
             'group' => 'mo_dhl__account',
+            'name'  => 'mo_dhl__account_check',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__portokasse',
             'name'  => 'mo_dhl__portokasse_user',
             'type'  => 'str',
             'value' => '',
         ],
         [
-            'group' => 'mo_dhl__account',
+            'group' => 'mo_dhl__portokasse',
             'name'  => 'mo_dhl__portokasse_password',
             'type'  => 'password',
-        ],
-        [
-            'group' => 'mo_dhl__account',
-            'name'  => 'mo_dhl__account_check',
-            'type'  => 'bool',
-            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__internetmarke',
