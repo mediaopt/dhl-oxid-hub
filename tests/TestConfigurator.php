@@ -3,9 +3,9 @@
 class TestConfigurator extends \Mediaopt\DHL\Configurator
 {
 
-    const TEST_INTERNETMARKE_USERNAME = 'testpk_0526@dhldp-test.de';
+    const TEST_PORTOKASSE_USERNAME = 'testpk_0526@dhldp-test.de';
 
-    const TEST_INTERNETMARKE_PASSWORD = '9W8ixXmjd3XEWg0c';
+    const TEST_PORTOKASSE_PASSWORD = '9W8ixXmjd3XEWg0c';
 
     const TEST_PRODWS_MANDANT_ID = 'MEDIAOPT';
 
@@ -98,6 +98,26 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     }
 
     /**
+     * @return array
+     */
+    protected function getWarenpostProdAdditionalFields(): array
+    {
+        return [
+            'partnerId' => \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_WARENPOST_API_PARTNER_ID
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getWarenpostSandboxAdditionalFields(): array
+    {
+        return [
+            'partnerId' => \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_WARENPOST_API_PARTNER_ID
+        ];
+    }
+
+    /**
      * @return string
      */
     protected function getEkp()
@@ -140,17 +160,33 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getCustomerInternetmarkeLogin()
+    protected function getCustomerPortokasseProdLogin(): string
     {
-        return self::TEST_INTERNETMARKE_USERNAME;
+        return self::TEST_PORTOKASSE_USERNAME;
     }
 
     /**
      * @return string
      */
-    protected function getCustomerInternetmarkePassword()
+    protected function getCustomerPortokasseProdPassword(): string
     {
-        return self::TEST_INTERNETMARKE_PASSWORD;
+        return self::TEST_PORTOKASSE_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerPortokasseSandboxLogin(): string
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_CUSTOMER_PORTOKASSE_API_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerPortokasseSandboxPassword(): string
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_CUSTOMER_PORTOKASSE_API_PASSWORD;
     }
 
     /**

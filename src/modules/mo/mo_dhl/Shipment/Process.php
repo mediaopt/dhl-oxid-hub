@@ -81,6 +81,11 @@ class Process
     const INTERNETMARKE = 'INTERNETMARKE';
 
     /**
+     * @var string Warenpost international
+     */
+    const WARENPOST_INTERNATIONAL = 'WARENPOST_INTERNATIONAL';
+
+    /**
      * @var string
      */
     const SERVICE_PREFERRED_DAY = "SERVICE_PREFERRED_DAY";
@@ -447,6 +452,14 @@ class Process
     }
 
     /**
+     * @return bool
+     */
+    public function usesWarenpostInternational(): bool
+    {
+        return $this->getIdentifier() === self::WARENPOST_INTERNATIONAL;
+    }
+
+    /**
      * @return string[]
      */
     public static function getAvailableProcesses()
@@ -463,6 +476,7 @@ class Process
             'PAKET_INTERNATIONAL_AT' => 'DHL Paket International (Austria)',
             'WARENPOST'              => 'Warenpost national',
             'INTERNETMARKE'          => 'Internetmarke',
+            'WARENPOST_INTERNATIONAL'=> 'Warenpost International',
         ];
     }
 }

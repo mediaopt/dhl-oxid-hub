@@ -8,6 +8,7 @@ use Mediaopt\DHL\Api\Internetmarke;
 use Mediaopt\DHL\Api\InternetmarkeRefund;
 use Mediaopt\DHL\Api\ProdWSService;
 use Mediaopt\DHL\Api\Standortsuche;
+use Mediaopt\DHL\Api\Warenpost;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Psr\Log\LoggerInterface;
 
@@ -154,5 +155,13 @@ class Main
     public function buildProdWS()
     {
         return $this->getConfigurator()->buildProdWS($this->getLogger());
+    }
+
+    /**
+     * @return Api\Warenpost
+     */
+    public function buildWarenpost(): Warenpost
+    {
+        return $this->getConfigurator()->buildWarenpost($this->getLogger());
     }
 }

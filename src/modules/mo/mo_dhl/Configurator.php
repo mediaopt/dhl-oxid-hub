@@ -13,6 +13,7 @@ use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Api\GKV;
+use Mediaopt\DHL\Api\Warenpost;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
@@ -85,7 +86,7 @@ abstract class Configurator
      */
     protected function buildCustomerInternetmarkeCredentials()
     {
-        return Credentials::createCustomerCredentials($this->getCustomerInternetmarkeLogin(), $this->getCustomerInternetmarkePassword());
+        return Credentials::createCustomerCredentials($this->getCustomerPortokasseProdLogin(), $this->getCustomerPortokasseProdPassword());
     }
 
     /**
@@ -110,6 +111,26 @@ abstract class Configurator
     protected function buildCustomerRetoureCredentials()
     {
         return Credentials::createCustomerCredentials($this->getCustomerRetoureLogin(), $this->getCustomerRetourePassword());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildWarenpostCredentials(): Credentials
+    {
+        return $this->isProductionEnvironment()
+            ? Credentials::createProductionWarenpostEndpoint(
+                $this->getCustomerPortokasseProdLogin(),
+                $this->getCustomerPortokasseProdPassword(),
+                $this->getEkp(),
+                $this->getWarenpostProdAdditionalFields()
+            )
+            : Credentials::createSandboxWarenpostEndpoint(
+                $this->getCustomerPortokasseSandboxLogin(),
+                $this->getCustomerPortokasseSandboxPassword(),
+                $this->getEkp(),
+                $this->getWarenpostSandboxAdditionalFields()
+            );
     }
 
     /**
@@ -155,12 +176,22 @@ abstract class Configurator
     /**
      * @return string
      */
-    abstract protected function getCustomerInternetmarkeLogin();
+    abstract protected function getCustomerPortokasseProdLogin(): string;
 
     /**
      * @return string
      */
-    abstract protected function getCustomerInternetmarkePassword();
+    abstract protected function getCustomerPortokasseProdPassword(): string;
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerPortokasseSandboxLogin(): string;
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerPortokasseSandboxPassword(): string;
 
     /**
      * @return string
@@ -211,6 +242,16 @@ abstract class Configurator
      * @return string
      */
     abstract protected function getSandboxStandortsuchePassword();
+
+    /**
+     * @return array
+     */
+    abstract protected function getWarenpostProdAdditionalFields(): array;
+
+    /**
+     * @return array
+     */
+    abstract protected function getWarenpostSandboxAdditionalFields(): array;
 
     /**
      * @return string
@@ -298,6 +339,20 @@ abstract class Configurator
             $this->buildProdWSCredentials(),
             $this->buildCustomerProdWSCredentials(),
             $logger ?: $this->buildLogger()
+        );
+    }
+
+    /**
+     * @param LoggerInterface|null $logger
+     * @param ClientInterface|null $client
+     * @return Warenpost
+     */
+    public function buildWarenpost(LoggerInterface $logger = null, ClientInterface $client = null): Warenpost
+    {
+        return new Warenpost(
+            $this->buildWarenpostCredentials(),
+            $logger ?: $this->buildLogger(),
+            $client ?: $this->buildClient()
         );
     }
 

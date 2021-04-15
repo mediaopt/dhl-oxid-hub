@@ -30,6 +30,12 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const PROD_API_PASSWORD = 'RGZ02BtCUBOHkxzMdy1NUm29oxhpHx';
 
+    const TEST_CUSTOMER_PORTOKASSE_API_USERNAME = 'wapo-test@mediaopt.de';
+
+    const TEST_CUSTOMER_PORTOKASSE_API_PASSWORD = '#mediaopt20';
+
+    const TEST_WARENPOST_API_PARTNER_ID = 'DP_LT';
+
     const TEST_GKV_USERNAME = '2222222222_01';
 
     const TEST_GKV_PASSWORD = 'pass';
@@ -119,6 +125,26 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     }
 
     /**
+     * @return array
+     */
+    protected function getWarenpostProdAdditionalFields(): array
+    {
+        return [
+            'partnerId' => \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__prod_warenpost_partner_id') ?: ''
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getWarenpostSandboxAdditionalFields(): array
+    {
+        return [
+            'partnerId' => self::TEST_WARENPOST_API_PARTNER_ID
+        ];
+    }
+
+    /**
      * @return string
      */
     protected function getCustomerGKVLogin()
@@ -189,17 +215,33 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getCustomerInternetmarkeLogin()
+    protected function getCustomerPortokasseProdLogin(): string
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_user') ?: '';
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__portokasse_user') ?: '';
     }
 
     /**
      * @return string
      */
-    protected function getCustomerInternetmarkePassword()
+    protected function getCustomerPortokasseProdPassword(): string
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_password') ?: '';
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__portokasse_password') ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerPortokasseSandboxLogin(): string
+    {
+        return self::TEST_CUSTOMER_PORTOKASSE_API_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerPortokasseSandboxPassword(): string
+    {
+        return self::TEST_CUSTOMER_PORTOKASSE_API_PASSWORD;
     }
 
     /**

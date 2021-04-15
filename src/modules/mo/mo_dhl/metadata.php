@@ -246,20 +246,19 @@ $aModule = [
             'value' => 'false',
         ],
         [
-            'group' => 'mo_dhl__internetmarke',
-            'name'  => 'mo_dhl__internetmarke_user',
+            'group' => 'mo_dhl__portokasse',
+            'name'  => 'mo_dhl__portokasse_user',
             'type'  => 'str',
             'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__portokasse',
+            'name'  => 'mo_dhl__portokasse_password',
+            'type'  => 'password',
         ],
         [
             'group' => 'mo_dhl__internetmarke',
             'name'  => 'mo_dhl__internetmarke_mandant_id',
-            'type'  => 'str',
-            'value' => '',
-        ],
-        [
-            'group' => 'mo_dhl__internetmarke',
-            'name'  => 'mo_dhl__internetmarke_password',
             'type'  => 'str',
             'value' => '',
         ],
@@ -274,6 +273,12 @@ $aModule = [
             'name'  => 'mo_dhl__internetmarke_check',
             'type'  => 'bool',
             'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__warenpost',
+            'name'  => 'mo_dhl__warenpost_partner_id',
+            'type'  => 'str',
+            'value' => '',
         ],
         [
             'group' => 'mo_dhl__delivery',

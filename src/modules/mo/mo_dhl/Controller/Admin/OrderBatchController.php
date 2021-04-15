@@ -17,6 +17,7 @@ use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Model\MoDHLLabelList;
 use Mediaopt\DHL\Shipment\RetoureRequest;
 use Mediaopt\DHL\Shipment\Shipment;
+use Mediaopt\DHL\Shipment\Process;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\TableViewNameGenerator;
 
@@ -177,7 +178,18 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay(new \OxidEsales\Eshop\Core\Exception\StandardException($message));
             return;
         }
-        $this->handleCreationResponse($this->callCreation($orderIds));
+
+        $splittedOrderIds = $this->splitOrderIdsByProcess($orderIds);
+
+        if (array_key_exists(Process::WARENPOST_INTERNATIONAL, $splittedOrderIds)) {
+            $this->createWarenpostInternationalLabels($splittedOrderIds[Process::WARENPOST_INTERNATIONAL]);
+        }
+        if (array_key_exists(Process::INTERNETMARKE, $splittedOrderIds)) {
+            $this->createIntermarkeLabels($splittedOrderIds[Process::INTERNETMARKE]);
+        }
+        if (array_key_exists('default', $splittedOrderIds)) {
+            $this->handleCreationResponse($this->callCreation($splittedOrderIds['default']));
+        }
     }
 
     /**
@@ -326,5 +338,63 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
     public function getFilterStringForLink(): string
     {
         return '&amp;' . http_build_query(['where' => $this->getListFilter(), 'viewListSize' => $this->getViewListSize()]);
+    }
+
+    /**
+     * @param array $orderIds
+     * @return array
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseErrorException
+     */
+    protected function splitOrderIdsByProcess(array $orderIds): array
+    {
+        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
+        $sql = 'SELECT oxid, MO_DHL_PROCESS  from oxorder where OXID in ("' . implode('", "', $orderIds) . '")';
+        $orders = $db->getAll($sql);
+
+        $idsByProcess = [];
+        foreach ($orders as $orderData) {
+            switch ($orderData['MO_DHL_PROCESS']) {
+                case Process::WARENPOST_INTERNATIONAL:
+                case Process::INTERNETMARKE: {
+                    $process = $orderData['MO_DHL_PROCESS'];
+                    break;
+                }
+                default: {
+                    $process = 'default';
+                }
+            }
+            $idsByProcess[$process][] = $orderData['oxid'];
+        }
+
+        return $idsByProcess;
+    }
+
+    /**
+     * @param array $orderIds
+     */
+    protected function createWarenpostInternationalLabels(array $orderIds)
+    {
+        $orderDHLController = oxNew(OrderDHLController::class);
+        $order = oxNew(Order::class);
+        foreach ($orderIds as $orderId) {
+            $order->load($orderId);
+            $orderDHLController->setOrder($order);
+            $orderDHLController->createWarenpostLabel();
+        }
+    }
+
+    /**
+     * @param array $orderIds
+     */
+    protected function createIntermarkeLabels(array $orderIds)
+    {
+        $orderDHLController = oxNew(OrderDHLController::class);
+        $order = oxNew(Order::class);
+        foreach ($orderIds as $orderId) {
+            $order->load($orderId);
+            $orderDHLController->setOrder($order);
+            $orderDHLController->createInternetmarkeLabel();
+        }
     }
 }

@@ -16,6 +16,7 @@ use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\ViewConfig;
+use Mediaopt\DHL\Api\Warenpost\WarenpostResponse;
 
 /**
  * @author Mediaopt GmbH
@@ -102,7 +103,10 @@ class MoDHLLabel extends BaseModel
     public static function fromOrderAndRetoure(Order $order, RetoureResponse $retoureResponse)
     {
         $label = new self();
-        $label->storeData($retoureResponse->getShipmentNumber() . '.pdf', $retoureResponse->getLabelData());
+        $label->storeData(
+            $retoureResponse->getShipmentNumber() . '.pdf',
+            base64_decode($retoureResponse->getLabelData())
+        );
         $fileName = 'documents' . DIRECTORY_SEPARATOR . $retoureResponse->getShipmentNumber();
         $label->assign([
             'oxshopid'       => $order->getShopId(),
@@ -113,11 +117,38 @@ class MoDHLLabel extends BaseModel
         ]);
 
         if (!empty($retoureResponse->getQrLabelData())) {
-            $label->storeData($retoureResponse->getShipmentNumber() . '.jpeg', $retoureResponse->getQrLabelData());
+            $label->storeData(
+                $retoureResponse->getShipmentNumber() . '.jpeg',
+                base64_decode($retoureResponse->getQrLabelData())
+            );
             $label->assign([
                 'qrLabelUrl' => Registry::get(ViewConfig::class)->getModuleUrl('mo_dhl', $fileName . '.jpeg'),
             ]);
         }
+
+        return $label;
+    }
+
+    /**
+     * @param Order           $order
+     * @param WarenpostResponse $warenpostResponse
+     * @return MoDHLLabel
+     */
+    public static function fromOrderAndWarenpost(Order $order, WarenpostResponse $warenpostResponse): MoDHLLabel
+    {
+        $label = new self();
+        $label->storeData(
+            $warenpostResponse->getShipmentNumber() . '.pdf',
+            $warenpostResponse->getLabelData()
+        );
+        $fileName = 'documents' . DIRECTORY_SEPARATOR . $warenpostResponse->getShipmentNumber();
+        $label->assign([
+            'oxshopid'       => $order->getShopId(),
+            'orderId'        => $order->getId(),
+            'type'           => self::TYPE_DELIVERY,
+            'shipmentNumber' => $warenpostResponse->getShipmentNumber(),
+            'labelUrl'       => Registry::get(ViewConfig::class)->getModuleUrl('mo_dhl', $fileName . '.pdf'),
+        ]);
 
         return $label;
     }
@@ -130,7 +161,7 @@ class MoDHLLabel extends BaseModel
     protected function storeData($fileName, $data)
     {
         $path = Registry::get(ViewConfig::class)->getModulePath('mo_dhl', 'documents');
-        file_put_contents($path . DIRECTORY_SEPARATOR . $fileName, base64_decode($data));
+        file_put_contents($path . DIRECTORY_SEPARATOR . $fileName, $data);
     }
 
     /**
@@ -154,9 +185,9 @@ class MoDHLLabel extends BaseModel
         if ($oxid) {
             $this->load($oxid);
         }
+        $this->deleteData($this->getFieldData('shipmentNumber') . '.pdf');
         if ($this->isRetoure()) {
             $this->deleteData($this->getFieldData('shipmentNumber') . '.jpeg');
-            $this->deleteData($this->getFieldData('shipmentNumber') . '.pdf');
         }
         if ($this->isDelivery()) {
             $order = oxNew(Order::class);
@@ -166,6 +197,7 @@ class MoDHLLabel extends BaseModel
                 $order->save();
             }
         }
+
         return parent::delete();
     }
 
