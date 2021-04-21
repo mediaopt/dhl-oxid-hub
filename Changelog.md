@@ -1,4 +1,6 @@
 # Changelog
+## 1.4.3
+* bugfix for special character handling in label data
 
 ## 1.4.2
 * added address delete button to flow template
