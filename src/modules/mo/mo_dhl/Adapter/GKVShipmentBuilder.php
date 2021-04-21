@@ -472,6 +472,6 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
      */
     public static function convertSpecialChars(string $string): string
     {
-        return mb_convert_encoding($string, "UTF-8", "HTML-ENTITIES");
+        return html_entity_decode($string);
     }
 }
