@@ -5,6 +5,17 @@
 [{else}]
     [{assign var="readonly" value=""}]
 [{/if}]
+<script>
+    function optionsSets() {
+        var visibility = 'hidden'
+        var val = document.getElementById("processIdentifier-[{$oxid}]").value;
+        if (val === 'WARENPOST_INTERNATIONAL') {
+            visibility = 'visible';
+        }
+        for (let el of document.querySelectorAll('.warenpost')) el.style.visibility = visibility;
+    }
+    window.onload = optionsSets;
+</script>
 
 <form name="transfer" id="transfer" action="[{$oViewConf->getSelfLink()}]" method="post">
     [{$oViewConf->getHiddenSid()}]
@@ -44,7 +55,7 @@
                 [{oxmultilang ident="MO_DHL__PROCESS_IDENTIFIER"}]
                 </td>
                 <td class="edittext" width="250">
-                    <select id="processIdentifier-[{$oxid}]" name="editval[oxdeliveryset__mo_dhl_process]">
+                    <select id="processIdentifier-[{$oxid}]" name="editval[oxdeliveryset__mo_dhl_process]" onchange="optionsSets()">
                         <option selected value="">-</option>
                         [{foreach from=$processes key='identifier' item='label'}]
                             <option value="[{$identifier}]"[{if $identifier === $edit->oxdeliveryset__mo_dhl_process->rawValue}] selected[{/if}]>
@@ -129,59 +140,57 @@
                     </td>
                 </tr>
             [{/if}]
-            [{if $oView->usesWarenpostInternational()}]
-                <tr>
-                    <td class="edittext" width="140">
-                        [{oxmultilang ident="MO_DHL__WARENPOST_PRODUCT_REGION"}]
-                    </td>
-                    <td class="edittext" width="250">
-                        <select id="warenpostRegion" name="editval[oxdeliveryset__mo_dhl_warenpost_product_region]">
-                            [{if !isset($warenpostRegionValue) }]
-                                <option value="">-</option>
-                            [{/if}]
-                            [{foreach from=$warenpostRegions item='region'}]
-                                <option value="[{$region}]" [{if $region === $edit->oxdeliveryset__mo_dhl_warenpost_product_region->rawValue}] selected[{/if}]>
-                                    [{$region}]
-                                </option>
-                            [{/foreach}]
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="edittext" width="140">
-                        [{oxmultilang ident="MO_DHL__WARENPOST_PRODUCT_TRACKING_TYPE"}]
-                    </td>
-                    <td class="edittext" width="250">
-                        <select id="warenpostTrackingType" name="editval[oxdeliveryset__mo_dhl_warenpost_product_tracking_type]">
-                            [{if !isset($warenpostTrackingTypeValue) }]
-                                <option value="">-</option>
-                            [{/if}]
-                            [{foreach from=$warenpostTrackingTypes item='trackingType'}]
-                                <option value="[{$trackingType}]" [{if $trackingType === $edit->oxdeliveryset__mo_dhl_warenpost_product_tracking_type->rawValue}] selected[{/if}]>
-                                    [{$trackingType}]
-                                </option>
-                            [{/foreach}]
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="edittext" width="140">
-                        [{oxmultilang ident="MO_DHL__WARENPOST_PRODUCT_PACKAGE_TYPE"}]
-                    </td>
-                    <td class="edittext" width="250">
-                        <select id="warenpostPackageType" name="editval[oxdeliveryset__mo_dhl_warenpost_product_package_type]">
-                            [{if !isset($warenpostPackageTypeValue) }]
-                                <option value="">-</option>
-                            [{/if}]
-                            [{foreach from=$warenpostPackageTypes item='packageType'}]
-                                <option value="[{$packageType}]" [{if $packageType === $edit->oxdeliveryset__mo_dhl_warenpost_product_package_type->rawValue}] selected[{/if}]>
-                                    [{$packageType}]
-                                </option>
-                            [{/foreach}]
-                        </select>
-                    </td>
-                </tr>
-            [{/if}]
+            <tr class="warenpost">
+                <td class="edittext" width="140">
+                    [{oxmultilang ident="MO_DHL__WARENPOST_PRODUCT_REGION"}]
+                </td>
+                <td class="edittext" width="250">
+                    <select id="warenpostRegion" name="editval[oxdeliveryset__mo_dhl_warenpost_product_region]">
+                        [{if !isset($warenpostRegionValue) }]
+                            <option value="">-</option>
+                        [{/if}]
+                        [{foreach from=$warenpostRegions item='region'}]
+                            <option value="[{$region}]" [{if $region === $edit->oxdeliveryset__mo_dhl_warenpost_product_region->rawValue}] selected[{/if}]>
+                                [{$region}]
+                            </option>
+                        [{/foreach}]
+                    </select>
+                </td>
+            </tr>
+            <tr class="warenpost">
+                <td class="edittext" width="140">
+                    [{oxmultilang ident="MO_DHL__WARENPOST_PRODUCT_TRACKING_TYPE"}]
+                </td>
+                <td class="edittext" width="250">
+                    <select id="warenpostTrackingType" name="editval[oxdeliveryset__mo_dhl_warenpost_product_tracking_type]">
+                        [{if !isset($warenpostTrackingTypeValue) }]
+                            <option value="">-</option>
+                        [{/if}]
+                        [{foreach from=$warenpostTrackingTypes item='trackingType'}]
+                            <option value="[{$trackingType}]" [{if $trackingType === $edit->oxdeliveryset__mo_dhl_warenpost_product_tracking_type->rawValue}] selected[{/if}]>
+                                [{$trackingType}]
+                            </option>
+                        [{/foreach}]
+                    </select>
+                </td>
+            </tr>
+            <tr class="warenpost">
+                <td class="edittext" width="140">
+                    [{oxmultilang ident="MO_DHL__WARENPOST_PRODUCT_PACKAGE_TYPE"}]
+                </td>
+                <td class="edittext" width="250">
+                    <select id="warenpostPackageType" name="editval[oxdeliveryset__mo_dhl_warenpost_product_package_type]">
+                        [{if !isset($warenpostPackageTypeValue) }]
+                            <option value="">-</option>
+                        [{/if}]
+                        [{foreach from=$warenpostPackageTypes item='packageType'}]
+                            <option value="[{$packageType}]" [{if $packageType === $edit->oxdeliveryset__mo_dhl_warenpost_product_package_type->rawValue}] selected[{/if}]>
+                                [{$packageType}]
+                            </option>
+                        [{/foreach}]
+                    </select>
+                </td>
+            </tr>
             <tr>
                 <td class="edittext">
                 </td>
