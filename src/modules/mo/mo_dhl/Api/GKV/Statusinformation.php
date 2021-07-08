@@ -94,7 +94,7 @@ class Statusinformation
         if ($this->getStatusCode() === StatusCode::GKV_STATUS_OK) {
             return [];
         }
-        $errors = $this->getStatusMessage();
+        $errors = $this->getStatusMessage() ?: [];
         array_unshift($errors, $this->getStatusText());
         return array_unique($errors);
     }
