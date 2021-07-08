@@ -110,14 +110,14 @@ class Product
                 self::PACKAGE_TYPE_S => '10255',
                 self::PACKAGE_TYPE_M => '10256',
                 self::PACKAGE_TYPE_L => '10257',
-                self::PACKAGE_TYPE_KT => '10272',
+                self::PACKAGE_TYPE_KT => '10270',
             ],
             self::TRACKING_TYPE_TRACKED => [
                 self::PACKAGE_TYPE_XS => '10258',
                 self::PACKAGE_TYPE_S => '10259',
                 self::PACKAGE_TYPE_M => '10260',
                 self::PACKAGE_TYPE_L => '10261',
-                self::PACKAGE_TYPE_KT => '10273',
+                self::PACKAGE_TYPE_KT => '10271',
             ],
             self::TRACKING_TYPE_SIGNATURE => [
                 self::PACKAGE_TYPE_XS => '10284',
@@ -133,14 +133,14 @@ class Product
                 self::PACKAGE_TYPE_S => '10247',
                 self::PACKAGE_TYPE_M => '10248',
                 self::PACKAGE_TYPE_L => '10249',
-                self::PACKAGE_TYPE_KT => '10270',
+                self::PACKAGE_TYPE_KT => '10272',
             ],
             self::TRACKING_TYPE_TRACKED => [
                 self::PACKAGE_TYPE_XS => '10250',
                 self::PACKAGE_TYPE_S => '10251',
                 self::PACKAGE_TYPE_M => '10252',
                 self::PACKAGE_TYPE_L => '10253',
-                self::PACKAGE_TYPE_KT => '10271',
+                self::PACKAGE_TYPE_KT => '10273',
             ],
             self::TRACKING_TYPE_SIGNATURE => [
                 self::PACKAGE_TYPE_XS => '10280',
