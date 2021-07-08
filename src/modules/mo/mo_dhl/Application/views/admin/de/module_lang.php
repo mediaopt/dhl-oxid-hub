@@ -126,4 +126,5 @@ $aLang = [
     'MO_DHL__ERROR_PRINT_FORMAT'       => 'Ein Fehler %s ist aufgetreten in Zeile %d in der Datei %s',
     'MO_DHL__ERROR_WHILE_EXECUTION'    => 'Bei der Ausführung ist folgender Fehler aufgetreten:',
     'MO_DHL__ERROR_PROCESS_IS_MISSING' => 'Der Versandart fehlt die Zuordnung zu einem DHL-Produkt anhand einer Verfahrensnummer.',
+    'MO_DHL__ERROR_ WEIGHT_WITH_COMMA' => 'Bei der Gewichtsangabe wurde statt eines Punkts ein Komma verwendet. Dies wurde automatisch korrigiert.',
 ];
