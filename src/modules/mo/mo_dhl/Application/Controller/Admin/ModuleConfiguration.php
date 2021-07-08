@@ -93,6 +93,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         if ($this->getEditObjectId() === 'mo_dhl') {
             $this->moReviewEkp();
             $this->moReviewFilialroutingAlternativeEmail();
+            $this->moReviewWeightSettings();
         }
     }
 
@@ -122,6 +123,29 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         }
         Registry::getConfig()->saveShopConfVar('str', $mailVariable, '', '', 'module:mo_dhl');
         Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__FILIALROUTING_EMAIL_ERROR');
+    }
+
+    /**
+     */
+    protected function moReviewWeightSettings()
+    {
+        $weightSetting = [
+            'mo_dhl__default_weight',
+            'mo_dhl__packing_weight_in_percent',
+            'mo_dhl__packing_weight_absolute'
+        ];
+        $changed = false;
+        foreach ($weightSetting as $setting) {
+            $value = Registry::getConfig()->getConfigParam($setting);
+            if (strpos($value, ',') !== false) {
+                $value = \OxidEsales\EshopCommunity\Core\Registry::getUtils()->string2Float($value);
+                Registry::getConfig()->saveShopConfVar('str', $setting, $value, '', 'module:mo_dhl');
+                $changed = true;
+            }
+        }
+        if ($changed) {
+            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__ERROR_ WEIGHT_WITH_COMMA');
+        }
     }
 
     /**

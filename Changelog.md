@@ -1,4 +1,9 @@
 # Changelog
+## 1.4.4
+* check for comma in weight settings and replace it with a dot
+* improved error handling for gkv requests
+* bugfix for call to TableViewNameGenerator
+
 ## 1.4.3
 * bugfix for special character handling in label data
 
