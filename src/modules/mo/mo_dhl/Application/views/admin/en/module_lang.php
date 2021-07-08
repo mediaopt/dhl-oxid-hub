@@ -126,4 +126,5 @@ $aLang = [
     'MO_DHL__ERROR_PRINT_FORMAT'       => 'An Error %s occured in line %d in file %s',
     'MO_DHL__ERROR_WHILE_EXECUTION'    => 'An error occured while processing your action:',
     'MO_DHL__ERROR_PROCESS_IS_MISSING' => 'The delivery set is missing a reference to a DHL product using the process number.',
+    'MO_DHL__ERROR_ WEIGHT_WITH_COMMA' => 'A comma was used as a seperator for the weight settings instead of a dot. This was fixed automatically.',
 ];
