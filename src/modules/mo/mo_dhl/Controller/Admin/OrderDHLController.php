@@ -10,11 +10,11 @@ use Mediaopt\DHL\Adapter\InternetmarkeRefundRetoureVouchersRequestBuilder;
 use Mediaopt\DHL\Adapter\InternetmarkeShoppingCartPDFRequestBuilder;
 use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse;
 use Mediaopt\DHL\Api\GKV\Response\DeleteShipmentOrderResponse;
-use Mediaopt\DHL\Api\Internetmarke\RetrieveRetoureStateRequestType;
+use Mediaopt\DHL\Api\GKV\Response\StatusCode;
 use Mediaopt\DHL\Api\Internetmarke\ShoppingCartResponseType;
 use Mediaopt\DHL\Api\Wunschpaket;
-use Mediaopt\DHL\Exception\WebserviceException;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Model\MoDHLInternetmarkeRefund;
 use Mediaopt\DHL\Model\MoDHLLabel;
@@ -226,7 +226,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @return \Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse
+     * @return CreateShipmentOrderResponse
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
@@ -302,10 +302,10 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         try {
             $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
             $information = [
-                'MO_DHL_EKP' => $this->validateEkp(),
-                'MO_DHL_PROCESS' => $this->validateProcessIdentifier(),
-                'MO_DHL_PARTICIPATION' => $this->validateParticipationNumber(),
-                'MO_DHL_OPERATOR' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('operator'),
+                'MO_DHL_EKP'                    => $this->validateEkp(),
+                'MO_DHL_PROCESS'                => $this->validateProcessIdentifier(),
+                'MO_DHL_PARTICIPATION'          => $this->validateParticipationNumber(),
+                'MO_DHL_OPERATOR'               => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('operator'),
                 'MO_DHL_RETOURE_REQUEST_STATUS' => Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter('retoureRequest'),
             ];
             $tuples = [];
@@ -318,8 +318,8 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             if ($tuples === []) {
                 return;
             }
-
-            $viewName = \OxidEsales\Eshop\Core\TableViewNameGenerator::getViewName('oxorder');
+            $viewNameGenerator = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\TableViewNameGenerator::class);
+            $viewName = $viewNameGenerator->getViewName('oxorder');
             $query = ' UPDATE ' . $viewName . ' SET ' . implode(', ', $tuples) . " WHERE OXID = {$db->quote($this->getEditObjectId())}";
             $db->execute($query);
         } catch (\Exception $e) {
@@ -443,13 +443,13 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @param \Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse $response
+     * @param CreateShipmentOrderResponse $response
      * @throws \Exception
      */
-    protected function handleCreationResponse(\Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse $response)
+    protected function handleCreationResponse(CreateShipmentOrderResponse $response)
     {
         $creationState = $response->getCreationState()[0];
-        $statusInformation = $creationState->getLabelData()->getStatus();
+        $statusInformation = $creationState ? $creationState->getLabelData()->getStatus() : $response->getStatus();
         $this->getOrder()->storeCreationStatus($statusInformation->getStatusText());
         if ($errors = $statusInformation->getErrors()) {
             $this->displayErrors($errors);
@@ -472,10 +472,9 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     protected function handleDeletionResponse(MoDHLLabel $label, DeleteShipmentOrderResponse $response)
     {
-        $deletionState = $response->getDeletionState()[0];
-        $statusInformation = $deletionState->getStatus();
+        $statusInformation = $response->getDeletionState() ? $response->getDeletionState()[0]->getStatus() : $response->getStatus();
         if ($errors = $statusInformation->getErrors()) {
-            if ($statusInformation->getStatusText() === 'Unknown shipment number.') {
+            if ($statusInformation->getStatusCode() === StatusCode::GKV_STATUS_UNKNOWN_SHIPMENT) {
                 $label->delete();
             }
             $this->displayErrors($errors);
