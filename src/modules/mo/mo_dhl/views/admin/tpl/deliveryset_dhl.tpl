@@ -139,6 +139,21 @@
                         [{oxinputhelp ident="HELP_MO_DHL__PREMIUM"}]
                     </td>
                 </tr>
+                <tr>
+                    <td class="edittext">
+                        [{oxmultilang ident="MO_DHL__ENDORSEMENT"}]
+                    </td>
+                    <td class="edittext">
+                        <select id="endorsement" name="editval[oxdeliveryset__mo_dhl_endorsement]">
+                            [{foreach from=$endorsements key='identifier' item='label'}]
+                                <option value="[{$identifier}]"[{if $identifier == $edit->oxdeliveryset__mo_dhl_endorsement->rawValue}] selected[{/if}]>
+                                    [{$label}]
+                                </option>
+                            [{/foreach}]
+                        </select>
+                        [{oxinputhelp ident="HELP_MO_DHL__ENDORSEMENT"}]
+                    </td>
+                </tr>
             [{/if}]
             <tr class="warenpost">
                 <td class="edittext" width="140">

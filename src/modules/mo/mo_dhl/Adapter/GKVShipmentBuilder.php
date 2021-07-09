@@ -17,6 +17,7 @@ use Mediaopt\DHL\Api\GKV\ServiceconfigurationAdditionalInsurance;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationCashOnDelivery;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetails;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationEndorsement;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationIC;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationVisualAgeCheck;
 use Mediaopt\DHL\Api\GKV\Shipment;
@@ -217,6 +218,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         if ($process->supportsPremium()) {
             $active = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__PREMIUM));
             $service->setPremium(new Serviceconfiguration($active));
+        }
+        if ($process->supportsEndorsement()) {
+            $abandonment = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__ENDORSEMENT));
+            $service->setEndorsement(new ServiceconfigurationEndorsement(true, $abandonment ? MoDHLService::MO_DHL__ENDORSEMENT_ABANDONMENT : MoDHLService::MO_DHL__ENDORSEMENT_IMMEDIATE));
         }
 
         return $service;

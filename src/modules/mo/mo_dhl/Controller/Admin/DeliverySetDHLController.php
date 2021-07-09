@@ -29,6 +29,7 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
     {
         parent::render();
         $this->addTplParam('processes', Process::getAvailableProcesses());
+        $this->addTplParam('endorsements', $this->getEndorsements());
         $this->addTplParam('warenpostRegions', Warenpost::getWarenpostRegions());
         $this->addTplParam('warenpostTrackingTypes', Warenpost::getWarenpostTrackingTypes());
         $this->addTplParam('warenpostPackageTypes', Warenpost::getWarenpostPackageTypes());
@@ -207,5 +208,16 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
 
         $this->addTplParam('suggestions', $productsList->getArray());
         $this->setTemplateName('mo_dhl__internetmarke_products_search.tpl');
+    }
+
+    /**
+     * @return string[]
+     */
+    protected function getEndorsements()
+    {
+        return [
+            Registry::getLang()->translateString('MO_DHL__ENDORSEMENT_IMMEDIATE'),
+            Registry::getLang()->translateString('MO_DHL__ENDORSEMENT_ABANDONMENT'),
+        ];
     }
 }

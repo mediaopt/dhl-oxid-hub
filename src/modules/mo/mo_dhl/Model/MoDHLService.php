@@ -45,5 +45,19 @@ class MoDHLService
     /**
      * @var string
      */
+    const MO_DHL__ENDORSEMENT = 'mo_dhl_endorsement';
+
+    /**
+     * @var string
+     */
+    const MO_DHL__ENDORSEMENT_IMMEDIATE = 'IMMEDIATE';
+
+    /**
+     * @var string
+     */
+    const MO_DHL__ENDORSEMENT_ABANDONMENT = 'ABANDONMENT';
+    /**
+     * @var string
+     */
     const MO_DHL__ZOLLTARIF = 'mo_dhl_zolltarif';
 }

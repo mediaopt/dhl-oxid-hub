@@ -489,6 +489,20 @@
                                         </td>
                                     </tr>
                                 [{/if}]
+                                [{if $process->supportsEndorsement()}]
+                                [{assign var="service" value=$shipmentOrder.services.endorsement}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__ENDORSEMENT'}]
+                                    </td>
+                                    <td>
+                                        <select name="data[services][endorsement]">
+                                            <option value="IMMEDIATE" [{if $service && $service->getActive() && $service->getType() === 'IMMEDIATE'}] selected[{/if}]>[{oxmultilang ident='MO_DHL__ENDORSEMENT_IMMEDIATE'}]</option>
+                                            <option value="ABANDONMENT" [{if $service && $service->getActive() && $service->getType() === 'ABANDONMENT'}] selected[{/if}]>[{oxmultilang ident='MO_DHL__ENDORSEMENT_ABANDONMENT'}]</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                [{/if}]
                             </table>
                         </td>
                     </tr>

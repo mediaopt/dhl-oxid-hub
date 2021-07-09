@@ -13,10 +13,12 @@ use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationAdditionalInsurance;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationCashOnDelivery;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationEndorsement;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationIC;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationVisualAgeCheck;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
 use Mediaopt\DHL\Application\Model\Order;
+use Mediaopt\DHL\Model\MoDHLService;
 use Mediaopt\DHL\Shipment\Process;
 use OxidEsales\Eshop\Core\Registry;
 
@@ -62,6 +64,7 @@ class GKVCustomShipmentBuilder
                 'cashOnDelivery'      => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getCashOnDelivery(),
                 'visualAgeCheck'      => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getVisualCheckOfAge(),
                 'premium'             => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getPremium(),
+                'endorsement'         => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getEndorsement(),
             ],
         ];
     }
@@ -185,6 +188,10 @@ class GKVCustomShipmentBuilder
         if ($process->supportsPremium()) {
             $isActive = filter_var($servicesData['premium']['active'], FILTER_VALIDATE_BOOLEAN);
             $services->setPremium(new Serviceconfiguration($isActive));
+        }
+        if ($process->supportsEndorsement()) {
+            $endorsement = $servicesData['endorsement'] ?? MoDHLService::MO_DHL__ENDORSEMENT_IMMEDIATE;
+            $services->setEndorsement(new ServiceconfigurationEndorsement(true, $endorsement));
         }
 
         $isActive = filter_var($servicesData['printOnlyIfCodeable']['active'], FILTER_VALIDATE_BOOLEAN);
