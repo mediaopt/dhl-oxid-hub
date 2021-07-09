@@ -104,6 +104,12 @@ $aLang = [
     'MO_DHL__ZOLLTARIF'                   => 'HS tariff number',
     'HELP_MO_DHL__ZOLLTARIF'              => 'Optional parameter used for the creation of export document for DHL Paket International. Internationally standardized system of names and numbers to classify traded products.',
 
+    'MO_DHL__ENDORSEMENT'                              => 'Endorsement',
+    'HELP_MO_DHL__ENDORSEMENT'                         => 'This service defines the handling of parcels that cannot be delivered. This service is only relevant for DHL Paket International.',
+    'MO_DHL__ENDORSEMENT_IMMEDIATE'                    => 'Sending back to sender',
+    'MO_DHL__ENDORSEMENT_ABANDONMENT'                  => 'Abandonment of parcel at the hands of sender (free of charge)',
+    'MO_DHL__LABEL_CREATED_WITH_WEAK_VALIDATION_ERROR' => 'While processing the request a weak error occured. The request was still processed successfully.',
+
     'MO_DHL__WALLAT_BALANCE_CHECK'    => 'Your credentials for the Portokasse are correct. Your balance is %.2f €',
 
     'MO_DHL'                                         => 'DHL',

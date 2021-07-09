@@ -530,6 +530,13 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         }
         $label = MoDHLLabel::fromOrderAndCreationState($this->getOrder(), $creationState);
         $label->save();
+        if ($statusInformation->getStatusCode() === StatusCode::GKV_STATUS_OK && $statusInformation->getStatusText() === 'Weak validation error occured.') {
+            $errors = $statusInformation->getStatusMessage() ?: [];
+            array_unshift($errors, $statusInformation->getStatusText());
+            array_unshift($errors, 'MO_DHL__LABEL_CREATED_WITH_WEAK_VALIDATION_ERROR');
+            $errors = array_unique($errors);
+            $this->displayErrors($errors);
+        }
     }
 
     protected function handleInternetmarkeCreationResponse(ShoppingCartResponseType $response)

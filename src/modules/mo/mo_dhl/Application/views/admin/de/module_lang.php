@@ -104,6 +104,12 @@ $aLang = [
     'MO_DHL__ZOLLTARIF'                 => 'Zolltarifnummer',
     'HELP_MO_DHL__ZOLLTARIF'            => 'Optionaler Parameter bei der Erzeugung von Exportdokumenten für DHL Paket International. International standardisiertes System von Namen und Nummern zur Klassifizierung gehandelter Produkte.',
 
+    'MO_DHL__ENDORSEMENT'                              => 'Vorausverfügung bei Unzustellbarkeit',
+    'HELP_MO_DHL__ENDORSEMENT'                         => 'Dieser Service gibt an, was mit einem Paket passieren soll, wenn es nicht zugestellt werden kann. Dieser Service ist nur für Paket International relevant.',
+    'MO_DHL__ENDORSEMENT_IMMEDIATE'                    => 'Rücksendung an den Absender',
+    'MO_DHL__ENDORSEMENT_ABANDONMENT'                  => 'Preisgabe des Pakets (Verzicht auf die Rücksendung)',
+    'MO_DHL__LABEL_CREATED_WITH_WEAK_VALIDATION_ERROR' => 'Bei der Anfrage ist ein schwacher Fehler aufgetreten. Die Anfrage konnte trotzdem erfolgreich umgesetzt werden.',
+
     'MO_DHL__WALLAT_BALANCE_CHECK'    => 'Die Zugangsdaten für die Portokasse sind korrekt. Ihr Guthaben beträgt %.2f €',
 
     'MO_DHL'                                         => 'DHL',
