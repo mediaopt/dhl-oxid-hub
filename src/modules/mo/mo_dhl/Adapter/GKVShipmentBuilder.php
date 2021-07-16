@@ -411,7 +411,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             return $price;
         }
 
-        return $price / $order->oxorder__oxcurrate->value;
+        return round($price / $order->oxorder__oxcurrate->value, 2);
     }
 
     /**
