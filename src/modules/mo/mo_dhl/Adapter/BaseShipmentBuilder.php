@@ -80,8 +80,10 @@ class BaseShipmentBuilder
             $articleWeight = $this->getArticleWeight($orderArticle, $config, $this->isInternational($order));
             $weight += $articleWeight * $orderArticle->getFieldData('oxamount');
         }
-        $weight *= 1 + (float)$config->getShopConfVar('mo_dhl__packing_weight_in_percent') / 100.0;
-        $weight += (float)$config->getShopConfVar('mo_dhl__packing_weight_absolute');
+        if ($config->getShopConfVar('mo_dhl__calculate_weight')) {
+            $weight *= 1 + (float)$config->getShopConfVar('mo_dhl__packing_weight_in_percent') / 100.0;
+            $weight += (float)$config->getShopConfVar('mo_dhl__packing_weight_absolute');
+        }
         return max(self::MO_DHL__MIN_WEIGHT_FOR_ORDER, $weight);
     }
 
