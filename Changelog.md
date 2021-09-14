@@ -1,4 +1,8 @@
 # Changelog
+## 1.5.0
+* New product: Warenpost International
+* specify endorsement for parcel send via Paket International
+
 ## 1.4.4
 * check for comma in weight settings and replace it with a dot
 * improved error handling for gkv requests
