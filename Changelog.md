@@ -1,4 +1,8 @@
 # Changelog
+## 1.5.1
+* same weight calculation for local and international delivery
+* weight calculation fix: use package weight only if calculate weight is active
+
 ## 1.5.0
 * New product: Warenpost International
 * specify endorsement for parcel send via Paket International

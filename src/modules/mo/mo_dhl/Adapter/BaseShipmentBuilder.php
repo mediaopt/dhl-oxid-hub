@@ -77,11 +77,13 @@ class BaseShipmentBuilder
         $config = Registry::getConfig();
         $weight = 0.0;
         foreach ($order->getOrderArticles() as $orderArticle) {
-            $articleWeight = $this->getArticleWeight($orderArticle, $config, $this->isInternational($order));
+            $articleWeight = $this->getArticleWeight($orderArticle, $config);
             $weight += $articleWeight * $orderArticle->getFieldData('oxamount');
         }
-        $weight *= 1 + (float)$config->getShopConfVar('mo_dhl__packing_weight_in_percent') / 100.0;
-        $weight += (float)$config->getShopConfVar('mo_dhl__packing_weight_absolute');
+        if ($config->getShopConfVar('mo_dhl__calculate_weight')) {
+            $weight *= 1 + (float)$config->getShopConfVar('mo_dhl__packing_weight_in_percent') / 100.0;
+            $weight += (float)$config->getShopConfVar('mo_dhl__packing_weight_absolute');
+        }
         return max(self::MO_DHL__MIN_WEIGHT_FOR_ORDER, $weight);
     }
 
@@ -143,16 +145,15 @@ class BaseShipmentBuilder
     /**
      * @param OrderArticle $orderArticle
      * @param \OxidEsales\Eshop\Core\Config $config
-     * @param bool $isInternationalShipment
      * @return float|mixed
      */
-    protected function getArticleWeight(OrderArticle $orderArticle, \OxidEsales\Eshop\Core\Config $config, bool $isInternationalShipment)
+    protected function getArticleWeight(OrderArticle $orderArticle, \OxidEsales\Eshop\Core\Config $config)
     {
         /** @var OrderArticle $orderArticle */
         $articleWeight = $config->getShopConfVar('mo_dhl__calculate_weight')
             ? (float)$orderArticle->getFieldData('oxweight')
             : (float)$config->getShopConfVar('mo_dhl__default_weight');
-        if ($isInternationalShipment && $articleWeight < self::MO_DHL__MIN_WEIGHT_FOR_ORDERITEMS) {
+        if ($articleWeight < self::MO_DHL__MIN_WEIGHT_FOR_ORDERITEMS) {
             $articleWeight = max(self::MO_DHL__MIN_WEIGHT_FOR_ORDERITEMS, (float)$config->getShopConfVar('mo_dhl__default_weight'));
         }
         return $articleWeight;
