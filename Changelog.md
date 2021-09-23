@@ -1,4 +1,7 @@
 # Changelog
+## 1.5.2
+* set note1 for cash on delivery
+
 ## 1.5.1
 * same weight calculation for local and international delivery
 * weight calculation fix: use package weight only if calculate weight is active
