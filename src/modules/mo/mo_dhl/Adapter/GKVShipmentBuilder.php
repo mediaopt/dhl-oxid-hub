@@ -2,6 +2,7 @@
 
 namespace Mediaopt\DHL\Adapter;
 
+use Mediaopt\DHL\Api\GKV\BankType;
 use Mediaopt\DHL\Api\GKV\CommunicationType;
 use Mediaopt\DHL\Api\GKV\CountryType;
 use Mediaopt\DHL\Api\GKV\ExportDocPosition;
@@ -78,7 +79,11 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         if ($this->sendNotificationAllowed($order)) {
             $details->setNotification(new ShipmentNotificationType($order->getFieldData('oxbillemail')));
         }
-        $details->setCustomerReference(Registry::getLang()->translateString('GENERAL_ORDERNUM') . ' ' .$order->getFieldData('oxordernr'));
+        $customerReference = Registry::getLang()->translateString('GENERAL_ORDERNUM') . ' ' . $order->getFieldData('oxordernr');
+        if ($order->moDHLUsesService(MoDHLService::MO_DHL__CASH_ON_DELIVERY) && $this->getProcess($order)->supportsCashOnDelivery()) {
+            $details->setBankData((new BankType(null, null, null))->setNote1($customerReference));
+        }
+        $details->setCustomerReference($customerReference);
         $details->setService($this->buildService($order));
         return $details;
     }
