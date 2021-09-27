@@ -81,7 +81,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         }
         $customerReference = Registry::getLang()->translateString('GENERAL_ORDERNUM') . ' ' . $order->getFieldData('oxordernr');
         if ($order->moDHLUsesService(MoDHLService::MO_DHL__CASH_ON_DELIVERY) && $this->getProcess($order)->supportsCashOnDelivery()) {
-            $details->setBankData((new BankType(null, null, null))->setNote1($customerReference));
+            $accountOwner = Registry::getConfig()->getShopConfVar('mo_dhl__cod_accountOwner') ?: null;
+            $bankName = Registry::getConfig()->getShopConfVar('mo_dhl__cod_bankName') ?: null;
+            $iban = Registry::getConfig()->getShopConfVar('mo_dhl__cod_iban') ?: null;
+            $details->setBankData((new BankType($accountOwner, $bankName, $iban))->setNote1($customerReference));
         }
         $details->setCustomerReference($customerReference);
         $details->setService($this->buildService($order));

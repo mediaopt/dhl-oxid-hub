@@ -57,6 +57,11 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__notification_mode_ALWAYS'             => 'Always',
     'SHOP_MODULE_mo_dhl__notification_mode_ASK'                => 'Ask the customer',
 
+    'SHOP_MODULE_GROUP_mo_dhl__cod'        => 'Cash on Delivery - Bank account',
+    'SHOP_MODULE_mo_dhl__cod_accountOwner' => 'Name of bank account owner',
+    'SHOP_MODULE_mo_dhl__cod_bankName'     => 'Name of bank',
+    'SHOP_MODULE_mo_dhl__cod_iban'         => 'IBAN',
+
     'SHOP_MODULE_mo_dhl__ident_check_min_age'    => 'Minimal age for Ident-Check',
     'SHOP_MODULE_mo_dhl__ident_check_min_age_0'  => 'no minimal age',
     'SHOP_MODULE_mo_dhl__ident_check_min_age_16' => '16 years',

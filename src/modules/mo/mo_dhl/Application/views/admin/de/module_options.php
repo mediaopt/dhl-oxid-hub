@@ -56,6 +56,11 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__notification_mode_NEVER'              => 'Niemals',
     'SHOP_MODULE_mo_dhl__notification_mode_ALWAYS'             => 'Immer',
     'SHOP_MODULE_mo_dhl__notification_mode_ASK'                => 'Auf Kundenwunsch übermitteln',
+    
+    'SHOP_MODULE_GROUP_mo_dhl__cod'        => 'Nachnahme - Kontodaten',
+    'SHOP_MODULE_mo_dhl__cod_accountOwner' => 'Kontoinhaber',
+    'SHOP_MODULE_mo_dhl__cod_bankName'     => 'Name der Bank',
+    'SHOP_MODULE_mo_dhl__cod_iban'         => 'IBAN',
 
     'SHOP_MODULE_mo_dhl__ident_check_min_age'    => 'Mindestalter für den IdentCheck',
     'SHOP_MODULE_mo_dhl__ident_check_min_age_0'  => 'kein Mindestalter',
