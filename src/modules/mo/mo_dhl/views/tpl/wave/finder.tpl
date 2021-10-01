@@ -97,6 +97,17 @@
                                id="moDHLStreet" name="street"/>
                         <input type="text" placeholder="[{oxmultilang ident="MO_DHL__POSTCODE"}]"
                                id="moDHLLocality" name="locality"/>
+                        [{assign var="countries_list" value=$oViewConf->moGetDHLCountriesList()}]
+                        <select id="moDHLCountry" name="country"
+                                [{if count($countries_list) === 1}]style="display: none;" [{/if}]
+                        >
+                            <option value="">-</option>
+                            [{foreach from=$countries_list item=country key=country_id}]
+                            <option value="[{$country_id}]" isoalpha2="[{$country.isoalpha2}]">
+                                [{$country.title}]
+                            </option>
+                            [{/foreach}]
+                        </select>
                     </div>
                     <div id="moDHLProviders">
                     [{if $oViewConf->moCanPackstationBeSelected()}]
