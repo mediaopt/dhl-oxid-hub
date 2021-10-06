@@ -395,6 +395,24 @@ $aModule = [
             'constraints' => '0|16|18',
         ],
         [
+            'group' => 'mo_dhl__cod',
+            'name'  => 'mo_dhl__cod_accountOwner',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__cod',
+            'name'  => 'mo_dhl__cod_bankName',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
+            'group' => 'mo_dhl__cod',
+            'name'  => 'mo_dhl__cod_iban',
+            'type'  => 'str',
+            'value' => '',
+        ],
+        [
             'group' => 'mo_dhl__retoure',
             'name'  => 'mo_dhl__retoure_reference_prefix',
             'type'  => 'str',

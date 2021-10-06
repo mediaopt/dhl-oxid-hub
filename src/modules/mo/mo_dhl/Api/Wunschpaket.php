@@ -224,10 +224,24 @@ class Wunschpaket extends Base
     {
         $plausibleTransferDay = clone $date;
         $plausibleTransferDay->modify('-5 days');
-        foreach ($this->getPreferredDays($zip, $plausibleTransferDay, false) as $preferredDay) {
+        $alternativePlausibleTransferDay = clone $plausibleTransferDay;
+        $alternativePlausibleTransferDay->modify('-2 days');
+        return $this->isValidPreferredDayForGivenSendDate($zip, $plausibleTransferDay, $date)
+            || $this->isValidPreferredDayForGivenSendDate($zip, $alternativePlausibleTransferDay, $date);
+    }
+
+    /**
+     * @param $zip
+     * @param \DateTime $sendDate
+     * @param \DateTime $deliveryDate in case of a string: d.m.Y
+     * @return bool
+     */
+    protected function isValidPreferredDayForGivenSendDate($zip, $sendDate, $deliveryDate)
+    {
+        foreach ($this->getPreferredDays($zip, $sendDate, false) as $preferredDay) {
             /** @var \DateTime $preferredDayDateTime */
             $preferredDayDateTime = $preferredDay['datetime'];
-            if ($preferredDayDateTime->format('d.m.Y') === $date->format('d.m.Y')) {
+            if ($preferredDayDateTime->format('d.m.Y') === $deliveryDate->format('d.m.Y')) {
                 return true;
             }
         }
