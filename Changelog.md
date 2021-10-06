@@ -1,6 +1,8 @@
 # Changelog
 ## 1.5.2
 * bugfix: add country selection to standortsuche in wave theme
+* add bank data for cash on delivery
+* adjusted valid preferred day check to handle test errorrs
 
 ## 1.5.1
 * same weight calculation for local and international delivery
