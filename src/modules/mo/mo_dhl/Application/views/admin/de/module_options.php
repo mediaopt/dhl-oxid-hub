@@ -177,7 +177,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__handing_over_fri'   => 'Freitag',
     'SHOP_MODULE_mo_dhl__handing_over_sat'   => 'Samstag',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschort'  => 'Wunschpaket - Wunschort',
+    'SHOP_MODULE_GROUP_mo_dhl__wunschort'  => 'Wunschzustellung - Ablageort',
     'SHOP_MODULE_mo_dhl__wunschort_active' => 'Aktiv',
 
     'SHOP_MODULE_GROUP_mo_dhl__wunschnachbar'  => 'Wunschpaket - Wunschnachbar',

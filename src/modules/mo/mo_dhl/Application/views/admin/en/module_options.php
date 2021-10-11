@@ -178,7 +178,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__handing_over_fri'   => 'Friday',
     'SHOP_MODULE_mo_dhl__handing_over_sat'   => 'Saturday',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschort'  => 'Wunschpaket - Preferred location',
+    'SHOP_MODULE_GROUP_mo_dhl__wunschort'  => 'Prefferred delivery - Drop-off location',
     'SHOP_MODULE_mo_dhl__wunschort_active' => 'Enabled',
 
     'SHOP_MODULE_GROUP_mo_dhl__wunschnachbar'  => 'Wunschpaket - Preferred neighbor',
