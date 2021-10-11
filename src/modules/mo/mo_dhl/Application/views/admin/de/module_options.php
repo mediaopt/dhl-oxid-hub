@@ -180,7 +180,7 @@ $aLang = [
     'SHOP_MODULE_GROUP_mo_dhl__wunschort'  => 'Wunschzustellung - Ablageort',
     'SHOP_MODULE_mo_dhl__wunschort_active' => 'Aktiv',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschnachbar'  => 'Wunschpaket - Wunschnachbar',
+    'SHOP_MODULE_GROUP_mo_dhl__wunschnachbar'  => 'Wunschzustellung - Nachbar',
     'SHOP_MODULE_mo_dhl__wunschnachbar_active' => 'Aktiv',
 
     'SHOP_MODULE_GROUP_mo_dhl__sender'         => 'Versand - Absenderdaten',
