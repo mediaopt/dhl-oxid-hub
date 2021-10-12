@@ -1,4 +1,7 @@
 # Changelog
+## 1.5.4
+* use existing partner id for warenpost requests
+
 ## 1.5.3
 * bugfix: add country selection to standortsuche in wave theme
 * add complete bank data for cash on delivery
