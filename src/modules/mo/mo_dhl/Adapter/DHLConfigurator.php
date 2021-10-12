@@ -36,6 +36,8 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const TEST_WARENPOST_API_PARTNER_ID = 'DP_LT';
 
+    const PROD_WARENPOST_API_PARTNER_ID = 'AMHDH';
+
     const TEST_GKV_USERNAME = '2222222222_01';
 
     const TEST_GKV_PASSWORD = 'pass';
@@ -130,7 +132,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     protected function getWarenpostProdAdditionalFields(): array
     {
         return [
-            'partnerId' => \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__prod_warenpost_partner_id') ?: ''
+            'partnerId' => self::PROD_WARENPOST_API_PARTNER_ID
         ];
     }
 
