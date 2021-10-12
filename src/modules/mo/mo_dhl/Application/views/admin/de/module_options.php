@@ -25,10 +25,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__internetmarke_layout'        => 'Layout ID für den Druck der Internetmarken',
     'SHOP_MODULE_mo_dhl__internetmarke_check'         => '',
 
-    'SHOP_MODULE_GROUP_mo_dhl__warenpost'           => 'Warenpost',
-    'SHOP_MODULE_mo_dhl__warenpost_partner_id'      => 'Partner ID',
-    'HELP_SHOP_MODULE_mo_dhl__warenpost_partner_id' => 'Partner-ID für Partner der Deutschen Post verfügbar, die das Internetmarke-Programm bereits nutzen.</br>Bei Bedarf können die Daten vom Internetmarke-Team erneut angefordert werden.',
-
     'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Versand',
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Nur leitcodierbare Adressen zulassen',
     'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => 'Aktivieren Sie die Checkbox, wenn Versandetiketten nur für Adressen erstellt werden sollen, die seitens DHL als leitcodierbar gelten. Für nicht-leitcodierbare Adressen berechnet DHL in der Regel einen Aufschlag.',

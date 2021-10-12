@@ -275,12 +275,6 @@ $aModule = [
             'value' => 'false',
         ],
         [
-            'group' => 'mo_dhl__warenpost',
-            'name'  => 'mo_dhl__warenpost_partner_id',
-            'type'  => 'str',
-            'value' => '',
-        ],
-        [
             'group' => 'mo_dhl__delivery',
             'name'  => 'mo_dhl__only_with_leitcode',
             'type'  => 'bool',

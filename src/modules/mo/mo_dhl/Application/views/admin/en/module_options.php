@@ -26,10 +26,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__internetmarke_layout'        => 'Layout ID for printing the Internetmarke',
     'SHOP_MODULE_mo_dhl__internetmarke_check'         => '',
 
-    'SHOP_MODULE_GROUP_mo_dhl__warenpost'           => 'Warenpost',
-    'SHOP_MODULE_mo_dhl__warenpost_partner_id'      => 'Partner ID',
-    'HELP_SHOP_MODULE_mo_dhl__warenpost_partner_id' => 'Partner ID available to Deutsche Post partners who already use the Internetmarke program.</br>If necessary, the data can be re-requested from the Internetmarke team.',
-
     'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Delivery',
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Allow only Codeable shipping addresses',
     'HELP_SHOP_MODULE_mo_dhl__only_with_leitcode' => 'If checkbox is enabled, shipment labels will only be created if the DHL delivery address verification succeeds (address is coedable). There is a surcharge for not codeable shipping addresses.',
