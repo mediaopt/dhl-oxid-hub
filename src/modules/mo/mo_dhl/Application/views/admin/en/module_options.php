@@ -156,7 +156,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__standortsuche_postfiliale'           => 'Postfiliale enabled',
     'SHOP_MODULE_mo_dhl__standortsuche_paketshop'             => 'Paketshop enabled',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschtag'          => 'Wunschpaket - Preferred day',
+    'SHOP_MODULE_GROUP_mo_dhl__wunschtag'          => 'Preferred delivery - Preferred day',
     'SHOP_MODULE_mo_dhl__wunschtag_active'         => 'Enabled',
     'SHOP_MODULE_mo_dhl__wunschtag_cutoff'         => 'Cut off Time',
     'HELP_SHOP_MODULE_mo_dhl__wunschtag_cutoff'    => 'Cut-off time is the latest possible order time up to which the minimum preferred day (day of order + 2 days) can be guaranteed. As soon as the time is exceeded, the earliest preferred day displayed in the frontend will be shifted to one day later (day of order + 3 days).',
