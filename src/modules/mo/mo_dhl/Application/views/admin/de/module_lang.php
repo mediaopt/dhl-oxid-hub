@@ -66,6 +66,7 @@ $aLang = [
     'MO_DHL__CUSTOM_LABEL_RECEIVER'           => 'Empfänger',
     'MO_DHL__CUSTOM_LABEL_RETURN_RECEIVER'    => 'Retoure - Empfängerdaten',
     'MO_DHL__CUSTOM_LABEL_NAME'               => 'Name',
+    'MO_DHL__CUSTOM_LABEL_COMPANY'            => 'Firma',
     'MO_DHL__CUSTOM_LABEL_ADRESS_ADDITION'    => 'Adresszusatz',
     'MO_DHL__CUSTOM_LABEL_STREETNAME'         => 'Straßenname',
     'MO_DHL__CUSTOM_LABEL_STREETNUMBER'       => 'Hausnummer',

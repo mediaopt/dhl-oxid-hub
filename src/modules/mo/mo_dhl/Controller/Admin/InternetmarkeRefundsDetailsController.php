@@ -8,6 +8,7 @@ use Mediaopt\DHL\Api\Internetmarke\RetoureStateType;
 use Mediaopt\DHL\Api\Internetmarke\RetrieveRetoureStateRequestType;
 use Mediaopt\DHL\Model\MoDHLInternetmarkeRefund;
 use OxidEsales\Eshop\Core\DatabaseProvider;
+use OxidEsales\Eshop\Core\Registry;
 
 class InternetmarkeRefundsDetailsController extends AbstractAdminDHLController
 {
@@ -37,11 +38,19 @@ class InternetmarkeRefundsDetailsController extends AbstractAdminDHLController
         $api = $adapter->buildInternetmarkeRefund();
         $request = new RetrieveRetoureStateRequestType();
         $request->setRetoureTransactionId($this->getEditObjectId());
-        $response = $api->retrieveRetoureState($request);
+        try {
+            $response = $api->retrieveRetoureState($request);
+        } catch (\Exception $error) {
+            $utilsView = Registry::get(\OxidEsales\Eshop\Core\UtilsView::class);
+            $utilsView->addErrorToDisplay('MO_DHL__ERROR_WHILE_EXECUTION');
+            $lang = Registry::getLang();
+            $error = sprintf($lang->translateString('MO_DHL__ERROR_PRINT_FORMAT'), $lang->translateString($error->getMessage()), $error->getLine(), $error->getFile());
+            $utilsView->addErrorToDisplay($error);
+            return;
+        }
         /** @var RetoureStateType $retoureStatus */
         $retoureStatus = $response->getRetoureState()[0];
         $refund = $this->getEditObject();
-        //var_dump($retoureStatus);
         $refund->assign([
             'status' => $this->extractStatus($retoureStatus),
         ]);

@@ -1,4 +1,10 @@
 # Changelog
+## 1.5.5
+* display company on custom label creation form
+* warenpost international request formatting to be compliant to API
+* add piece origin to warenpost international request for compliance to non EU delivery 
+* bugfix: catch internetmarke refund error on admin controller
+
 ## 1.5.4
 * use existing partner id for warenpost requests
 
