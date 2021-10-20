@@ -136,7 +136,7 @@ class Content
         $errorMessage = implode(' ,', array_merge(
             $this->isStringFieldCorrect('contentPieceDescription', $this->contentPieceDescription, self::DESCRIPTION_LENGTH_MIN, self::DESCRIPTION_LENGTH_MAX),
             $this->isIntFieldCorrect('contentPieceNetweight', $this->contentPieceNetweight, self::NETWEIGHT_MIN, self::NETWEIGHT_MAX, true),
-            $this->isStringFieldCorrect('contentPieceOrigin', $this->contentPieceOrigin, self::ORIGIN_LENGTH),
+            $this->isStringFieldCorrect('contentPieceOrigin', $this->contentPieceOrigin, self::ORIGIN_LENGTH, null, true),
             $this->isIntFieldCorrect('contentPieceAmount', $this->contentPieceAmount, self::AMOUNT_MIN, self::AMOUNT_MAX, true),
             $this->isStringFieldCorrect('contentPieceHsCode', $this->contentPieceHsCode, self::HS_CODE_LENGTH_MIN, self::HS_CODE_LENGTH_MAX)
         ));

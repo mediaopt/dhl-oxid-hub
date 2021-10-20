@@ -204,17 +204,23 @@ class WarenpostShipmentOrderRequestBuilder extends BaseShipmentBuilder
          * @var OrderArticle $orderArticle
          */
         foreach ($order->getOrderArticles() as $orderArticle) {
+            $price = sprintf('%.2f', $orderArticle->getPrice()->getPrice());
             $weightInGrams = $this->getArticleWeight($orderArticle, $config, true) * 1000;
             $amount = $orderArticle->getFieldData('oxamount');
 
             $content = new Content(
-                $orderArticle->getPrice()->getPrice(),
+                $price,
                 $weightInGrams,
                 $amount
             );
-
-            $content->setContentPieceDescription($orderArticle->getArticle()->getFieldData('oxtitle'));
-
+            $contentPieceDescription = $orderArticle->getArticle()->getFieldData('oxtitle');
+            if (strlen($contentPieceDescription) > 33) {
+                $contentPieceDescription = substr($contentPieceDescription, 30) . '...';
+            }
+            $content->setContentPieceDescription($contentPieceDescription);
+            $content->setContentPieceOrigin($this->getIsoalpha2FromIsoalpha3(
+                $config->getShopConfVar('mo_dhl__sender_country')
+            ));
             $content->validate();
 
             $contents[] = $content->toArray();

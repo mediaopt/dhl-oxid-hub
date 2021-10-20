@@ -64,6 +64,15 @@
                                 [{if $shipmentOrder.receiver.type == 'address'}]
                                     <tr>
                                         <td>
+                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_COMPANY'}]
+                                        </td>
+                                        <td>
+                                            <input type="text" name="data[receiver][name2]"
+                                                   value="[{$address->getName2()}]">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
                                             [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_STREETNAME'}]
                                         </td>
                                         <td>
