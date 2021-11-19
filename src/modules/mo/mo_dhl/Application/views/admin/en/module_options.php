@@ -92,7 +92,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retoure_receiver_country_DEU'     => 'Germany',
     'SHOP_MODULE_mo_dhl__retoure_receiver_country_AUT'     => 'Austria',
 
-    'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Wunschpaket - Parcel shop finder',
+    'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Preferred delivery - Parcel shop finder',
     'SHOP_MODULE_mo_dhl__prod_standortsuche_password'         => 'DHL Location Finder Password',
     'HELP_SHOP_MODULE_mo_dhl__prod_standortsuche_password'    => 'Your Password for the <a href="https://developer.dhl.com/api-reference/location-finder" target="_blank">DHL Location Finder API</a>.',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximum number of hits',
@@ -152,7 +152,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__standortsuche_postfiliale'           => 'Postfiliale enabled',
     'SHOP_MODULE_mo_dhl__standortsuche_paketshop'             => 'Paketshop enabled',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschtag'          => 'Wunschpaket - Preferred day',
+    'SHOP_MODULE_GROUP_mo_dhl__wunschtag'          => 'Preferred delivery - Preferred day',
     'SHOP_MODULE_mo_dhl__wunschtag_active'         => 'Enabled',
     'SHOP_MODULE_mo_dhl__wunschtag_cutoff'         => 'Cut off Time',
     'HELP_SHOP_MODULE_mo_dhl__wunschtag_cutoff'    => 'Cut-off time is the latest possible order time up to which the minimum preferred day (day of order + 2 days) can be guaranteed. As soon as the time is exceeded, the earliest preferred day displayed in the frontend will be shifted to one day later (day of order + 3 days).',
@@ -174,10 +174,10 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__handing_over_fri'   => 'Friday',
     'SHOP_MODULE_mo_dhl__handing_over_sat'   => 'Saturday',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschort'  => 'Wunschpaket - Preferred location',
+    'SHOP_MODULE_GROUP_mo_dhl__wunschort'  => 'Preferred delivery - Drop-off location',
     'SHOP_MODULE_mo_dhl__wunschort_active' => 'Enabled',
 
-    'SHOP_MODULE_GROUP_mo_dhl__wunschnachbar'  => 'Wunschpaket - Preferred neighbor',
+    'SHOP_MODULE_GROUP_mo_dhl__wunschnachbar'  => 'Preferred delivery - Neighbor',
     'SHOP_MODULE_mo_dhl__wunschnachbar_active' => 'Enabled',
 
     'SHOP_MODULE_GROUP_mo_dhl__sender'         => 'Delivery - Sender data',

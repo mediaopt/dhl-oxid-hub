@@ -35,12 +35,12 @@ class Wunschpaket extends Base
     /**
      * @var string
      */
-    const WUNSCHORT = 'Wunschort';
+    const WUNSCHORT = 'Ablageort';
 
     /**
      * @var string
      */
-    const WUNSCHNACHBAR = 'Wunschnachbar';
+    const WUNSCHNACHBAR = 'Nachbar';
 
     /**
      * @var int
