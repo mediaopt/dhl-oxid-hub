@@ -1,4 +1,7 @@
 # Changelog
+## 1.5.6
+* renamed DHL services
+
 ## 1.5.5
 * display company on custom label creation form
 * warenpost international request formatting to be compliant to API
