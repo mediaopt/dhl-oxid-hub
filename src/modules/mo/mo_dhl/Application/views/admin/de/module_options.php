@@ -95,7 +95,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retoure_receiver_country_DEU'     => 'Deutschland',
     'SHOP_MODULE_mo_dhl__retoure_receiver_country_AUT'     => 'Österreich',
 
-    'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Wunschpaket - Standortsuche',
+    'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Wunschzustellung - Standortsuche',
     'SHOP_MODULE_mo_dhl__prod_standortsuche_password'         => 'DHL Standortsuche Passwort',
     'HELP_SHOP_MODULE_mo_dhl__prod_standortsuche_password'    => 'Ihr Passwort für die <a href="https://developer.dhl.com/api-reference/location-finder" target="_blank">DHL Standortsuche</a>.',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximale Trefferanzahl',

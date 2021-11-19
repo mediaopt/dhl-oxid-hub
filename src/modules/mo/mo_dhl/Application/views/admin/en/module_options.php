@@ -96,7 +96,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retoure_receiver_country_DEU'     => 'Germany',
     'SHOP_MODULE_mo_dhl__retoure_receiver_country_AUT'     => 'Austria',
 
-    'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Wunschpaket - Parcel shop finder',
+    'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Preferred delivery - Parcel shop finder',
     'SHOP_MODULE_mo_dhl__prod_standortsuche_password'         => 'DHL Location Finder Password',
     'HELP_SHOP_MODULE_mo_dhl__prod_standortsuche_password'    => 'Your Password for the <a href="https://developer.dhl.com/api-reference/location-finder" target="_blank">DHL Location Finder API</a>.',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximum number of hits',
