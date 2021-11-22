@@ -1,4 +1,7 @@
 # Changelog
+## 1.5.7
+* use existing mandant id for prodws requests
+
 ## 1.5.6
 * renamed DHL services
 

@@ -4,15 +4,15 @@
 namespace Mediaopt\DHL\Controller\Admin;
 
 
-use Mediaopt\DHL\Api\ProdWS\AccountProdReferenceType;
+use Mediaopt\DHL\Api\ProdWS\ExceptionDetailType;
 use Mediaopt\DHL\Api\ProdWS\GetProductListRequestType;
-use Mediaopt\DHL\Api\ProdWS\SalesProductType;
 use Mediaopt\DHL\Model\MoDHLInternetmarkeProduct;
 use Mediaopt\DHL\Model\MoDHLInternetmarkeProductList;
-use OxidEsales\Eshop\Core\DatabaseProvider;
 
 class InternetmarkeProductsDetailsController extends AbstractAdminDHLController
 {
+
+    use ErrorDisplayTrait;
 
     /**
      * @return string
@@ -39,6 +39,11 @@ class InternetmarkeProductsDetailsController extends AbstractAdminDHLController
         $prodWS = $adapter->buildProdWS();
         $response = $prodWS->getProductList(new GetProductListRequestType(true, 0, false, null, null));
 
+        if ($exception = $response->getException()) {
+            $this->displayErrors(array_map([$this, 'parseExceptionDetails'], $exception->getExceptionDetail()));
+            return;
+        }
+
         foreach ($response->getResponse()->getSalesProductList()->getSalesProduct() as $listItem) {
             $product = MoDHLInternetmarkeProduct::fromProductType($listItem);
             $product->save();
@@ -52,6 +57,15 @@ class InternetmarkeProductsDetailsController extends AbstractAdminDHLController
             $product->save();
         }
         return;
+    }
+
+    /**
+     * @param ExceptionDetailType $exception
+     * @return string
+     */
+    public function parseExceptionDetails(ExceptionDetailType $exception) : string
+    {
+        return ($exception->getErrorMessage() . ': ' . $exception->getErrorDetail());
     }
 
     /**

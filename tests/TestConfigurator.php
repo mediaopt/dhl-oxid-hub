@@ -7,8 +7,6 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
 
     const TEST_PORTOKASSE_PASSWORD = '9W8ixXmjd3XEWg0c';
 
-    const TEST_PRODWS_MANDANT_ID = 'MEDIAOPT';
-
     /**
      * @return string
      */
@@ -210,7 +208,7 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerProdWSMandantId()
     {
-        return self::TEST_PRODWS_MANDANT_ID;
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::PRODWS_MANDANT_ID;
     }
 
     /**
