@@ -258,18 +258,12 @@ $aModule = [
         ],
         [
             'group' => 'mo_dhl__internetmarke',
-            'name'  => 'mo_dhl__internetmarke_mandant_id',
-            'type'  => 'str',
-            'value' => '',
-        ],
-        [
-            'group' => 'mo_dhl__internetmarke',
             'name'  => 'mo_dhl__internetmarke_layout',
             'type'  => 'str',
             'value' => '1',
         ],
         [
-            'group' => 'mo_dhl__internetmarke',
+            'group' => 'mo_dhl__portokasse',
             'name'  => 'mo_dhl__internetmarke_check',
             'type'  => 'bool',
             'value' => 'false',

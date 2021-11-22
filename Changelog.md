@@ -1,4 +1,7 @@
 # Changelog
+## develop
+* use existing madnant id for prodws requests
+
 ## 1.5.6
 * renamed DHL services
 

@@ -54,6 +54,8 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const PROD_INTERNETMARKE_SIGNATURE = 'v9hFqrH1JH5vBdtd8f9XXjMpkSNl6UcW';
 
+    const PRODWS_MANDANT_ID = 'MEDIAOPT';
+
     const PRODWS_USERNAME = 'mediaopt';
 
     const PRODWS_PASSWORD = 'B&5%bk?dx7';
@@ -267,7 +269,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerProdWSMandantId()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__internetmarke_mandant_id') ?: '';
+        return self::PRODWS_MANDANT_ID;
     }
 
     /**
