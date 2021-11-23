@@ -585,7 +585,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     /**
      * @return bool
      */
-    protected function usesWarenpostInternational(): bool
+    public function usesWarenpostInternational(): bool
     {
         return $this->getProcess() && $this->getProcess()->usesWarenpostInternational();
     }

@@ -55,9 +55,27 @@ class WarenpostShipmentOrderRequestBuilder extends BaseShipmentBuilder
      */
     protected function buildSender(Config $config): string
     {
-        return $config->getShopConfVar('mo_dhl__sender_line1')
-            . ' ' . $config->getShopConfVar('mo_dhl__sender_line2')
+        return $config->getShopConfVar('mo_dhl__sender_line1');
+    }
+
+    /**
+     * @param Config $config
+     * @return string
+     */
+    protected function buildAddressLine1(Config $config): string
+    {
+        return $config->getShopConfVar('mo_dhl__sender_line2')
             . ' ' . $config->getShopConfVar('mo_dhl__sender_line3');
+    }
+
+    /**
+     * @param Config $config
+     * @return string
+     */
+    protected function buildAddressLine2(Config $config): string
+    {
+        return $config->getShopConfVar('mo_dhl__sender_street')
+            . ' ' . $config->getShopConfVar('mo_dhl__sender_street_number');
     }
 
     /**
@@ -87,8 +105,6 @@ class WarenpostShipmentOrderRequestBuilder extends BaseShipmentBuilder
         $recipient = $customerData['fname'] . ' ' . $customerData['lname'];
         $addressLine1 = $customerData['street'] . ' ' . $customerData['streetnr'];
         $country = $this->buildCountry($customerData['countryid']);
-        $senderAddressLine1 = $config->getShopConfVar('mo_dhl__sender_street')
-            . ' ' . $config->getShopConfVar('mo_dhl__sender_street_number');
         $senderCountry = $this->getIsoalpha2FromIsoalpha3(
             $config->getShopConfVar('mo_dhl__sender_country')
         );
@@ -101,7 +117,7 @@ class WarenpostShipmentOrderRequestBuilder extends BaseShipmentBuilder
             $customerData['city'],
             $country->getCountryISOCode(),
             $senderName,
-            $senderAddressLine1,
+            $this->buildAddressLine1($config),
             $config->getShopConfVar('mo_dhl__sender_zip'),
             $config->getShopConfVar('mo_dhl__sender_city'),
             $senderCountry,
@@ -109,6 +125,7 @@ class WarenpostShipmentOrderRequestBuilder extends BaseShipmentBuilder
             $this->calculateWeight($order) * 1000
         );
 
+        $itemData->setSenderAddressLine2($this->buildAddressLine2($config));
         $itemData->setShipmentCurrency($order->getFieldData('oxcurrency'));
         $itemData->setContents($this->buildContetns($order));
 

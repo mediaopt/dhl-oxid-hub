@@ -179,6 +179,8 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__wunschnachbar_active' => 'Aktiv',
 
     'SHOP_MODULE_GROUP_mo_dhl__sender'         => 'Versand - Absenderdaten',
+    'SHOP_MODULE_mo_dhl__sender_custom'        => 'DHL Paketankündigung individualisieren',
+    'HELP_SHOP_MODULE_mo_dhl__sender_custom'   => 'Möchten Sie die DHL Paketankündigung individualisieren? Sie können ab sofort Ihr Logo und den gewünschten Shop-Namen in der Paketankündigung anzeigen lassen. Nutzen Sie dafür das folgende <a href="https://www.dhl.de/de/geschaeftskunden/paket/versandsoftware/dhl-paketankuendigung/formular.html" target="_blank" rel="noopener noreferrer">Formular</a>.',
     'SHOP_MODULE_mo_dhl__sender_line1'         => 'Zeile 1',
     'SHOP_MODULE_mo_dhl__sender_line2'         => 'Zeile 2',
     'SHOP_MODULE_mo_dhl__sender_line3'         => 'Zeile 3',
