@@ -1,4 +1,9 @@
 # Changelog
+## 1.5.8
+* sender data build logic updated for warenpost international
+* retoure and individual label buttons removed for warenpost international
+* package announcement customisation link added in settings  
+
 ## 1.5.7
 * use existing mandant id for prodws requests
 

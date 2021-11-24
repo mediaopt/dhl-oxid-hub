@@ -180,6 +180,8 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__wunschnachbar_active' => 'Enabled',
 
     'SHOP_MODULE_GROUP_mo_dhl__sender'         => 'Delivery - Sender data',
+    'SHOP_MODULE_mo_dhl__sender_custom'        => 'DHL parcel custom announcement',
+    'HELP_SHOP_MODULE_mo_dhl__sender_custom'   => 'Do you want to customize the DHL parcel announcement? You can now display your logo and the desired shop name in the package announcement. Use the following  <a href="https://www.dhl.de/de/geschaeftskunden/paket/versandsoftware/dhl-paketankuendigung/formular.html" target="_blank" rel="noopener noreferrer">form</a>.',
     'SHOP_MODULE_mo_dhl__sender_line1'         => 'Line 1',
     'SHOP_MODULE_mo_dhl__sender_line2'         => 'Line 2',
     'SHOP_MODULE_mo_dhl__sender_line3'         => 'Line 3',
