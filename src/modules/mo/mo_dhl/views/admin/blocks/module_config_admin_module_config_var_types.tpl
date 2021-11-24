@@ -25,6 +25,7 @@
             </li>
         [{/foreach}]
     </ul>
+[{elseif $module_var == 'mo_dhl__sender_custom'}]
 [{else}]
     [{$smarty.block.parent}]
 [{/if}]

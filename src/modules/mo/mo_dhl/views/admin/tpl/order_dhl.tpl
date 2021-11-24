@@ -258,7 +258,7 @@
     <input type="submit" value="[{oxmultilang ident="GENERAL_SAVE"}]"/>
     <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CREATE_LABEL"}]"
            onClick="Javascript:document.myedit.fnc.value='createLabel'">
-    [{if not $oView->usesInternetmarke()}]
+    [{if not $oView->usesInternetmarke() && not $oView->usesWarenpostInternational()}]
     <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CUSTOM_LABEL_CREATE"}]"
            onClick="Javascript:document.myedit.fnc.value='prepareCustomLabel'">
     <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CREATE_RETOURE"}]"

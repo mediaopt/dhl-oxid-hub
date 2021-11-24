@@ -17,7 +17,7 @@ $aModule = [
         'en' => '<p>Enable features providing Post & Paket Delivery to your OXID shop.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbook</a></p>',
     ],
     'thumbnail'   => 'logo.png',
-    'version'     => '1.5.7',
+    'version'     => '1.5.8',
     'author'      => '<a href="http://www.mediaopt.de" target="_blank">mediaopt.</a>',
     'url'         => 'http://www.mediaopt.de',
     'email'       => 'shopsoftware@deutschepost.de',
@@ -294,6 +294,12 @@ $aModule = [
             'group' => 'mo_dhl__delivery_weight',
             'name'  => 'mo_dhl__packing_weight_absolute',
             'type'  => 'str',
+        ],
+        [
+            'group' => 'mo_dhl__sender',
+            'name'  => 'mo_dhl__sender_custom',
+            'type'  => 'bool',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__sender',
