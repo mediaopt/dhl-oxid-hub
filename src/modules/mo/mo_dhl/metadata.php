@@ -299,7 +299,7 @@ $aModule = [
             'group' => 'mo_dhl__sender',
             'name'  => 'mo_dhl__sender_custom',
             'type'  => 'bool',
-            'value' => '',
+            'value' => 'false',
         ],
         [
             'group' => 'mo_dhl__sender',
