@@ -62,17 +62,17 @@ class WarenpostShipmentOrderRequestBuilder extends BaseShipmentBuilder
      * @param Config $config
      * @return string
      */
-    protected function buildAddressLine1(Config $config): string
+    protected function buildSenderAdditionalLines(Config $config): string
     {
-        return $config->getShopConfVar('mo_dhl__sender_line2')
-            . ' ' . $config->getShopConfVar('mo_dhl__sender_line3');
+        return trim($config->getShopConfVar('mo_dhl__sender_line2')
+            . ' ' . $config->getShopConfVar('mo_dhl__sender_line3'));
     }
 
     /**
      * @param Config $config
      * @return string
      */
-    protected function buildAddressLine2(Config $config): string
+    protected function buildSenderAddressLine(Config $config): string
     {
         return $config->getShopConfVar('mo_dhl__sender_street')
             . ' ' . $config->getShopConfVar('mo_dhl__sender_street_number');
@@ -109,6 +109,12 @@ class WarenpostShipmentOrderRequestBuilder extends BaseShipmentBuilder
             $config->getShopConfVar('mo_dhl__sender_country')
         );
 
+        $senderAddressLine = $this->buildSenderAddressLine($config);
+
+        // We have three sender lines, street and street number.
+        // DHL have only one sender line and two address lines.
+        $senderAdditionalLines = $this->buildSenderAdditionalLines($config);
+
         $itemData = new ItemData(
             $this->getProductId($order),
             $recipient,
@@ -117,7 +123,7 @@ class WarenpostShipmentOrderRequestBuilder extends BaseShipmentBuilder
             $customerData['city'],
             $country->getCountryISOCode(),
             $senderName,
-            $this->buildAddressLine1($config),
+            $senderAdditionalLines ? : $senderAddressLine,
             $config->getShopConfVar('mo_dhl__sender_zip'),
             $config->getShopConfVar('mo_dhl__sender_city'),
             $senderCountry,
@@ -125,7 +131,12 @@ class WarenpostShipmentOrderRequestBuilder extends BaseShipmentBuilder
             $this->calculateWeight($order) * 1000
         );
 
-        $itemData->setSenderAddressLine2($this->buildAddressLine2($config));
+        // If sender line 2 and 3 not empty - they go to senderAddressLine1
+        // street and street number go to senderAddressLine2
+        if (!empty($senderAdditionalLines)) {
+            $itemData->setSenderAddressLine2($senderAddressLine);
+        }
+
         $itemData->setShipmentCurrency($order->getFieldData('oxcurrency'));
         $itemData->setContents($this->buildContetns($order));
 
