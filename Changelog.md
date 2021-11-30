@@ -1,4 +1,7 @@
 # Changelog
+## 1.5.9
+* bugfix for empty additional sender lines
+
 ## 1.5.8
 * sender data build logic updated for warenpost international
 * retoure and individual label buttons removed for warenpost international
