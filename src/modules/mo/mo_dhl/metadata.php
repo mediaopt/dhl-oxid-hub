@@ -297,12 +297,6 @@ $aModule = [
         ],
         [
             'group' => 'mo_dhl__sender',
-            'name'  => 'mo_dhl__sender_custom',
-            'type'  => 'bool',
-            'value' => 'false',
-        ],
-        [
-            'group' => 'mo_dhl__sender',
             'name'  => 'mo_dhl__sender_line1',
             'type'  => 'str',
             'value' => '',
@@ -365,6 +359,12 @@ $aModule = [
         [
             'group' => 'mo_dhl__services',
             'name'  => 'mo_dhl__paketankuendigung_active',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__services',
+            'name'  => 'mo_dhl__paketankuendigung_custom',
             'type'  => 'bool',
             'value' => 'false',
         ],
