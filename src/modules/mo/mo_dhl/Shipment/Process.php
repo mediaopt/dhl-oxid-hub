@@ -216,6 +216,10 @@ class Process
         ],
         self::INTERNETMARKE => [
         ],
+        self::WARENPOST_INTERNATIONAL => [
+            self::SERVICE_GO_GREEN,
+            self::SERVICE_PREMIUM,
+        ]
     ];
 
     /**
@@ -284,6 +288,7 @@ class Process
             self::EUROPAKET                    => '54',
             self::PAKET_CONNECT                => '55',
             self::WARENPOST                    => '62',
+            self::WARENPOST_INTERNATIONAL      => '66',
             self::PAKET_AT                     => '86',
             self::PAKET_CONNECT_AT             => '87',
             self::PAKET_INTERNATIONAL_AT       => '82',
@@ -430,6 +435,7 @@ class Process
             self::EUROPAKET                    => 'V54EPAK',
             self::PAKET_CONNECT                => 'V55PAK',
             self::WARENPOST                    => 'V62WP',
+            self::WARENPOST_INTERNATIONAL      => 'V66WPI',
             self::PAKET_AT                     => 'V86PARCEL',
             self::PAKET_CONNECT_AT             => 'V87PARCEL',
             self::PAKET_INTERNATIONAL_AT       => 'V82PARCEL',
@@ -459,14 +465,6 @@ class Process
     public function usesInternetMarke()
     {
         return $this->getIdentifier() === self::INTERNETMARKE;
-    }
-
-    /**
-     * @return bool
-     */
-    public function usesWarenpostInternational(): bool
-    {
-        return $this->getIdentifier() === self::WARENPOST_INTERNATIONAL;
     }
 
     /**
