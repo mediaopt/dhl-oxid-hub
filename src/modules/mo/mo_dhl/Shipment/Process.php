@@ -455,7 +455,8 @@ class Process
     {
         return in_array($this->identifier, [
             self::PAKET_INTERNATIONAL,
-            self::PAKET_INTERNATIONAL_AT
+            self::PAKET_INTERNATIONAL_AT,
+            self::WARENPOST_INTERNATIONAL,
         ]);
     }
 
