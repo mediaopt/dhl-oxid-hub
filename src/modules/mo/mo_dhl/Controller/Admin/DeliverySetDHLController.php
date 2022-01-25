@@ -8,7 +8,6 @@
 namespace Mediaopt\DHL\Controller\Admin;
 
 
-use Mediaopt\DHL\Api\Warenpost;
 use Mediaopt\DHL\Model\MoDHLInternetmarkeProductList;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
@@ -30,9 +29,6 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
         parent::render();
         $this->addTplParam('processes', Process::getAvailableProcesses());
         $this->addTplParam('endorsements', $this->getEndorsements());
-        $this->addTplParam('warenpostRegions', Warenpost::getWarenpostRegions());
-        $this->addTplParam('warenpostTrackingTypes', Warenpost::getWarenpostTrackingTypes());
-        $this->addTplParam('warenpostPackageTypes', Warenpost::getWarenpostPackageTypes());
         $id = $this->getEditObjectId();
         if (isset($id) && $id != "-1") {
             $deliverySet = oxNew(\OxidEsales\Eshop\Application\Model\DeliverySet::class);
@@ -73,11 +69,6 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
                 $this->validateInternetmarkeProduct($params['oxdeliveryset__mo_dhl_participation']);
             } else {
                 $this->validateParticipation($params['oxdeliveryset__mo_dhl_participation']);
-            }
-            if ($params['oxdeliveryset__mo_dhl_process'] === Process::WARENPOST_INTERNATIONAL) {
-                $this->validateWarenpostRegion($params['oxdeliveryset__mo_dhl_warenpost_product_region']);
-                $this->validateWarenpostTrackingType($params['oxdeliveryset__mo_dhl_warenpost_product_tracking_type']);
-                $this->validateWarenpostPackageType($params['oxdeliveryset__mo_dhl_warenpost_product_package_type']);
             }
         } catch (\InvalidArgumentException $exception) {
             $this->setEditObjectId($deliverySet->getId());
@@ -142,42 +133,6 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
     }
 
     /**
-     * @param string $warenpostRegion
-     * @throws \InvalidArgumentException
-     */
-    private function validateWarenpostRegion(string $warenpostRegion)
-    {
-         if (!in_array($warenpostRegion, Warenpost::getWarenpostRegions())) {
-            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__WARENPOST_PRODUCT_REGION_ERROR');
-            throw new \InvalidArgumentException('MO_DHL__WARENPOST_PRODUCT_REGION_ERROR');
-        }
-    }
-
-    /**
-     * @param string $trackingType
-     * @throws \InvalidArgumentException
-     */
-    private function validateWarenpostTrackingType(string $trackingType)
-    {
-        if (!in_array($trackingType, Warenpost::getWarenpostTrackingTypes())) {
-            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__WARENPOST_PRODUCT_TRACKING_TYPE_ERROR');
-            throw new \InvalidArgumentException('MO_DHL__WARENPOST_PRODUCT_TRACKING_TYPE_ERROR');
-        }
-    }
-
-    /**
-     * @param string $packageType
-     * @throws \InvalidArgumentException
-     */
-    private function validateWarenpostPackageType(string $packageType)
-    {
-        if (!in_array($packageType, Warenpost::getWarenpostPackageTypes())) {
-            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__WARENPOST_PRODUCT_PACKAGE_TYPE_ERROR');
-            throw new \InvalidArgumentException('MO_DHL__WARENPOST_PRODUCT_PACKAGE_TYPE_ERROR');
-        }
-    }
-
-    /**
      * @return bool
      */
     public function usesInternetmarke()
@@ -185,16 +140,6 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
         $deliverySet = oxNew(\OxidEsales\Eshop\Application\Model\DeliverySet::class);
         $deliverySet->load($this->getEditObjectId());
         return $deliverySet->getFieldData('mo_dhl_process') === Process::INTERNETMARKE;
-    }
-
-    /**
-     * @return bool
-     */
-    public function usesWarenpostInternational(): bool
-    {
-        $deliverySet = oxNew(\OxidEsales\Eshop\Application\Model\DeliverySet::class);
-        $deliverySet->load($this->getEditObjectId());
-        return $deliverySet->getFieldData('mo_dhl_process') === Process::WARENPOST_INTERNATIONAL;
     }
 
     /**

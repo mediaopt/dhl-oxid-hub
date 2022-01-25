@@ -96,26 +96,6 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     }
 
     /**
-     * @return array
-     */
-    protected function getWarenpostProdAdditionalFields(): array
-    {
-        return [
-            'partnerId' => \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_WARENPOST_API_PARTNER_ID
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    protected function getWarenpostSandboxAdditionalFields(): array
-    {
-        return [
-            'partnerId' => \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_WARENPOST_API_PARTNER_ID
-        ];
-    }
-
-    /**
      * @return string
      */
     protected function getEkp()

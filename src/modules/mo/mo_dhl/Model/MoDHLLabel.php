@@ -130,30 +130,6 @@ class MoDHLLabel extends BaseModel
     }
 
     /**
-     * @param Order           $order
-     * @param WarenpostResponse $warenpostResponse
-     * @return MoDHLLabel
-     */
-    public static function fromOrderAndWarenpost(Order $order, WarenpostResponse $warenpostResponse): MoDHLLabel
-    {
-        $label = new self();
-        $label->storeData(
-            $warenpostResponse->getShipmentNumber() . '.pdf',
-            $warenpostResponse->getLabelData()
-        );
-        $fileName = 'documents' . DIRECTORY_SEPARATOR . $warenpostResponse->getShipmentNumber();
-        $label->assign([
-            'oxshopid'       => $order->getShopId(),
-            'orderId'        => $order->getId(),
-            'type'           => self::TYPE_DELIVERY,
-            'shipmentNumber' => $warenpostResponse->getShipmentNumber(),
-            'labelUrl'       => Registry::get(ViewConfig::class)->getModuleUrl('mo_dhl', $fileName . '.pdf'),
-        ]);
-
-        return $label;
-    }
-
-    /**
      * @param string $fileName
      * @param array  $data
      * @throws \OxidEsales\EshopCommunity\Core\Exception\FileException
