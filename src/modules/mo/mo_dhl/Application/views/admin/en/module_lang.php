@@ -25,9 +25,6 @@ $aLang = [
     'HELP_MO_DHL__INTERNETMARKE_PRODUCT_NUMBER'    => 'Please use an ID from the list in DHL > Internetmarke > Products.',
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'A participation number is exactly two characters long and consists solely of letters and digits',
     'MO_DHL__INTERNETMARKE_PRODUCT_ERROR'          => 'The specified product for Internetmarke could not be found. Please use an ID from the list in DHL > Internetmarke > Products.',
-    'MO_DHL__WARENPOST_PRODUCT_REGION_ERROR'       => 'The specified region for Warenpost Product could not be found. Please use an value from selector in Shop Settings > Shipping Methods > DHL > Customer region.',
-    'MO_DHL__WARENPOST_PRODUCT_TRACKING_TYPE_ERROR'=> 'The specified tracking type for Warenpost Product could not be found. Please use an value from selector in Shop Settings > Shipping Methods > DHL > Tracking type.',
-    'MO_DHL__WARENPOST_PRODUCT_PACKAGE_TYPE_ERROR' => 'The specified package type for Warenpost Product could not be found. Please use an value from selector in Shop Settings > Shipping Methods > DHL > Package type.',
     'MO_DHL__OPERATOR'                             => 'Delivery operator',
     'HELP_MO_DHL__OPERATOR'                        => 'Please provide the name of the delivery operator. This information is needed for a possible return outside the EU.',
     'MO_DHL__CUSTOMER_RETOURE_REQUEST_STATUS'      => 'Customer retoure request status',
@@ -78,10 +75,6 @@ $aLang = [
     'MO_DHL__CUSTOM_LABEL_POST_NUMBER'        => 'Post number',
     'MO_DHL__CUSTOM_LABEL_SHIPPER'            => 'Shipper',
     'MO_DHL__CUSTOM_LABEL_SERVICES'           => 'Shipment Services',
-
-    'MO_DHL__WARENPOST_PRODUCT_REGION'        => 'Customer region',
-    'MO_DHL__WARENPOST_PRODUCT_TRACKING_TYPE' => 'Tracking type',
-    'MO_DHL__WARENPOST_PRODUCT_PACKAGE_TYPE'  => 'Package type',
 
     'MO_DHL__COUNTRY_DHL'              => 'DHL',
     'MO_DHL__RETOURE_RECEIVER_ID'      => 'Retoure receiver (receiverID)',

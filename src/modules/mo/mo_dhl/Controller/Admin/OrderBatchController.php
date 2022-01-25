@@ -181,9 +181,6 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
 
         $splittedOrderIds = $this->splitOrderIdsByProcess($orderIds);
 
-        if (array_key_exists(Process::WARENPOST_INTERNATIONAL, $splittedOrderIds)) {
-            $this->createWarenpostInternationalLabels($splittedOrderIds[Process::WARENPOST_INTERNATIONAL]);
-        }
         if (array_key_exists(Process::INTERNETMARKE, $splittedOrderIds)) {
             $this->createIntermarkeLabels($splittedOrderIds[Process::INTERNETMARKE]);
         }
@@ -356,7 +353,6 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         $idsByProcess = [];
         foreach ($orders as $orderData) {
             switch ($orderData['MO_DHL_PROCESS']) {
-                case Process::WARENPOST_INTERNATIONAL:
                 case Process::INTERNETMARKE: {
                     $process = $orderData['MO_DHL_PROCESS'];
                     break;
@@ -369,20 +365,6 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         }
 
         return $idsByProcess;
-    }
-
-    /**
-     * @param array $orderIds
-     */
-    protected function createWarenpostInternationalLabels(array $orderIds)
-    {
-        $orderDHLController = oxNew(OrderDHLController::class);
-        $order = oxNew(Order::class);
-        foreach ($orderIds as $orderId) {
-            $order->load($orderId);
-            $orderDHLController->setOrder($order);
-            $orderDHLController->createWarenpostLabel();
-        }
     }
 
     /**

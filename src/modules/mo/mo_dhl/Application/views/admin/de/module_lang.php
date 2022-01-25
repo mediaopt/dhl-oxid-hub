@@ -24,9 +24,6 @@ $aLang = [
     'MO_DHL__INTERNETMARKE_PRODUCT_NUMBER'         => 'Produktnummer',
     'HELP_MO_DHL__INTERNETMARKE_PRODUCT_NUMBER'    => 'Bitte verwenden Sie eine ID aus der Liste unter DHL > Internetmarke > Produkte.',
     'MO_DHL__INTERNETMARKE_PRODUCT_ERROR'          => 'Das angegebene Produkt für die Internetmarke wurde nicht gefunden. Bitte verwenden Sie eine ID aus der Liste unter DHL > Internetmarke > Produkte.',
-    'MO_DHL__WARENPOST_PRODUCT_REGION_ERROR'       => 'Die angegebene Region für die Warenpost Produkt wurde nicht gefunden. Bitte verwenden Sie einen Wert aus dem Selektor in Shopeinstellungen > Versandarten > DHL > Kundenregion.',
-    'MO_DHL__WARENPOST_PRODUCT_TRACKING_TYPE_ERROR'=> 'Der angegebene Trackingtyp für die Warenpost Produkt wurde nicht gefunden. Bitte verwenden Sie einen Wert aus dem Selektor in Shopeinstellungen > Versandarten > DHL > Trackingtyp.',
-    'MO_DHL__WARENPOST_PRODUCT_PACKAGE_TYPE_ERROR' => 'Der angegebene Pakettyp für die Warenpost Produkt wurde nicht gefunden. Bitte verwenden Sie einen Wert aus dem Selektor in Shopeinstellungen > Versandarten > DHL > Pakettyp.',
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'Eine Teilnahmenummer besteht aus genau zwei Zeichen und enthält nur Buchstaben und Ziffern.',
     'MO_DHL__OPERATOR'                             => 'Zusteller',
     'HELP_MO_DHL__OPERATOR'                        => 'Tragen Sie hier den Zusteller der Lieferung an. Dieser wird für eine mögliche Retoure außerhalb der EU benötigt.',
@@ -78,10 +75,6 @@ $aLang = [
     'MO_DHL__CUSTOM_LABEL_POST_NUMBER'        => 'Postnummer',
     'MO_DHL__CUSTOM_LABEL_SHIPPER'            => 'Absender',
     'MO_DHL__CUSTOM_LABEL_SERVICES'           => 'Versand-Services',
-
-    'MO_DHL__WARENPOST_PRODUCT_REGION'        => 'Kundenregion',
-    'MO_DHL__WARENPOST_PRODUCT_TRACKING_TYPE' => 'Trackingtyp',
-    'MO_DHL__WARENPOST_PRODUCT_PACKAGE_TYPE'  => 'Pakettyp',
 
     'MO_DHL__COUNTRY_DHL'              => 'DHL',
     'MO_DHL__RETOURE_RECEIVER_ID'      => 'Retourenempfängername (receiverID)',

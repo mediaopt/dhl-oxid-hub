@@ -156,12 +156,4 @@ class Main
     {
         return $this->getConfigurator()->buildProdWS($this->getLogger());
     }
-
-    /**
-     * @return Api\Warenpost
-     */
-    public function buildWarenpost(): Warenpost
-    {
-        return $this->getConfigurator()->buildWarenpost($this->getLogger());
-    }
 }

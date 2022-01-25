@@ -165,18 +165,12 @@ class Order extends Order_parent
         $ekp = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__merchant_ekp');
         $process = $this->getDelSet()->oxdeliveryset__mo_dhl_process->rawValue;
         $participation = $this->getDelSet()->oxdeliveryset__mo_dhl_participation->rawValue;
-        $warenpostRegion = $this->getDelSet()->oxdeliveryset__mo_dhl_warenpost_product_region->rawValue;
-        $warenpostTrackingType = $this->getDelSet()->oxdeliveryset__mo_dhl_warenpost_product_tracking_type->rawValue;
-        $warenpostPackageType = $this->getDelSet()->oxdeliveryset__mo_dhl_warenpost_product_package_type->rawValue;
         $allowNotification = $this->moDHLGetNotificationAllowance();
         $birthday = $this->moDHLGetBirthday();
 
         $this->oxorder__mo_dhl_ekp = \oxNew(Field::class, $ekp, Field::T_RAW);
         $this->oxorder__mo_dhl_process = \oxNew(Field::class, $process, Field::T_RAW);
         $this->oxorder__mo_dhl_participation = \oxNew(Field::class, $participation, Field::T_RAW);
-        $this->oxorder__mo_dhl_warenpost_product_region = \oxNew(Field::class, $warenpostRegion, Field::T_RAW);
-        $this->oxorder__mo_dhl_warenpost_product_tracking_type = \oxNew(Field::class, $warenpostTrackingType, Field::T_RAW);
-        $this->oxorder__mo_dhl_warenpost_product_package_type = \oxNew(Field::class, $warenpostPackageType, Field::T_RAW);
         $this->oxorder__mo_dhl_allow_notification = \oxNew(Field::class, $allowNotification);
         $this->oxorder__mo_dhl_ident_check_birthday = \oxNew(Field::class, $birthday);
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
@@ -185,10 +179,7 @@ class Order extends Order_parent
                     MO_DHL_PARTICIPATION = ?,
                     MO_DHL_PROCESS = ?,
                     MO_DHL_ALLOW_NOTIFICATION = ?,
-                    MO_DHL_IDENT_CHECK_BIRTHDAY = ?,
-                    MO_DHL_WARENPOST_PRODUCT_REGION = ?,
-                    MO_DHL_WARENPOST_PRODUCT_TRACKING_TYPE = ?,
-                    MO_DHL_WARENPOST_PRODUCT_PACKAGE_TYPE = ?
+                    MO_DHL_IDENT_CHECK_BIRTHDAY = ?
                     WHERE OXID = ?';
         $db->execute($query, [
             $ekp,
@@ -196,9 +187,6 @@ class Order extends Order_parent
             $process,
             $allowNotification,
             $birthday,
-            $warenpostRegion,
-            $warenpostTrackingType,
-            $warenpostPackageType,
             $this->getId(),
         ]);
 
