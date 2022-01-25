@@ -1,4 +1,7 @@
 # Changelog
+## 1.5.10
+* new Warenpost International process
+
 ## 1.5.9
 * bugfix for empty additional sender lines
 
