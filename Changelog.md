@@ -1,5 +1,5 @@
 # Changelog
-## 1.5.10
+## 1.6.0
 * new Warenpost International process
 
 ## 1.5.9
