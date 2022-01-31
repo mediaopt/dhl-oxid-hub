@@ -25,9 +25,6 @@ $aLang = [
     'HELP_MO_DHL__INTERNETMARKE_PRODUCT_NUMBER'    => 'Please use an ID from the list in DHL > Internetmarke > Products.',
     'MO_DHL__PARTICIPATION_NUMBER_ERROR'           => 'A participation number is exactly two characters long and consists solely of letters and digits',
     'MO_DHL__INTERNETMARKE_PRODUCT_ERROR'          => 'The specified product for Internetmarke could not be found. Please use an ID from the list in DHL > Internetmarke > Products.',
-    'MO_DHL__WARENPOST_PRODUCT_REGION_ERROR'       => 'The specified region for Warenpost Product could not be found. Please use an value from selector in Shop Settings > Shipping Methods > DHL > Customer region.',
-    'MO_DHL__WARENPOST_PRODUCT_TRACKING_TYPE_ERROR'=> 'The specified tracking type for Warenpost Product could not be found. Please use an value from selector in Shop Settings > Shipping Methods > DHL > Tracking type.',
-    'MO_DHL__WARENPOST_PRODUCT_PACKAGE_TYPE_ERROR' => 'The specified package type for Warenpost Product could not be found. Please use an value from selector in Shop Settings > Shipping Methods > DHL > Package type.',
     'MO_DHL__OPERATOR'                             => 'Delivery operator',
     'HELP_MO_DHL__OPERATOR'                        => 'Please provide the name of the delivery operator. This information is needed for a possible return outside the EU.',
     'MO_DHL__CUSTOMER_RETOURE_REQUEST_STATUS'      => 'Customer retoure request status',
@@ -79,10 +76,6 @@ $aLang = [
     'MO_DHL__CUSTOM_LABEL_SHIPPER'            => 'Shipper',
     'MO_DHL__CUSTOM_LABEL_SERVICES'           => 'Shipment Services',
 
-    'MO_DHL__WARENPOST_PRODUCT_REGION'        => 'Customer region',
-    'MO_DHL__WARENPOST_PRODUCT_TRACKING_TYPE' => 'Tracking type',
-    'MO_DHL__WARENPOST_PRODUCT_PACKAGE_TYPE'  => 'Package type',
-
     'MO_DHL__COUNTRY_DHL'              => 'DHL',
     'MO_DHL__RETOURE_RECEIVER_ID'      => 'Retoure receiver (receiverID)',
     'HELP_MO_DHL__RETOURE_RECEIVER_ID' => 'You can find the retoure receivers (receiverID) in the DHL Business Customer Portal (https://www.dhl-geschaeftskundenportal.de) at "Retoure" > "Settings" > "Receiver ID".',
@@ -101,7 +94,7 @@ $aLang = [
     'MO_DHL__ADDITIONAL_INSURANCE'        => 'Additional Insurance',
     'HELP_MO_DHL__ADDITIONAL_INSURANCE'   => 'DHL normally insures the delivery inside Germany up to 500 EUR concerning losing or damaging. For deliveries of more expensive products DHL offers an additional insurance up to 2.500 EUR (+6,00 EUR surcharge) or 25.000 EUR  (+18,00 EUR surcharge). You can find more informationens <a href="https://www.dhl.de/content/dam/images/pdf/GK/Services/dhl-transportversicherung-infoblatt-en-052020.pdf" target="_blank" rel="noopener noreferrer">here</a>',
     'MO_DHL__PREMIUM'                     => 'Premium Service',
-    'HELP_MO_DHL__PREMIUM'                => 'The DHL Paket International with Service Premium is preferred and always transported by the fastest route. Your package always takes the next possible flight or truck to the destination and gets priority status in the destination country. So it reaches its destination much faster.',
+    'HELP_MO_DHL__PREMIUM'                => 'The DHL Paket International and Warenpost International with Service Premium is preferred and always transported by the fastest route. Your package always takes the next possible flight or truck to the destination and gets priority status in the destination country. So it reaches its destination much faster.',
     'MO_DHL__ZOLLTARIF'                   => 'HS tariff number',
     'HELP_MO_DHL__ZOLLTARIF'              => 'Optional parameter used for the creation of export document for DHL Paket International. Internationally standardized system of names and numbers to classify traded products.',
 

@@ -95,60 +95,6 @@
                                         </td>
                                     </tr>
                                 [{/if}]
-                                <tr>
-                                    <td>
-                                        <label for="warenpostRegion">[{oxmultilang ident="MO_DHL__WARENPOST_PRODUCT_REGION"}]
-                                            :</label>
-                                    </td>
-                                    <td>
-                                        <select id="warenpostRegion" name="warenpostRegion">
-                                            [{if !isset($warenpostRegionValue) }]
-                                                <option value="">-</option>
-                                            [{/if}]
-                                            [{foreach from=$warenpostRegions item='region'}]
-                                                <option value="[{$region}]" [{if $warenpostRegionValue === $region}] selected[{/if}]>
-                                                    [{$region}]
-                                                </option>
-                                            [{/foreach}]
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label for="warenpostTrackingType">[{oxmultilang ident="MO_DHL__WARENPOST_PRODUCT_TRACKING_TYPE"}]
-                                            :</label>
-                                    </td>
-                                    <td>
-                                        <select id="warenpostTrackingType" name="warenpostTrackingType">
-                                            [{if !isset($warenpostTrackingTypeValue) }]
-                                                <option value="">-</option>
-                                            [{/if}]
-                                            [{foreach from=$warenpostTrackingTypes item='trackingType'}]
-                                                <option value="[{$trackingType}]" [{if $warenpostTrackingTypeValue === $trackingType}] selected[{/if}]>
-                                                    [{$trackingType}]
-                                                </option>
-                                            [{/foreach}]
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <label for="warenpostPackageType">[{oxmultilang ident="MO_DHL__WARENPOST_PRODUCT_PACKAGE_TYPE"}]
-                                            :</label>
-                                    </td>
-                                    <td>
-                                        <select id="warenpostPackageType" name="warenpostPackageType">
-                                            [{if !isset($warenpostPackageTypeValue) }]
-                                                <option value="">-</option>
-                                            [{/if}]
-                                            [{foreach from=$warenpostPackageTypes item='packageType'}]
-                                                <option value="[{$packageType}]" [{if $warenpostPackageTypeValue === $packageType}] selected[{/if}]>
-                                                    [{$packageType}]
-                                                </option>
-                                            [{/foreach}]
-                                        </select>
-                                    </td>
-                                </tr>
                             </table>
                         </td>
                     </tr>
@@ -258,7 +204,7 @@
     <input type="submit" value="[{oxmultilang ident="GENERAL_SAVE"}]"/>
     <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CREATE_LABEL"}]"
            onClick="Javascript:document.myedit.fnc.value='createLabel'">
-    [{if not $oView->usesInternetmarke() && not $oView->usesWarenpostInternational()}]
+    [{if not $oView->usesInternetmarke()}]
     <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CUSTOM_LABEL_CREATE"}]"
            onClick="Javascript:document.myedit.fnc.value='prepareCustomLabel'">
     <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL__CREATE_RETOURE"}]"

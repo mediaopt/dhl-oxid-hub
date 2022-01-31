@@ -114,26 +114,6 @@ abstract class Configurator
     }
 
     /**
-     * @return Credentials
-     */
-    protected function buildWarenpostCredentials(): Credentials
-    {
-        return $this->isProductionEnvironment()
-            ? Credentials::createProductionWarenpostEndpoint(
-                $this->getCustomerPortokasseProdLogin(),
-                $this->getCustomerPortokasseProdPassword(),
-                $this->getEkp(),
-                $this->getWarenpostProdAdditionalFields()
-            )
-            : Credentials::createSandboxWarenpostEndpoint(
-                $this->getCustomerPortokasseSandboxLogin(),
-                $this->getCustomerPortokasseSandboxPassword(),
-                $this->getEkp(),
-                $this->getWarenpostSandboxAdditionalFields()
-            );
-    }
-
-    /**
      * @return string
      */
     abstract protected function getSandboxLogin();
@@ -244,16 +224,6 @@ abstract class Configurator
     abstract protected function getSandboxStandortsuchePassword();
 
     /**
-     * @return array
-     */
-    abstract protected function getWarenpostProdAdditionalFields(): array;
-
-    /**
-     * @return array
-     */
-    abstract protected function getWarenpostSandboxAdditionalFields(): array;
-
-    /**
      * @return string
      */
     abstract protected function getEkp();
@@ -339,20 +309,6 @@ abstract class Configurator
             $this->buildProdWSCredentials(),
             $this->buildCustomerProdWSCredentials(),
             $logger ?: $this->buildLogger()
-        );
-    }
-
-    /**
-     * @param LoggerInterface|null $logger
-     * @param ClientInterface|null $client
-     * @return Warenpost
-     */
-    public function buildWarenpost(LoggerInterface $logger = null, ClientInterface $client = null): Warenpost
-    {
-        return new Warenpost(
-            $this->buildWarenpostCredentials(),
-            $logger ?: $this->buildLogger(),
-            $client ?: $this->buildClient()
         );
     }
 

@@ -31,8 +31,6 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
                 'getCustomerPortokasseProdPassword',
                 'getCustomerPortokasseSandboxLogin',
                 'getCustomerPortokasseSandboxPassword',
-                'getWarenpostProdAdditionalFields',
-                'getWarenpostSandboxAdditionalFields',
                 'getProdWSLogin',
                 'getProdWSPassword',
                 'getCustomerProdWSMandantId',
