@@ -14,32 +14,10 @@ class Process
     const PAKET = 'PAKET';
 
     /**
-     * @var string DHL Paket PRIO
-     */
-    const PAKET_PRIO = 'PAKET_PRIO';
-
-    /**
-     * @var string DHL Paket Taggleich
-     */
-    const PAKET_TAGGLEICH = 'PAKET_TAGGLEICH';
-
-    /**
      * @var string DHL Retoure für DHL Paket
      */
     const RETOURE_FUER_PAKET = 'RETOURE_FUER_PAKET';
 
-    /**
-     * @var string DHL Retoure für DHL Paket Taggleich
-     */
-    const RETOURE_FUER_PAKET_TAGGLEICH = 'RETOURE_FUER_PAKET_TAGGLEICH';
-    /**
-     * @var string DHL Retoure für DHL Paket Austria
-     */
-    const RETOURE_FUER_PAKET_AT = 'RETOURE_FUER_PAKET_AT';
-    /**
-     * @var string DHL Retoure für DHL Paket Connect
-     */
-    const RETOURE_FUER_PAKET_CONNECT = 'RETOURE_FUER_PAKET_CONNECT';
     /**
      * @var string DHL Paket International
      */
@@ -49,26 +27,6 @@ class Process
      * @var string DHL Europaket (B2B)
      */
     const EUROPAKET = 'EUROPAKET';
-
-    /**
-     * @var string DHL Paket Connect
-     */
-    const PAKET_CONNECT = 'PAKET_CONNECT';
-
-    /**
-     * @var string DHL Paket Austria
-     */
-    const PAKET_AT = 'PAKET_AT';
-
-    /**
-     * @var string DHL Paket Connect (Austria)
-     */
-    const PAKET_CONNECT_AT = 'PAKET_CONNECT_AT';
-
-    /**
-     * @var string DHL Paket International (Austria)
-     */
-    const PAKET_INTERNATIONAL_AT = 'PAKET_INTERNATIONAL_AT';
 
     /**
      * @var string Warenpost national
@@ -173,19 +131,6 @@ class Process
             self::SERVICE_BULKY_GOOD,
             self::SERVICE_CASH_ON_DELIVERY,
         ],
-        self::PAKET_PRIO => [
-            self::SERVICE_PREFERRED_NEIGHBOUR,
-            self::SERVICE_PREFERRED_LOCATION,
-            self::SERVICE_NOTIFICATION,
-            self::SERVICE_PREFERRED_DAY,
-            self::SERVICE_GO_GREEN,
-            self::SERVICE_PARCEL_OUTLET_ROUTING,
-            self::SERVICE_DHL_RETOURE,
-            self::SERVICE_VISUAL_AGE_CHECK,
-            self::SERVICE_IDENT_CHECK,
-            self::SERVICE_ADDITIONAL_INSURANCE,
-            self::SERVICE_CASH_ON_DELIVERY,
-        ],
         self::PAKET_INTERNATIONAL => [
             self::SERVICE_NOTIFICATION,
             self::SERVICE_GO_GREEN,
@@ -198,13 +143,6 @@ class Process
             self::SERVICE_NOTIFICATION,
             self::SERVICE_GO_GREEN,
             self::SERVICE_ADDITIONAL_INSURANCE,
-        ],
-        self::PAKET_CONNECT => [
-            self::SERVICE_NOTIFICATION,
-            self::SERVICE_GO_GREEN,
-            self::SERVICE_DHL_RETOURE,
-            self::SERVICE_ADDITIONAL_INSURANCE,
-            self::SERVICE_BULKY_GOOD,
         ],
         self::WARENPOST => [
             self::SERVICE_PREFERRED_NEIGHBOUR,
@@ -282,20 +220,11 @@ class Process
         /** @var string[] $identifierToNumber */
         $identifierToNumber = [
             self::PAKET                        => '01',
-            self::PAKET_PRIO                   => '01',
-            self::PAKET_TAGGLEICH              => '06',
             self::PAKET_INTERNATIONAL          => '53',
             self::EUROPAKET                    => '54',
-            self::PAKET_CONNECT                => '55',
             self::WARENPOST                    => '62',
             self::WARENPOST_INTERNATIONAL      => '66',
-            self::PAKET_AT                     => '86',
-            self::PAKET_CONNECT_AT             => '87',
-            self::PAKET_INTERNATIONAL_AT       => '82',
             self::RETOURE_FUER_PAKET           => '07',
-            self::RETOURE_FUER_PAKET_TAGGLEICH => '07',
-            self::RETOURE_FUER_PAKET_CONNECT   => '85',
-            self::RETOURE_FUER_PAKET_AT        => '85',
         ];
 
         return $identifierToNumber[$this->identifier];
@@ -429,20 +358,11 @@ class Process
     {
         $identifierToService = [
             self::PAKET                        => 'V01PAK',
-            self::PAKET_PRIO                   => 'V01PRIO',
-            self::PAKET_TAGGLEICH              => 'V06PAK',
             self::PAKET_INTERNATIONAL          => 'V53WPAK',
             self::EUROPAKET                    => 'V54EPAK',
-            self::PAKET_CONNECT                => 'V55PAK',
             self::WARENPOST                    => 'V62WP',
             self::WARENPOST_INTERNATIONAL      => 'V66WPI',
-            self::PAKET_AT                     => 'V86PARCEL',
-            self::PAKET_CONNECT_AT             => 'V87PARCEL',
-            self::PAKET_INTERNATIONAL_AT       => 'V82PARCEL',
             self::RETOURE_FUER_PAKET           => 'V01PAK',
-            self::RETOURE_FUER_PAKET_TAGGLEICH => 'V06PAK',
-            self::RETOURE_FUER_PAKET_CONNECT   => 'V87PARCEL',
-            self::RETOURE_FUER_PAKET_AT        => 'V86PARCEL',
         ];
 
         return $identifierToService[$this->identifier];
@@ -455,7 +375,6 @@ class Process
     {
         return in_array($this->identifier, [
             self::PAKET_INTERNATIONAL,
-            self::PAKET_INTERNATIONAL_AT,
             self::WARENPOST_INTERNATIONAL,
         ]);
     }
@@ -475,14 +394,8 @@ class Process
     {
         return [
             'PAKET'                  => 'DHL Paket',
-            'PAKET_PRIO'             => 'DHL Paket PRIO',
-            'PAKET_TAGGLEICH'        => 'DHL Paket Taggleich',
             'PAKET_INTERNATIONAL'    => 'DHL Paket International',
             'EUROPAKET'              => 'DHL Europaket (B2B)',
-            'PAKET_CONNECT'          => 'DHL Paket Connect',
-            'PAKET_AT'               => 'DHL Paket Austria',
-            'PAKET_CONNECT_AT'       => 'DHL Paket Connect (Austria)',
-            'PAKET_INTERNATIONAL_AT' => 'DHL Paket International (Austria)',
             'WARENPOST'              => 'Warenpost national',
             'INTERNETMARKE'          => 'Internetmarke',
             'WARENPOST_INTERNATIONAL'=> 'Warenpost International',
