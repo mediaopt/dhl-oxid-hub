@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+    <card>
+        <title>Credentials</title>
+        <input-field>
+            <name>merchantId</name>
+            <label>Merchant Id</label>
+        </input-field>
+        <input-field type="password">
+            <name>apiKey</name>
+            <label>API Key</label>
+        </input-field>
+        <input-field type="password">
+            <name>apiSecret</name>
+            <label>API Secret</label>
+        </input-field>
+        <input-field type="bool">
+            <name>isLiveMode</name>
+            <defaultValue>false</defaultValue>
+            <label>Is live mode</label>
+        </input-field>
+        <component name="api-test-button">
+            <name>apiTest</name>
+        </component>
+        <input-field type="single-select">
+            <name>logLevel</name>
+            <options>
+                <option>
+                    <id>DEBUG</id>
+                    <name>DEBUG</name>
+                </option>
+                <option>
+                    <id>ERROR</id>
+                    <name>ERROR</name>
+                </option>
+                <option>
+                    <id>INFO</id>
+                    <name>INFO</name>
+                </option>
+            </options>
+            <defaultValue>INFO</defaultValue>
+            <label>Choose the loglevel of non-error messages</label>
+        </input-field>
+    </card>
+</config>
