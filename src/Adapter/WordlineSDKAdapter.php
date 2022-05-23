@@ -73,7 +73,7 @@ class WordlineSDKAdapter
             ];
         }
         $credentials['endpoint'] = $this->getEndpoint($credentials['isLiveMode']);
-debug($credentials);
+
         $communicatorConfiguration = new CommunicatorConfiguration(
             $credentials['apiKey'],
             $credentials['apiSecret'],
