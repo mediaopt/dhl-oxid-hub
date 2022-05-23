@@ -1,0 +1,45 @@
+{
+    "name": "mediaopt/wordline",
+    "description": "The Wordline Plugin",
+    "version": "0.0.1",
+    "type": "shopware-platform-plugin",
+    "license": "proprietary",
+    "config": {
+        "prepend-autoloader": false,
+        "vendor-dir": "src/vendor"
+    },
+    "authors": [
+        {
+            "name": "Mediaopt"
+        }
+    ],
+    "extra": {
+        "shopware-plugin-class": "MoptWordline\\MoptWordline",
+        "copyright": "(c) by Mediaopt GmbH",
+        "label": {
+            "de-DE": "Wordline Shopware6 plugin",
+            "en-GB": "Wordline Shopware6 plugin"
+        },
+        "description": {
+            "de-DE": "Das Wordline Plugin.",
+            "en-GB": "The Wordline Plugin."
+        },
+        "manufacturerLink": {
+            "de-DE": "https://www.mediaopt.de/",
+            "en-GB": "https://www.mediaopt.de/"
+        },
+        "supportLink": {
+            "de-DE": "support@mediaopt.de",
+            "en-GB": "support@mediaopt.de"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "MoptWordline\\": "src/"
+        }
+    },
+    "require": {
+        "shopware/core": "^6.4.0.0",
+        "wl-online-payments-direct/sdk-php": "^3.4"
+    }
+}
