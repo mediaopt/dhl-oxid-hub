@@ -57,8 +57,7 @@ class ApiTestController extends AbstractController
             return $this->response(false, "There is no config data.");
         }
 
-        $salesChannelId = $request->request->get('salesChannelId');
-        $salesChannelId = is_null($salesChannelId) ? 'null' : $salesChannelId;
+        $salesChannelId = $request->request->get('salesChannelId') ?: 'null';
 
         $credentials = $this->buildCredentials($salesChannelId, $configFormData);
 
@@ -71,10 +70,7 @@ class ApiTestController extends AbstractController
             $message = '<br/>' . $e->getMessage();
         }
 
-        $success = false;
-        if (empty($message)) {
-            $success = true;
-        }
+        $success = empty($message);
 
         return $this->response($success, $message);
     }
