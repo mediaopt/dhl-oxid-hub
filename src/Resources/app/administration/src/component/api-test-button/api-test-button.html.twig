@@ -1,0 +1,9 @@
+<div>
+    <sw-button-process
+        :isLoading="isLoading"
+        :processSuccess="isSaveSuccessful"
+        @process-finish="saveFinish"
+        @click="check"
+    >{{ $tc('api-test-button.button') }}</sw-button-process>
+    <br/>
+</div>
