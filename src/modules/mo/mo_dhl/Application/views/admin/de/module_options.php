@@ -218,4 +218,7 @@ $aLang = [
     'SHOP_MODULE_GROUP_mo_dhl__privacy'       => 'Datenschutz',
     'SHOP_MODULE_mo_dhl__privacy_policy'      => 'Datenschutzerklärung',
     'HELP_SHOP_MODULE_mo_dhl__privacy_policy' => 'Wir erwarten einen Bezeichner eine CMS-Seite.',
+
+    'SHOP_MODULE_mo_dhl__standortsuche_map_radius'      => 'Radius in Metern für Standortsuche',
+    'HELP_SHOP_MODULE_mo_dhl__standortsuche_map_radius' => 'Einen expliziten Suchradius anzugeben kann die Suchergebnisse verbessern. Bei einem Radius von 0 wird dieser nicht verwendet.',
 ];
