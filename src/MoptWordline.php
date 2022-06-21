@@ -15,7 +15,7 @@ class MoptWordline extends Plugin
 {
     const PLUGIN_NAME = 'MoptWordline';
 
-    const PLUGIN_VERSION = '0.0.1';
+    const PLUGIN_VERSION = '0.0.2';
 
     /**
      * @param InstallContext $installContext
