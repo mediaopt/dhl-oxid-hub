@@ -11,6 +11,7 @@ use OnlinePayments\Sdk\CommunicatorConfiguration;
 use OnlinePayments\Sdk\Communicator;
 use OnlinePayments\Sdk\Client;
 use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductsParams;
+use OnlinePayments\Sdk\Domain\GetPaymentProductsResponse;
 
 /**
  * This is the adaptor for Wordline's API
@@ -22,12 +23,6 @@ class WordlineSDKAdapter
 {
     /** @var string */
     const INTEGRATOR_NAME = 'Mediaopt';
-
-    /** @var string */
-    const SANDBOX_ENDPOINT = 'https://payment.preprod.direct.worldline-solutions.com';
-
-    /** @var string */
-    const LIVE_ENDPOINT = 'https://payment.direct.worldline-solutions.com';
 
     /** @var MerchantClient */
     protected $merchantClient;
@@ -42,13 +37,13 @@ class WordlineSDKAdapter
     private $salesChannelId;
 
     /**
-     * @param SystemConfigService $cachedConfigService
+     * @param SystemConfigService $systemConfigService
      * @param Logger $logger
      * @param string|null $salesChannelId
      */
-    public function __construct(SystemConfigService $cachedConfigService, Logger $logger, $salesChannelId = null)
+    public function __construct(SystemConfigService $systemConfigService, Logger $logger, $salesChannelId = null)
     {
-        $this->systemConfigService = $cachedConfigService;
+        $this->systemConfigService = $systemConfigService;
         $this->logger = $logger;
         $this->salesChannelId = $salesChannelId;
     }
@@ -91,13 +86,14 @@ class WordlineSDKAdapter
     }
 
     /**
-     * @return \OnlinePayments\Sdk\DataObject|\OnlinePayments\Sdk\Domain\GetPaymentProductsResponse
+     * @return GetPaymentProductsResponse
      * @throws \Exception
      */
-    public function getPaymentMethods()
+    public function getPaymentMethods(): GetPaymentProductsResponse
     {
         $queryParams = new GetPaymentProductsParams();
 
+        //todo take this from client settings
         $queryParams->setCountryCode("DE");
         $queryParams->setCurrencyCode("EUR");
 
@@ -112,10 +108,11 @@ class WordlineSDKAdapter
      * @param bool $isLiveMode
      * @return string
      */
-    private function getEndpoint(bool $isLiveMode)
+    private function getEndpoint(bool $isLiveMode): string
     {
-        $endpoint = $isLiveMode ? self::LIVE_ENDPOINT : self::SANDBOX_ENDPOINT;
-        return $endpoint;
+        return $isLiveMode
+            ? $this->getPluginConfig(Form::LIVE_ENDPOINT_FIELD)
+            : $this->getPluginConfig(Form::SANDBOX_ENDPOINT_FIELD);
     }
 
     /**

@@ -7,6 +7,7 @@
 
 namespace MoptWordline\Controller\Payment;
 
+use MoptWordline\Bootstrap\Form;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
@@ -22,7 +23,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
-use Shopware\Core\Framework\Routing\Annotation\Since;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -37,7 +37,7 @@ class PaymentFinalizeController extends AbstractController
 {
     private RouterInterface $router;
 
-    private EntityRepositoryInterface $orderTransactionRepo;
+    private EntityRepositoryInterface $orderRepository;
 
     private AsynchronousPaymentHandlerInterface $paymentHandler;
 
@@ -46,12 +46,12 @@ class PaymentFinalizeController extends AbstractController
     private LoggerInterface $logger;
 
     public function __construct(
-        EntityRepositoryInterface $orderTransactionRepo,
+        EntityRepositoryInterface $orderRepository,
         AsynchronousPaymentHandlerInterface $paymentHandler,
         OrderTransactionStateHandler $transactionStateHandler,
         RouterInterface $router
     ) {
-        $this->orderTransactionRepo = $orderTransactionRepo;
+        $this->orderRepository = $orderRepository;
         $this->paymentHandler = $paymentHandler;
         $this->transactionStateHandler = $transactionStateHandler;
         $this->router = $router;
@@ -69,39 +69,34 @@ class PaymentFinalizeController extends AbstractController
      */
     public function finalizeTransaction(Request $request, SalesChannelContext $salesChannelContext): RedirectResponse
     {
-        //debug($request);
-        debug('finalize');
-        //call service/payment here
-       /**/ $token = $request->query->get('token');
-        //$this->logger->debug('Starting with token {token}.', ['token' => $token]);
+        $hostedCheckoutId = $request->query->get('hostedCheckoutId');
 
-        /*$criteria = new Criteria();
+        $criteria = new Criteria();
         $criteria->addAssociation('order');
         $criteria->addFilter(
             new MultiFilter(
                 MultiFilter::CONNECTION_AND,
                 [
                     new EqualsFilter(
-                        \sprintf('customFields.%s', SwagPayPal::ORDER_TRANSACTION_CUSTOM_FIELDS_PAYPAL_TOKEN),
-                        $token
+                        \sprintf('customFields.%s', Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_ID),
+                        $hostedCheckoutId
                     ),
                     new NotFilter(
                         NotFilter::CONNECTION_AND,
                         [
                             new EqualsFilter(
-                                \sprintf('customFields.%s', SwagPayPal::ORDER_TRANSACTION_CUSTOM_FIELDS_PAYPAL_TOKEN),
+                                \sprintf('customFields.%s', Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_ID),
                                 null
                             ),
                         ]
                     ),
                 ]
             )
-        );*/
+        );
 
         $context = $salesChannelContext->getContext();
         /** @var OrderTransactionEntity|null $orderTransaction */
-        //get order by transaction code
-        /*$orderTransaction = $this->orderTransactionRepo->search($criteria, $context)->getEntities()->first();
+        $orderTransaction = $this->orderRepository->search($criteria, $context)->getEntities()->first();
 
         if ($orderTransaction === null) {
             throw new InvalidTransactionException('');
@@ -110,7 +105,7 @@ class PaymentFinalizeController extends AbstractController
 
         if ($order === null) {
             throw new InvalidTransactionException($orderTransaction->getId());
-        }*/
+        }
 
         $paymentTransactionStruct = new AsyncPaymentTransactionStruct($orderTransaction, $order, '');
 
@@ -118,12 +113,11 @@ class PaymentFinalizeController extends AbstractController
         $changedPayment = $request->query->getBoolean('changedPayment');
         $finishUrl = $this->router->generate('frontend.checkout.finish.page', [
             'orderId' => $orderId,
-            PayPalPaymentHandler::PAYPAL_PLUS_CHECKOUT_ID => true,
             'changedPayment' => $changedPayment,
         ]);
 
         try {
-            $this->logger->debug('Forwarding to payment handler.');
+          //  $this->logger->debug('Forwarding to payment handler.');
             $this->paymentHandler->finalize($paymentTransactionStruct, $request, $salesChannelContext);
         } catch (PaymentProcessException $paymentProcessException) {
             $this->logger->warning(
@@ -145,7 +139,7 @@ class PaymentFinalizeController extends AbstractController
         Context $context,
         string $orderId
     ): string {
-     /*   $errorUrl = $this->router->generate('frontend.account.edit-order.page', ['orderId' => $orderId]);
+        $errorUrl = $this->router->generate('frontend.account.edit-order.page', ['orderId' => $orderId]);
 
         if ($paymentProcessException instanceof CustomerCanceledAsyncPaymentException) {
             $this->transactionStateHandler->cancel(
@@ -168,6 +162,6 @@ class PaymentFinalizeController extends AbstractController
         );
         $urlQuery = \parse_url($errorUrl, \PHP_URL_QUERY) ? '&' : '?';
 
-        return \sprintf('%s%serror-code=%s', $errorUrl, $urlQuery, $paymentProcessException->getErrorCode());*/
+        return \sprintf('%s%serror-code=%s', $errorUrl, $urlQuery, $paymentProcessException->getErrorCode());
     }
 }

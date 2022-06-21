@@ -39,7 +39,7 @@ class PaymentMethod
         $examplePaymentData = [
             'handlerIdentifier' => Payment::class,
             'name' => 'Wordline',
-            'descriprion' => 'Wordline full redirect payment method',
+            'description' => 'Wordline full redirect payment method',
             'pluginId' => $pluginId,
             'afterOrderEnabled' => false
         ];
