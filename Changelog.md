@@ -1,4 +1,8 @@
 # Changelog
+
+## next version
+* added optional radius as parameter for location searches
+
 ## 1.6.0
 * new Warenpost International process
 
