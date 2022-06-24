@@ -23,6 +23,10 @@
             <name>sandboxEndpoint</name>
             <label>Sandbox endpoint</label>
         </input-field>
+        <input-field>
+            <name>returnUrl</name>
+            <label>Return URL</label>
+        </input-field>
         <input-field type="bool">
             <name>isLiveMode</name>
             <defaultValue>false</defaultValue>

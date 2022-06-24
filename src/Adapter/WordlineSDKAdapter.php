@@ -123,4 +123,51 @@ class WordlineSDKAdapter
     {
         return $this->systemConfigService->get($key, $this->salesChannelId);
     }
+
+    /**
+     * @param string $message
+     * @param int $logLevel
+     * @param mixed $additionalData
+     * @return void
+     */
+    public function log(string $message, int $logLevel = 0, $additionalData = '')
+    {
+        if ($logLevel == 0) {
+            $logLevel = $this->getLogLevel();
+        }
+
+        $this->logger->addRecord(
+            $logLevel,
+            $message,
+            [
+                'source' => 'Wordline',
+                'environment' => 'env',
+                'additionalData' => json_encode($additionalData),
+            ]
+        );
+    }
+
+    /**
+     * get monolog log-level by module configuration
+     * @return int
+     */
+    protected function getLogLevel()
+    {
+        $logLevel = 'INFO';
+
+        if ($overrideLogLevel = $this->getPluginConfig(Form::LOG_LEVEL)) {
+            $logLevel = $overrideLogLevel;
+        }
+
+        //set levels
+        switch ($logLevel) {
+            case 'INFO':
+                return Logger::INFO;
+            case 'ERROR':
+                return Logger::ERROR;
+            case 'DEBUG':
+            default:
+                return Logger::DEBUG;
+        }
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace MoptWordline\Service;
 
+use MoptWordline\MoptWordline;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -34,9 +35,9 @@ class PaymentMethod
 
         /** @var PluginIdProvider $pluginIdProvider */
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
-        $pluginId = $pluginIdProvider->getPluginIdByBaseClass(get_class($this), $context);
+        $pluginId = $pluginIdProvider->getPluginIdByBaseClass(MoptWordline::class, $context);
 
-        $examplePaymentData = [
+        $paymentData = [
             'handlerIdentifier' => Payment::class,
             'name' => 'Wordline',
             'description' => 'Wordline full redirect payment method',
@@ -46,7 +47,7 @@ class PaymentMethod
 
         /** @var EntityRepositoryInterface $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
-        $paymentRepository->create([$examplePaymentData], $context);
+        $paymentRepository->create([$paymentData], $context);
     }
 
     /**

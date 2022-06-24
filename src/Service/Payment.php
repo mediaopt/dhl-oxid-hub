@@ -8,16 +8,12 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStat
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\RefundPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
 use Shopware\Core\Checkout\Payment\Exception\CustomerCanceledAsyncPaymentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Shopware\Storefront\Event\StorefrontRenderEvent;
-use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoadedEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -27,6 +23,7 @@ use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use MoptWordline\Bootstrap\Form;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Payment implements  AsynchronousPaymentHandlerInterface
 {
@@ -34,7 +31,11 @@ class Payment implements  AsynchronousPaymentHandlerInterface
 
     private OrderTransactionStateHandler $transactionStateHandler;
 
+    private EntityRepositoryInterface $orderTransactionRepository;
+
     private EntityRepositoryInterface $orderRepository;
+
+    private TranslatorInterface $translator;
 
     private Session $session;
 
@@ -44,20 +45,25 @@ class Payment implements  AsynchronousPaymentHandlerInterface
      * @param SystemConfigService $systemConfigService
      * @param OrderTransactionStateHandler $transactionStateHandler
      * @param EntityRepositoryInterface $orderRepository
+     * @param TranslatorInterface $translator
      * @param Logger $logger
      * @param Session $session
      */
     public function __construct(
         SystemConfigService $systemConfigService,
         OrderTransactionStateHandler $transactionStateHandler,
+        EntityRepositoryInterface $orderTransactionRepository,
         EntityRepositoryInterface $orderRepository,
+        TranslatorInterface $translator,
         Logger $logger,
         Session $session
     )
     {
         $this->transactionStateHandler = $transactionStateHandler;
         $this->systemConfigService = $systemConfigService;
+        $this->orderTransactionRepository = $orderTransactionRepository;
         $this->orderRepository = $orderRepository;
+        $this->translator = $translator;
         $this->logger = $logger;
         $this->session = $session;
     }
@@ -114,17 +120,22 @@ class Payment implements  AsynchronousPaymentHandlerInterface
      */
     private function sendReturnUrlToExternalGateway(AsyncPaymentTransactionStruct $transaction, Context $context)
     {
+        $transactionId = $transaction->getOrderTransaction()->getId();
         $orderEntity = $transaction->getOrder();
+        $orderId = $orderEntity->getId();
         $currency = $orderEntity->getCurrency()->getIsoCode();
         $amountTotal = $orderEntity->getAmountTotal();
 
         $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger);
+        $adapter->log($this->translator->trans('started'));
+
         $merchantClient = $adapter->getMerchantClient();
         $hostedCheckoutClient = $merchantClient->hostedCheckout();
 
         $hostedCheckoutRequest =
             new CreateHostedCheckoutRequest();
 
+        $adapter->log($this->translator->trans('buildingOrder'));
         $order = new Order();
 
         $amountOfMoney = new AmountOfMoney();
@@ -135,22 +146,45 @@ class Payment implements  AsynchronousPaymentHandlerInterface
 
         $hostedCheckoutSpecificInput = new HostedCheckoutSpecificInput();
 
-        $hostedCheckoutSpecificInput->setReturnUrl('http://localhost:8000/wordline/payment/finalize-transaction');
+        $returnUrl = $adapter->getPluginConfig(Form::RETURN_URL_FIELD);
+        $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
         $hostedCheckoutRequest->setOrder($order);
         $hostedCheckoutRequest->setHostedCheckoutSpecificInput($hostedCheckoutSpecificInput);
 
-        // Get the response for the HostedCheckoutClient
-        $hostedCheckoutResponse = $hostedCheckoutClient->createHostedCheckout($hostedCheckoutRequest);
+        try {
+            $hostedCheckoutResponse = $hostedCheckoutClient->createHostedCheckout($hostedCheckoutRequest);
+        } catch (\Exception $e){
+            $adapter->log($e->getMessage(), Logger::ERROR);
 
-        $this->orderRepository->update([
+            throw new AsyncPaymentProcessException(
+                $transactionId,
+                \sprintf('An error occurred during the communication with Wordline%s%s', \PHP_EOL, $e->getMessage())
+            );
+        }
+
+        $customFields = [
+            Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_ID => $hostedCheckoutResponse->getHostedCheckoutId()
+        ];
+
+        $this->orderTransactionRepository->update([
             [
-                'id' => $transaction->getOrderTransaction()->getId(),
-                'customFields' => [
-                    Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_ID => $hostedCheckoutResponse->getHostedCheckoutId()
-                ]
+                'id' => $transactionId,
+                'customFields' => $customFields
             ]
         ], $context);
 
-        return $hostedCheckoutResponse->getRedirectUrl();
+        $this->orderRepository->update([
+            [
+                'id' => $orderId,
+                'customFields' => $customFields
+            ]
+        ], $context);
+
+        $link = $hostedCheckoutResponse->getRedirectUrl();
+        if ($link === null) {
+            throw new AsyncPaymentProcessException($transactionId, 'No redirect link provided by Wordline');
+        }
+
+        return $link;
     }
 }

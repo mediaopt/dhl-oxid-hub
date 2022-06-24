@@ -20,6 +20,7 @@ class Form
     const IS_LIVE_MODE_FIELD = 'MoptWordline.config.isLiveMode';
     const LIVE_ENDPOINT_FIELD = 'MoptWordline.config.liveEndpoint';
     const SANDBOX_ENDPOINT_FIELD = 'MoptWordline.config.sandboxEndpoint';
+    const RETURN_URL_FIELD = 'MoptWordline.config.returnUrl';
     const MERCHANT_ID_FIELD  = 'MoptWordline.config.merchantId';
     const API_KEY_FIELD  = 'MoptWordline.config.apiKey';
     const API_SECRET_FIELD = 'MoptWordline.config.apiSecret';
