@@ -1,5 +1,10 @@
 <?php declare(strict_types=1);
 
+/**
+ * @author Mediaopt GmbH
+ * @package MoptWordline\Service
+ */
+
 namespace MoptWordline\Service;
 
 use MoptWordline\Adapter\WordlineSDKAdapter;

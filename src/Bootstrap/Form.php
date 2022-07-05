@@ -1,9 +1,8 @@
 <?php
 
 /**
- * For the full copyright and license information, refer to the accompanying LICENSE file.
- *
- * @copyright Mediaopt GmbH
+ * @author Mediaopt GmbH
+ * @package MoptWordline\Bootstrap
  */
 
 namespace MoptWordline\Bootstrap;

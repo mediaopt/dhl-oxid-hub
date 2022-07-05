@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @author Mediaopt GmbH
+ * @package MoptWordline\Controller
+ */
+
 namespace MoptWordline\Controller\Api;
 
 use Monolog\Logger;

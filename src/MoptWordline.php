@@ -1,6 +1,11 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * @author Mediaopt GmbH
+ * @package MoptWordline
+ */
+
 namespace MoptWordline;
 
 use Shopware\Core\Framework\Plugin;
