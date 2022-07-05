@@ -4,5 +4,9 @@
         "success": "Connection was successfully tested.",
         "error": "Connection could not be established. Please check the access data.",
         "button": "Test connection"
-    }
+    },
+    "forwardToPaymentHandler": "Forwarding to payment handler.",
+    "errorWithConfirmRedirect": "Error. Redirecting to confirm page.",
+    "buildingOrder": "Building order",
+    "started": "Started"
 }

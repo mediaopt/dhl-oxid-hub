@@ -1,24 +1,72 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * @author Mediaopt GmbH
+ * @package MoptWordline
+ */
+
 namespace MoptWordline;
 
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
+use Shopware\Core\Framework\Plugin\Context\UninstallContext;
+use Shopware\Core\Framework\Plugin\Context\ActivateContext;
+use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
+use MoptWordline\Service\CustomField;
+use MoptWordline\Service\PaymentMethod;
 
 class MoptWordline extends Plugin
 {
     const PLUGIN_NAME = 'MoptWordline';
 
-    const PLUGIN_VERSION = '0.0.1';
+    const PLUGIN_VERSION = '0.0.2';
 
     /**
      * @param InstallContext $installContext
-     * @return void
      */
-    public function install(InstallContext $installContext): void
+    public function install(InstallContext $context): void
     {
-        parent::install($installContext);
+        parent::install($context);
+
+        $customField = new CustomField($this->container);
+        $customField->addCustomFields($context);
+
+        $paymentMethod = new PaymentMethod($this->container);
+        $paymentMethod->addPaymentMethod($context->getContext());
+    }
+
+    /**
+     * @param UninstallContext $context
+     */
+    public function uninstall(UninstallContext $context): void
+    {
+        parent::uninstall($context);
+
+        $paymentMethod = new PaymentMethod($this->container);
+        $paymentMethod->setPaymentMethodStatus(false, $context->getContext());
+    }
+
+    /**
+     * @param ActivateContext $context
+     */
+    public function activate(ActivateContext $context): void
+    {
+        parent::activate($context);
+
+        $paymentMethod = new PaymentMethod($this->container);
+        $paymentMethod->setPaymentMethodStatus(true, $context->getContext());
+    }
+
+    /**
+     * @param DeactivateContext $context
+     */
+    public function deactivate(DeactivateContext $context): void
+    {
+        parent::deactivate($context);
+
+        $paymentMethod = new PaymentMethod($this->container);
+        $paymentMethod->setPaymentMethodStatus(false, $context->getContext());
     }
 }
 

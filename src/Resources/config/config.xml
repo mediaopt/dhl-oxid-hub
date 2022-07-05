@@ -15,6 +15,18 @@
             <name>apiSecret</name>
             <label>API Secret</label>
         </input-field>
+        <input-field>
+            <name>liveEndpoint</name>
+            <label>Live endpoint</label>
+        </input-field>
+        <input-field>
+            <name>sandboxEndpoint</name>
+            <label>Sandbox endpoint</label>
+        </input-field>
+        <input-field>
+            <name>returnUrl</name>
+            <label>Return URL</label>
+        </input-field>
         <input-field type="bool">
             <name>isLiveMode</name>
             <defaultValue>false</defaultValue>
@@ -25,6 +37,10 @@
         </component>
         <input-field type="single-select">
             <name>logLevel</name>
+            <helpText>Choose the loglevel of non-error messages</helpText>
+            <helpText lang="de-DE">Wählen Sie den Loglevel der Nicht-Fehlermeldungen</helpText>
+            <label>Log level</label>
+            <label lang="de-DE">Log level</label>
             <options>
                 <option>
                     <id>DEBUG</id>
@@ -40,7 +56,6 @@
                 </option>
             </options>
             <defaultValue>INFO</defaultValue>
-            <label>Choose the loglevel of non-error messages</label>
         </input-field>
     </card>
 </config>
