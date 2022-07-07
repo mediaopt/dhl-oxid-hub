@@ -9,6 +9,7 @@ namespace Mediaopt\DHL\Adapter;
 
 
 use Mediaopt\DHL\Api\GKV\CountryType;
+use Mediaopt\DHL\Api\GKV\ExportDocPosition;
 use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationAdditionalInsurance;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationCashOnDelivery;
@@ -20,6 +21,7 @@ use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Model\MoDHLService;
 use Mediaopt\DHL\Shipment\Process;
+use OxidEsales\Eshop\Core\Language;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
@@ -38,9 +40,9 @@ class GKVCustomShipmentBuilder
         $receiver = $shipmentOrder->getShipment()->getReceiver();
         $returnReceiver = $shipmentOrder->getShipment()->getReturnReceiver();
         return [
-            'general'        => [
-                'weight' => $shipmentOrder->getShipment()->getShipmentDetails()->getShipmentItem()->getWeightInKG(),
-            ],
+            'weight'        => array_merge([
+                'total' => ['weight' => $shipmentOrder->getShipment()->getShipmentDetails()->getShipmentItem()->getWeightInKG(), 'title' => Registry::getLang()->translateString('GENERAL_ATALL')],
+            ], $this->getExportDocPositionWeights($shipmentOrder)),
             'shipper'        => [
                 'name'    => $shipper->getName()->getName1() . $shipper->getName()->getName2() . $shipper->getName()->getName3(),
                 'address' => $shipper->getAddress(),
@@ -76,7 +78,7 @@ class GKVCustomShipmentBuilder
      */
     public function applyCustomDataToShipmentOrder(&$shipmentOrder, $data, Order $order)
     {
-        $this->useCustomGeneralData($shipmentOrder, $data['general']);
+        $this->useCustomWeightData($shipmentOrder, $data['weight']);
         $this->useCustomShipper($shipmentOrder, $data['shipper']);
         $this->useCustomReturnReceiver($shipmentOrder, $data['returnReceiver']);
         $this->useCustomReceiver($shipmentOrder, $data['receiver']);
@@ -85,11 +87,21 @@ class GKVCustomShipmentBuilder
 
     /**
      * @param ShipmentOrderType $shipmentOrder
-     * @param array             $generalData
+     * @param array             $weightData
      */
-    protected function useCustomGeneralData(ShipmentOrderType $shipmentOrder, $generalData)
+    protected function useCustomWeightData(ShipmentOrderType $shipmentOrder, $weightData)
     {
-        $shipmentOrder->getShipment()->getShipmentDetails()->getShipmentItem()->setWeightInKG($generalData['weight']);
+        $exportDocPosition = $shipmentOrder->getShipment()->getExportDocument()->getExportDocPosition();
+        foreach ($weightData as $key => $value) {
+            if (strpos($value, ',') !== false) {
+                $value = \OxidEsales\EshopCommunity\Core\Registry::getUtils()->string2Float($value);
+            }
+            if ($key === 'total') {
+                $shipmentOrder->getShipment()->getShipmentDetails()->getShipmentItem()->setWeightInKG($value);
+            } else {
+                $exportDocPosition[$key]->setNetWeightInKG($value);
+            }
+        }
     }
 
 
@@ -225,5 +237,22 @@ class GKVCustomShipmentBuilder
             return Process::build($processNr);
         }
         return null;
+    }
+
+    /**
+     * @param ShipmentOrderType $shipmentOrder
+     * @return array[]
+     */
+    protected function getExportDocPositionWeights(ShipmentOrderType $shipmentOrder): array
+    {
+        if (!$exportDocument = $shipmentOrder->getShipment()->getExportDocument())
+        {
+            return [];
+        }
+        return array_map(
+            fn(ExportDocPosition $exportDocPosition) => ['weight' => $exportDocPosition->getNetWeightInKG(), 'title' => $exportDocPosition->getDescription()],
+            $exportDocument->getExportDocPosition()
+        );
+
     }
 }

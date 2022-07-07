@@ -103,7 +103,7 @@ class Standortsuche extends Base
     protected function buildAddressString($address, $postalCode = null, $countryIso2Code = null, $radius = 0)
     {
         if ($address instanceof Address) {
-            $postalCode = $address->getZip();
+            $postalCode = implode(' ', array_filter([$address->getZip(), $address->getCity()]));
             $countryIso2Code = $address->getCountryIso2Code();
             $address = $address->getStreet() . " " . $address->getStreetNo();
         }
