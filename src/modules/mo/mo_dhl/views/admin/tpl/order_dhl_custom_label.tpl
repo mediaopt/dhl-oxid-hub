@@ -27,18 +27,20 @@
                             <table style="border : 1px #A9A9A9; border-style : solid solid solid solid; padding-top: 5px; padding-bottom: 5px; padding-right: 5px; padding-left: 5px; width: 600px;">
                                 <tr>
                                     <td class="edittext" colspan="3">
-                                        <b>[{oxmultilang ident='MO_DHL__CUSTOM_LABEL_GENERAL'}]</b>
+                                        <b>[{oxmultilang ident='MO_DHL__CUSTOM_LABEL_WEIGHT'}]</b>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_WEIGHT'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[general][weight]"
-                                               value="[{$shipmentOrder.general.weight}]">
-                                    </td>
-                                </tr>
+                                [{foreach from=$shipmentOrder.weight key="weightKey" item="weight"}]
+                                    <tr>
+                                        <td>
+                                            [{$weight.title}] [{if $weightKey !== 'total'}]([{oxmultilang ident='MO_DHL__CUSTOM_LABEL_WEIGHT_PER_ARTICLE'}])[{/if}]
+                                        </td>
+                                        <td>
+                                            <input type="text" name="data[weight][[{$weightKey}]]"
+                                                   value="[{$weight.weight}]">
+                                        </td>
+                                    </tr>
+                                [{/foreach}]
                             </table>
                         </td>
                     </tr>

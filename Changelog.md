@@ -1,4 +1,11 @@
 # Changelog
+
+## 1.6.1
+* add weight inputs for articles in custom label form
+* use article weight over orderarticle weight
+* handle comma in weight inputs in custom label form
+* added optional radius as parameter for location searches
+
 ## 1.6.0
 * new Warenpost International process
 

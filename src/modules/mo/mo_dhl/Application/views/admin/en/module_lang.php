@@ -59,6 +59,7 @@ $aLang = [
     'MO_DHL__CUSTOM_LABEL_BACK'               => 'Back',
     'MO_DHL__CUSTOM_LABEL_GENERAL'            => 'General',
     'MO_DHL__CUSTOM_LABEL_WEIGHT'             => 'Weight (in kg)',
+    'MO_DHL__CUSTOM_LABEL_WEIGHT_PER_ARTICLE' => 'Weight per article',
     'MO_DHL__CUSTOM_LABEL_PROCESS'            => 'Process no.',
     'MO_DHL__CUSTOM_LABEL_RECEIVER'           => 'Receiver',
     'MO_DHL__CUSTOM_LABEL_RETURN_RECEIVER'    => 'Return Shipment - Receiver data',
