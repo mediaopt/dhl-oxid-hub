@@ -1,6 +1,6 @@
 # Changelog
 
-## next version
+## 1.6.1
 * add weight inputs for articles in custom label form
 * use article weight over orderarticle weight
 * handle comma in weight inputs in custom label form
