@@ -100,7 +100,7 @@ class Standortsuche extends Base
      * @param string|null $countryIso2Code
      * @return string
      */
-    protected function buildAddressString($address, $postalCode = null, $countryIso2Code = null)
+    protected function buildAddressString($address, $postalCode = null, $countryIso2Code = null, $radius = 0)
     {
         if ($address instanceof Address) {
             $postalCode = $address->getZip();
@@ -115,6 +115,10 @@ class Standortsuche extends Base
             'limit=50'
         ];
 
+        if ($radius) {
+            $urlOptions[] = "radius=$radius";
+        }
+
         return $this->sanitizeAddressString(implode('&', $urlOptions));
     }
 
@@ -125,9 +129,9 @@ class Standortsuche extends Base
      * @return ServiceProviderList
      * @throws WebserviceException
      */
-    public function getParcellocationByAddress($address, $postalCode = null, $countryIso2Code = null)
+    public function getParcellocationByAddress($address, $postalCode = null, $countryIso2Code = null, $radius = null)
     {
-        $addressString = $this->buildAddressString($address, $postalCode, $countryIso2Code);
+        $addressString = $this->buildAddressString($address, $postalCode, $countryIso2Code, $radius);
         if ($addressString === '') {
             return new ServiceProviderList([]);
         }

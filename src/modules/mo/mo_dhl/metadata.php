@@ -529,6 +529,12 @@ $aModule = [
             'value' => 'false',
         ],
         [
+            'group' => 'mo_dhl__standortsuche',
+            'name'  => 'mo_dhl__standortsuche_map_radius',
+            'type'  => 'str',
+            'value' => '0',
+        ],
+        [
             'group' => 'mo_dhl__wunschtag',
             'name'  => 'mo_dhl__wunschtag_active',
             'type'  => 'bool',
