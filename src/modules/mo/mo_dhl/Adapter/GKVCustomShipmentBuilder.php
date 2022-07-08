@@ -91,7 +91,6 @@ class GKVCustomShipmentBuilder
      */
     protected function useCustomWeightData(ShipmentOrderType $shipmentOrder, $weightData)
     {
-        $exportDocPosition = $shipmentOrder->getShipment()->getExportDocument()->getExportDocPosition();
         foreach ($weightData as $key => $value) {
             if (strpos($value, ',') !== false) {
                 $value = \OxidEsales\EshopCommunity\Core\Registry::getUtils()->string2Float($value);
@@ -99,7 +98,7 @@ class GKVCustomShipmentBuilder
             if ($key === 'total') {
                 $shipmentOrder->getShipment()->getShipmentDetails()->getShipmentItem()->setWeightInKG($value);
             } else {
-                $exportDocPosition[$key]->setNetWeightInKG($value);
+                $shipmentOrder->getShipment()->getExportDocument()->getExportDocPosition()[$key]->setNetWeightInKG($value);
             }
         }
     }
