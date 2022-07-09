@@ -249,9 +249,14 @@ class GKVCustomShipmentBuilder
             return [];
         }
         return array_map(
-            fn(ExportDocPosition $exportDocPosition) => ['weight' => $exportDocPosition->getNetWeightInKG(), 'title' => $exportDocPosition->getDescription()],
+            [$this, 'parseExportDocPostition'],
             $exportDocument->getExportDocPosition()
         );
 
+    }
+
+    protected function parseExportDocPostition(ExportDocPosition $exportDocPosition): array
+    {
+        return ['weight' => $exportDocPosition->getNetWeightInKG(), 'title' => $exportDocPosition->getDescription()];
     }
 }
