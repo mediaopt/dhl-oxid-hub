@@ -119,6 +119,25 @@ class Standortsuche extends Base
     }
 
     /**
+     * @param $location
+     * @return bool
+     */
+    public function locationFilterFunction($location)
+    {
+        return $location->location->keyword !== "" && $location->location->keywordId !== "";
+    }
+
+    /**
+     * @param $locations
+     * @return object
+     */
+    protected function filterUndelivarableLocations($locations)
+    {
+        $filteredLocations = array_filter($locations->locations, [$this, "locationFilterFunction"]);
+        return (object)['locations' => $filteredLocations];
+    }
+
+    /**
      * @param Address|string $address
      * @param string|null $postalCode
      * @param string|null $countryIso2Code
@@ -132,7 +151,8 @@ class Standortsuche extends Base
             return new ServiceProviderList([]);
         }
         $locations = $this->callApi($addressString);
-        $oldAPIstandart = $this->convert($locations);
+        $filteredLocations = $this->filterUndelivarableLocations($locations);
+        $oldAPIstandart = $this->convert($filteredLocations);
 
         return $this->extractServiceProviders($oldAPIstandart);
     }
