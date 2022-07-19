@@ -184,13 +184,21 @@ class WunschpaketTest extends \PHPUnit_Framework_TestCase
     public function testThatAHolidayIsNotAPreferredDay()
     {
         $wunschpaket = $this->buildWunschpaket();
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('10.04.2020')));
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('13.04.2020')));
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('01.05.2020')));
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('21.05.2020')));
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('01.06.2020')));
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('25.12.2020')));
-        $this->assertFalse($wunschpaket->isValidPreferredDay('12045', new \DateTime('26.12.2020')));
+        $year = date("Y");
+        $daysToEaster = easter_days($year);
+        $easter = (new \DateTime("$year-03-21"))->modify(" +{$daysToEaster} day");
+        $days = [
+            (clone $easter)->modify('-2 days'), // Karfreitag
+            (clone $easter)->modify('+1 day'), // Ostersonntag
+            new \DateTime('01.05.'.$year), // Tag der Arbeit
+            (clone $easter)->modify('+39 day'), // Christi Himmelfahrt
+            (clone $easter)->modify('+50 day'), // Pfingstmontag
+            new \DateTime('25.12.'.$year), // 1. Weihnachtsfeiertag
+            new \DateTime('26.12.'.$year), // 2. Weihnachtsfeiertag
+        ];
+        foreach ($days as $day) {
+            $this->assertFalse($wunschpaket->isValidPreferredDay('12045', $day), $day->format('d.m.Y') . " should not be a preferred day");
+        }
     }
 
     public function testThatThereAreAlwaysAsManyPreferredDaysAsDefinedInTheCorrespondingClassConstant()

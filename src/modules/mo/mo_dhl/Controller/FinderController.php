@@ -158,7 +158,8 @@ class FinderController extends \OxidEsales\Eshop\Application\Controller\Frontend
     protected function findServiceProviders(\Mediaopt\DHL\FinderQuery $query)
     {
         $standortsuche = $this->getStandortsuche();
-        $serviceProviders = $standortsuche->getParcellocationByAddress($query->getAddress(), $query->getPostalCode(), $query->getCountryIso2Code())->toArray();
+        $radius = \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__standortsuche_map_radius');
+        $serviceProviders = $standortsuche->getParcellocationByAddress($query->getAddress(), $query->getPostalCode(), $query->getCountryIso2Code(), $radius)->toArray();
         return $this->filterServiceProviders($serviceProviders, $query);
     }
 

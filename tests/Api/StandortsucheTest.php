@@ -57,7 +57,7 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['build'])
             ->getMock();
         $serviceProviderBuilderMock
-            ->expects($this->exactly(50))
+            ->expects($this->exactly(10))
             ->method('build')
             ->willThrowException(new ServiceProviderException());
 
@@ -66,7 +66,7 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['debug', 'error'])
             ->getMock();
         $loggerMock
-            ->expects($this->exactly(50))
+            ->expects($this->exactly(10))
             ->method('error');
 
         (new \TestConfigurator())
@@ -129,12 +129,8 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
                 'coordinate' => new Coordinate(49.691990, 11.628689),
             ],
             [
-                'address'    => new Address('', '', '08209', 'Auerbach/Vogtl.', '', '', 'DE'),
+                'address'    => new Address('', '', '', 'Auerbach/Vogtl.', '', '', 'DE'),
                 'coordinate' => new Coordinate(50.507884, 12.399722),
-            ],
-            [
-                'address'    => new Address('', '', '08459', '', '', '', 'DE'),
-                'coordinate' => new Coordinate(50.792825, 12.379732),
             ],
             [
                 'address'    => new Address('', '', '06429', '', '', '', 'DE'),

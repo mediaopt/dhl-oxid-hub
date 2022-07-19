@@ -151,7 +151,7 @@ class BaseShipmentBuilder
     {
         /** @var OrderArticle $orderArticle */
         $articleWeight = $config->getShopConfVar('mo_dhl__calculate_weight')
-            ? (float)$orderArticle->getFieldData('oxweight')
+            ? (float) ($orderArticle->getArticle() ? $orderArticle->getArticle()->getFieldData('oxweight') : $orderArticle->getFieldData('oxweight'))
             : (float)$config->getShopConfVar('mo_dhl__default_weight');
         if ($articleWeight < self::MO_DHL__MIN_WEIGHT_FOR_ORDERITEMS) {
             $articleWeight = max(self::MO_DHL__MIN_WEIGHT_FOR_ORDERITEMS, (float)$config->getShopConfVar('mo_dhl__default_weight'));
