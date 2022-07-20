@@ -28,6 +28,7 @@
             <argument type="service" id="order.repository"/>
             <argument type="service" id="Symfony\Contracts\Translation\TranslatorInterface" />
             <argument type="service" id="monolog.logger" />
+            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <tag name="shopware.payment.method.async" priority="-5100"/>
         </service>
         <service id="MoptWordline\Controller\Payment\PaymentFinalizeController" public="true">

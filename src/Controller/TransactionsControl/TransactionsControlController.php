@@ -69,16 +69,16 @@ class TransactionsControlController extends AbstractController
     public function status(Request $request, Context $context): JsonResponse
     {
         $success = false;
-        $message = 'Statue update error'; //todo translate
+        $message = $this->translator->trans("statusUpdateError");
         if (!$hostedCheckoutId = $this->getTransactionId($request)) {
-            $message = 'There is no transaction id for this order.'; //todo translate
+            $message = $this->translator->trans("noTransactionForThisOrder");
             return $this->response($success, $message);
         }
         $handler = $this->getHandler($hostedCheckoutId, $context);
-        $status = $handler->handlePayment($hostedCheckoutId);
+        $status = $handler->updatePaymentStatus($hostedCheckoutId);
         if ($status != 0) {
             $success = true;
-            $message = 'Status update request sended.';
+            $message = $this->translator->trans("statusUpdateRequestSent");
         }
         return $this->response($success, $message);
     }
@@ -93,7 +93,7 @@ class TransactionsControlController extends AbstractController
     public function capture(Request $request, Context $context): JsonResponse
     {
         if (!$hostedCheckoutId = $this->getTransactionId($request)) {
-            $message = 'There is no transaction id for this order.'; //todo translate
+            $message = $this->translator->trans("noTransactionForThisOrder");
             return $this->response(false, $message);
         }
 
@@ -101,7 +101,7 @@ class TransactionsControlController extends AbstractController
 
         $handler->capturePayment($hostedCheckoutId);
 
-        $message = 'success'; //todo translate
+        $message = $this->translator->trans("success");
         return $this->response(true, $message);
     }
 
@@ -115,7 +115,7 @@ class TransactionsControlController extends AbstractController
     public function refund(Request $request, Context $context): JsonResponse
     {
         if (!$hostedCheckoutId = $this->getTransactionId($request)) {
-            $message = 'There is no transaction id for this order.'; //todo translate
+            $message = $this->translator->trans("noTransactionForThisOrder");
             return $this->response(false, $message);
         }
 
@@ -123,7 +123,7 @@ class TransactionsControlController extends AbstractController
 
         $handler->refundPayment($hostedCheckoutId);
 
-        $message = 'success'; //todo translate
+        $message = $this->translator->trans("success");
         return $this->response(true, $message);
     }
 

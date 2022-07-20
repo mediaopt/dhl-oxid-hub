@@ -23,11 +23,8 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
  */
 class ApiTestController extends AbstractController
 {
-    /** @var SystemConfigService */
-    private $systemConfigService;
-
-    /** @var Logger */
-    private $logger;
+    private SystemConfigService $systemConfigService;
+    private Logger $logger;
 
     /** @var array */
     private $credentialKeys = [
@@ -64,20 +61,20 @@ class ApiTestController extends AbstractController
 
         $salesChannelId = $request->request->get('salesChannelId') ?: 'null';
 
-        $credentials = $this->buildCredentials($salesChannelId, $configFormData);
-
+        $credentials = $this->buildCredentialsFromRequest($salesChannelId, $configFormData);
+        $paymentMethods = [];
         $message = '';
         try {
-            $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger);
+            $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger);//No sales channel needed
             $adapter->getMerchantClient($credentials);
-            $paymentMethods = $adapter->getPaymentMethods()->toJson();
+            $paymentMethods = $adapter->getPaymentMethods()->toObject();
         } catch (\Exception $e) {
             $message = '<br/>' . $e->getMessage();
         }
 
         $success = empty($message);
 
-        return $this->response($success, $message);
+        return $this->response($success, $message, $paymentMethods);
     }
 
     /**
@@ -85,7 +82,7 @@ class ApiTestController extends AbstractController
      * @param array $configData
      * @return array
      */
-    private function buildCredentials(string $salesChannelId, array $configData): array
+    private function buildCredentialsFromRequest(string $salesChannelId, array $configData): array
     {
         $globalConfig = [];
         if (array_key_exists('null', $configData)) {
@@ -117,11 +114,12 @@ class ApiTestController extends AbstractController
      * @param string $message
      * @return JsonResponse
      */
-    private function response(bool $success, string $message): JsonResponse
+    private function response(bool $success, string $message, $pay = null): JsonResponse
     {
         return new JsonResponse([
             'success' => $success,
-            'message' => $message
+            'message' => $message,
+            '123' => $pay
         ]);
     }
 }

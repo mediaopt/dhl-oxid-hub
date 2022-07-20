@@ -7,10 +7,8 @@
 
 namespace MoptWordline\Service;
 
-use MoptWordline\Adapter\WordlineSDKAdapter;
-use OnlinePayments\Sdk\DataObject;
-use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
-use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
@@ -22,24 +20,17 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Monolog\Logger;
-use OnlinePayments\Sdk\Domain\Order;
-use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
-use OnlinePayments\Sdk\Domain\AmountOfMoney;
-use MoptWordline\Bootstrap\Form;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Payment implements AsynchronousPaymentHandlerInterface
 {
     private SystemConfigService $systemConfigService;
-
     private EntityRepositoryInterface $orderTransactionRepository;
-
     private EntityRepositoryInterface $orderRepository;
-
     private TranslatorInterface $translator;
-
     private Logger $logger;
+    private OrderTransactionStateHandler $transactionStateHandler;
 
     public const STATUS_PAYMENT_CREATED = [0];                  //open
     public const STATUS_PAYMENT_CANCELLED = [1, 6, 61, 62, 64, 75]; //cancelled
@@ -59,13 +50,15 @@ class Payment implements AsynchronousPaymentHandlerInterface
      * @param EntityRepositoryInterface $orderRepository
      * @param TranslatorInterface $translator
      * @param Logger $logger
+     * @param OrderTransactionStateHandler $transactionStateHandler
      */
     public function __construct(
-        SystemConfigService       $systemConfigService,
-        EntityRepositoryInterface $orderTransactionRepository,
-        EntityRepositoryInterface $orderRepository,
-        TranslatorInterface       $translator,
-        Logger                    $logger
+        SystemConfigService          $systemConfigService,
+        EntityRepositoryInterface    $orderTransactionRepository,
+        EntityRepositoryInterface    $orderRepository,
+        TranslatorInterface          $translator,
+        Logger                       $logger,
+        OrderTransactionStateHandler $transactionStateHandler
     )
     {
         $this->systemConfigService = $systemConfigService;
@@ -73,6 +66,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
         $this->orderRepository = $orderRepository;
         $this->translator = $translator;
         $this->logger = $logger;
+        $this->transactionStateHandler = $transactionStateHandler;
     }
 
     /**
@@ -119,7 +113,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
     }
 
     /**
-     * @param OrderEntity $orderEntity
+     * @param AsyncPaymentTransactionStruct $transaction
      * @param Context $context
      * @return string
      * @throws \Exception
@@ -127,31 +121,30 @@ class Payment implements AsynchronousPaymentHandlerInterface
     private function sendReturnUrlToExternalGateway(AsyncPaymentTransactionStruct $transaction, Context $context)
     {
         $transactionId = $transaction->getOrderTransaction()->getId();
-        $orderEntity = $transaction->getOrder();
-        $orderId = $orderEntity->getId();
-        $currency = $orderEntity->getCurrency()->getIsoCode();
-        $amountTotal = $orderEntity->getAmountTotal();
-        $salseChannelId = $orderEntity->getSalesChannelId();
 
-        $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger, $salseChannelId);
-        $adapter->log($this->translator->trans('started'));
+        $criteria = new Criteria([$transactionId]);
+        $criteria->addAssociation('order');
+        $orderTransaction = $this->orderTransactionRepository->search($criteria, $context)->first();
 
-        $hostedCheckoutRequest = $this->buildHostedCheckoutRequest($adapter, $currency, $amountTotal);
+        $handler = new PaymentHandler(
+            $this->systemConfigService,
+            $this->logger,
+            $orderTransaction,
+            $this->translator,
+            $this->orderRepository,
+            $this->orderTransactionRepository,
+            $context,
+            $this->transactionStateHandler
+        );
 
-        $merchantClient = $adapter->getMerchantClient();
-        $hostedCheckoutClient = $merchantClient->hostedCheckout();
         try {
-            $hostedCheckoutResponse = $hostedCheckoutClient->createHostedCheckout($hostedCheckoutRequest);
+            $hostedCheckoutResponse = $handler->createPayment();
         } catch (\Exception $e) {
-            $adapter->log($e->getMessage(), Logger::ERROR);
-
             throw new AsyncPaymentProcessException(
                 $transactionId,
                 \sprintf('An error occurred during the communication with Wordline%s%s', \PHP_EOL, $e->getMessage())
             );
         }
-
-        $this->saveCustomFields($hostedCheckoutResponse, $context, $transactionId, $orderId);
 
         $link = $hostedCheckoutResponse->getRedirectUrl();
         if ($link === null) {
@@ -160,72 +153,4 @@ class Payment implements AsynchronousPaymentHandlerInterface
 
         return $link;
     }
-
-    /**
-     * @param WordlineSDKAdapter $adapter
-     * @param string $currency
-     * @param float $amountTotal
-     * @return CreateHostedCheckoutRequest
-     */
-    private function buildHostedCheckoutRequest( //todo move it to PaymentHandler
-        WordlineSDKAdapter $adapter,
-        string             $currency,
-        float              $amountTotal
-    ): CreateHostedCheckoutRequest
-    {
-        $hostedCheckoutRequest =
-            new CreateHostedCheckoutRequest();
-
-        $adapter->log($this->translator->trans('buildingOrder'));
-
-        $amountOfMoney = new AmountOfMoney();
-        $amountOfMoney->setCurrencyCode($currency);
-        $amountOfMoney->setAmount($amountTotal * 100);
-
-        $order = new Order();
-        $order->setAmountOfMoney($amountOfMoney);
-
-        $hostedCheckoutSpecificInput = new HostedCheckoutSpecificInput();
-
-        $returnUrl = $adapter->getPluginConfig(Form::RETURN_URL_FIELD);
-        $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
-        $hostedCheckoutRequest->setOrder($order);
-        $hostedCheckoutRequest->setHostedCheckoutSpecificInput($hostedCheckoutSpecificInput);
-
-        return $hostedCheckoutRequest;
-    }
-
-    /**
-     * @param DataObject $hostedCheckoutResponse
-     * @param Context $context
-     * @param string $transactionId
-     * @param string $orderId
-     * @return void
-     */
-    private function saveCustomFields( //todo move it to PaymentHandler
-        DataObject $hostedCheckoutResponse,
-        Context    $context,
-        string     $transactionId,
-        string     $orderId
-    )
-    {
-        $customFields = [
-            Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID => $hostedCheckoutResponse->getHostedCheckoutId()
-        ];
-
-        $this->orderTransactionRepository->update([
-            [
-                'id' => $transactionId,
-                'customFields' => $customFields
-            ]
-        ], $context);
-
-        $this->orderRepository->update([
-            [
-                'id' => $orderId,
-                'customFields' => $customFields
-            ]
-        ], $context);
-    }
-
 }

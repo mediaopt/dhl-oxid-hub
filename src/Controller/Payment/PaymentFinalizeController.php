@@ -8,7 +8,6 @@
 namespace MoptWordline\Controller\Payment;
 
 use MoptWordline\Adapter\WordlineSDKAdapter;
-use MoptWordline\Bootstrap\Form;
 use MoptWordline\Service\PaymentHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
@@ -19,10 +18,6 @@ use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Checkout\Payment\Exception\PaymentProcessException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -104,51 +99,11 @@ class PaymentFinalizeController extends AbstractController
             $this->transactionStateHandler
         );
 
-        $status = $paymentHandler->handlePayment($hostedCheckoutId);//todo message for customer based on status
+        $paymentHandler->updatePaymentStatus($hostedCheckoutId);
 
         $finishUrl = $this->buildFinishUrl($request, $orderTransaction, $salesChannelContext, $context);
 
         return new RedirectResponse($finishUrl);
-    }
-
-    /**
-     * @param Context $context
-     * @param string $hostedCheckoutId
-     * @return OrderTransactionEntity|null
-     */
-    private function getOrderTransaction(Context $context, string $hostedCheckoutId): ?OrderTransactionEntity
-    {
-        $criteria = new Criteria();
-        $criteria->addAssociation('order');
-        $criteria->addFilter(
-            new MultiFilter(
-                MultiFilter::CONNECTION_AND,
-                [
-                    new EqualsFilter(
-                        \sprintf('customFields.%s', Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID),
-                        $hostedCheckoutId
-                    ),
-                    new NotFilter(
-                        NotFilter::CONNECTION_AND,
-                        [
-                            new EqualsFilter(
-                                \sprintf('customFields.%s', Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID),
-                                null
-                            ),
-                        ]
-                    ),
-                ]
-            )
-        );
-
-        /** @var OrderTransactionEntity|null $orderTransaction */
-        $orderTransaction = $this->orderTransactionRepository->search($criteria, $context)->getEntities()->first();
-
-        if ($orderTransaction === null) {
-            throw new InvalidTransactionException('');
-        }
-
-        return $orderTransaction;
     }
 
     /**

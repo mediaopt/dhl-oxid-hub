@@ -6,6 +6,7 @@ use Monolog\Logger;
 use MoptWordline\Bootstrap\Form;
 use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\CaptureResponse;
+use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
@@ -67,12 +68,28 @@ class PaymentHandler
      * @return int
      * @throws \Exception
      */
-    public function handlePayment(string $hostedCheckoutId): int
+    public function updatePaymentStatus(string $hostedCheckoutId): int
     {
         $status = $this->updatePaymentTransactionStatus($hostedCheckoutId);
         $this->updateOrderTransactionState($status, $hostedCheckoutId);
 
         return $status;
+    }
+
+    /**
+     * @return CreateHostedCheckoutResponse
+     * @throws \Exception
+     */
+    public function createPayment(): CreateHostedCheckoutResponse
+    {
+        $order = $this->orderTransaction->getOrder();
+        $amountTotal = $order->getAmountTotal();
+        $currencyISO = $this->getCurrencyISO();
+
+        $this->log($this->translator->trans('buildingOrder'));
+        $hostedCheckoutResponse = $this->adapter->createPayment($amountTotal, $currencyISO);
+        $this->saveOrderCustomFields(0, $hostedCheckoutResponse->getHostedCheckoutId());
+        return $hostedCheckoutResponse;
     }
 
     /**
@@ -85,7 +102,7 @@ class PaymentHandler
         $status = $this->updatePaymentTransactionStatus($hostedCheckoutId);
 
         if (!in_array($status, Payment::STATUS_PENDING_CAPTURE)) {
-            $this->log('operation is not possible due to current status' . $status,Logger::ERROR);//todo translate
+            $this->log('operationIsNotPossibleDueToCurrentStatus' . $status, Logger::ERROR);
             return null;
         }
 
@@ -109,7 +126,7 @@ class PaymentHandler
     {
         $status = $this->updatePaymentTransactionStatus($hostedCheckoutId);
         if (!in_array($status, Payment::STATUS_PENDING_CAPTURE)) {
-            $this->log('operation is not possible due to current status' . $status,Logger::ERROR);//todo translate
+            $this->log('operationIsNotPossibleDueToCurrentStatus' . $status, Logger::ERROR);
             return false;
         }
 
@@ -133,7 +150,7 @@ class PaymentHandler
     {
         $status = $this->updatePaymentTransactionStatus($hostedCheckoutId);
         if (!in_array($status, Payment::STATUS_CAPTURED)) {
-            $this->log('operation is not possible due to current status' . $status,Logger::ERROR);//todo translate
+            $this->log('operationIsNotPossibleDueToCurrentStatus' . $status, Logger::ERROR);
             return false;
         }
 
@@ -170,7 +187,7 @@ class PaymentHandler
      */
     private function updatePaymentTransactionStatus(string $hostedCheckoutId): string
     {
-        $this->log('gettingPaymentDetails', 0, ['hostedCheckoutId' => $hostedCheckoutId]);//todo translate
+        $this->log('gettingPaymentDetails', 0, ['hostedCheckoutId' => $hostedCheckoutId]);
         $paymentDetails = $this->adapter->getPaymentDetails($hostedCheckoutId);
         $status = $this->adapter->getStatus($paymentDetails);
         $this->saveOrderCustomFields($status, $hostedCheckoutId);
@@ -228,7 +245,7 @@ class PaymentHandler
                     'paymentOpen',
                     0,
                     ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
-                );//todo translate
+                );
                 $this->transactionStateHandler->reopen($orderTransactionId, $this->context);
                 break;
             }
@@ -241,7 +258,7 @@ class PaymentHandler
                     'paymentInProgress',
                     0,
                     ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
-                );//todo translate
+                );
                 $this->transactionStateHandler->process($orderTransactionId, $this->context);
                 break;
             }
@@ -254,7 +271,7 @@ class PaymentHandler
                     'paymentPaid',
                     0,
                     ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
-                );//todo translate
+                );
                 $this->transactionStateHandler->paid($orderTransactionId, $this->context);
                 break;
             }
@@ -267,7 +284,7 @@ class PaymentHandler
                     'paymentRefunded',
                     0,
                     ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
-                );//todo translate
+                );
                 $this->transactionStateHandler->paid($orderTransactionId, $this->context);
                 $this->transactionStateHandler->refund($orderTransactionId, $this->context);
                 break;
@@ -281,7 +298,7 @@ class PaymentHandler
                     'paymentCanceled',
                     0,
                     ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
-                );//todo translate
+                );
                 $this->transactionStateHandler->cancel($orderTransactionId, $this->context);
                 break;
             }
@@ -295,7 +312,7 @@ class PaymentHandler
                     'paymentFailed',
                     0,
                     ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
-                );//todo translate
+                );
                 $this->transactionStateHandler->fail($orderTransactionId, $this->context);
                 break;
             }
@@ -308,12 +325,13 @@ class PaymentHandler
                     'refundInProgress',
                     0,
                     ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
-                );//todo translate
+                );
                 $this->transactionStateHandler->reopen($orderTransactionId, $this->context);
                 $this->transactionStateHandler->process($orderTransactionId, $this->context);
                 break;
             }
-            default:{
+            default:
+            {
                 break;
             }
         }
@@ -402,7 +420,7 @@ class PaymentHandler
             return $currencyISO['iso_code'];
         }
 
-        $this->log('cantFindCurrencyOfOrder ' . $currencyId,Logger::ERROR);//todo translate
+        $this->log('cantFindCurrencyOfOrder' . $currencyId, Logger::ERROR);
         return false;
     }
 }

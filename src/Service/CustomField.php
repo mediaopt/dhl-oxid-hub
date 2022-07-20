@@ -48,23 +48,6 @@ class CustomField
     }
 
     /**
-     * todo - should we save order transaction id after uninstall?
-     * for now - not used
-     * @param UninstallContext $uninstallContext
-     * @return void
-     */
-    public function removeCustomField(UninstallContext $uninstallContext)
-    {
-        $customFieldSetRepository = $this->container->get('custom_field_set.repository');
-
-        $fieldIds = $this->customFieldsExist($uninstallContext->getContext());
-
-        if ($fieldIds) {
-            $customFieldSetRepository->delete(array_values($fieldIds->getData()), $uninstallContext->getContext());
-        }
-    }
-
-    /**
      * @param Context $context
      * @return mixed
      */

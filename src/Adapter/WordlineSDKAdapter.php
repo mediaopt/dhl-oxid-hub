@@ -7,6 +7,9 @@ use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\CancelPaymentResponse;
 use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
 use OnlinePayments\Sdk\Domain\CaptureResponse;
+use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
+use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
+use OnlinePayments\Sdk\Domain\Order;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use OnlinePayments\Sdk\Domain\PaymentReferences;
 use OnlinePayments\Sdk\Domain\RefundRequest;
@@ -20,6 +23,7 @@ use OnlinePayments\Sdk\Communicator;
 use OnlinePayments\Sdk\Client;
 use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductsParams;
 use OnlinePayments\Sdk\Domain\GetPaymentProductsResponse;
+use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
 
 /**
  * This is the adaptor for Wordline's API
@@ -105,11 +109,9 @@ class WordlineSDKAdapter
         $queryParams->setCountryCode("DE");
         $queryParams->setCurrencyCode("EUR");
 
-        $paymentProductsResponse = $this->merchantClient
+        return $this->merchantClient
             ->products()
             ->getPaymentProducts($queryParams);
-
-        return $paymentProductsResponse;
     }
 
     /**
@@ -122,6 +124,35 @@ class WordlineSDKAdapter
         $merchantClient = $this->getMerchantClient();
         $hostedCheckoutId = $hostedCheckoutId . '_0';
         return $merchantClient->payments()->getPaymentDetails($hostedCheckoutId);
+    }
+
+    /**
+     * @param $amountTotal
+     * @param $currencyISO
+     * @return CreateHostedCheckoutResponse
+     * @throws \Exception
+     */
+    public function createPayment($amountTotal, $currencyISO): CreateHostedCheckoutResponse
+    {
+        $merchantClient = $this->getMerchantClient();
+
+        $amountOfMoney = new AmountOfMoney();
+        $amountOfMoney->setCurrencyCode($currencyISO);
+        $amountOfMoney->setAmount($amountTotal * 100);
+
+        $order = new Order();
+        $order->setAmountOfMoney($amountOfMoney);
+
+        $hostedCheckoutSpecificInput = new HostedCheckoutSpecificInput();
+        $returnUrl = $this->getPluginConfig(Form::RETURN_URL_FIELD);
+        $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
+
+        $hostedCheckoutRequest = new CreateHostedCheckoutRequest();
+        $hostedCheckoutRequest->setOrder($order);
+        $hostedCheckoutRequest->setHostedCheckoutSpecificInput($hostedCheckoutSpecificInput);
+
+        $hostedCheckoutClient = $merchantClient->hostedCheckout();
+        return $hostedCheckoutClient->createHostedCheckout($hostedCheckoutRequest);
     }
 
     /**
