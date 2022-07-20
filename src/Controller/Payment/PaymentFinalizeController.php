@@ -9,6 +9,7 @@ namespace MoptWordline\Controller\Payment;
 
 use MoptWordline\Adapter\WordlineSDKAdapter;
 use MoptWordline\Bootstrap\Form;
+use MoptWordline\Service\PaymentHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -40,6 +41,8 @@ class PaymentFinalizeController extends AbstractController
 {
     private RouterInterface $router;
 
+    private EntityRepositoryInterface $orderTransactionRepository;
+
     private EntityRepositoryInterface $orderRepository;
 
     private AsynchronousPaymentHandlerInterface $paymentHandler;
@@ -53,15 +56,18 @@ class PaymentFinalizeController extends AbstractController
     private TranslatorInterface $translator;
 
     public function __construct(
-        SystemConfigService $systemConfigService,
-        EntityRepositoryInterface $orderRepository,
+        SystemConfigService                 $systemConfigService,
+        EntityRepositoryInterface           $orderTransactionRepository,
+        EntityRepositoryInterface           $orderRepository,
         AsynchronousPaymentHandlerInterface $paymentHandler,
-        OrderTransactionStateHandler $transactionStateHandler,
-        RouterInterface $router,
-        Logger $logger,
-        TranslatorInterface $translator
-    ) {
+        OrderTransactionStateHandler        $transactionStateHandler,
+        RouterInterface                     $router,
+        Logger                              $logger,
+        TranslatorInterface                 $translator
+    )
+    {
         $this->systemConfigService = $systemConfigService;
+        $this->orderTransactionRepository = $orderTransactionRepository;
         $this->orderRepository = $orderRepository;
         $this->paymentHandler = $paymentHandler;
         $this->transactionStateHandler = $transactionStateHandler;
@@ -76,14 +82,42 @@ class PaymentFinalizeController extends AbstractController
      *     name="wordline.payment.finalize.transaction",
      *     methods={"GET"}
      * )
-     *
      * @throws InvalidTransactionException
      * @throws CustomerCanceledAsyncPaymentException
      */
     public function finalizeTransaction(Request $request, SalesChannelContext $salesChannelContext): RedirectResponse
     {
         $hostedCheckoutId = $request->query->get('hostedCheckoutId');
+        $context = $salesChannelContext->getContext();
 
+        /** @var OrderTransactionEntity|null $orderTransaction */
+        $orderTransaction = PaymentHandler::getOrderTransaction($context, $this->orderTransactionRepository, $hostedCheckoutId);
+
+        $paymentHandler = new PaymentHandler(
+            $this->systemConfigService,
+            $this->logger,
+            $orderTransaction,
+            $this->translator,
+            $this->orderRepository,
+            $this->orderTransactionRepository,
+            $salesChannelContext->getContext(),
+            $this->transactionStateHandler
+        );
+
+        $status = $paymentHandler->handlePayment($hostedCheckoutId);//todo message for customer based on status
+
+        $finishUrl = $this->buildFinishUrl($request, $orderTransaction, $salesChannelContext, $context);
+
+        return new RedirectResponse($finishUrl);
+    }
+
+    /**
+     * @param Context $context
+     * @param string $hostedCheckoutId
+     * @return OrderTransactionEntity|null
+     */
+    private function getOrderTransaction(Context $context, string $hostedCheckoutId): ?OrderTransactionEntity
+    {
         $criteria = new Criteria();
         $criteria->addAssociation('order');
         $criteria->addFilter(
@@ -91,14 +125,14 @@ class PaymentFinalizeController extends AbstractController
                 MultiFilter::CONNECTION_AND,
                 [
                     new EqualsFilter(
-                        \sprintf('customFields.%s', Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_ID),
+                        \sprintf('customFields.%s', Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID),
                         $hostedCheckoutId
                     ),
                     new NotFilter(
                         NotFilter::CONNECTION_AND,
                         [
                             new EqualsFilter(
-                                \sprintf('customFields.%s', Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_ID),
+                                \sprintf('customFields.%s', Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID),
                                 null
                             ),
                         ]
@@ -107,13 +141,30 @@ class PaymentFinalizeController extends AbstractController
             )
         );
 
-        $context = $salesChannelContext->getContext();
         /** @var OrderTransactionEntity|null $orderTransaction */
-        $orderTransaction = $this->orderRepository->search($criteria, $context)->getEntities()->first();
+        $orderTransaction = $this->orderTransactionRepository->search($criteria, $context)->getEntities()->first();
 
         if ($orderTransaction === null) {
             throw new InvalidTransactionException('');
         }
+
+        return $orderTransaction;
+    }
+
+    /**
+     * @param Request $request
+     * @param OrderTransactionEntity $orderTransaction
+     * @param SalesChannelContext $salesChannelContext
+     * @param Context $context
+     * @return string
+     */
+    private function buildFinishUrl(
+        Request                $request,
+        OrderTransactionEntity $orderTransaction,
+        SalesChannelContext    $salesChannelContext,
+        Context                $context
+    ): string
+    {
         $order = $orderTransaction->getOrder();
 
         if ($order === null) {
@@ -129,7 +180,8 @@ class PaymentFinalizeController extends AbstractController
             'changedPayment' => $changedPayment,
         ]);
 
-        $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger);
+        $salesChannelId = $salesChannelContext->getSalesChannelId();
+        $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         try {
             $adapter->log($this->translator->trans('forwardToPaymentHandler'));
             $this->paymentHandler->finalize($paymentTransactionStruct, $request, $salesChannelContext);
@@ -142,18 +194,28 @@ class PaymentFinalizeController extends AbstractController
             $finishUrl = $this->redirectToConfirmPageWorkflow(
                 $paymentProcessException,
                 $context,
-                $orderId
+                $orderId,
+                $order->getSalesChannelId()
             );
         }
 
-        return new RedirectResponse($finishUrl);
+        return $finishUrl;
     }
 
+    /**
+     * @param PaymentProcessException $paymentProcessException
+     * @param Context $context
+     * @param string $orderId
+     * @param string $salesChannelId
+     * @return string
+     */
     private function redirectToConfirmPageWorkflow(
         PaymentProcessException $paymentProcessException,
-        Context $context,
-        string $orderId
-    ): string {
+        Context                 $context,
+        string                  $orderId,
+        string                  $salesChannelId
+    ): string
+    {
         $errorUrl = $this->router->generate('frontend.account.edit-order.page', ['orderId' => $orderId]);
 
         if ($paymentProcessException instanceof CustomerCanceledAsyncPaymentException) {
@@ -168,7 +230,7 @@ class PaymentFinalizeController extends AbstractController
 
         $transactionId = $paymentProcessException->getOrderTransactionId();
 
-        $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger);
+        $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger,$salesChannelId);
         $adapter->log(
             $paymentProcessException->getMessage(),
             Logger::ERROR,

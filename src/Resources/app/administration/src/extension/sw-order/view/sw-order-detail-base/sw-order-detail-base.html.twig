@@ -1,0 +1,29 @@
+{% block sw_order_detail_base_custom_fields %}
+    {% parent() %}
+    <sw-card :title="$t('wordline-order.detail.cardLabel')"
+             :isLoading="isLoading">
+        <sw-button-process
+            :isLoading="isLoading"
+            :processSuccess="isSaveSuccessful"
+            @click="statusCheck"
+        >{{ $tc('check-status-button.button') }}</sw-button-process>
+
+        <sw-button-process
+            :isLoading="isLoading"
+            :processSuccess="isSaveSuccessful"
+            @click="capture"
+        >{{ $tc('capture-payment-button.button') }}</sw-button-process>
+
+        <sw-button-process
+            :isLoading="isLoading"
+            :processSuccess="isSaveSuccessful"
+            @click="cancel"
+        >{{ $tc('cancel-payment-button.button') }}</sw-button-process>
+
+        <sw-button-process
+            :isLoading="isLoading"
+            :processSuccess="isSaveSuccessful"
+            @click="refund"
+        >{{ $tc('refund-payment-button.button') }}</sw-button-process>
+    </sw-card>
+{% endblock %}

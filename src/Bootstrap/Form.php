@@ -26,8 +26,9 @@ class Form
     const LOG_LEVEL = 'MoptWordline.config.logLevel';
 
     /** @var string Fieldset name for the plugin custom field */
-    const CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_ID_FIELDSET = 'payment_transaction_id_fieldset';
+    const CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_FIELDSET = 'payment_transaction_fieldset';
 
     /** @var string Field name for the plugin custom field */
-    const CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_ID = 'payment_transaction_id';
+    const CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID = 'payment_transaction_id';
+    const CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_STATUS = 'payment_transaction_status';
 }

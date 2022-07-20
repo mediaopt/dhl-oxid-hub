@@ -43,7 +43,7 @@ class CustomField
 
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
         $customFieldSetRepository->upsert([
-            $this->getShippingTaxCodeFieldset(),
+            $this->getOrderTransactionFieldset(),
         ], $installContext->getContext());
     }
 
@@ -76,7 +76,7 @@ class CustomField
         $criteria->addFilter(new EqualsAnyFilter(
             'name',
             [
-                Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_ID_FIELDSET,
+                Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_FIELDSET,
             ]
         ));
 
@@ -88,22 +88,39 @@ class CustomField
     /**
      * @return array
      */
-    private function getShippingTaxCodeFieldset(): array
+    private function getOrderTransactionFieldset(): array
     {
         return [
             'id' => Uuid::randomHex(),
-            'name' => Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_ID_FIELDSET,
+            'name' => Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_FIELDSET,
             'config' => [
                 'label' => [
-                    'de-DE' => 'Zahlungstransaktions-ID',
-                    'en-GB' => 'Payment transaction ID'
+                    'de-DE' => 'Wordline Zahlungstransaktions',
+                    'en-GB' => 'Wordline payment transaction'
                 ]
             ],
             'customFields' => [
                 [
                     'id' => Uuid::randomHex(),
-                    'name' => Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_ID,
+                    'name' => Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID,
                     'type' => CustomFieldTypes::TEXT,
+                    'config' => [
+                        'label' => [
+                            'de-DE' => 'ID',
+                            'en-GB' => 'ID'
+                        ]
+                   ]
+                ],
+                [
+                    'id' => Uuid::randomHex(),
+                    'name' => Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_STATUS,
+                    'type' => CustomFieldTypes::TEXT,
+                    'config' => [
+                        'label' => [
+                            'de-DE' => 'Status',
+                            'en-GB' => 'Status'
+                        ]
+                    ]
                 ]
             ],
             'relations' => [

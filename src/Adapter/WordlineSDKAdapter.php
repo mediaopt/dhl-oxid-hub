@@ -3,6 +3,14 @@
 namespace MoptWordline\Adapter;
 
 use Monolog\Logger;
+use OnlinePayments\Sdk\Domain\AmountOfMoney;
+use OnlinePayments\Sdk\Domain\CancelPaymentResponse;
+use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
+use OnlinePayments\Sdk\Domain\CaptureResponse;
+use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
+use OnlinePayments\Sdk\Domain\PaymentReferences;
+use OnlinePayments\Sdk\Domain\RefundRequest;
+use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use MoptWordline\Bootstrap\Form;
@@ -41,7 +49,7 @@ class WordlineSDKAdapter
      * @param Logger $logger
      * @param string|null $salesChannelId
      */
-    public function __construct(SystemConfigService $systemConfigService, Logger $logger, $salesChannelId = null)
+    public function __construct(SystemConfigService $systemConfigService, Logger $logger, ?string $salesChannelId = null)
     {
         $this->systemConfigService = $systemConfigService;
         $this->logger = $logger;
@@ -105,6 +113,121 @@ class WordlineSDKAdapter
     }
 
     /**
+     * @param string $hostedCheckoutId
+     * @return PaymentDetailsResponse
+     * @throws \Exception
+     */
+    public function getPaymentDetails(string $hostedCheckoutId): PaymentDetailsResponse
+    {
+        $merchantClient = $this->getMerchantClient();
+        $hostedCheckoutId = $hostedCheckoutId . '_0';
+        return $merchantClient->payments()->getPaymentDetails($hostedCheckoutId);
+    }
+
+    /**
+     * @param string $hostedCheckoutId
+     * @param float $amount
+     * @return void
+     * @throws \Exception
+     */
+    public function capturePayment(string $hostedCheckoutId, float $amount): CaptureResponse
+    {
+        $merchantClient = $this->getMerchantClient();
+        $hostedCheckoutId = $hostedCheckoutId . '_0';
+
+        $capturePaymentRequest = new CapturePaymentRequest();
+        $capturePaymentRequest->setAmount($amount * 100);
+        $capturePaymentRequest->setIsFinal(true);
+
+        return $merchantClient->payments()->capturePayment($hostedCheckoutId, $capturePaymentRequest);
+    }
+
+    /**
+     * @param string $hostedCheckoutId
+     * @return CancelPaymentResponse
+     * @throws \Exception
+     */
+    public function cancelPayment(string $hostedCheckoutId): CancelPaymentResponse
+    {
+        $merchantClient = $this->getMerchantClient();
+        $hostedCheckoutId = $hostedCheckoutId . '_1';
+        return $merchantClient->payments()->cancelPayment($hostedCheckoutId);
+    }
+
+    /**
+     * @param string $hostedCheckoutId
+     * @param float $amount
+     * @param string $currency
+     * @param string $orderNumber
+     * @return RefundResponse
+     * @throws \Exception
+     */
+    public function refundPayment(string $hostedCheckoutId, float $amount, string $currency, string $orderNumber): RefundResponse
+    {
+        $merchantClient = $this->getMerchantClient();
+        $hostedCheckoutId = $hostedCheckoutId . '_1';
+
+        $amountOfMoney = new AmountOfMoney();
+        $amountOfMoney->setAmount($amount * 100);
+        $amountOfMoney->setCurrencyCode($currency);
+
+        $paymentReferences = new PaymentReferences();
+        $paymentReferences->setMerchantReference($orderNumber);
+
+        $refundRequest = new RefundRequest();
+        $refundRequest->setAmountOfMoney($amountOfMoney);
+        $refundRequest->setReferences($paymentReferences);
+
+        return $merchantClient->payments()->refundPayment($hostedCheckoutId, $refundRequest);
+    }
+
+    /**
+     * @param PaymentDetailsResponse $paymentDetails
+     * @return int
+     */
+    public function getStatus(PaymentDetailsResponse $paymentDetails): int
+    {
+        if (!is_object($paymentDetails)
+            || !is_object($paymentDetails->getStatusOutput())
+            || is_null($paymentDetails->getStatusOutput()->getStatusCode())
+        ) {
+            return 0;
+        }
+        return $paymentDetails->getStatusOutput()->getStatusCode();
+    }
+
+    /**
+     * @param CancelPaymentResponse $cancelPaymentResponse
+     * @return int
+     */
+    public function getCancelStatus(CancelPaymentResponse $cancelPaymentResponse): int
+    {
+        if (!is_object($cancelPaymentResponse)
+            || !is_object($cancelPaymentResponse->getPayment())
+            || is_null($cancelPaymentResponse->getPayment()->getStatusOutput())
+            || is_null($cancelPaymentResponse->getPayment()->getStatusOutput()->getStatusCode())
+        ) {
+            return 0;
+        }
+        return $cancelPaymentResponse->getPayment()->getStatusOutput()->getStatusCode();
+    }
+
+    /**
+     * @param RefundResponse $refundResponse
+     * @return int
+     */
+    public function getRefundStatus(RefundResponse $refundResponse): int
+    {
+        if (!is_object($refundResponse)
+            || !is_object($refundResponse->getStatusOutput())
+            || is_null($refundResponse->getStatusOutput()->getStatusCode())
+        ) {
+            return 0;
+        }
+        return $refundResponse->getStatusOutput()->getStatusCode();
+    }
+
+    /**
      * @param bool $isLiveMode
      * @return string
      */
@@ -119,7 +242,7 @@ class WordlineSDKAdapter
      * @param string $key
      * @return mixed
      */
-    public function getPluginConfig($key)
+    public function getPluginConfig(string $key)
     {
         return $this->systemConfigService->get($key, $this->salesChannelId);
     }
