@@ -78,6 +78,16 @@ class OrderChangesSubscriber implements EventSubscriberInterface
         $uriArr = explode('/', $uri);
         $newState = $uriArr[count($uriArr) - 1];
 
+        //Order cancel should lead to payment transaction refund
+        foreach ($event->getWriteResults() as $result) {
+            //For order transaction changes payload is empty
+            if (!empty($result->getPayload()) && $newState === StateMachineTransitionActions::ACTION_CANCEL) {
+                $orderId = $result->getPrimaryKey();
+                $this->processOrder($orderId, StateMachineTransitionActions::ACTION_REFUND, $event->getContext());
+            }
+            return;
+        }
+
         //We don't need to react on other statuses.
         if (!in_array(
             $newState,

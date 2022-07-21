@@ -275,6 +275,7 @@ class PaymentHandler
                 $this->transactionStateHandler->paid($orderTransactionId, $this->context);
                 break;
             }
+            case in_array($statusCode, Payment::STATUS_REFUND_REQUESTED):
             case in_array($statusCode, Payment::STATUS_REFUNDED):
             {
                 if ($orderTransactionState === OrderTransactionStates::STATE_REFUNDED) {
@@ -285,7 +286,6 @@ class PaymentHandler
                     0,
                     ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
                 );
-                $this->transactionStateHandler->paid($orderTransactionId, $this->context);
                 $this->transactionStateHandler->refund($orderTransactionId, $this->context);
                 break;
             }
@@ -314,20 +314,6 @@ class PaymentHandler
                     ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
                 );
                 $this->transactionStateHandler->fail($orderTransactionId, $this->context);
-                break;
-            }
-            case in_array($statusCode, Payment::STATUS_REFUND_REQUESTED):
-            {
-                if ($orderTransactionState === OrderTransactionStates::STATE_IN_PROGRESS) {
-                    break;
-                }
-                $this->log(
-                    'refundInProgress',
-                    0,
-                    ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
-                );
-                $this->transactionStateHandler->reopen($orderTransactionId, $this->context);
-                $this->transactionStateHandler->process($orderTransactionId, $this->context);
                 break;
             }
             default:

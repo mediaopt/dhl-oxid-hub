@@ -54,11 +54,5 @@
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <tag name="kernel.event_subscriber" priority="-5100"/>
         </service>
-        <service id="MoptWordline\Subscriber\CheckoutSubscriber">
-            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
-            <argument type="service" id="monolog.logger" />
-            <argument type="service" id="session" />
-            <tag name="kernel.event_subscriber" priority="-5100"/>
-        </service>
     </services>
 </container>
