@@ -11,7 +11,12 @@ class AdminTranslate
 {
     static public function trans($locale, $id)
     {
-        $transJson = file_get_contents(__DIR__ . "/../Resources/snippet/storefront/wordline.$locale.json");
+        $path = __DIR__ . "/../Resources/snippet/storefront/wordline.$locale.json";
+        if (!file_exists($path)) {
+            return $id;
+        }
+
+        $transJson = file_get_contents($path);
         $dictionary = json_decode($transJson, true);
 
         $exploded = explode('.', $id);
