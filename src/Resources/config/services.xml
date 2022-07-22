@@ -17,7 +17,7 @@
             <argument type="service" id="order.repository"/>
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="monolog.logger" />
-            <argument type="service" id="Symfony\Contracts\Translation\TranslatorInterface" />
+            <argument type="service" id="translator" />
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
@@ -26,7 +26,7 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="order.repository"/>
-            <argument type="service" id="Symfony\Contracts\Translation\TranslatorInterface" />
+            <argument type="service" id="translator" />
             <argument type="service" id="monolog.logger" />
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <tag name="shopware.payment.method.async" priority="-5100"/>
@@ -39,7 +39,7 @@
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="router"/>
             <argument type="service" id="monolog.logger" />
-            <argument type="service" id="Symfony\Contracts\Translation\TranslatorInterface" />
+            <argument type="service" id="translator" />
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
@@ -50,7 +50,7 @@
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="monolog.logger" />
             <argument type="service" id="request_stack"/>
-            <argument type="service" id="Symfony\Contracts\Translation\TranslatorInterface" />
+            <argument type="service" id="translator" />
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <tag name="kernel.event_subscriber" priority="-5100"/>
         </service>

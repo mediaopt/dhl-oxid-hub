@@ -3,6 +3,7 @@
 namespace MoptWordline\Subscriber;
 
 use Monolog\Logger;
+use MoptWordline\Service\AdminTranslate;
 use MoptWordline\Service\PaymentHandler;
 use Psr\Log\LogLevel;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -14,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Shopware\Storefront\Event\StorefrontRenderEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -84,8 +86,8 @@ class OrderChangesSubscriber implements EventSubscriberInterface
             if (!empty($result->getPayload()) && $newState === StateMachineTransitionActions::ACTION_CANCEL) {
                 $orderId = $result->getPrimaryKey();
                 $this->processOrder($orderId, StateMachineTransitionActions::ACTION_REFUND, $event->getContext());
+                return;
             }
-            return;
         }
 
         //We don't need to react on other statuses.

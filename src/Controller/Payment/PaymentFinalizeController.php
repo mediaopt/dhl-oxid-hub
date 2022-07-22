@@ -8,6 +8,7 @@
 namespace MoptWordline\Controller\Payment;
 
 use MoptWordline\Adapter\WordlineSDKAdapter;
+use MoptWordline\Service\AdminTranslate;
 use MoptWordline\Service\PaymentHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
@@ -138,11 +139,11 @@ class PaymentFinalizeController extends AbstractController
         $salesChannelId = $salesChannelContext->getSalesChannelId();
         $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         try {
-            $adapter->log($this->translator->trans('forwardToPaymentHandler'));
+            $adapter->log(AdminTranslate::trans($this->translator->getLocale(), 'forwardToPaymentHandler'));
             $this->paymentHandler->finalize($paymentTransactionStruct, $request, $salesChannelContext);
         } catch (PaymentProcessException $paymentProcessException) {
             $adapter->log(
-                $this->translator->trans('errorWithConfirmRedirect'),
+                AdminTranslate::trans($this->translator->getLocale(), 'errorWithConfirmRedirect'),
                 Logger::ERROR,
                 ['message' => $paymentProcessException->getMessage(), 'error' => $paymentProcessException]
             );
@@ -185,7 +186,7 @@ class PaymentFinalizeController extends AbstractController
 
         $transactionId = $paymentProcessException->getOrderTransactionId();
 
-        $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger,$salesChannelId);
+        $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         $adapter->log(
             $paymentProcessException->getMessage(),
             Logger::ERROR,

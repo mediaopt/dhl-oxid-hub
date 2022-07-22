@@ -31,4 +31,5 @@ class Form
     /** @var string Field name for the plugin custom field */
     const CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID = 'payment_transaction_id';
     const CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_STATUS = 'payment_transaction_status';
+    const CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_READABLE_STATUS = 'payment_transaction_readable_status';
 }

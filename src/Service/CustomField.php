@@ -96,7 +96,7 @@ class CustomField
                 ],
                 [
                     'id' => Uuid::randomHex(),
-                    'name' => Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_STATUS,
+                    'name' => Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_READABLE_STATUS,
                     'type' => CustomFieldTypes::TEXT,
                     'config' => [
                         'label' => [

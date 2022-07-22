@@ -57,5 +57,9 @@
             "bundleSelectLabel": "Associated bundles",
             "bundleSelectPlaceholder": "Add bundle..."
         }
+    },
+    "transactionStatus": {
+        "refunded": "Refunded",
+        "cancelled": "Cancelled"
     }
 }

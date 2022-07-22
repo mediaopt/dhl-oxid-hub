@@ -4,6 +4,7 @@ namespace MoptWordline\Service;
 
 use Monolog\Logger;
 use MoptWordline\Bootstrap\Form;
+use MoptWordline\Subscriber\OrderChangesSubscriber;
 use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\CaptureResponse;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
@@ -86,7 +87,7 @@ class PaymentHandler
         $amountTotal = $order->getAmountTotal();
         $currencyISO = $this->getCurrencyISO();
 
-        $this->log($this->translator->trans('buildingOrder'));
+        $this->log(AdminTranslate::trans($this->translator->getLocale(), 'buildingOrder'));
         $hostedCheckoutResponse = $this->adapter->createPayment($amountTotal, $currencyISO);
         $this->saveOrderCustomFields(0, $hostedCheckoutResponse->getHostedCheckoutId());
         return $hostedCheckoutResponse;
@@ -204,9 +205,11 @@ class PaymentHandler
         $orderId = $this->orderTransaction->getOrder()->getId();
         $transactionId = $this->orderTransaction->getId();
 
+        $readableStatus = $this->getReadableStatus($statusCode);
         $customFields = [
             Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID => $hostedCheckoutId,
             Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_STATUS => (string)$statusCode,
+            Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_READABLE_STATUS => $readableStatus
         ];
 
         $this->orderTransactionRepository->update([
@@ -382,7 +385,7 @@ class PaymentHandler
         );
 
         $this->adapter->log(
-            $this->translator->trans($string),
+            AdminTranslate::trans($this->translator->getLocale(), $string),
             $logLevel,
             $additionalData
         );
@@ -408,5 +411,24 @@ class PaymentHandler
 
         $this->log('cantFindCurrencyOfOrder' . $currencyId, Logger::ERROR);
         return false;
+    }
+
+    /**
+     * @param $statusCode
+     * @return string
+     */
+    private function getReadableStatus($statusCode): string
+    {
+        $label = AdminTranslate::trans($this->translator->getLocale(), 'unknownStatus');
+        if (array_key_exists($statusCode, Payment::STATUS_LABELS)) {
+            $label = AdminTranslate::trans($this->translator->getLocale(), "transactionStatus." . Payment::STATUS_LABELS[$statusCode]);
+        }
+
+        return $label . " ($statusCode)";
+    }
+
+    public function translate($id)
+    {
+        return AdminTranslate::trans($this->translator->getLocale(), $id);
     }
 }

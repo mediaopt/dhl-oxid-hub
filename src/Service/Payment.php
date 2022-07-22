@@ -44,6 +44,48 @@ class Payment implements AsynchronousPaymentHandlerInterface
     public const STATUS_REFUND_REQUESTED = [81, 82];            //in progress
     public const STATUS_REFUNDED = [7, 8, 85];                  //refunded
 
+    public const STATUS_LABELS = [
+        0 => 'created',
+
+        1 =>  'cancelled',
+        6 =>  'cancelled',
+        61 => 'cancelled',
+        62 => 'cancelled',
+        64 => 'cancelled',
+        75 => 'cancelled',
+
+        2  => 'rejected',
+        57 => 'rejected',
+        59 => 'rejected',
+        73 => 'rejected',
+        83 => 'rejected',
+
+        93 => 'rejectedCapture',
+
+        46 => 'redirected',
+
+        5  => 'pendingCapture',
+        56 => 'pendingCapture',
+
+        50 => 'authorizationRequested',
+        51 => 'authorizationRequested',
+        55 => 'authorizationRequested',
+
+        4  => 'captureRequested',
+        91 => 'captureRequested',
+        92 => 'captureRequested',
+        99 => 'captureRequested',
+
+        9 => 'captured',
+
+        81 => 'refundRequested',
+        82 => 'refundRequested',
+
+        7  => 'refunded',
+        8  => 'refunded',
+        85 => 'refunded',
+    ];
+
     /**
      * @param SystemConfigService $systemConfigService
      * @param EntityRepositoryInterface $orderTransactionRepository

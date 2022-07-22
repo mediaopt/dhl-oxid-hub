@@ -8,7 +8,9 @@
 namespace MoptWordline\Controller\TransactionsControl;
 
 use Monolog\Logger;
-use MoptWordline\Bootstrap\Form;use MoptWordline\Service\Payment;
+use MoptWordline\Bootstrap\Form;
+use MoptWordline\Service\AdminTranslate;
+use MoptWordline\Service\Payment;
 use MoptWordline\Service\PaymentHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Framework\Context;
@@ -69,16 +71,16 @@ class TransactionsControlController extends AbstractController
     public function status(Request $request, Context $context): JsonResponse
     {
         $success = false;
-        $message = $this->translator->trans("statusUpdateError");
+        $message = AdminTranslate::trans($this->translator->getLocale(), "statusUpdateError");
         if (!$hostedCheckoutId = $this->getTransactionId($request)) {
-            $message = $this->translator->trans("noTransactionForThisOrder");
+            $message = AdminTranslate::trans($this->translator->getLocale(), "noTransactionForThisOrder");
             return $this->response($success, $message);
         }
         $handler = $this->getHandler($hostedCheckoutId, $context);
         $status = $handler->updatePaymentStatus($hostedCheckoutId);
         if ($status != 0) {
             $success = true;
-            $message = $this->translator->trans("statusUpdateRequestSent");
+            $message = AdminTranslate::trans($this->translator->getLocale(), "statusUpdateRequestSent");
         }
         return $this->response($success, $message);
     }
@@ -93,7 +95,7 @@ class TransactionsControlController extends AbstractController
     public function capture(Request $request, Context $context): JsonResponse
     {
         if (!$hostedCheckoutId = $this->getTransactionId($request)) {
-            $message = $this->translator->trans("noTransactionForThisOrder");
+            $message = AdminTranslate::trans($this->translator->getLocale(), "noTransactionForThisOrder");
             return $this->response(false, $message);
         }
 
@@ -101,7 +103,7 @@ class TransactionsControlController extends AbstractController
 
         $handler->capturePayment($hostedCheckoutId);
 
-        $message = $this->translator->trans("success");
+        $message = AdminTranslate::trans($this->translator->getLocale(), "success");
         return $this->response(true, $message);
     }
 
@@ -115,7 +117,7 @@ class TransactionsControlController extends AbstractController
     public function refund(Request $request, Context $context): JsonResponse
     {
         if (!$hostedCheckoutId = $this->getTransactionId($request)) {
-            $message = $this->translator->trans("noTransactionForThisOrder");
+            $message = AdminTranslate::trans($this->translator->getLocale(), "noTransactionForThisOrder");
             return $this->response(false, $message);
         }
 
@@ -123,7 +125,7 @@ class TransactionsControlController extends AbstractController
 
         $handler->refundPayment($hostedCheckoutId);
 
-        $message = $this->translator->trans("success");
+        $message = AdminTranslate::trans($this->translator->getLocale(), "success");
         return $this->response(true, $message);
     }
 
