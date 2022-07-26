@@ -1,6 +1,6 @@
 # Changelog
 
-## next version
+## 1.6.2
 * filter out results not suitable to receive packages
 
 ## 1.6.1
