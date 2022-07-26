@@ -1,5 +1,8 @@
 # Changelog
 
+## next version
+* filter out results not suitable to receive packages
+
 ## 1.6.1
 * add weight inputs for articles in custom label form
 * use article weight over orderarticle weight
