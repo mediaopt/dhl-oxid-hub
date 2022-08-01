@@ -1,7 +1,7 @@
 {
     "name": "mediaopt/wordline",
     "description": "The Wordline Plugin",
-    "version": "0.0.2",
+    "version": "0.0.4",
     "type": "shopware-platform-plugin",
     "license": "proprietary",
     "config": {
@@ -40,6 +40,6 @@
     },
     "require": {
         "shopware/core": "^6.4.0.0",
-        "wl-online-payments-direct/sdk-php": "^3.5"
+        "wl-online-payments-direct/sdk-php": "^3.4"
     }
 }

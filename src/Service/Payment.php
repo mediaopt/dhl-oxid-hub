@@ -7,10 +7,8 @@
 
 namespace MoptWordline\Service;
 
-use MoptWordline\Adapter\WordlineSDKAdapter;
-use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
-use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
@@ -21,58 +19,104 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Monolog\Logger;
-use OnlinePayments\Sdk\Domain\Order;
-use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
-use OnlinePayments\Sdk\Domain\AmountOfMoney;
-use MoptWordline\Bootstrap\Form;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class Payment implements  AsynchronousPaymentHandlerInterface
+class Payment implements AsynchronousPaymentHandlerInterface
 {
     private SystemConfigService $systemConfigService;
-
+    private EntityRepositoryInterface $orderTransactionRepository;
+    private EntityRepositoryInterface $orderRepository;
+    private TranslatorInterface $translator;
+    private Logger $logger;
     private OrderTransactionStateHandler $transactionStateHandler;
 
-    private EntityRepositoryInterface $orderTransactionRepository;
+    public const STATUS_PAYMENT_CREATED = [0];                  //open
+    public const STATUS_PAYMENT_CANCELLED = [1, 6, 61, 62, 64, 75]; //cancelled
+    public const STATUS_PAYMENT_REJECTED = [2, 57, 59, 73, 83]; //failed
+    public const STATUS_REJECTED_CAPTURE = [93];                //fail
+    public const STATUS_REDIRECTED = [46];                      //
+    public const STATUS_PENDING_CAPTURE = [5, 56];              //open
+    public const STATUS_AUTHORIZATION_REQUESTED = [50, 51, 55]; //
+    public const STATUS_CAPTURE_REQUESTED = [4, 91, 92, 99];    //in progress
+    public const STATUS_CAPTURED = [9];                         //payed
+    public const STATUS_REFUND_REQUESTED = [81, 82];            //in progress
+    public const STATUS_REFUNDED = [7, 8, 85];                  //refunded
 
-    private EntityRepositoryInterface $orderRepository;
+    public const STATUS_LABELS = [
+        0 => 'created',
 
-    private TranslatorInterface $translator;
+        1 =>  'cancelled',
+        6 =>  'cancelled',
+        61 => 'cancelled',
+        62 => 'cancelled',
+        64 => 'cancelled',
+        75 => 'cancelled',
 
-    private Session $session;
+        2  => 'rejected',
+        57 => 'rejected',
+        59 => 'rejected',
+        73 => 'rejected',
+        83 => 'rejected',
 
-    private Logger $logger;
+        93 => 'rejectedCapture',
+
+        46 => 'redirected',
+
+        5  => 'pendingCapture',
+        56 => 'pendingCapture',
+
+        50 => 'authorizationRequested',
+        51 => 'authorizationRequested',
+        55 => 'authorizationRequested',
+
+        4  => 'captureRequested',
+        91 => 'captureRequested',
+        92 => 'captureRequested',
+        99 => 'captureRequested',
+
+        9 => 'captured',
+
+        81 => 'refundRequested',
+        82 => 'refundRequested',
+
+        7  => 'refunded',
+        8  => 'refunded',
+        85 => 'refunded',
+    ];
 
     /**
      * @param SystemConfigService $systemConfigService
-     * @param OrderTransactionStateHandler $transactionStateHandler
+     * @param EntityRepositoryInterface $orderTransactionRepository
      * @param EntityRepositoryInterface $orderRepository
      * @param TranslatorInterface $translator
      * @param Logger $logger
-     * @param Session $session
+     * @param OrderTransactionStateHandler $transactionStateHandler
      */
     public function __construct(
-        SystemConfigService $systemConfigService,
-        OrderTransactionStateHandler $transactionStateHandler,
-        EntityRepositoryInterface $orderTransactionRepository,
-        EntityRepositoryInterface $orderRepository,
-        TranslatorInterface $translator,
-        Logger $logger,
-        Session $session
+        SystemConfigService          $systemConfigService,
+        EntityRepositoryInterface    $orderTransactionRepository,
+        EntityRepositoryInterface    $orderRepository,
+        TranslatorInterface          $translator,
+        Logger                       $logger,
+        OrderTransactionStateHandler $transactionStateHandler
     )
     {
-        $this->transactionStateHandler = $transactionStateHandler;
         $this->systemConfigService = $systemConfigService;
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->orderRepository = $orderRepository;
         $this->translator = $translator;
         $this->logger = $logger;
-        $this->session = $session;
+        $this->transactionStateHandler = $transactionStateHandler;
     }
 
+    /**
+     * @param AsyncPaymentTransactionStruct $transaction
+     * @param RequestDataBag $dataBag
+     * @param SalesChannelContext $salesChannelContext
+     * @return RedirectResponse
+     */
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
     {
         // Method that sends the return URL to the external gateway and gets a redirect URL back
@@ -88,13 +132,17 @@ class Payment implements  AsynchronousPaymentHandlerInterface
     }
 
     /**
-     * @throws CustomerCanceledAsyncPaymentException
+     * @param AsyncPaymentTransactionStruct $transaction
+     * @param Request $request
+     * @param SalesChannelContext $salesChannelContext
+     * @return void
      */
     public function finalize(
         AsyncPaymentTransactionStruct $transaction,
-        Request $request,
-        SalesChannelContext $salesChannelContext
-    ): void {
+        Request                       $request,
+        SalesChannelContext           $salesChannelContext
+    ): void
+    {
         $transactionId = $transaction->getOrderTransaction()->getId();
 
         //todo realise is it a Cancelled payment?
@@ -104,21 +152,10 @@ class Payment implements  AsynchronousPaymentHandlerInterface
                 'Customer canceled the payment on the PayPal page'
             );
         }
-
-        $paymentState = $request->query->getAlpha('status');
-
-        $context = $salesChannelContext->getContext();
-        if ($paymentState === 'completed') {
-            // Payment completed, set transaction status to "paid"
-            $this->transactionStateHandler->paid($transaction->getOrderTransaction()->getId(), $context);
-        } else {
-            // Payment not completed, set transaction status to "open"
-            $this->transactionStateHandler->reopen($transaction->getOrderTransaction()->getId(), $context);
-        }
     }
 
     /**
-     * @param OrderEntity $orderEntity
+     * @param AsyncPaymentTransactionStruct $transaction
      * @param Context $context
      * @return string
      * @throws \Exception
@@ -126,64 +163,30 @@ class Payment implements  AsynchronousPaymentHandlerInterface
     private function sendReturnUrlToExternalGateway(AsyncPaymentTransactionStruct $transaction, Context $context)
     {
         $transactionId = $transaction->getOrderTransaction()->getId();
-        $orderEntity = $transaction->getOrder();
-        $orderId = $orderEntity->getId();
-        $currency = $orderEntity->getCurrency()->getIsoCode();
-        $amountTotal = $orderEntity->getAmountTotal();
 
-        $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger);
-        $adapter->log($this->translator->trans('started'));
+        $criteria = new Criteria([$transactionId]);
+        $criteria->addAssociation('order');
+        $orderTransaction = $this->orderTransactionRepository->search($criteria, $context)->first();
 
-        $merchantClient = $adapter->getMerchantClient();
-        $hostedCheckoutClient = $merchantClient->hostedCheckout();
-
-        $hostedCheckoutRequest =
-            new CreateHostedCheckoutRequest();
-
-        $adapter->log($this->translator->trans('buildingOrder'));
-        $order = new Order();
-
-        $amountOfMoney = new AmountOfMoney();
-        $amountOfMoney->setCurrencyCode($currency);
-        $amountOfMoney->setAmount($amountTotal * 100);
-
-        $order->setAmountOfMoney($amountOfMoney);
-
-        $hostedCheckoutSpecificInput = new HostedCheckoutSpecificInput();
-
-        $returnUrl = $adapter->getPluginConfig(Form::RETURN_URL_FIELD);
-        $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
-        $hostedCheckoutRequest->setOrder($order);
-        $hostedCheckoutRequest->setHostedCheckoutSpecificInput($hostedCheckoutSpecificInput);
+        $handler = new PaymentHandler(
+            $this->systemConfigService,
+            $this->logger,
+            $orderTransaction,
+            $this->translator,
+            $this->orderRepository,
+            $this->orderTransactionRepository,
+            $context,
+            $this->transactionStateHandler
+        );
 
         try {
-            $hostedCheckoutResponse = $hostedCheckoutClient->createHostedCheckout($hostedCheckoutRequest);
-        } catch (\Exception $e){
-            $adapter->log($e->getMessage(), Logger::ERROR);
-
+            $hostedCheckoutResponse = $handler->createPayment();
+        } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(
                 $transactionId,
                 \sprintf('An error occurred during the communication with Wordline%s%s', \PHP_EOL, $e->getMessage())
             );
         }
-
-        $customFields = [
-            Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_ID => $hostedCheckoutResponse->getHostedCheckoutId()
-        ];
-
-        $this->orderTransactionRepository->update([
-            [
-                'id' => $transactionId,
-                'customFields' => $customFields
-            ]
-        ], $context);
-
-        $this->orderRepository->update([
-            [
-                'id' => $orderId,
-                'customFields' => $customFields
-            ]
-        ], $context);
 
         $link = $hostedCheckoutResponse->getRedirectUrl();
         if ($link === null) {

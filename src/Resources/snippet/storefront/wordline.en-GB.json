@@ -1,0 +1,65 @@
+{
+    "api-test-button": {
+        "title": "API Test",
+        "success": "Connection was successfully tested.",
+        "error": "Connection could not be established. Please check the access data.",
+        "button": "Test connection"
+    },
+    "check-status-button": {
+        "title": "Status check",
+        "success": "Status was successfully updated.",
+        "error": "Connection could not be established. Please check the access data.",
+        "button": "Check status"
+    },
+    "capture-payment-button": {
+        "title": "Capture payment",
+        "success": "Payment was successfully captured.",
+        "error": "Connection could not be established. Please check the access data.",
+        "button": "Capture payment"
+    },
+    "cancel-payment-button": {
+        "title": "Cancel payment",
+        "success": "Payment was successfully canceled.",
+        "error": "Connection could not be established. Please check the access data.",
+        "button": "Cancel payment"
+    },
+    "refund-payment-button": {
+        "title": "Refund payment",
+        "success": "Payment was successfully refunded.",
+        "error": "Connection could not be established. Please check the access data.",
+        "button": "Refund payment"
+    },
+    "forwardToPaymentHandler": "Forwarding to payment handler.",
+    "errorWithConfirmRedirect": "Error. Redirecting to confirm page.",
+    "buildingOrder": "Building order",
+    "started": "Started",
+    "captureRequested": "captureRequested",
+    "gettingPaymentStatus": "gettingPaymentStatus",
+    "tryingToCapture": "tryingToCapture",
+    "unsupportedStatus": "unsupportedStatus",
+    "operationIsNotPossibleDueToCurrentStatus": "operationIsNotPossibleDueToCurrentStatus",
+    "gettingPaymentDetails": "",
+    "paymentOpen": "",
+    "paymentInProgress": "",
+    "paymentPaid": "",
+    "paymentRefunded": "",
+    "paymentCanceled": "",
+    "paymentFailed": "",
+    "refundInProgress": "",
+    "cantFindCurrencyOfOrder": "",
+    "statusUpdateError": "",
+    "statusUpdateRequestSent": "",
+    "noTransactionForThisOrder": "",
+    "success": "",
+    "wordline-order": {
+        "detail": {
+            "cardLabel": "Wordline transaction control",
+            "bundleSelectLabel": "Associated bundles",
+            "bundleSelectPlaceholder": "Add bundle..."
+        }
+    },
+    "transactionStatus": {
+        "refunded": "Refunded",
+        "cancelled": "Cancelled"
+    }
+}
