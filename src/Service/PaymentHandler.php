@@ -89,7 +89,8 @@ class PaymentHandler
 
         $this->log(AdminTranslate::trans($this->translator->getLocale(), 'buildingOrder'));
         $hostedCheckoutResponse = $this->adapter->createPayment($amountTotal, $currencyISO);
-        $this->saveOrderCustomFields(0, $hostedCheckoutResponse->getHostedCheckoutId());
+        $status = Payment::STATUS_PAYMENT_CREATED[0];
+        $this->saveOrderCustomFields($status, $hostedCheckoutResponse->getHostedCheckoutId());
         return $hostedCheckoutResponse;
     }
 

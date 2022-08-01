@@ -62,19 +62,17 @@ class ApiTestController extends AbstractController
         $salesChannelId = $request->request->get('salesChannelId') ?: 'null';
 
         $credentials = $this->buildCredentialsFromRequest($salesChannelId, $configFormData);
-        $paymentMethods = [];
         $message = '';
         try {
             $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger);//No sales channel needed
             $adapter->getMerchantClient($credentials);
-            $paymentMethods = $adapter->getPaymentMethods()->toObject();
         } catch (\Exception $e) {
             $message = '<br/>' . $e->getMessage();
         }
 
         $success = empty($message);
 
-        return $this->response($success, $message, $paymentMethods);
+        return $this->response($success, $message);
     }
 
     /**
@@ -114,12 +112,11 @@ class ApiTestController extends AbstractController
      * @param string $message
      * @return JsonResponse
      */
-    private function response(bool $success, string $message, $pay = null): JsonResponse
+    private function response(bool $success, string $message): JsonResponse
     {
         return new JsonResponse([
             'success' => $success,
-            'message' => $message,
-            '123' => $pay
+            'message' => $message
         ]);
     }
 }
