@@ -65,6 +65,14 @@ class PaymentHandler
     }
 
     /**
+     * @return string
+     */
+    public function getOrderId(): string
+    {
+        return $this->orderTransaction->getOrder()->getId();
+    }
+
+    /**
      * @param string $hostedCheckoutId
      * @return int
      * @throws \Exception
@@ -96,27 +104,30 @@ class PaymentHandler
 
     /**
      * @param string $hostedCheckoutId
-     * @return DataObject|null
+     * @return bool
      * @throws \Exception
      */
-    public function capturePayment(string $hostedCheckoutId): ?CaptureResponse
+    public function capturePayment(string $hostedCheckoutId): bool
     {
         $status = $this->updatePaymentTransactionStatus($hostedCheckoutId);
 
         if (!in_array($status, Payment::STATUS_PENDING_CAPTURE)) {
             $this->log('operationIsNotPossibleDueToCurrentStatus' . $status, Logger::ERROR);
-            return null;
+            return false;
         }
 
         $amount = $this->orderTransaction->getOrder()->getAmountTotal();
         $captureResponse = $this->adapter->capturePayment($hostedCheckoutId, $amount);
         $this->log('capturePayment', 0, $captureResponse->toJson());
         $newStatus = $captureResponse->getStatusOutput()->getStatusCode();
-        $this->saveOrderCustomFields($newStatus, $hostedCheckoutId);
 
+        $this->saveOrderCustomFields($newStatus, $hostedCheckoutId);
         $this->updateOrderTransactionState($newStatus, $hostedCheckoutId);
 
-        return $captureResponse;
+        if (!in_array($newStatus, Payment::STATUS_CAPTURE_REQUESTED)) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -137,8 +148,9 @@ class PaymentHandler
         $newStatus = $this->adapter->getCancelStatus($cancelResponse);
 
         $this->saveOrderCustomFields($newStatus, $hostedCheckoutId);
+        $this->updateOrderTransactionState($newStatus, $hostedCheckoutId);
+
         if (!in_array($newStatus, Payment::STATUS_PAYMENT_CANCELLED)) {
-            $this->updateOrderTransactionState($newStatus, $hostedCheckoutId);
             return false;
         }
         return true;
@@ -147,10 +159,16 @@ class PaymentHandler
     /**
      * @param string $hostedCheckoutId
      * @return bool
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function refundPayment(string $hostedCheckoutId)
+    public function refundPayment(string $hostedCheckoutId): bool
     {
         $status = $this->updatePaymentTransactionStatus($hostedCheckoutId);
+
+        if (in_array($status, Payment::STATUS_REFUNDED)) {
+            return false;
+        }
         if (!in_array($status, Payment::STATUS_CAPTURED)) {
             $this->log('operationIsNotPossibleDueToCurrentStatus' . $status, Logger::ERROR);
             return false;
@@ -174,9 +192,12 @@ class PaymentHandler
 
         $this->log('refundPayment', 0, $refundResponse->toJson());
         $status = $this->adapter->getRefundStatus($refundResponse);
+
         $this->saveOrderCustomFields($status, $hostedCheckoutId);
-        if (!in_array($status, Payment::STATUS_REFUNDED)) {
-            $this->updateOrderTransactionState($status, $hostedCheckoutId);
+        $this->updateOrderTransactionState($status, $hostedCheckoutId);
+
+        if (!in_array($status, Payment::STATUS_REFUND_REQUESTED)
+            && !in_array($status, Payment::STATUS_REFUNDED)) {
             return false;
         }
         return true;
@@ -203,7 +224,7 @@ class PaymentHandler
      */
     private function saveOrderCustomFields(int $statusCode, string $hostedCheckoutId)
     {
-        $orderId = $this->orderTransaction->getOrder()->getId();
+        $orderId = $this->getOrderId();
         $transactionId = $this->orderTransaction->getId();
 
         $readableStatus = $this->getReadableStatus($statusCode);

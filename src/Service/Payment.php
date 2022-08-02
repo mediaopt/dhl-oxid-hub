@@ -21,6 +21,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Monolog\Logger;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use MoptWordline\Bootstrap\Form;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Payment implements AsynchronousPaymentHandlerInterface
@@ -47,8 +49,8 @@ class Payment implements AsynchronousPaymentHandlerInterface
     public const STATUS_LABELS = [
         0 => 'created',
 
-        1 =>  'cancelled',
-        6 =>  'cancelled',
+        1  => 'cancelled',
+        6  => 'cancelled',
         61 => 'cancelled',
         62 => 'cancelled',
         64 => 'cancelled',
@@ -195,4 +197,35 @@ class Payment implements AsynchronousPaymentHandlerInterface
 
         return $link;
     }
+
+    /**
+     * @param string $orderId
+     * @param SessionInterface $session
+     * @return void
+     */
+    public static function lockOrder(SessionInterface $session, string $orderId)
+    {
+        $session->set(Form::SESSION_OPERATIONS_LOCK . $orderId, true);
+    }
+
+    /**
+     * @param string $orderId
+     * @param SessionInterface $session
+     * @return void
+     */
+    public static function unlockOrder(SessionInterface $session, string $orderId)
+    {
+        $session->set(Form::SESSION_OPERATIONS_LOCK . $orderId, false);
+    }
+
+    /**
+     * @param string $orderId
+     * @param SessionInterface $session
+     * @return bool
+     */
+    public static function isOrderLocked(SessionInterface $session, string $orderId): bool
+    {
+        return $session->get(Form::SESSION_OPERATIONS_LOCK . $orderId, false);
+    }
+
 }

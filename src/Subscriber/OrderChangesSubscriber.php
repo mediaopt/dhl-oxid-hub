@@ -3,7 +3,9 @@
 namespace MoptWordline\Subscriber;
 
 use Monolog\Logger;
+use MoptWordline\Bootstrap\Form;
 use MoptWordline\Service\AdminTranslate;
+use MoptWordline\Service\Payment;
 use MoptWordline\Service\PaymentHandler;
 use Psr\Log\LogLevel;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -73,35 +75,33 @@ class OrderChangesSubscriber implements EventSubscriberInterface
 
         $uri = $request->getUri();
 
-        if ($this->requestStack->getSession()->get('lock')) {
-            return;
-        }
-
         $uriArr = explode('/', $uri);
         $newState = $uriArr[count($uriArr) - 1];
-
-        //Order cancel should lead to payment transaction refund
-        foreach ($event->getWriteResults() as $result) {
-            //For order transaction changes payload is empty
-            if (!empty($result->getPayload()) && $newState === StateMachineTransitionActions::ACTION_CANCEL) {
-                $orderId = $result->getPrimaryKey();
-                $this->processOrder($orderId, StateMachineTransitionActions::ACTION_REFUND, $event->getContext());
-                return;
-            }
-        }
-
-        //We don't need to react on other statuses.
-        if (!in_array(
-            $newState,
-            [StateMachineTransitionActions::ACTION_CANCEL, StateMachineTransitionActions::ACTION_REFUND]
-        )) {
+        if (is_null($newState)
+            || !in_array(
+                $newState,
+                [StateMachineTransitionActions::ACTION_CANCEL, StateMachineTransitionActions::ACTION_REFUND]
+            )
+        ) {
             return;
         }
 
         foreach ($event->getWriteResults() as $result) {
             $orderId = $result->getPrimaryKey();
-            if (!is_null($orderId) && !is_null($newState)) {
+            if (is_null($orderId)) {
+                continue;
+            }
+            if (Payment::isOrderLocked($this->requestStack->getSession(), $orderId)) {
+                continue;
+            }
+
+            //For order transaction changes payload is empty
+            if (empty($result->getPayload())) {
                 $this->processOrder($orderId, $newState, $event->getContext());
+            //Order cancel should lead to payment transaction refund.
+            //For order changes payload is NOT empty.
+            } else {
+                $this->processOrder($orderId, StateMachineTransitionActions::ACTION_REFUND, $event->getContext());
             }
         }
     }
@@ -143,13 +143,13 @@ class OrderChangesSubscriber implements EventSubscriberInterface
         switch ($state) {
             case StateMachineTransitionActions::ACTION_CANCEL:
             {
-                $this->requestStack->getSession()->set('lock', true);
+                Payment::lockOrder($this->requestStack->getSession(), $orderId);
                 $paymentHandler->cancelPayment($hostedCheckoutId);
                 break;
             }
             case StateMachineTransitionActions::ACTION_REFUND:
             {
-                $this->requestStack->getSession()->set('lock', true);
+                Payment::lockOrder($this->requestStack->getSession(), $orderId);
                 $paymentHandler->refundPayment($hostedCheckoutId);
                 break;
             }
@@ -158,7 +158,7 @@ class OrderChangesSubscriber implements EventSubscriberInterface
                 break;
             }
         }
-        $this->requestStack->getSession()->set('lock', false);
+        Payment::unlockOrder($this->requestStack->getSession(), $orderId);
     }
 
     /**
