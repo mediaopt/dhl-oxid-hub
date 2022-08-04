@@ -118,6 +118,18 @@
                 </tr>
                 <tr>
                     <td class="edittext">
+                        [{oxmultilang ident="MO_DHL__PDDP"}]
+                    </td>
+                    <td class="edittext">
+                        <input type="hidden" name="editval[oxdeliveryset__mo_dhl_pddp]" value="0">
+                        <input class="edittext" type="checkbox" name="editval[oxdeliveryset__mo_dhl_pddp]"
+                               value='1'
+                               [{if $edit->oxdeliveryset__mo_dhl_pddp->value == 1}]checked[{/if}] [{$readonly}]>
+                        [{oxinputhelp ident="HELP_MO_DHL__PDDP"}]
+                    </td>
+                </tr>
+                <tr>
+                    <td class="edittext">
                         [{oxmultilang ident="MO_DHL__PREMIUM"}]
                     </td>
                     <td class="edittext">

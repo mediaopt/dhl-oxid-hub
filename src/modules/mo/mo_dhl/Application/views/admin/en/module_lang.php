@@ -96,6 +96,8 @@ $aLang = [
     'HELP_MO_DHL__ADDITIONAL_INSURANCE'   => 'DHL normally insures the delivery inside Germany up to 500 EUR concerning losing or damaging. For deliveries of more expensive products DHL offers an additional insurance up to 2.500 EUR (+6,00 EUR surcharge) or 25.000 EUR  (+18,00 EUR surcharge). You can find more informationens <a href="https://www.dhl.de/content/dam/images/pdf/GK/Services/dhl-transportversicherung-infoblatt-en-052020.pdf" target="_blank" rel="noopener noreferrer">here</a>',
     'MO_DHL__PREMIUM'                     => 'Premium Service',
     'HELP_MO_DHL__PREMIUM'                => 'The DHL Paket International and Warenpost International with Service Premium is preferred and always transported by the fastest route. Your package always takes the next possible flight or truck to the destination and gets priority status in the destination country. So it reaches its destination much faster.',
+    'MO_DHL__PDDP'                         => 'PDDP (Postal Delivery Duty Paid)',
+    'HELP_MO_DHL__PDDP'                         => 'Deutsche Post and sender handle import duties instead of consignee',
     'MO_DHL__ZOLLTARIF'                   => 'HS tariff number',
     'HELP_MO_DHL__ZOLLTARIF'              => 'Optional parameter used for the creation of export document for DHL Paket International. Internationally standardized system of names and numbers to classify traded products.',
 

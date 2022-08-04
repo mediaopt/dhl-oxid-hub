@@ -6,16 +6,6 @@ class ShipmentService
 {
 
     /**
-     * @var ServiceconfigurationDateOfDelivery $DayOfDelivery
-     */
-    protected $DayOfDelivery = null;
-
-    /**
-     * @var ServiceconfigurationDeliveryTimeframe $DeliveryTimeframe
-     */
-    protected $DeliveryTimeframe = null;
-
-    /**
      * @var ServiceconfigurationISR $IndividualSenderRequirement
      */
     protected $IndividualSenderRequirement = null;
@@ -24,21 +14,6 @@ class ShipmentService
      * @var Serviceconfiguration $PackagingReturn
      */
     protected $PackagingReturn = null;
-
-    /**
-     * @var Serviceconfiguration $ReturnImmediately
-     */
-    protected $ReturnImmediately = null;
-
-    /**
-     * @var Serviceconfiguration $NoticeOfNonDeliverability
-     */
-    protected $NoticeOfNonDeliverability = null;
-
-    /**
-     * @var ServiceconfigurationShipmentHandling $ShipmentHandling
-     */
-    protected $ShipmentHandling = null;
 
     /**
      * @var ServiceconfigurationEndorsement $Endorsement
@@ -66,21 +41,6 @@ class ShipmentService
     protected $PreferredDay = null;
 
     /**
-     * @var Serviceconfiguration $GoGreen
-     */
-    protected $GoGreen = null;
-
-    /**
-     * @var Serviceconfiguration $Perishables
-     */
-    protected $Perishables = null;
-
-    /**
-     * @var Serviceconfiguration $Personally
-     */
-    protected $Personally = null;
-
-    /**
      * @var Serviceconfiguration $NoNeighbourDelivery
      */
     protected $NoNeighbourDelivery = null;
@@ -106,6 +66,11 @@ class ShipmentService
     protected $CashOnDelivery = null;
 
     /**
+     * @var PDDP $PDDP
+     */
+    protected $PDDP = null;
+
+    /**
      * @var ServiceconfigurationAdditionalInsurance $AdditionalInsurance
      */
     protected $AdditionalInsurance = null;
@@ -129,42 +94,6 @@ class ShipmentService
     public function __construct()
     {
 
-    }
-
-    /**
-     * @return ServiceconfigurationDateOfDelivery
-     */
-    public function getDayOfDelivery()
-    {
-        return $this->DayOfDelivery;
-    }
-
-    /**
-     * @param ServiceconfigurationDateOfDelivery $DayOfDelivery
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
-     */
-    public function setDayOfDelivery($DayOfDelivery)
-    {
-        $this->DayOfDelivery = $DayOfDelivery;
-        return $this;
-    }
-
-    /**
-     * @return ServiceconfigurationDeliveryTimeframe
-     */
-    public function getDeliveryTimeframe()
-    {
-        return $this->DeliveryTimeframe;
-    }
-
-    /**
-     * @param ServiceconfigurationDeliveryTimeframe $DeliveryTimeframe
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
-     */
-    public function setDeliveryTimeframe($DeliveryTimeframe)
-    {
-        $this->DeliveryTimeframe = $DeliveryTimeframe;
-        return $this;
     }
 
     /**
@@ -200,60 +129,6 @@ class ShipmentService
     public function setPackagingReturn($PackagingReturn)
     {
         $this->PackagingReturn = $PackagingReturn;
-        return $this;
-    }
-
-    /**
-     * @return Serviceconfiguration
-     */
-    public function getReturnImmediately()
-    {
-        return $this->ReturnImmediately;
-    }
-
-    /**
-     * @param Serviceconfiguration $ReturnImmediately
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
-     */
-    public function setReturnImmediately($ReturnImmediately)
-    {
-        $this->ReturnImmediately = $ReturnImmediately;
-        return $this;
-    }
-
-    /**
-     * @return Serviceconfiguration
-     */
-    public function getNoticeOfNonDeliverability()
-    {
-        return $this->NoticeOfNonDeliverability;
-    }
-
-    /**
-     * @param Serviceconfiguration $NoticeOfNonDeliverability
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
-     */
-    public function setNoticeOfNonDeliverability($NoticeOfNonDeliverability)
-    {
-        $this->NoticeOfNonDeliverability = $NoticeOfNonDeliverability;
-        return $this;
-    }
-
-    /**
-     * @return ServiceconfigurationShipmentHandling
-     */
-    public function getShipmentHandling()
-    {
-        return $this->ShipmentHandling;
-    }
-
-    /**
-     * @param ServiceconfigurationShipmentHandling $ShipmentHandling
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
-     */
-    public function setShipmentHandling($ShipmentHandling)
-    {
-        $this->ShipmentHandling = $ShipmentHandling;
         return $this;
     }
 
@@ -350,60 +225,6 @@ class ShipmentService
     /**
      * @return Serviceconfiguration
      */
-    public function getGoGreen()
-    {
-        return $this->GoGreen;
-    }
-
-    /**
-     * @param Serviceconfiguration $GoGreen
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
-     */
-    public function setGoGreen($GoGreen)
-    {
-        $this->GoGreen = $GoGreen;
-        return $this;
-    }
-
-    /**
-     * @return Serviceconfiguration
-     */
-    public function getPerishables()
-    {
-        return $this->Perishables;
-    }
-
-    /**
-     * @param Serviceconfiguration $Perishables
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
-     */
-    public function setPerishables($Perishables)
-    {
-        $this->Perishables = $Perishables;
-        return $this;
-    }
-
-    /**
-     * @return Serviceconfiguration
-     */
-    public function getPersonally()
-    {
-        return $this->Personally;
-    }
-
-    /**
-     * @param Serviceconfiguration $Personally
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
-     */
-    public function setPersonally($Personally)
-    {
-        $this->Personally = $Personally;
-        return $this;
-    }
-
-    /**
-     * @return Serviceconfiguration
-     */
     public function getNoNeighbourDelivery()
     {
         return $this->NoNeighbourDelivery;
@@ -488,6 +309,24 @@ class ShipmentService
     public function setCashOnDelivery($CashOnDelivery)
     {
         $this->CashOnDelivery = $CashOnDelivery;
+        return $this;
+    }
+
+    /**
+     * @return PDDP
+     */
+    public function getPDDP()
+    {
+        return $this->PDDP;
+    }
+
+    /**
+     * @param PDDP $PDDP
+     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     */
+    public function setPDDP($PDDP)
+    {
+        $this->PDDP = $PDDP;
         return $this;
     }
 
