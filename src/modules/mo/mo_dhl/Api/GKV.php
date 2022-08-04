@@ -126,7 +126,7 @@ class GKV extends \SoapClient
             'authentication' => SOAP_AUTHENTICATION_BASIC,
             'classmap'       => self::$classmap,
         ];
-        $wsdl = 'https://cig.dhl.de/cig-wsdls/com/dpdhl/wsdl/geschaeftskundenversand-api/3.0/geschaeftskundenversand-api-3.0.wsdl';
+        $wsdl = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'GKV' . DIRECTORY_SEPARATOR . 'geschaeftskundenversand-api-3.3.2.wsdl';
         parent::__construct($wsdl, $options);
     }
 

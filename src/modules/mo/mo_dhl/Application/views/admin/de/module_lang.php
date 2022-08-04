@@ -96,6 +96,8 @@ $aLang = [
     'HELP_MO_DHL__ADDITIONAL_INSURANCE' => 'Grundsätzlich haftet DHL für Ihr Paket beim deutschlandweiten Versand gegen Verlust oder Beschädigung bis 500 EUR (nur gegen Vorlage des quittierten Einlieferungsbeleges). Für besonders wertvolle Sendungen bietet DHL Ihnen darüber hinaus eine Transportversicherung bis 2.500 EUR (+6,00 EUR Aufpreis) oder 25.000 EUR  (+18,00 EUR Aufpreis) an. Weiter Informationen finden Sie <a href="https://www.dhl.de/de/geschaeftskunden/paket/leistungen-und-services/services/service-loesungen.html#versicherung" target="_blank" rel="noopener noreferrer">hier</a>',
     'MO_DHL__PREMIUM'                   => 'Service Premium',
     'HELP_MO_DHL__PREMIUM'              => 'Das DHL Paket International und Warenpost International mit Service Premium wird bevorzugt und immer auf dem schnellsten Weg transportiert. Ihr Paket nimmt immer den nächstmöglichen Flug oder LKW in Richtung Zieldestination und wird auch im Zielland prioritär behandelt. So erreicht es deutlich schneller seinen Bestimmungsort.',
+    'MO_DHL__PDDP'                       => 'PDDP (Postal Delivery Duty Paid)',
+    'HELP_MO_DHL__PDDP'                  => 'DHL führt mit  Postal Delivered Duty Paid (Postal DDP) einen Service ein, der es ermöglicht, dass der Versender alle Einfuhrabgaben für den Empfänger bezahlt.',
     'MO_DHL__ZOLLTARIF'                 => 'Zolltarifnummer',
     'HELP_MO_DHL__ZOLLTARIF'            => 'Optionaler Parameter bei der Erzeugung von Exportdokumenten für DHL Paket International. International standardisiertes System von Namen und Nummern zur Klassifizierung gehandelter Produkte.',
 

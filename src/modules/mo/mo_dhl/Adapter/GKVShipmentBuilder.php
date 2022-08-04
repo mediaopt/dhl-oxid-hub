@@ -231,7 +231,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $abandonment = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__ENDORSEMENT));
             $service->setEndorsement(new ServiceconfigurationEndorsement(true, $abandonment ? MoDHLService::MO_DHL__ENDORSEMENT_ABANDONMENT : MoDHLService::MO_DHL__ENDORSEMENT_IMMEDIATE));
         }
-
+        if ($process->supportsPDDP()) {
+            $active = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__PDDP));
+            $service->setPDDP(new Serviceconfiguration($active));
+        }
         return $service;
     }
 
