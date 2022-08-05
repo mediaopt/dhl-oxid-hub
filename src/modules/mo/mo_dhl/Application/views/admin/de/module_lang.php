@@ -100,6 +100,8 @@ $aLang = [
     'HELP_MO_DHL__CDP'                  => '@TODO',
     'MO_DHL__PREMIUM'                   => 'Service Zustellart: Premium',
     'HELP_MO_DHL__PREMIUM'              => 'Ein Paket mit Service Premium wird bevorzugt und immer auf dem schnellsten Weg transportiert. Ihr Paket nimmt immer den nächstmöglichen Flug oder LKW in Richtung Zieldestination und wird auch im Zielland prioritär behandelt. So erreicht es deutlich schneller seinen Bestimmungsort.',
+    'MO_DHL__PDDP'                       => 'PDDP (Postal Delivery Duty Paid)',
+    'HELP_MO_DHL__PDDP'                  => 'DHL führt mit  Postal Delivered Duty Paid (Postal DDP) einen Service ein, der es ermöglicht, dass der Versender alle Einfuhrabgaben für den Empfänger bezahlt.',
     'MO_DHL__ZOLLTARIF'                 => 'Zolltarifnummer',
     'HELP_MO_DHL__ZOLLTARIF'            => 'Optionaler Parameter bei der Erzeugung von Exportdokumenten für DHL Paket International. International standardisiertes System von Namen und Nummern zur Klassifizierung gehandelter Produkte.',
 

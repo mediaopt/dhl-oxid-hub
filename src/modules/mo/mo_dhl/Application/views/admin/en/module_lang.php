@@ -100,6 +100,8 @@ $aLang = [
     'HELP_MO_DHL__CDP'                  => '@TODO',
     'MO_DHL__PREMIUM'                   => 'Service Delivery Type: Premium',
     'HELP_MO_DHL__PREMIUM'              => 'A package with Service Premium is preferred and always transported by the fastest route. Your package always takes the next possible flight or truck to the destination and gets priority status in the destination country. So it reaches its destination much faster.',
+    'MO_DHL__PDDP'                      => 'PDDP (Postal Delivery Duty Paid)',
+    'HELP_MO_DHL__PDDP'                 => 'Deutsche Post and sender handle import duties instead of consignee',
     'MO_DHL__ZOLLTARIF'                 => 'HS tariff number',
     'HELP_MO_DHL__ZOLLTARIF'            => 'Optional parameter used for the creation of export document for DHL Paket International. Internationally standardized system of names and numbers to classify traded products.',
 
