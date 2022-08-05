@@ -487,6 +487,32 @@
                                     </td>
                                 </tr>
                                 [{/if}]
+                                [{if $process->supportsCDP()}]
+                                [{assign var="service" value=$shipmentOrder.services.cdp}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__CDP'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][cdp][active]" value="false">
+                                        <input class="deliverySettings" type="checkbox" name="data[services][cdp][active]"
+                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                [{/if}]
+                                [{if $process->supportsEconomy()}]
+                                [{assign var="service" value=$shipmentOrder.services.economy}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__ECONOMY'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][economy][active]" value="false">
+                                        <input class="deliverySettings" type="checkbox" name="data[services][economy][active]"
+                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                [{/if}]
                                 [{if $process->supportsPremium()}]
                                     [{assign var="service" value=$shipmentOrder.services.premium}]
                                     <tr>
@@ -495,7 +521,7 @@
                                         </td>
                                         <td>
                                             <input type="hidden" name="data[services][premium][active]" value="false">
-                                            <input type="checkbox" name="data[services][premium][active]"
+                                            <input class="deliverySettings" type="checkbox" name="data[services][premium][active]"
                                                    value="1" [{if $service->getActive()}]checked[{/if}]>
                                         </td>
                                     </tr>
@@ -525,5 +551,6 @@
 </form>
 <br>
 <br>
+<script type="application/javascript" src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/js/admin/mo_dhl_process.js")}]"></script>
 [{include file="bottomnaviitem.tpl"}]
 [{include file="bottomitem.tpl"}]

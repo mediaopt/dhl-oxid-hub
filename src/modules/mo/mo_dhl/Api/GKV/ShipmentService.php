@@ -96,6 +96,52 @@ class ShipmentService
     protected $ReturnReceipt = null;
 
     /**
+     * @var Serviceconfiguration $CDP
+     */
+    protected $CDP = null;
+
+    /**
+     * @var Serviceconfiguration $Economy
+     */
+    protected $Economy = null;
+
+    /**
+     * @return Serviceconfiguration
+     */
+    public function getCDP()
+    {
+        return $this->CDP;
+    }
+
+    /**
+     * @param Serviceconfiguration $CDP
+     * @return ShipmentService
+     */
+    public function setCDP($CDP)
+    {
+        $this->CDP = $CDP;
+        return $this;
+    }
+
+    /**
+     * @return Serviceconfiguration
+     */
+    public function getEconomy()
+    {
+        return $this->Economy;
+    }
+
+    /**
+     * @param Serviceconfiguration $Economy
+     * @return ShipmentService
+     */
+    public function setEconomy($Economy)
+    {
+        $this->Economy = $Economy;
+        return $this;
+    }
+
+    /**
      * @var Serviceconfiguration $Premium
      */
     protected $Premium = null;

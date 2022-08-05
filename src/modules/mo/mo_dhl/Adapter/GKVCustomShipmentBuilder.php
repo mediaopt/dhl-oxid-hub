@@ -65,6 +65,8 @@ class GKVCustomShipmentBuilder
                 'identCheck'          => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getIdentCheck(),
                 'cashOnDelivery'      => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getCashOnDelivery(),
                 'visualAgeCheck'      => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getVisualCheckOfAge(),
+                'cdp'                 => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getCDP(),
+                'economy'             => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getEconomy(),
                 'premium'             => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getPremium(),
                 'endorsement'         => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getEndorsement(),
             ],
@@ -195,6 +197,14 @@ class GKVCustomShipmentBuilder
                 $services->setVisualCheckOfAge(null);
             }
 
+        }
+        if ($process->supportsCDP()) {
+            $isActive = filter_var($servicesData['cdp']['active'], FILTER_VALIDATE_BOOLEAN);
+            $services->setCDP(new Serviceconfiguration($isActive));
+        }
+        if ($process->supportsEconomy()) {
+            $isActive = filter_var($servicesData['economy']['active'], FILTER_VALIDATE_BOOLEAN);
+            $services->setEconomy(new Serviceconfiguration($isActive));
         }
         if ($process->supportsPremium()) {
             $isActive = filter_var($servicesData['premium']['active'], FILTER_VALIDATE_BOOLEAN);

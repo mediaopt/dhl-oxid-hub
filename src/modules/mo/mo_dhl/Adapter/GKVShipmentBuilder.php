@@ -227,6 +227,14 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $active = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__PREMIUM));
             $service->setPremium(new Serviceconfiguration($active));
         }
+        if ($process->supportsCDP()) {
+            $active = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__CDP));
+            $service->setCDP(new Serviceconfiguration($active));
+        }
+        if ($process->supportsEconomy()) {
+            $active = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__ECONOMY));
+            $service->setEconomy(new Serviceconfiguration($active));
+        }
         if ($process->supportsEndorsement()) {
             $abandonment = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__ENDORSEMENT));
             $service->setEndorsement(new ServiceconfigurationEndorsement(true, $abandonment ? MoDHLService::MO_DHL__ENDORSEMENT_ABANDONMENT : MoDHLService::MO_DHL__ENDORSEMENT_IMMEDIATE));

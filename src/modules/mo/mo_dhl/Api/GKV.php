@@ -278,6 +278,6 @@ class GKV extends \SoapClient
      */
     public function buildVersion(): Version
     {
-        return new Version(3, 0);
+        return new Version(3, 3);
     }
 }
