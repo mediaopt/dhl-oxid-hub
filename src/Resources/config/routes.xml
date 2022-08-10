@@ -6,5 +6,6 @@
 
     <import resource="../../Controller/Api/ApiTestController.php" type="annotation"/>
     <import resource="../../Controller/Payment/PaymentFinalizeController.php" type="annotation"/>
+    <import resource="../../Controller/Payment/PaymentWebhookController.php" type="annotation"/>
     <import resource="../../Controller/TransactionsControl/TransactionsControlController.php" type="annotation"/>
 </routes>

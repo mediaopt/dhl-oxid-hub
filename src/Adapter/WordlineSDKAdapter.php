@@ -295,7 +295,6 @@ class WordlineSDKAdapter
             $message,
             [
                 'source' => 'Wordline',
-                'environment' => 'env',
                 'additionalData' => json_encode($additionalData),
             ]
         );

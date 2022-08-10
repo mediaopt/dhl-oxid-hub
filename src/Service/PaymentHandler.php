@@ -77,9 +77,13 @@ class PaymentHandler
      * @return int
      * @throws \Exception
      */
-    public function updatePaymentStatus(string $hostedCheckoutId): int
+    public function updatePaymentStatus(string $hostedCheckoutId, $status = false): int
     {
-        $status = $this->updatePaymentTransactionStatus($hostedCheckoutId);
+        if (!$status) {
+            $status = $this->updatePaymentTransactionStatus($hostedCheckoutId);
+        } else {
+            $this->saveOrderCustomFields($status, $hostedCheckoutId);
+        }
         $this->updateOrderTransactionState($status, $hostedCheckoutId);
 
         return $status;
@@ -391,6 +395,15 @@ class PaymentHandler
         }
 
         return $orderTransaction;
+    }
+
+    /**
+     * @param array $request
+     * @return void
+     */
+    public function logWebhook(array $request)
+    {
+        $this->log('webhook', 0, $request);
     }
 
     /**
