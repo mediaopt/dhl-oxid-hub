@@ -18,6 +18,7 @@
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="monolog.logger" />
             <argument type="service" id="translator" />
+            <argument type="service" id="request_stack"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
@@ -32,6 +33,19 @@
             <tag name="shopware.payment.method.async" priority="-5100"/>
         </service>
         <service id="MoptWordline\Controller\Payment\PaymentFinalizeController" public="true">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument type="service" id="order_transaction.repository"/>
+            <argument type="service" id="order.repository"/>
+            <argument type="service" id="MoptWordline\Service\Payment"/>
+            <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="monolog.logger" />
+            <argument type="service" id="translator" />
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+        <service id="MoptWordline\Controller\Payment\PaymentWebhookController" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="order.repository"/>

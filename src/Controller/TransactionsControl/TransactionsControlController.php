@@ -17,6 +17,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Kernel;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,6 +36,7 @@ class TransactionsControlController extends AbstractController
     private OrderTransactionStateHandler $transactionStateHandler;
     private Logger $logger;
     private TranslatorInterface $translator;
+    private RequestStack $requestStack;
 
     /**
      * @param SystemConfigService $systemConfigService
@@ -43,6 +45,7 @@ class TransactionsControlController extends AbstractController
      * @param OrderTransactionStateHandler $transactionStateHandler
      * @param Logger $logger
      * @param TranslatorInterface $translator
+     * @param RequestStack $requestStack
      */
     public function __construct(
         SystemConfigService          $systemConfigService,
@@ -50,7 +53,8 @@ class TransactionsControlController extends AbstractController
         EntityRepositoryInterface    $orderRepository,
         OrderTransactionStateHandler $transactionStateHandler,
         Logger                       $logger,
-        TranslatorInterface          $translator
+        TranslatorInterface          $translator,
+        RequestStack                 $requestStack
     )
     {
         $this->systemConfigService = $systemConfigService;
@@ -59,6 +63,7 @@ class TransactionsControlController extends AbstractController
         $this->transactionStateHandler = $transactionStateHandler;
         $this->logger = $logger;
         $this->translator = $translator;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -94,17 +99,19 @@ class TransactionsControlController extends AbstractController
      */
     public function capture(Request $request, Context $context): JsonResponse
     {
-        if (!$hostedCheckoutId = $this->getTransactionId($request)) {
-            $message = AdminTranslate::trans($this->translator->getLocale(), "noTransactionForThisOrder");
-            return $this->response(false, $message);
-        }
+        return $this->processPayment($request, $context, 'capturePayment');
+    }
 
-        $handler = $this->getHandler($hostedCheckoutId, $context);
-
-        $handler->capturePayment($hostedCheckoutId);
-
-        $message = AdminTranslate::trans($this->translator->getLocale(), "success");
-        return $this->response(true, $message);
+    /**
+     * @Route(
+     *     "/api/_action/transactions-control/cancel",
+     *     name="api.action.transactions.control.cancel",
+     *     methods={"POST"}
+     * )
+     */
+    public function cancel(Request $request, Context $context): JsonResponse
+    {
+        return $this->processPayment($request, $context, 'cancelPayment');
     }
 
     /**
@@ -116,6 +123,19 @@ class TransactionsControlController extends AbstractController
      */
     public function refund(Request $request, Context $context): JsonResponse
     {
+        return $this->processPayment($request, $context, 'refundPayment');
+    }
+
+    /**
+     * @param Request $request
+     * @param Context $context
+     * @param string $action
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
+    private function processPayment(Request $request, Context $context, string $action): JsonResponse
+    {
         if (!$hostedCheckoutId = $this->getTransactionId($request)) {
             $message = AdminTranslate::trans($this->translator->getLocale(), "noTransactionForThisOrder");
             return $this->response(false, $message);
@@ -123,10 +143,14 @@ class TransactionsControlController extends AbstractController
 
         $handler = $this->getHandler($hostedCheckoutId, $context);
 
-        $handler->refundPayment($hostedCheckoutId);
+        Payment::lockOrder($this->requestStack->getSession(), $handler->getOrderId());
+        $message = AdminTranslate::trans($this->translator->getLocale(), "failed");
+        if ($result = $handler->$action($hostedCheckoutId)) {
+            $message = AdminTranslate::trans($this->translator->getLocale(), "success");
+        }
+        Payment::unlockOrder($this->requestStack->getSession(), $handler->getOrderId());
 
-        $message = AdminTranslate::trans($this->translator->getLocale(), "success");
-        return $this->response(true, $message);
+        return $this->response($result, $message);
     }
 
     /**

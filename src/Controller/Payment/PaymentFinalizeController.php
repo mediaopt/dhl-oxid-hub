@@ -84,6 +84,9 @@ class PaymentFinalizeController extends AbstractController
     public function finalizeTransaction(Request $request, SalesChannelContext $salesChannelContext): RedirectResponse
     {
         $hostedCheckoutId = $request->query->get('hostedCheckoutId');
+        if (is_null($hostedCheckoutId)) {
+            return new RedirectResponse('/');
+        }
         $context = $salesChannelContext->getContext();
 
         /** @var OrderTransactionEntity|null $orderTransaction */
