@@ -1,10 +1,10 @@
 <?php
 
-namespace MoptWordline\Service;
+namespace MoptWorldline\Service;
 
 use Monolog\Logger;
-use MoptWordline\Bootstrap\Form;
-use MoptWordline\Subscriber\OrderChangesSubscriber;
+use MoptWorldline\Bootstrap\Form;
+use MoptWorldline\Subscriber\OrderChangesSubscriber;
 use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\CaptureResponse;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
@@ -20,12 +20,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Kernel;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use MoptWordline\Adapter\WordlineSDKAdapter;
+use MoptWorldline\Adapter\WorldlineSDKAdapter;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PaymentHandler
 {
-    private WordlineSDKAdapter $adapter;
+    private WorldlineSDKAdapter $adapter;
     private OrderTransactionEntity $orderTransaction;
     private TranslatorInterface $translator;
     private EntityRepositoryInterface $orderRepository;
@@ -55,7 +55,7 @@ class PaymentHandler
     )
     {
         $salesChannelId = $orderTransaction->getOrder()->getSalesChannelId();
-        $this->adapter = new WordlineSDKAdapter($systemConfigService, $logger, $salesChannelId);
+        $this->adapter = new WorldlineSDKAdapter($systemConfigService, $logger, $salesChannelId);
         $this->orderTransaction = $orderTransaction;
         $this->translator = $translator;
         $this->orderRepository = $orderRepository;
@@ -233,9 +233,9 @@ class PaymentHandler
 
         $readableStatus = $this->getReadableStatus($statusCode);
         $customFields = [
-            Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID => $hostedCheckoutId,
-            Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_STATUS => (string)$statusCode,
-            Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_READABLE_STATUS => $readableStatus
+            Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID => $hostedCheckoutId,
+            Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_STATUS => (string)$statusCode,
+            Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_READABLE_STATUS => $readableStatus
         ];
 
         $this->orderTransactionRepository->update([
@@ -371,14 +371,14 @@ class PaymentHandler
                 MultiFilter::CONNECTION_AND,
                 [
                     new EqualsFilter(
-                        \sprintf('customFields.%s', Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID),
+                        \sprintf('customFields.%s', Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID),
                         $hostedCheckoutId
                     ),
                     new NotFilter(
                         NotFilter::CONNECTION_AND,
                         [
                             new EqualsFilter(
-                                \sprintf('customFields.%s', Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID),
+                                \sprintf('customFields.%s', Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID),
                                 null
                             ),
                         ]

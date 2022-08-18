@@ -2,14 +2,14 @@
 
 /**
  * @author Mediaopt GmbH
- * @package MoptWordline\Controller
+ * @package MoptWorldline\Controller
  */
 
-namespace MoptWordline\Controller\Payment;
+namespace MoptWorldline\Controller\Payment;
 
 use Symfony\Component\HttpFoundation\InputBag;
-use MoptWordline\Service\AdminTranslate;
-use MoptWordline\Service\PaymentHandler;
+use MoptWorldline\Service\AdminTranslate;
+use MoptWorldline\Service\PaymentHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
@@ -71,8 +71,8 @@ class PaymentWebhookController extends AbstractController
 
     /**
      * @Route(
-     *     "/wordline/payment/webhook",
-     *     name="wordline.payment.webhook",
+     *     "/worldline/payment/webhook",
+     *     name="worldline.payment.webhook",
      *     defaults={"csrf_protected"=false},
      *     methods={"POST"}
      * )
@@ -167,7 +167,7 @@ class PaymentWebhookController extends AbstractController
             Logger::ERROR,
             AdminTranslate::trans($this->translator->getLocale(), $message),
             [
-                'source' => 'Wordline',
+                'source' => 'Worldline',
                 'additionalData' => $additionalData,
             ]
         );

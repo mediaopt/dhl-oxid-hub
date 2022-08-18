@@ -3,22 +3,22 @@ declare(strict_types=1);
 
 /**
  * @author Mediaopt GmbH
- * @package MoptWordline
+ * @package MoptWorldline
  */
 
-namespace MoptWordline;
+namespace MoptWorldline;
 
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
-use MoptWordline\Service\CustomField;
-use MoptWordline\Service\PaymentMethod;
+use MoptWorldline\Service\CustomField;
+use MoptWorldline\Service\PaymentMethod;
 
-class MoptWordline extends Plugin
+class MoptWorldline extends Plugin
 {
-    const PLUGIN_NAME = 'MoptWordline';
+    const PLUGIN_NAME = 'MoptWorldline';
 
     const PLUGIN_VERSION = '0.0.5';
 

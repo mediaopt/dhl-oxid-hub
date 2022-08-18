@@ -2,14 +2,14 @@
 
 /**
  * @author Mediaopt GmbH
- * @package MoptWordline\Controller
+ * @package MoptWorldline\Controller
  */
 
-namespace MoptWordline\Controller\Payment;
+namespace MoptWorldline\Controller\Payment;
 
-use MoptWordline\Adapter\WordlineSDKAdapter;
-use MoptWordline\Service\AdminTranslate;
-use MoptWordline\Service\PaymentHandler;
+use MoptWorldline\Adapter\WorldlineSDKAdapter;
+use MoptWorldline\Service\AdminTranslate;
+use MoptWorldline\Service\PaymentHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -74,8 +74,8 @@ class PaymentFinalizeController extends AbstractController
 
     /**
      * @Route(
-     *     "/wordline/payment/finalize-transaction",
-     *     name="wordline.payment.finalize.transaction",
+     *     "/worldline/payment/finalize-transaction",
+     *     name="worldline.payment.finalize.transaction",
      *     methods={"GET"}
      * )
      * @throws InvalidTransactionException
@@ -140,7 +140,7 @@ class PaymentFinalizeController extends AbstractController
         ]);
 
         $salesChannelId = $salesChannelContext->getSalesChannelId();
-        $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
+        $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         try {
             $adapter->log(AdminTranslate::trans($this->translator->getLocale(), 'forwardToPaymentHandler'));
             $this->paymentHandler->finalize($paymentTransactionStruct, $request, $salesChannelContext);
@@ -189,7 +189,7 @@ class PaymentFinalizeController extends AbstractController
 
         $transactionId = $paymentProcessException->getOrderTransactionId();
 
-        $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
+        $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         $adapter->log(
             $paymentProcessException->getMessage(),
             Logger::ERROR,

@@ -2,16 +2,16 @@
 
 /**
  * @author Mediaopt GmbH
- * @package MoptWordline\Controller
+ * @package MoptWorldline\Controller
  */
 
-namespace MoptWordline\Controller\TransactionsControl;
+namespace MoptWorldline\Controller\TransactionsControl;
 
 use Monolog\Logger;
-use MoptWordline\Bootstrap\Form;
-use MoptWordline\Service\AdminTranslate;
-use MoptWordline\Service\Payment;
-use MoptWordline\Service\PaymentHandler;
+use MoptWorldline\Bootstrap\Form;
+use MoptWorldline\Service\AdminTranslate;
+use MoptWorldline\Service\Payment;
+use MoptWorldline\Service\PaymentHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -168,11 +168,11 @@ class TransactionsControlController extends AbstractController
         $sql = "SELECT custom_fields  FROM `order_transaction` WHERE order_id = UNHEX('$orderId')";
         $orderTransactionCustomFields = $connection->executeQuery($sql)->fetchAssociative();
         $customFields = json_decode($orderTransactionCustomFields['custom_fields'], true);
-        if (!is_array($customFields) || !array_key_exists(Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID, $customFields)) {
+        if (!is_array($customFields) || !array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID, $customFields)) {
             return false;
         }
 
-        return $customFields[Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID];
+        return $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID];
     }
 
     /**

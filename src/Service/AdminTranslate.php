@@ -2,16 +2,16 @@
 
 /**
  * @author Mediaopt GmbH
- * @package MoptWordline\Service
+ * @package MoptWorldline\Service
  */
 
-namespace MoptWordline\Service;
+namespace MoptWorldline\Service;
 
 class AdminTranslate
 {
     static public function trans($locale, $id)
     {
-        $path = __DIR__ . "/../Resources/snippet/storefront/wordline.$locale.json";
+        $path = __DIR__ . "/../Resources/snippet/storefront/worldline.$locale.json";
         if (!file_exists($path)) {
             return $id;
         }

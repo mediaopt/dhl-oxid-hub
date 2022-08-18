@@ -2,10 +2,10 @@
 
 /**
  * @author Mediaopt GmbH
- * @package MoptWordline\Service
+ * @package MoptWorldline\Service
  */
 
-namespace MoptWordline\Service;
+namespace MoptWorldline\Service;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Monolog\Logger;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use MoptWordline\Bootstrap\Form;
+use MoptWorldline\Bootstrap\Form;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -186,13 +186,13 @@ class Payment implements AsynchronousPaymentHandlerInterface
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(
                 $transactionId,
-                \sprintf('An error occurred during the communication with Wordline%s%s', \PHP_EOL, $e->getMessage())
+                \sprintf('An error occurred during the communication with Worldline%s%s', \PHP_EOL, $e->getMessage())
             );
         }
 
         $link = $hostedCheckoutResponse->getRedirectUrl();
         if ($link === null) {
-            throw new AsyncPaymentProcessException($transactionId, 'No redirect link provided by Wordline');
+            throw new AsyncPaymentProcessException($transactionId, 'No redirect link provided by Worldline');
         }
 
         return $link;

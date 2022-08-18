@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace MoptWordline\Subscriber;
+namespace MoptWorldline\Subscriber;
 
 use Monolog\Logger;
-use MoptWordline\Bootstrap\Form;
-use MoptWordline\Service\AdminTranslate;
-use MoptWordline\Service\Payment;
-use MoptWordline\Service\PaymentHandler;
+use MoptWorldline\Bootstrap\Form;
+use MoptWorldline\Service\AdminTranslate;
+use MoptWorldline\Service\Payment;
+use MoptWorldline\Service\PaymentHandler;
 use Psr\Log\LogLevel;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;

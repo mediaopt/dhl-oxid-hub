@@ -52,9 +52,9 @@
     "noTransactionForThisOrder": "",
     "success": "Success",
     "failed": "Operation failed.",
-    "wordline-order": {
+    "worldline-order": {
         "detail": {
-            "cardLabel": "Wordline transaction control",
+            "cardLabel": "Worldline transaction control",
             "bundleSelectLabel": "Associated bundles",
             "bundleSelectPlaceholder": "Add bundle..."
         }

@@ -2,14 +2,14 @@
 
 /**
  * @author Mediaopt GmbH
- * @package MoptWordline\Controller
+ * @package MoptWorldline\Controller
  */
 
-namespace MoptWordline\Controller\Api;
+namespace MoptWorldline\Controller\Api;
 
 use Monolog\Logger;
-use MoptWordline\Adapter\WordlineSDKAdapter;
-use MoptWordline\Bootstrap\Form;
+use MoptWorldline\Adapter\WorldlineSDKAdapter;
+use MoptWorldline\Bootstrap\Form;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Component\Routing\Annotation\Route;
@@ -64,7 +64,7 @@ class ApiTestController extends AbstractController
         $credentials = $this->buildCredentialsFromRequest($salesChannelId, $configFormData);
         $message = '';
         try {
-            $adapter = new WordlineSDKAdapter($this->systemConfigService, $this->logger);//No sales channel needed
+            $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger);//No sales channel needed
             $adapter->getMerchantClient($credentials);
         } catch (\Exception $e) {
             $message = '<br/>' . $e->getMessage();
