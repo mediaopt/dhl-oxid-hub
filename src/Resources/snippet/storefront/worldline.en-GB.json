@@ -62,6 +62,24 @@
     "transactionStatus": {
         "refunded": "Refunded",
         "cancelled": "Cancelled",
-        "captured": "Captured"
+        "captured": "Captured",
+        "created": "Created",
+        "rejected": "Rejected",
+        "rejectedCapture": "Capture rejected",
+        "redirected": "Redirected",
+        "pendingCapture": "Pending capture",
+        "authorizationRequested": "Authorization requested",
+        "captureRequested": "Capture requested",
+        "refundRequested": "Refund requested"
+    },
+    "payment-method-button": {
+        "headline": "Payment Methods",
+        "subline": "Please select payment methods for your checkout",
+        "selectAll": "select / deselect all",
+        "save": "save",
+        "request": "Requesting available payment methods...",
+        "requestEmpty": "No payment methods to display",
+        "title": "Get available payment methods",
+        "error": "Connection could not be established. Please check the access data."
     }
 }

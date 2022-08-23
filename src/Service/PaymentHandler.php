@@ -4,9 +4,6 @@ namespace MoptWorldline\Service;
 
 use Monolog\Logger;
 use MoptWorldline\Bootstrap\Form;
-use MoptWorldline\Subscriber\OrderChangesSubscriber;
-use OnlinePayments\Sdk\DataObject;
-use OnlinePayments\Sdk\Domain\CaptureResponse;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
@@ -329,7 +326,10 @@ class PaymentHandler
                     ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
                 );
                 $this->transactionStateHandler->cancel($orderTransactionId, $this->context);
-                break;
+
+                $orderId = $this->orderTransaction->getOrder()->getId();
+                header("Location: /account/order/edit/$orderId", true, 301);
+                exit();
             }
             case in_array($statusCode, Payment::STATUS_PAYMENT_REJECTED):
             case in_array($statusCode, Payment::STATUS_REJECTED_CAPTURE):

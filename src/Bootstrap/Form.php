@@ -23,6 +23,8 @@ class Form
     const MERCHANT_ID_FIELD  = 'MoptWorldline.config.merchantId';
     const API_KEY_FIELD  = 'MoptWorldline.config.apiKey';
     const API_SECRET_FIELD = 'MoptWorldline.config.apiSecret';
+    const WEBHOOK_KEY_FIELD  = 'MoptWorldline.config.webhookKey';
+    const WEBHOOK_SECRET_FIELD = 'MoptWorldline.config.webhookSecret';
     const LOG_LEVEL = 'MoptWorldline.config.logLevel';
 
     /** @var string Fieldset name for the plugin custom field */

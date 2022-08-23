@@ -11,6 +11,8 @@ use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
 use OnlinePayments\Sdk\Domain\Order;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
+use OnlinePayments\Sdk\Domain\PaymentProductFilter;
+use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
 use OnlinePayments\Sdk\Domain\PaymentReferences;
 use OnlinePayments\Sdk\Domain\RefundRequest;
 use OnlinePayments\Sdk\Domain\RefundResponse;
@@ -143,9 +145,17 @@ class WorldlineSDKAdapter
         $order = new Order();
         $order->setAmountOfMoney($amountOfMoney);
 
+        $paymentProductFilter= new PaymentProductFilter();
+        //todo use paymentMethodId from custom fields here
+        $paymentProductFilter->setProducts([3]);
+
+        $paymentProductFiltersHostedCheckout = new PaymentProductFiltersHostedCheckout();
+        $paymentProductFiltersHostedCheckout->setRestrictTo($paymentProductFilter);
+
         $hostedCheckoutSpecificInput = new HostedCheckoutSpecificInput();
         $returnUrl = $this->getPluginConfig(Form::RETURN_URL_FIELD);
         $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
+        $hostedCheckoutSpecificInput->setPaymentProductFilters($paymentProductFiltersHostedCheckout);
 
         $hostedCheckoutRequest = new CreateHostedCheckoutRequest();
         $hostedCheckoutRequest->setOrder($order);

@@ -15,6 +15,14 @@
             <name>apiSecret</name>
             <label>API Secret</label>
         </input-field>
+        <input-field type="password">
+            <name>webhookKey</name>
+            <label>Webhook key</label>
+        </input-field>
+        <input-field type="password">
+            <name>webhookSecret</name>
+            <label>Webhook secret</label>
+        </input-field>
         <input-field>
             <name>liveEndpoint</name>
             <label>Live endpoint</label>
@@ -34,6 +42,9 @@
         </input-field>
         <component name="api-test-button">
             <name>apiTest</name>
+        </component>
+        <component name="payment-method-button">
+            <name>paymentMethod</name>
         </component>
         <input-field type="single-select">
             <name>logLevel</name>

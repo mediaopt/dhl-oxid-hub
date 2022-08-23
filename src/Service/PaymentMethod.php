@@ -47,7 +47,8 @@ class PaymentMethod
             'name' => 'Worldline',
             'description' => 'Worldline full redirect payment method',
             'pluginId' => $pluginId,
-            'afterOrderEnabled' => false
+            'afterOrderEnabled' => true,
+            'active' => true
         ];
 
         /** @var EntityRepositoryInterface $paymentRepository */
@@ -85,7 +86,10 @@ class PaymentMethod
         /** @var EntityRepositoryInterface $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
-        $paymentCriteria = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', Payment::class));
+        $paymentCriteria = (
+        new Criteria())
+            ->addFilter(new EqualsFilter('handlerIdentifier', Payment::class))
+            ->addFilter(new EqualsFilter('name', 'Worldline'));
         $paymentIds = $paymentRepository->searchIds($paymentCriteria, Context::createDefaultContext());
 
         if ($paymentIds->getTotal() === 0) {

@@ -4,5 +4,15 @@
         "success": "Verbindung wurde erfolgreich getestet.",
         "error": "Verbindung konnte nicht hergestellt werden. Bitte prüfe die Zugangsdaten.",
         "button": "Test Verbindung"
+    },
+    "payment-method-button": {
+        "headline": "Zahlungsarten",
+        "subline": "Bitte Zahlungsarten für Ihren Checkout auswählen",
+        "selectAll": "alle auswählen / abwählen",
+        "save": "speichern",
+        "request": "Verfügbare Zahlungsarten werden abgerufen...",
+        "requestEmpty": "Keine Zahlungsarten zum Anzeigen gefunden",
+        "title": "Verfügbare Zahlungsmittel abrufen",
+        "error": "Verbindung konnte nicht hergestellt werden. Bitte überprüfen Sie die Zugangsdaten."
     }
 }
