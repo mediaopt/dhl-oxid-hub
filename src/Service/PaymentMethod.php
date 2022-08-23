@@ -2,12 +2,12 @@
 
 /**
  * @author Mediaopt GmbH
- * @package MoptWordline\Service
+ * @package MoptWorldline\Service
  */
 
-namespace MoptWordline\Service;
+namespace MoptWorldline\Service;
 
-use MoptWordline\MoptWordline;
+use MoptWorldline\MoptWorldline;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -40,12 +40,12 @@ class PaymentMethod
 
         /** @var PluginIdProvider $pluginIdProvider */
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
-        $pluginId = $pluginIdProvider->getPluginIdByBaseClass(MoptWordline::class, $context);
+        $pluginId = $pluginIdProvider->getPluginIdByBaseClass(MoptWorldline::class, $context);
 
         $paymentData = [
             'handlerIdentifier' => Payment::class,
-            'name' => 'Wordline',
-            'description' => 'Wordline full redirect payment method',
+            'name' => 'Worldline',
+            'description' => 'Worldline full redirect payment method',
             'pluginId' => $pluginId,
             'afterOrderEnabled' => false
         ];

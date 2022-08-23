@@ -1,6 +1,6 @@
 <?php
 
-namespace MoptWordline\Adapter;
+namespace MoptWorldline\Adapter;
 
 use Monolog\Logger;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
@@ -16,7 +16,7 @@ use OnlinePayments\Sdk\Domain\RefundRequest;
 use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use MoptWordline\Bootstrap\Form;
+use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\DefaultConnection;
 use OnlinePayments\Sdk\CommunicatorConfiguration;
 use OnlinePayments\Sdk\Communicator;
@@ -26,12 +26,12 @@ use OnlinePayments\Sdk\Domain\GetPaymentProductsResponse;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
 
 /**
- * This is the adaptor for Wordline's API
+ * This is the adaptor for Worldline's API
  *
  * @author Mediaopt GmbH
- * @package MoptWordline\Adapter
+ * @package MoptWorldline\Adapter
  */
-class WordlineSDKAdapter
+class WorldlineSDKAdapter
 {
     /** @var string */
     const INTEGRATOR_NAME = 'Mediaopt';
@@ -294,7 +294,7 @@ class WordlineSDKAdapter
             $logLevel,
             $message,
             [
-                'source' => 'Wordline',
+                'source' => 'Worldline',
                 'additionalData' => json_encode($additionalData),
             ]
         );

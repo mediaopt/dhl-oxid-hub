@@ -4,14 +4,14 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="MoptWordline\Controller\Api\ApiTestController" public="true">
+        <service id="MoptWorldline\Controller\Api\ApiTestController" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="monolog.logger" />
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
         </service>
-        <service id="MoptWordline\Controller\TransactionsControl\TransactionsControlController" public="true">
+        <service id="MoptWorldline\Controller\TransactionsControl\TransactionsControlController" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="order.repository"/>
@@ -23,7 +23,7 @@
                 <argument type="service" id="service_container"/>
             </call>
         </service>
-        <service id="MoptWordline\Service\Payment">
+        <service id="MoptWorldline\Service\Payment">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="order.repository"/>
@@ -32,11 +32,11 @@
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <tag name="shopware.payment.method.async" priority="-5100"/>
         </service>
-        <service id="MoptWordline\Controller\Payment\PaymentFinalizeController" public="true">
+        <service id="MoptWorldline\Controller\Payment\PaymentFinalizeController" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="order.repository"/>
-            <argument type="service" id="MoptWordline\Service\Payment"/>
+            <argument type="service" id="MoptWorldline\Service\Payment"/>
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="router"/>
             <argument type="service" id="monolog.logger" />
@@ -45,11 +45,11 @@
                 <argument type="service" id="service_container"/>
             </call>
         </service>
-        <service id="MoptWordline\Controller\Payment\PaymentWebhookController" public="true">
+        <service id="MoptWorldline\Controller\Payment\PaymentWebhookController" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="order.repository"/>
-            <argument type="service" id="MoptWordline\Service\Payment"/>
+            <argument type="service" id="MoptWorldline\Service\Payment"/>
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="router"/>
             <argument type="service" id="monolog.logger" />
@@ -58,7 +58,7 @@
                 <argument type="service" id="service_container"/>
             </call>
         </service>
-        <service id="MoptWordline\Subscriber\OrderChangesSubscriber">
+        <service id="MoptWorldline\Subscriber\OrderChangesSubscriber">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="order.repository" />
             <argument type="service" id="order_transaction.repository"/>

@@ -1,6 +1,6 @@
 {
-    "name": "mediaopt/wordline",
-    "description": "The Wordline Plugin",
+    "name": "mediaopt/worldline",
+    "description": "The Worldline Plugin",
     "version": "0.0.5",
     "type": "shopware-platform-plugin",
     "license": "proprietary",
@@ -14,15 +14,15 @@
         }
     ],
     "extra": {
-        "shopware-plugin-class": "MoptWordline\\MoptWordline",
+        "shopware-plugin-class": "MoptWorldline\\MoptWorldline",
         "copyright": "(c) by Mediaopt GmbH",
         "label": {
-            "de-DE": "Das Wordline Plugin.",
-            "en-GB": "The Wordline Plugin."
+            "de-DE": "Das Worldline Plugin.",
+            "en-GB": "The Worldline Plugin."
         },
         "description": {
-            "de-DE": "Zertifiziertes Wordline online Zahlungs-plugin für Shopware 6",
-            "en-GB": "Certified Wordline online payments extension for Shopware 6"
+            "de-DE": "Zertifiziertes Worldline online Zahlungs-plugin für Shopware 6",
+            "en-GB": "Certified Worldline online payments extension for Shopware 6"
         },
         "manufacturerLink": {
             "de-DE": "https://www.mediaopt.de/",
@@ -35,7 +35,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MoptWordline\\": "src/"
+            "MoptWorldline\\": "src/"
         }
     },
     "require": {

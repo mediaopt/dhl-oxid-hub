@@ -2,10 +2,10 @@
 
 /**
  * @author Mediaopt GmbH
- * @package MoptWordline\Service
+ * @package MoptWorldline\Service
  */
 
-namespace MoptWordline\Service;
+namespace MoptWorldline\Service;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -15,7 +15,7 @@ use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\CustomField\CustomFieldTypes;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use MoptWordline\Bootstrap\Form;
+use MoptWorldline\Bootstrap\Form;
 
 class CustomField
 {
@@ -59,7 +59,7 @@ class CustomField
         $criteria->addFilter(new EqualsAnyFilter(
             'name',
             [
-                Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_FIELDSET,
+                Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_FIELDSET,
             ]
         ));
 
@@ -75,17 +75,17 @@ class CustomField
     {
         return [
             'id' => Uuid::randomHex(),
-            'name' => Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_FIELDSET,
+            'name' => Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_FIELDSET,
             'config' => [
                 'label' => [
-                    'de-DE' => 'Wordline Zahlungstransaktions',
-                    'en-GB' => 'Wordline payment transaction'
+                    'de-DE' => 'Worldline Zahlungstransaktions',
+                    'en-GB' => 'Worldline payment transaction'
                 ]
             ],
             'customFields' => [
                 [
                     'id' => Uuid::randomHex(),
-                    'name' => Form::CUSTOM_FIELD_WORDLINE_PAYMENT_HOSTED_CHECKOUT_ID,
+                    'name' => Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID,
                     'type' => CustomFieldTypes::TEXT,
                     'config' => [
                         'label' => [
@@ -96,7 +96,7 @@ class CustomField
                 ],
                 [
                     'id' => Uuid::randomHex(),
-                    'name' => Form::CUSTOM_FIELD_WORDLINE_PAYMENT_TRANSACTION_READABLE_STATUS,
+                    'name' => Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_READABLE_STATUS,
                     'type' => CustomFieldTypes::TEXT,
                     'config' => [
                         'label' => [
