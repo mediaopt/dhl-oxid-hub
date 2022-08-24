@@ -1,7 +1,7 @@
 {
     "name": "mediaopt/worldline",
     "description": "The Worldline Plugin",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "type": "shopware-platform-plugin",
     "license": "proprietary",
     "config": {

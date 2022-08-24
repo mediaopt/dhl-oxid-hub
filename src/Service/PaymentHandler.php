@@ -87,17 +87,19 @@ class PaymentHandler
     }
 
     /**
+     * @param int $worldlinePaymentMethodId
      * @return CreateHostedCheckoutResponse
-     * @throws \Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function createPayment(): CreateHostedCheckoutResponse
+    public function createPayment(int $worldlinePaymentMethodId): CreateHostedCheckoutResponse
     {
         $order = $this->orderTransaction->getOrder();
         $amountTotal = $order->getAmountTotal();
         $currencyISO = $this->getCurrencyISO();
 
         $this->log(AdminTranslate::trans($this->translator->getLocale(), 'buildingOrder'));
-        $hostedCheckoutResponse = $this->adapter->createPayment($amountTotal, $currencyISO);
+        $hostedCheckoutResponse = $this->adapter->createPayment($amountTotal, $currencyISO, $worldlinePaymentMethodId);
         $status = Payment::STATUS_PAYMENT_CREATED[0];
         $this->saveOrderCustomFields($status, $hostedCheckoutResponse->getHostedCheckoutId());
         return $hostedCheckoutResponse;

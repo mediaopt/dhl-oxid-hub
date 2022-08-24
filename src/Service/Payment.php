@@ -185,7 +185,13 @@ class Payment implements AsynchronousPaymentHandlerInterface
         );
 
         try {
-            $hostedCheckoutResponse = $handler->createPayment();
+            $customFields = $transaction->getOrderTransaction()->getPaymentMethod()->getCustomFields();
+            $worldlinePaymentMethodId = 0;
+            if (is_array($customFields) && array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID, $customFields)) {
+                $worldlinePaymentMethodId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID];
+            }
+
+            $hostedCheckoutResponse = $handler->createPayment($worldlinePaymentMethodId);
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(
                 $transactionId,

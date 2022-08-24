@@ -1,3 +1,6 @@
+# 0.0.6
+- Single payment option
+
 # 0.0.5
 - Webhook processing
 

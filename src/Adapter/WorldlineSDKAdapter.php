@@ -129,12 +129,13 @@ class WorldlineSDKAdapter
     }
 
     /**
-     * @param $amountTotal
-     * @param $currencyISO
+     * @param float $amountTotal
+     * @param string $currencyISO
+     * @param int $worldlinePaymentMethodId
      * @return CreateHostedCheckoutResponse
      * @throws \Exception
      */
-    public function createPayment($amountTotal, $currencyISO): CreateHostedCheckoutResponse
+    public function createPayment(float $amountTotal, string $currencyISO, int $worldlinePaymentMethodId): CreateHostedCheckoutResponse
     {
         $merchantClient = $this->getMerchantClient();
 
@@ -145,17 +146,18 @@ class WorldlineSDKAdapter
         $order = new Order();
         $order->setAmountOfMoney($amountOfMoney);
 
-        $paymentProductFilter= new PaymentProductFilter();
-        //todo use paymentMethodId from custom fields here
-        $paymentProductFilter->setProducts([3]);
-
-        $paymentProductFiltersHostedCheckout = new PaymentProductFiltersHostedCheckout();
-        $paymentProductFiltersHostedCheckout->setRestrictTo($paymentProductFilter);
-
         $hostedCheckoutSpecificInput = new HostedCheckoutSpecificInput();
         $returnUrl = $this->getPluginConfig(Form::RETURN_URL_FIELD);
         $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
-        $hostedCheckoutSpecificInput->setPaymentProductFilters($paymentProductFiltersHostedCheckout);
+
+        if ($worldlinePaymentMethodId != 0) {
+            $paymentProductFilter= new PaymentProductFilter();
+            $paymentProductFilter->setProducts([$worldlinePaymentMethodId]);
+
+            $paymentProductFiltersHostedCheckout = new PaymentProductFiltersHostedCheckout();
+            $paymentProductFiltersHostedCheckout->setRestrictTo($paymentProductFilter);
+            $hostedCheckoutSpecificInput->setPaymentProductFilters($paymentProductFiltersHostedCheckout);
+        }
 
         $hostedCheckoutRequest = new CreateHostedCheckoutRequest();
         $hostedCheckoutRequest->setOrder($order);

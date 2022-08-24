@@ -146,7 +146,7 @@ class ApiTestController extends AbstractController
             'active' => true,
             'afterOrderEnabled' => true,
             'customFields' => [
-                'worldlineId' => $method->getId()
+                Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID => $method->getId()
             ]
         ];
         if (empty($this->getPaymentMethodId($name))) {
