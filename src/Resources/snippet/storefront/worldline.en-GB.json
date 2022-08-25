@@ -76,10 +76,35 @@
         "headline": "Payment Methods",
         "subline": "Please select payment methods for your checkout",
         "selectAll": "select / deselect all",
-        "save": "save",
+        "save": "Save",
         "request": "Requesting available payment methods...",
         "requestEmpty": "No payment methods to display",
         "title": "Get available payment methods",
-        "error": "Connection could not be established. Please check the access data."
+        "error": "Connection could not be established. Please check the access data.",
+        "success": "Changes successfully saved",
+        "errorAPI": "There was an error on save",
+        "APITitle": "Payment method saving"
+    },
+    "configFile": {
+        "merchantId": "Merchant Id",
+        "apiKey": "API Key",
+        "aspSecret": "API Secret",
+        "webhookKey": "Webhook key",
+        "webhookSecret": "Webhook secret",
+        "liveEndpoint": "Live endpoint",
+        "sandboxEndpoint": "Sandbox endpoint",
+        "returnUrl": "Return URL",
+        "isLiveMode": "Is live mode",
+        "logLevel": "Log level",
+        "logLevelHint": "Choose the loglevel of non-error messages",
+        "logLevelDebug": "DEBUG",
+        "logLevelError": "ERROR",
+        "logLevelInfo": "INFO"
+    },
+    "composer": {
+        "label": "Worldline Online Payments.",
+        "description": "Worldline Online Payments.",
+        "extraDescription": "Certified Worldline online payments extension for Shopware 6"
+
     }
 }

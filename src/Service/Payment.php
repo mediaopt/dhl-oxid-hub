@@ -123,9 +123,6 @@ class Payment implements AsynchronousPaymentHandlerInterface
     {
         // Method that sends the return URL to the external gateway and gets a redirect URL back
         try {
-            $name = $transaction->getOrderTransaction()->getPaymentMethod()->getName();
-            debug($name);
-
             $redirectUrl = $this->sendReturnUrlToExternalGateway($transaction, $salesChannelContext->getContext());
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(

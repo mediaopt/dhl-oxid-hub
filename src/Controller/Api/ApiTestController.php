@@ -8,16 +8,9 @@
 namespace MoptWorldline\Controller\Api;
 
 use Monolog\Logger;
-use MoptWorldline\Adapter\WorldlineSDKAdapter;
 use MoptWorldline\Bootstrap\Form;
-use MoptWorldline\MoptWorldline;
-use MoptWorldline\Service\Payment;
-use OnlinePayments\Sdk\Domain\GetPaymentProductsResponse;
-use OnlinePayments\Sdk\Domain\PaymentProduct;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use MoptWorldline\Controller\PaymentMethod\PaymentMethodController;
 
 /**
  * @RouteScope(scopes={"api"})
@@ -65,40 +59,6 @@ class ApiTestController extends AbstractController
 
     /**
      * @Route(
-     *     "/api/_action/api-test/savemethod",
-     *     name="api.action.test.savemethod",
-     *     methods={"POST"}
-     * )
-     */
-    public function saveMethod(Request $request, Context $context): JsonResponse
-    {
-        //todo split api test and payment creation
-        $data = $request->request->get('data');
-
-        //todo with salesChannelDefaultAssignments auto assign methods to channels
-        $salesChannelId = $request->request->get('salesChannelId');
-
-        $toCreate = [];
-        foreach ($data as $key => $item) {
-            if ($item['status']) {
-                $toCreate[] = $item['id'];
-            }
-        }
-
-        $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger);
-        $adapter->getMerchantClient();
-        $paymentMethods = $adapter->getPaymentMethods();
-        foreach ($paymentMethods->getPaymentProducts() as $method) {
-            if (in_array($method->getId(), $toCreate)) {
-                $this->createPaymentMethod($method, $context);
-            };
-        }
-
-        return $this->response(true, '', []);
-    }
-
-    /**
-     * @Route(
      *     "/api/_action/api-test/test-connection",
      *     name="api.action.test.connection",
      *     methods={"POST"}
@@ -116,10 +76,11 @@ class ApiTestController extends AbstractController
 
         $credentials = $this->buildCredentials($salesChannelId, $configFormData);
 
-        $paymentMethods = '';
+        $paymentMethods = [];
         $message = '';
         try {
-            $paymentMethods = $this->getPaymentMentodsList($credentials);
+            $paymentMethodController = $this->getPaymentMethodController();
+            $paymentMethods = $paymentMethodController->getPaymentMentodsList($credentials);
         } catch (\Exception $e) {
             $message = '<br/>' . $e->getMessage();
         }
@@ -130,81 +91,29 @@ class ApiTestController extends AbstractController
     }
 
     /**
-     * @param PaymentProduct $method
-     * @param $context
-     * @return void
+     * @Route(
+     *     "/api/_action/api-test/savemethod",
+     *     name="api.action.test.savemethod",
+     *     methods={"POST"}
+     * )
      */
-    private function createPaymentMethod(PaymentProduct $method, $context)
+    public function saveMethod(Request $request, Context $context): JsonResponse
     {
-        $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(MoptWorldline::class, $context);
-
-        $name = $this->getPaymentMethodName($method->getDisplayHints()->getLabel());
-        $paymentData = [
-            'handlerIdentifier' => Payment::class,
-            'name' => $name,
-            'pluginId' => $pluginId,
-            'active' => true,
-            'afterOrderEnabled' => true,
-            'customFields' => [
-                Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID => $method->getId()
-            ]
-        ];
-        if (empty($this->getPaymentMethodId($name))) {
-            $this->paymentMethodRepository->create([$paymentData], $context);
-        }
+        $paymentMethodController = $this->getPaymentMethodController();
+        return $paymentMethodController->saveMethod($request, $context);
     }
 
     /**
-     * @param $name
-     * @return string|null
+     * @return PaymentMethodController
      */
-    private function getPaymentMethodId($name): ?string
+    private function getPaymentMethodController()
     {
-        $paymentCriteria = (
-        new Criteria())
-            ->addFilter(new EqualsFilter('handlerIdentifier', Payment::class))
-            ->addFilter(new EqualsFilter('name', $name));
-        $paymentIds = $this->paymentMethodRepository->searchIds($paymentCriteria, Context::createDefaultContext());
-        if ($paymentIds->getTotal() === 0) {
-            return null;
-        }
-        return $paymentIds->getIds()[0];
-    }
-
-    /**
-     * @param GetPaymentProductsResponse $paymentMethods
-     * @return array
-     */
-    private function getPaymentMentodsList(array $credentials)
-    {
-        $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger);//No sales channel needed
-        $adapter->getMerchantClient($credentials);
-        $paymentMethods = $adapter->getPaymentMethods();
-
-        $toFrontend = [];
-        foreach ($paymentMethods->getPaymentProducts() as $method) {
-            $name = $this->getPaymentMethodName($method->getDisplayHints()->getLabel());
-            $isCreated = $this->getPaymentMethodId($name);
-            if ($isCreated) {
-                continue;//todo should we hide it?
-            }
-            $toFrontend[] = [
-                'id' => $method->getId(),
-                'logo' => $method->getDisplayHints()->getLogo(),
-                'label' => $method->getDisplayHints()->getLabel(),
-                'isCreated' => (bool)$isCreated
-            ];
-        }
-
-        return $toFrontend;
-    }
-
-    /**
-     * @param $label
-     * @return string
-     */
-    private function getPaymentMethodName($label){
-        return "Worldline $label";
+        return new PaymentMethodController(
+            $this->systemConfigService,
+            $this->logger,
+            $this->paymentMethodRepository,
+            $this->pluginIdProvider
+        );
     }
 
     /**

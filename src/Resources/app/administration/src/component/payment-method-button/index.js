@@ -58,7 +58,8 @@ Component.register('payment-method-button', {
             document.querySelectorAll('.payment-method--container').forEach((el) => {
                 paymentMethodsArray.push({
                     id: el.children[0].children[0].id,
-                    status: el.children[0].children[0].checked
+                    status: el.children[0].children[0].checked,
+                    internalId: el.children[0].children[0].getAttribute('internalId'),
                 });
             })
             return paymentMethodsArray;
@@ -74,13 +75,13 @@ Component.register('payment-method-button', {
                 if (res.success) {
                     this.isSaveSuccessful = true;
                     this.createNotificationSuccess({
-                        title: this.$tc('api-test-button.title'),
-                        message: this.$tc('api-test-button.success')
+                        title: this.$tc('payment-method-button.APITitle'),
+                        message: this.$tc('payment-method-button.success')
                     });
                 } else {
                     this.createNotificationError({
-                        title: this.$tc('api-test-button.title'),
-                        message: this.$tc('api-test-button.error') + res.message
+                        title: this.$tc('payment-method-button.APITitle'),
+                        message: this.$tc('payment-method-button.errorAPI') + res.message
                     });
                 }
 
@@ -94,7 +95,6 @@ Component.register('payment-method-button', {
         },
 
         renderPaymentMethods(paymentMethods) {
-        console.log(paymentMethods);
             if (paymentMethods.length <= 5) {
                 document.querySelector('.select-all').innerHTML = '';
             }
@@ -103,10 +103,9 @@ Component.register('payment-method-button', {
             } else {
                 let checkboxTemplate = paymentMethods.map((item) => {
 
-                console.log(item);
                     return `<div class="payment-method--container">
                     <label class="switch">
-                      <input type="checkbox" id="${item.id}" class="paymentMethod" ${item.isCreated?'checked':''}>
+                      <input type="checkbox" id="${item.id}" internalId="${item.internalId}" class="paymentMethod" ${item.isCreated?'checked':''}>
                       <span class="slider round"></span>
                     </label>
                     <img src="${item.logo}">
