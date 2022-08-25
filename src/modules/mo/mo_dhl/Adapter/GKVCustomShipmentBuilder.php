@@ -51,6 +51,7 @@ class GKVCustomShipmentBuilder
                 'name'    => $receiver->getName1(),
                 'type'    => $receiver->getAddress() !== null ? 'address' : ($receiver->getPackstation() !== null ? 'packstation' : 'poftfiliale'),
                 'address' => $receiver->getAddress() ?: $receiver->getPackstation() ?: $receiver->getPostfiliale(),
+                'communication' => $receiver->getCommunication(),
             ],
             'returnReceiver' => [
                 'name'    => $returnReceiver->getName()->getName1() . $returnReceiver->getName()->getName2() . $returnReceiver->getName()->getName3(),
@@ -140,6 +141,11 @@ class GKVCustomShipmentBuilder
         $receiver->setName1($receiverData['name']);
         if ($receiverData['country']) {
             $receiverData['Origin'] = new CountryType($receiverData['country']);
+        }
+        if ($communication = $receiver->getCommunication()) {
+            $communication
+                ->setEmail($receiverData['email'])
+                ->setPhone($receiverData['phone']);
         }
         $receiverAddress = $receiver->getAddress() ?: $receiver->getPackstation() ?: $receiver->getPostfiliale();
         $receiverAddress->assign($receiverData);
