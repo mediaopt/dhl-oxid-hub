@@ -17,6 +17,7 @@ use OnlinePayments\Sdk\Domain\PaymentReferences;
 use OnlinePayments\Sdk\Domain\RefundRequest;
 use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
+use Shopware\Core\Kernel;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\DefaultConnection;
@@ -107,9 +108,17 @@ class WorldlineSDKAdapter
     {
         $queryParams = new GetPaymentProductsParams();
 
-        //todo take this from client settings
-        $queryParams->setCountryCode("DE");
-        $queryParams->setCurrencyCode("EUR");
+        $connection = Kernel::getConnection();
+        $sql = "SELECT
+            cou.iso as countryISO, cur.iso_code as currencyISO
+            FROM `sales_channel` sc
+            left JOIN country cou on (cou.id = sc.country_id)
+            left JOIN currency cur on (cur.id = sc.currency_id)
+            WHERE sc.id = UNHEX('$this->salesChannelId')";
+        $salesChannelData = $connection->executeQuery($sql)->fetchAssociative();
+
+        $queryParams->setCountryCode($salesChannelData['countryISO']);
+        $queryParams->setCurrencyCode($salesChannelData['currencyISO']);
 
         return $this->merchantClient
             ->products()

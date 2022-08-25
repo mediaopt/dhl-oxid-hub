@@ -20,17 +20,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
-/**
- * @RouteScope(scopes={"api"})
- */
-class PaymentMethodController extends AbstractController
+class PaymentMethodController
 {
     private SystemConfigService $systemConfigService;
     private Logger $logger;
@@ -56,13 +51,6 @@ class PaymentMethodController extends AbstractController
         $this->pluginIdProvider = $pluginIdProvider;
     }
 
-    /**
-     * @Route(
-     *     "/api/_action/api-test/savemethod",
-     *     name="api.action.test.savemethod",
-     *     methods={"POST"}
-     * )
-     */
     public function saveMethod(Request $request, Context $context): JsonResponse
     {
         $data = $request->request->get('data');
@@ -99,34 +87,40 @@ class PaymentMethodController extends AbstractController
     }
 
     /**
-     * @param GetPaymentProductsResponse $paymentMethods
+     * @param array $credentials
+     * @param $salesChannelId
      * @return array
+     * @throws \Exception
      */
-    public function getPaymentMentodsList(array $credentials)
+    public function getPaymentMentodsList(array $credentials, $salesChannelId)
     {
-        $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger);//No sales channel needed
-        $adapter->getMerchantClient($credentials);
-
         $fullRedirectMethod = $this->getPaymentMethod('Worldline');
         $toFrontend[] = [
             'id' => 0,
             'logo' => '',
             'label' => 'Worldline full redirect',
-            'isCreated' => $fullRedirectMethod['isActive'],
+            'isActive' => $fullRedirectMethod['isActive'],
             'internalId' => $fullRedirectMethod['internalId']
         ];
 
+        if (is_null($salesChannelId)) {
+            return $toFrontend;
+        }
+
+        $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
+        $adapter->getMerchantClient($credentials);
         $paymentMethods = $adapter->getPaymentMethods();
+
         foreach ($paymentMethods->getPaymentProducts() as $method) {
             $name = $this->getPaymentMethodName($method->getDisplayHints()->getLabel());
-            $paymentMethod = $this->getPaymentMethod($name);
+            $createdPaymentMethod = $this->getPaymentMethod($name);
 
             $toFrontend[] = [
                 'id' => $method->getId(),
                 'logo' => $method->getDisplayHints()->getLogo(),
                 'label' => $method->getDisplayHints()->getLabel(),
-                'isCreated' => $paymentMethod['isActive'],
-                'internalId' => $paymentMethod['internalId']
+                'isActive' => $createdPaymentMethod['isActive'],
+                'internalId' => $createdPaymentMethod['internalId']
             ];
         };
         return $toFrontend;

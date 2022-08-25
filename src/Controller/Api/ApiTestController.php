@@ -72,15 +72,15 @@ class ApiTestController extends AbstractController
             return $this->response(false, "There is no config data.");
         }
 
-        $salesChannelId = $request->request->get('salesChannelId') ?: 'null';
+        $salesChannelId = $request->request->get('salesChannelId');
 
-        $credentials = $this->buildCredentials($salesChannelId, $configFormData);
+        $credentials = $this->buildCredentials($salesChannelId ?: 'null', $configFormData);
 
         $paymentMethods = [];
         $message = '';
         try {
             $paymentMethodController = $this->getPaymentMethodController();
-            $paymentMethods = $paymentMethodController->getPaymentMentodsList($credentials);
+            $paymentMethods = $paymentMethodController->getPaymentMentodsList($credentials, $salesChannelId);
         } catch (\Exception $e) {
             $message = '<br/>' . $e->getMessage();
         }

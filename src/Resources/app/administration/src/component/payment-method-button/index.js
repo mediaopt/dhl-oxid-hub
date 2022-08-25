@@ -105,7 +105,7 @@ Component.register('payment-method-button', {
 
                     return `<div class="payment-method--container">
                     <label class="switch">
-                      <input type="checkbox" id="${item.id}" internalId="${item.internalId}" class="paymentMethod" ${item.isCreated?'checked':''}>
+                      <input type="checkbox" id="${item.id}" internalId="${item.internalId}" class="paymentMethod" ${item.isActive?'checked':''}>
                       <span class="slider round"></span>
                     </label>
                     <img src="${item.logo}">
