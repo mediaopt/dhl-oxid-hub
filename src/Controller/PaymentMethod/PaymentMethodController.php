@@ -20,6 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,32 +31,34 @@ class PaymentMethodController
     private SystemConfigService $systemConfigService;
     private Logger $logger;
     private EntityRepositoryInterface $paymentMethodRepository;
+    private EntityRepositoryInterface $salesChannelPaymentRepository;
     private PluginIdProvider $pluginIdProvider;
 
     /**
      * @param SystemConfigService $systemConfigService
      * @param Logger $logger
      * @param EntityRepositoryInterface $paymentMethodRepository
+     * @param EntityRepositoryInterface $salesChannelPaymentRepository
      * @param PluginIdProvider $pluginIdProvider
      */
     public function __construct(
         SystemConfigService       $systemConfigService,
         Logger                    $logger,
         EntityRepositoryInterface $paymentMethodRepository,
+        EntityRepositoryInterface $salesChannelPaymentRepository,
         PluginIdProvider          $pluginIdProvider
     )
     {
         $this->systemConfigService = $systemConfigService;
         $this->logger = $logger;
         $this->paymentMethodRepository = $paymentMethodRepository;
+        $this->salesChannelPaymentRepository = $salesChannelPaymentRepository;
         $this->pluginIdProvider = $pluginIdProvider;
     }
 
     public function saveMethod(Request $request, Context $context): JsonResponse
     {
         $data = $request->request->get('data');
-
-        //todo with salesChannelDefaultAssignments auto assign methods to channels
         $salesChannelId = $request->request->get('salesChannelId');
 
         $toCreate = [];
@@ -74,12 +77,12 @@ class PaymentMethodController
         if (empty($toCreate)) {
             return $this->response(true, '', []);
         }
-        $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger);
+        $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         $adapter->getMerchantClient();
         $paymentMethods = $adapter->getPaymentMethods();
         foreach ($paymentMethods->getPaymentProducts() as $method) {
             if (in_array($method->getId(), $toCreate)) {
-                $this->createPaymentMethod($method, $context);
+                $this->createPaymentMethod($method, $context, $salesChannelId);
             }
         }
 
@@ -128,15 +131,18 @@ class PaymentMethodController
 
     /**
      * @param PaymentProduct $method
-     * @param $context
+     * @param Context $context
+     * @param string $salesChannelId
      * @return void
      */
-    private function createPaymentMethod(PaymentProduct $method, $context)
+    private function createPaymentMethod(PaymentProduct $method, Context $context, string $salesChannelId)
     {
         $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(MoptWorldline::class, $context);
 
         $name = $this->getPaymentMethodName($method->getDisplayHints()->getLabel());
+        $paymentMethodId = Uuid::randomHex();
         $paymentData = [
+            'id' => $paymentMethodId,
             'handlerIdentifier' => Payment::class,
             'name' => $name,
             'pluginId' => $pluginId,
@@ -146,8 +152,17 @@ class PaymentMethodController
                 Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID => $method->getId()
             ]
         ];
-        if (empty($this->getPaymentMethod($name))) {
+
+        $salesChannelPaymentData = [
+            'salesChannelId' => $salesChannelId,
+            'paymentMethodId' => $paymentMethodId
+        ];
+
+        $dbPaymentMethod =$this->getPaymentMethod($name);
+
+        if (empty($dbPaymentMethod['internalId'])) {
             $this->paymentMethodRepository->create([$paymentData], $context);
+            $this->salesChannelPaymentRepository->create([$salesChannelPaymentData], $context);
         }
     }
 

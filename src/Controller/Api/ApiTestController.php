@@ -28,6 +28,7 @@ class ApiTestController extends AbstractController
     private SystemConfigService $systemConfigService;
     private Logger $logger;
     private EntityRepositoryInterface $paymentMethodRepository;
+    private EntityRepositoryInterface $salesChannelPaymentRepository;
     private PluginIdProvider $pluginIdProvider;
 
     /** @var array */
@@ -42,18 +43,21 @@ class ApiTestController extends AbstractController
      * @param SystemConfigService $systemConfigService
      * @param Logger $logger
      * @param EntityRepositoryInterface $paymentMethodRepository
+     * @param EntityRepositoryInterface $salesChannelPaymentRepository
      * @param PluginIdProvider $pluginIdProvider
      */
     public function __construct(
         SystemConfigService       $systemConfigService,
         Logger                    $logger,
         EntityRepositoryInterface $paymentMethodRepository,
+        EntityRepositoryInterface $salesChannelPaymentRepository,
         PluginIdProvider          $pluginIdProvider
     )
     {
         $this->systemConfigService = $systemConfigService;
         $this->logger = $logger;
         $this->paymentMethodRepository = $paymentMethodRepository;
+        $this->salesChannelPaymentRepository = $salesChannelPaymentRepository;
         $this->pluginIdProvider = $pluginIdProvider;
     }
 
@@ -112,6 +116,7 @@ class ApiTestController extends AbstractController
             $this->systemConfigService,
             $this->logger,
             $this->paymentMethodRepository,
+            $this->salesChannelPaymentRepository,
             $this->pluginIdProvider
         );
     }

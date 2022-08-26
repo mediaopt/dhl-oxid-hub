@@ -8,6 +8,7 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="monolog.logger" />
             <argument type="service" id="payment_method.repository" />
+            <argument type="service" id="sales_channel_payment_method.repository" />
             <argument type="service" id="Shopware\Core\Framework\Plugin\Util\PluginIdProvider"  />
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
