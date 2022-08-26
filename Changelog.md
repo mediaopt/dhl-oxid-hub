@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.3
+* bugfix: don't apply the billing country to an existing delivery address
+* add order numbers to Soap fault log messages in GKV calls
+
 ## 1.6.2
 * filter out results not suitable to receive packages
 
