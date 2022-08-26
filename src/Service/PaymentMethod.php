@@ -7,6 +7,7 @@
 
 namespace MoptWorldline\Service;
 
+use Enqueue\Util\UUID;
 use MoptWorldline\MoptWorldline;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -42,7 +43,9 @@ class PaymentMethod
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
         $pluginId = $pluginIdProvider->getPluginIdByBaseClass(MoptWorldline::class, $context);
 
+        $methodId = UUID::generate();
         $paymentData = [
+            'id' => $methodId,
             'handlerIdentifier' => Payment::class,
             'name' => 'Worldline',
             'description' => 'Worldline full redirect payment method',
@@ -54,6 +57,21 @@ class PaymentMethod
         /** @var EntityRepositoryInterface $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
         $paymentRepository->create([$paymentData], $context);
+
+        /** @var EntityRepositoryInterface $salesChannelRepository */
+        $salesChannelRepository = $this->container->get('sales_channel.repository');
+        $salesChannels = $salesChannelRepository->search(new Criteria(), $context);
+        $toSave = [];
+        foreach ($salesChannels as $salesChannel) {
+            $toSave[] = [
+                'salesChannelId' => $salesChannel->getId(),
+                'paymentMethodId' => $methodId
+            ];
+        }
+
+        /** @var EntityRepositoryInterface $salesChannelRepository */
+        $salesChannelPaymentRepository = $this->container->get('sales_channel_payment_method.repository');
+        $salesChannelPaymentRepository->create($toSave, $context);
     }
 
     /**
