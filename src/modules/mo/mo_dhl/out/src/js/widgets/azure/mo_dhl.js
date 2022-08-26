@@ -362,6 +362,9 @@
             $("[name='deladr[oxaddress__oxcountryid]']").val($("#germany-oxid").text());
         },
         setDeliveryCountryToBillingCountry: function () {
+            if ($('#delCountrySelect').val()) {
+                return;
+            }
             $('#delCountrySelect').val($("#invCountrySelect").val());
         }
     };
