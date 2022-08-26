@@ -7,15 +7,14 @@
 
 namespace MoptWorldline\Service;
 
-use Enqueue\Util\UUID;
 use MoptWorldline\MoptWorldline;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 
 class PaymentMethod
 {
@@ -43,7 +42,7 @@ class PaymentMethod
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
         $pluginId = $pluginIdProvider->getPluginIdByBaseClass(MoptWorldline::class, $context);
 
-        $methodId = UUID::generate();
+        $methodId = Uuid::randomHex();
         $paymentData = [
             'id' => $methodId,
             'handlerIdentifier' => Payment::class,
