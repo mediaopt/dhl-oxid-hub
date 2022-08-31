@@ -487,6 +487,19 @@
                                     </td>
                                 </tr>
                                 [{/if}]
+                                [{if $process->supportsPDDP()}]
+                                    [{assign var="service" value=$shipmentOrder.services.pddp}]
+                                    <tr>
+                                        <td>
+                                            [{oxmultilang ident='MO_DHL__PDDP'}]
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="data[services][pddp][active]" value="false">
+                                            <input type="checkbox" name="data[services][pddp][active]"
+                                                   value="1" [{if $service->getActive()}]checked[{/if}]>
+                                        </td>
+                                    </tr>
+                                [{/if}]
                                 [{if $process->supportsPremium()}]
                                     [{assign var="service" value=$shipmentOrder.services.premium}]
                                     <tr>

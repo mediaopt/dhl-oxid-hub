@@ -21,9 +21,9 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__portokasse_password'      => 'Portokasse Password',
     'HELP_SHOP_MODULE_mo_dhl__portokasse_password' => 'Your Password for the <a href="https://portokasse.deutschepost.de/">Portokasse</a>.',
 
-    'SHOP_MODULE_GROUP_mo_dhl__internetmarke'         => 'Internetmarke',
-    'SHOP_MODULE_mo_dhl__internetmarke_layout'        => 'Layout ID for printing the Internetmarke',
-    'SHOP_MODULE_mo_dhl__internetmarke_check'         => '',
+    'SHOP_MODULE_GROUP_mo_dhl__internetmarke'  => 'Internetmarke',
+    'SHOP_MODULE_mo_dhl__internetmarke_layout' => 'Layout ID for printing the Internetmarke',
+    'SHOP_MODULE_mo_dhl__internetmarke_check'  => '',
 
     'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Delivery',
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Allow only Codeable shipping addresses',
@@ -72,8 +72,8 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retoure_allow_frontend_creation_ALWAYS'   => 'always',
     'SHOP_MODULE_mo_dhl__retoure_days_limit'                       => 'Max. time for customers to create return labels (in days)',
     'HELP_SHOP_MODULE_mo_dhl__retoure_days_limit'                  => 'Customers can only create return labels in a given time frame after products were sent.',
-    'SHOP_MODULE_mo_dhl__retoure_admin_approve'                     => 'Customers should ask for return label creation.',
-    'HELP_SHOP_MODULE_mo_dhl__retoure_admin_approve'                => 'You can specify whether customers should get permission to create return label.',
+    'SHOP_MODULE_mo_dhl__retoure_admin_approve'                    => 'Customers should ask for return label creation.',
+    'HELP_SHOP_MODULE_mo_dhl__retoure_admin_approve'               => 'You can specify whether customers should get permission to create return label.',
 
     'SHOP_MODULE_GROUP_mo_dhl__beilegerretoure'            => 'Return Shipment',
     'SHOP_MODULE_mo_dhl__beilegerretoure_active'           => 'Attached return shipment label',

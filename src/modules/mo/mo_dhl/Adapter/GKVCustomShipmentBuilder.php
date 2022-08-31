@@ -65,6 +65,7 @@ class GKVCustomShipmentBuilder
                 'identCheck'          => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getIdentCheck(),
                 'cashOnDelivery'      => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getCashOnDelivery(),
                 'visualAgeCheck'      => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getVisualCheckOfAge(),
+                'pddp'                => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getPDDP(),
                 'premium'             => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getPremium(),
                 'endorsement'         => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getEndorsement(),
             ],
@@ -195,6 +196,10 @@ class GKVCustomShipmentBuilder
                 $services->setVisualCheckOfAge(null);
             }
 
+        }
+        if ($process->supportsPDDP()) {
+            $isActive = filter_var($servicesData['pddp']['active'], FILTER_VALIDATE_BOOLEAN);
+            $services->setPDDP(new Serviceconfiguration($isActive));
         }
         if ($process->supportsPremium()) {
             $isActive = filter_var($servicesData['premium']['active'], FILTER_VALIDATE_BOOLEAN);
