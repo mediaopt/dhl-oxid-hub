@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.6.4
+* new Service PDDP (Postal Delivery Duty Paid) for Paket International
+
 ## 1.6.3
 * bugfix: don't apply the billing country to an existing delivery address
 * add order numbers to Soap fault log messages in GKV calls
