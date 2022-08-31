@@ -320,6 +320,7 @@ class Order extends Order_parent
             case MoDHLService::MO_DHL__IDENT_CHECK:
             case MoDHLService::MO_DHL__ADDITIONAL_INSURANCE:
             case MoDHLService::MO_DHL__PREMIUM:
+            case MoDHLService::MO_DHL__PDDP:
             case MoDHLService::MO_DHL__ENDORSEMENT:
                 $deliveryset = oxNew(DeliverySet::class);
                 $deliveryset->load($this->oxorder__oxdeltype->value);

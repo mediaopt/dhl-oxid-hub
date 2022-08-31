@@ -148,6 +148,11 @@ class Process
     /**
      * @var string
      */
+    const SERVICE_PDDP = "SERVICE_PDDP";
+
+    /**
+     * @var string
+     */
     const SERVICE_PREMIUM = "SERVICE_PREMIUM";
 
     /**
@@ -191,6 +196,7 @@ class Process
             self::SERVICE_GO_GREEN,
             self::SERVICE_ADDITIONAL_INSURANCE,
             self::SERVICE_BULKY_GOOD,
+            self::SERVICE_PDDP,
             self::SERVICE_PREMIUM,
             self::SERVICE_ENDORSEMENT,
         ],
@@ -415,6 +421,14 @@ class Process
     public function supportsPremium() : bool
     {
         return in_array(self::SERVICE_PREMIUM, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsPDDP() : bool
+    {
+        return in_array(self::SERVICE_PDDP, self::SUPPORTED_SERVICES[$this->identifier]);
     }
 
     public function supportsEndorsement() : bool
