@@ -33,19 +33,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class PaymentWebhookController extends AbstractController
 {
     private RouterInterface $router;
-
     private EntityRepositoryInterface $orderTransactionRepository;
-
     private EntityRepositoryInterface $orderRepository;
-
     private AsynchronousPaymentHandlerInterface $paymentHandler;
-
     private OrderTransactionStateHandler $transactionStateHandler;
-
     private SystemConfigService $systemConfigService;
-
     private Logger $logger;
-
     private TranslatorInterface $translator;
 
     public function __construct(

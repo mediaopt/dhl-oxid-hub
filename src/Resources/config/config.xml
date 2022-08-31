@@ -47,6 +47,41 @@
             <name>paymentMethod</name>
         </component>
         <input-field type="single-select">
+            <name>autoCapture</name>
+            <label>Automatic capture</label>
+            <options>
+                <option>
+                    <id>disabled</id>
+                    <name>Disabled</name>
+                </option>
+                <option>
+                    <id>0_day</id>
+                    <name>Immediately</name>
+                </option>
+                <option>
+                    <id>1_day</id>
+                    <name>In 1 day</name>
+                </option>
+                <option>
+                    <id>2_days</id>
+                    <name>In 2 days</name>
+                </option>
+                <option>
+                    <id>3_days</id>
+                    <name>In 3 days</name>
+                </option>
+                <option>
+                    <id>4_days</id>
+                    <name>In 4 days</name>
+                </option>
+                <option>
+                    <id>5_days</id>
+                    <name>In 5 days</name>
+                </option>
+            </options>
+            <defaultValue>INFO</defaultValue>
+        </input-field>
+        <input-field type="single-select">
             <name>logLevel</name>
             <helpText>Choose the loglevel of non-error messages</helpText>
             <helpText lang="de-DE">Wählen Sie den Loglevel der Nicht-Fehlermeldungen</helpText>

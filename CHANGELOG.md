@@ -1,3 +1,7 @@
+# 0.9.0
+- Payment creation tool
+- Cron subshop update
+
 # 0.0.6
 - Single payment option
 
