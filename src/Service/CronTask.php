@@ -11,6 +11,8 @@ use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTask;
 
 class CronTask extends ScheduledTask
 {
+    public const CRON_INTERVAL = 600;
+
     public static function getTaskName(): string
     {
         return 'worldline.cron_task';
@@ -18,6 +20,6 @@ class CronTask extends ScheduledTask
 
     public static function getDefaultInterval(): int
     {
-        return 600;
+        return self::CRON_INTERVAL;
     }
 }
