@@ -95,7 +95,7 @@ class PaymentMethodController
      * @return array
      * @throws \Exception
      */
-    public function getPaymentMentodsList(array $credentials, string $salesChannelId)
+    public function getPaymentMentodsList(array $credentials, ?string $salesChannelId)
     {
         $fullRedirectMethod = $this->getPaymentMethod('Worldline');
         $toFrontend[] = [
@@ -106,12 +106,14 @@ class PaymentMethodController
             'internalId' => $fullRedirectMethod['internalId']
         ];
 
-        if ($salesChannelId === "null") {
+        $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
+        $adapter->getMerchantClient($credentials);
+
+        if (is_null($salesChannelId)) {
+            $adapter->testConnection();
             return $toFrontend;
         }
 
-        $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
-        $adapter->getMerchantClient($credentials);
         $paymentMethods = $adapter->getPaymentMethods();
 
         foreach ($paymentMethods->getPaymentProducts() as $method) {

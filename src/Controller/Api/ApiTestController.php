@@ -76,7 +76,7 @@ class ApiTestController extends AbstractController
             return $this->response(false, "There is no config data.");
         }
 
-        $salesChannelId = $request->request->get('salesChannelId') ?: 'null';
+        $salesChannelId = $request->request->get('salesChannelId');
 
         $credentials = $this->buildCredentials($salesChannelId, $configFormData);
 
@@ -138,9 +138,7 @@ class ApiTestController extends AbstractController
         ];
 
         //For "All Sales Channels" data will be in "null" part of configData
-        if (is_null($salesChannelId)) {
-            $salesChannelId = 'null';
-        }
+        $salesChannelId = $salesChannelId ?? 'null';
 
         if (array_key_exists($salesChannelId, $configData)) {
             $channelConfig = $configData[$salesChannelId];
