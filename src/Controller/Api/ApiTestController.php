@@ -76,9 +76,9 @@ class ApiTestController extends AbstractController
             return $this->response(false, "There is no config data.");
         }
 
-        $salesChannelId = $request->request->get('salesChannelId');
+        $salesChannelId = $request->request->get('salesChannelId') ?: 'null';
 
-        $credentials = $this->buildCredentials($salesChannelId ?: 'null', $configFormData);
+        $credentials = $this->buildCredentials($salesChannelId, $configFormData);
 
         $paymentMethods = [];
         $message = '';
@@ -122,11 +122,11 @@ class ApiTestController extends AbstractController
     }
 
     /**
-     * @param string $salesChannelId
+     * @param ?string $salesChannelId
      * @param array $configData
      * @return array
      */
-    private function buildCredentials(string $salesChannelId, array $configData): array
+    private function buildCredentials(?string $salesChannelId, array $configData): array
     {
         $globalConfig = [];
         if (array_key_exists('null', $configData)) {
@@ -136,6 +136,11 @@ class ApiTestController extends AbstractController
         $credentials = [
             'isLiveMode' => false
         ];
+
+        //For "All Sales Channels" data will be in "null" part of configData
+        if (is_null($salesChannelId)) {
+            $salesChannelId = 'null';
+        }
 
         if (array_key_exists($salesChannelId, $configData)) {
             $channelConfig = $configData[$salesChannelId];

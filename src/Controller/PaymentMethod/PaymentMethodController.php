@@ -91,11 +91,11 @@ class PaymentMethodController
 
     /**
      * @param array $credentials
-     * @param $salesChannelId
+     * @param string $salesChannelId
      * @return array
      * @throws \Exception
      */
-    public function getPaymentMentodsList(array $credentials, $salesChannelId)
+    public function getPaymentMentodsList(array $credentials, string $salesChannelId)
     {
         $fullRedirectMethod = $this->getPaymentMethod('Worldline');
         $toFrontend[] = [
@@ -106,7 +106,7 @@ class PaymentMethodController
             'internalId' => $fullRedirectMethod['internalId']
         ];
 
-        if (is_null($salesChannelId)) {
+        if ($salesChannelId === "null") {
             return $toFrontend;
         }
 
