@@ -4,9 +4,6 @@ namespace MoptWorldline\Service;
 
 use Monolog\Logger;
 use MoptWorldline\Bootstrap\Form;
-use MoptWorldline\Subscriber\OrderChangesSubscriber;
-use OnlinePayments\Sdk\DataObject;
-use OnlinePayments\Sdk\Domain\CaptureResponse;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
@@ -90,17 +87,19 @@ class PaymentHandler
     }
 
     /**
+     * @param int $worldlinePaymentMethodId
      * @return CreateHostedCheckoutResponse
-     * @throws \Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function createPayment(): CreateHostedCheckoutResponse
+    public function createPayment(int $worldlinePaymentMethodId): CreateHostedCheckoutResponse
     {
         $order = $this->orderTransaction->getOrder();
         $amountTotal = $order->getAmountTotal();
         $currencyISO = $this->getCurrencyISO();
 
         $this->log(AdminTranslate::trans($this->translator->getLocale(), 'buildingOrder'));
-        $hostedCheckoutResponse = $this->adapter->createPayment($amountTotal, $currencyISO);
+        $hostedCheckoutResponse = $this->adapter->createPayment($amountTotal, $currencyISO, $worldlinePaymentMethodId);
         $status = Payment::STATUS_PAYMENT_CREATED[0];
         $this->saveOrderCustomFields($status, $hostedCheckoutResponse->getHostedCheckoutId());
         return $hostedCheckoutResponse;
@@ -329,7 +328,10 @@ class PaymentHandler
                     ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
                 );
                 $this->transactionStateHandler->cancel($orderTransactionId, $this->context);
-                break;
+
+                $orderId = $this->orderTransaction->getOrder()->getId();
+                header("Location: /account/order/edit/$orderId", true, 301);
+                exit();
             }
             case in_array($statusCode, Payment::STATUS_PAYMENT_REJECTED):
             case in_array($statusCode, Payment::STATUS_REJECTED_CAPTURE):

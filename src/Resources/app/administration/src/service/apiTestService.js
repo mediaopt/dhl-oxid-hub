@@ -16,6 +16,17 @@ class ApiClient extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    savemethod(values) {
+        const headers = this.getBasicHeaders({});
+        return this.httpClient
+            .post(`_action/${this.getApiBasePath()}/savemethod`, values,{
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 Application.addServiceProvider('apiTest', (container) => {

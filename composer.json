@@ -1,7 +1,7 @@
 {
     "name": "mediaopt/worldline",
-    "description": "The Worldline Plugin",
-    "version": "0.0.5",
+    "description": "Worldline Online Payments",
+    "version": "0.9.1",
     "type": "shopware-platform-plugin",
     "license": "proprietary",
     "config": {
@@ -17,8 +17,8 @@
         "shopware-plugin-class": "MoptWorldline\\MoptWorldline",
         "copyright": "(c) by Mediaopt GmbH",
         "label": {
-            "de-DE": "Das Worldline Plugin.",
-            "en-GB": "The Worldline Plugin."
+            "de-DE": "Worldline Online Payments",
+            "en-GB": "Worldline Online Payments"
         },
         "description": {
             "de-DE": "Zertifiziertes Worldline online Zahlungs-plugin für Shopware 6",

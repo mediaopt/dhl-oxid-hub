@@ -11,10 +11,13 @@ use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
 use OnlinePayments\Sdk\Domain\Order;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
+use OnlinePayments\Sdk\Domain\PaymentProductFilter;
+use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
 use OnlinePayments\Sdk\Domain\PaymentReferences;
 use OnlinePayments\Sdk\Domain\RefundRequest;
 use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
+use Shopware\Core\Kernel;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\DefaultConnection;
@@ -105,11 +108,35 @@ class WorldlineSDKAdapter
     {
         $queryParams = new GetPaymentProductsParams();
 
-        //todo take this from client settings
-        $queryParams->setCountryCode("DE");
-        $queryParams->setCurrencyCode("EUR");
+        $connection = Kernel::getConnection();
+        $sql = "SELECT
+            cou.iso as countryISO, cur.iso_code as currencyISO
+            FROM `sales_channel` sc
+            left JOIN country cou on (cou.id = sc.country_id)
+            left JOIN currency cur on (cur.id = sc.currency_id)
+            WHERE sc.id = UNHEX('$this->salesChannelId')";
+        $salesChannelData = $connection->executeQuery($sql)->fetchAssociative();
+
+        $queryParams->setCountryCode($salesChannelData['countryISO']);
+        $queryParams->setCurrencyCode($salesChannelData['currencyISO']);
 
         return $this->merchantClient
+            ->products()
+            ->getPaymentProducts($queryParams);
+    }
+
+    /**
+     * @return void
+     * @throws \Exception
+     */
+    public function testConnection()
+    {
+        $queryParams = new GetPaymentProductsParams();
+
+        $queryParams->setCountryCode("DEU");
+        $queryParams->setCurrencyCode("EUR");
+
+        $this->merchantClient
             ->products()
             ->getPaymentProducts($queryParams);
     }
@@ -127,12 +154,13 @@ class WorldlineSDKAdapter
     }
 
     /**
-     * @param $amountTotal
-     * @param $currencyISO
+     * @param float $amountTotal
+     * @param string $currencyISO
+     * @param int $worldlinePaymentMethodId
      * @return CreateHostedCheckoutResponse
      * @throws \Exception
      */
-    public function createPayment($amountTotal, $currencyISO): CreateHostedCheckoutResponse
+    public function createPayment(float $amountTotal, string $currencyISO, int $worldlinePaymentMethodId): CreateHostedCheckoutResponse
     {
         $merchantClient = $this->getMerchantClient();
 
@@ -146,6 +174,15 @@ class WorldlineSDKAdapter
         $hostedCheckoutSpecificInput = new HostedCheckoutSpecificInput();
         $returnUrl = $this->getPluginConfig(Form::RETURN_URL_FIELD);
         $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
+
+        if ($worldlinePaymentMethodId != 0) {
+            $paymentProductFilter= new PaymentProductFilter();
+            $paymentProductFilter->setProducts([$worldlinePaymentMethodId]);
+
+            $paymentProductFiltersHostedCheckout = new PaymentProductFiltersHostedCheckout();
+            $paymentProductFiltersHostedCheckout->setRestrictTo($paymentProductFilter);
+            $hostedCheckoutSpecificInput->setPaymentProductFilters($paymentProductFiltersHostedCheckout);
+        }
 
         $hostedCheckoutRequest = new CreateHostedCheckoutRequest();
         $hostedCheckoutRequest->setOrder($order);

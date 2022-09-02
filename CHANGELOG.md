@@ -1,3 +1,13 @@
+# 0.9.1
+- Payment fail message
+
+- # 0.9.0
+- Payment creation tool
+- Cron subshop update
+
+# 0.0.6
+- Single payment option
+
 # 0.0.5
 - Webhook processing
 

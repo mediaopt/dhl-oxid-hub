@@ -8,15 +8,17 @@
 namespace MoptWorldline\Controller\Api;
 
 use Monolog\Logger;
-use MoptWorldline\Adapter\WorldlineSDKAdapter;
 use MoptWorldline\Bootstrap\Form;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use MoptWorldline\Controller\PaymentMethod\PaymentMethodController;
 
 /**
  * @RouteScope(scopes={"api"})
@@ -25,6 +27,9 @@ class ApiTestController extends AbstractController
 {
     private SystemConfigService $systemConfigService;
     private Logger $logger;
+    private EntityRepositoryInterface $paymentMethodRepository;
+    private EntityRepositoryInterface $salesChannelPaymentRepository;
+    private PluginIdProvider $pluginIdProvider;
 
     /** @var array */
     private $credentialKeys = [
@@ -37,11 +42,23 @@ class ApiTestController extends AbstractController
     /**
      * @param SystemConfigService $systemConfigService
      * @param Logger $logger
+     * @param EntityRepositoryInterface $paymentMethodRepository
+     * @param EntityRepositoryInterface $salesChannelPaymentRepository
+     * @param PluginIdProvider $pluginIdProvider
      */
-    public function __construct(SystemConfigService $systemConfigService, Logger $logger)
+    public function __construct(
+        SystemConfigService       $systemConfigService,
+        Logger                    $logger,
+        EntityRepositoryInterface $paymentMethodRepository,
+        EntityRepositoryInterface $salesChannelPaymentRepository,
+        PluginIdProvider          $pluginIdProvider
+    )
     {
         $this->systemConfigService = $systemConfigService;
         $this->logger = $logger;
+        $this->paymentMethodRepository = $paymentMethodRepository;
+        $this->salesChannelPaymentRepository = $salesChannelPaymentRepository;
+        $this->pluginIdProvider = $pluginIdProvider;
     }
 
     /**
@@ -59,28 +76,57 @@ class ApiTestController extends AbstractController
             return $this->response(false, "There is no config data.");
         }
 
-        $salesChannelId = $request->request->get('salesChannelId') ?: 'null';
+        $salesChannelId = $request->request->get('salesChannelId');
 
-        $credentials = $this->buildCredentialsFromRequest($salesChannelId, $configFormData);
+        $credentials = $this->buildCredentials($salesChannelId, $configFormData);
+
+        $paymentMethods = [];
         $message = '';
         try {
-            $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger);//No sales channel needed
-            $adapter->getMerchantClient($credentials);
+            $paymentMethodController = $this->getPaymentMethodController();
+            $paymentMethods = $paymentMethodController->getPaymentMentodsList($credentials, $salesChannelId);
         } catch (\Exception $e) {
             $message = '<br/>' . $e->getMessage();
         }
 
         $success = empty($message);
 
-        return $this->response($success, $message);
+        return $this->response($success, $message, $paymentMethods);
     }
 
     /**
-     * @param string $salesChannelId
+     * @Route(
+     *     "/api/_action/api-test/savemethod",
+     *     name="api.action.test.savemethod",
+     *     methods={"POST"}
+     * )
+     */
+    public function saveMethod(Request $request, Context $context): JsonResponse
+    {
+        $paymentMethodController = $this->getPaymentMethodController();
+        return $paymentMethodController->saveMethod($request, $context);
+    }
+
+    /**
+     * @return PaymentMethodController
+     */
+    private function getPaymentMethodController()
+    {
+        return new PaymentMethodController(
+            $this->systemConfigService,
+            $this->logger,
+            $this->paymentMethodRepository,
+            $this->salesChannelPaymentRepository,
+            $this->pluginIdProvider
+        );
+    }
+
+    /**
+     * @param ?string $salesChannelId
      * @param array $configData
      * @return array
      */
-    private function buildCredentialsFromRequest(string $salesChannelId, array $configData): array
+    private function buildCredentials(?string $salesChannelId, array $configData): array
     {
         $globalConfig = [];
         if (array_key_exists('null', $configData)) {
@@ -90,6 +136,9 @@ class ApiTestController extends AbstractController
         $credentials = [
             'isLiveMode' => false
         ];
+
+        //For "All Sales Channels" data will be in "null" part of configData
+        $salesChannelId = $salesChannelId ?? 'null';
 
         if (array_key_exists($salesChannelId, $configData)) {
             $channelConfig = $configData[$salesChannelId];
@@ -112,11 +161,12 @@ class ApiTestController extends AbstractController
      * @param string $message
      * @return JsonResponse
      */
-    private function response(bool $success, string $message): JsonResponse
+    private function response(bool $success, string $message, $paymentMethods = []): JsonResponse
     {
         return new JsonResponse([
             'success' => $success,
-            'message' => $message
+            'message' => $message,
+            'paymentMethods' => $paymentMethods,
         ]);
     }
 }

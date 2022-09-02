@@ -13,8 +13,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 
 class PaymentMethod
 {
@@ -42,17 +42,35 @@ class PaymentMethod
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
         $pluginId = $pluginIdProvider->getPluginIdByBaseClass(MoptWorldline::class, $context);
 
+        $methodId = Uuid::randomHex();
         $paymentData = [
+            'id' => $methodId,
             'handlerIdentifier' => Payment::class,
             'name' => 'Worldline',
             'description' => 'Worldline full redirect payment method',
             'pluginId' => $pluginId,
-            'afterOrderEnabled' => false
+            'afterOrderEnabled' => true,
+            'active' => true
         ];
 
         /** @var EntityRepositoryInterface $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
         $paymentRepository->create([$paymentData], $context);
+
+        /** @var EntityRepositoryInterface $salesChannelRepository */
+        $salesChannelRepository = $this->container->get('sales_channel.repository');
+        $salesChannels = $salesChannelRepository->search(new Criteria(), $context);
+        $toSave = [];
+        foreach ($salesChannels as $salesChannel) {
+            $toSave[] = [
+                'salesChannelId' => $salesChannel->getId(),
+                'paymentMethodId' => $methodId
+            ];
+        }
+
+        /** @var EntityRepositoryInterface $salesChannelRepository */
+        $salesChannelPaymentRepository = $this->container->get('sales_channel_payment_method.repository');
+        $salesChannelPaymentRepository->create($toSave, $context);
     }
 
     /**
@@ -85,7 +103,10 @@ class PaymentMethod
         /** @var EntityRepositoryInterface $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
-        $paymentCriteria = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', Payment::class));
+        $paymentCriteria = (
+        new Criteria())
+            ->addFilter(new EqualsFilter('handlerIdentifier', Payment::class))
+            ->addFilter(new EqualsFilter('name', 'Worldline'));
         $paymentIds = $paymentRepository->searchIds($paymentCriteria, Context::createDefaultContext());
 
         if ($paymentIds->getTotal() === 0) {

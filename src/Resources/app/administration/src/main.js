@@ -2,6 +2,7 @@ import './service/apiTestService';
 import './service/transactionsControlService';
 
 import './component/api-test-button';
+import './component/payment-method-button';
 
 import './extension/sw-order/view/sw-order-detail-base';
 

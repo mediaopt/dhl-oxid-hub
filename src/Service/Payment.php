@@ -12,7 +12,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStat
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\AsynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentProcessException;
-use Shopware\Core\Checkout\Payment\Exception\CustomerCanceledAsyncPaymentException;
+use Shopware\Core\Checkout\Payment\Exception\AsyncPaymentFinalizeException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -42,7 +42,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
     public const STATUS_PENDING_CAPTURE = [5, 56];              //open
     public const STATUS_AUTHORIZATION_REQUESTED = [50, 51, 55]; //
     public const STATUS_CAPTURE_REQUESTED = [4, 91, 92, 99];    //in progress
-    public const STATUS_CAPTURED = [9];                         //payed
+    public const STATUS_CAPTURED = [9];                         //paid
     public const STATUS_REFUND_REQUESTED = [81, 82];            //in progress
     public const STATUS_REFUNDED = [7, 8, 85];                  //refunded
 
@@ -146,14 +146,48 @@ class Payment implements AsynchronousPaymentHandlerInterface
     ): void
     {
         $transactionId = $transaction->getOrderTransaction()->getId();
-
-        //todo realise is it a Cancelled payment?
-        if ($request->query->getBoolean('cancel')) {
-            throw new CustomerCanceledAsyncPaymentException(
-                $transactionId,
-                'Customer canceled the payment on the PayPal page'
-            );
+        $customFields = $transaction->getOrderTransaction()->getCustomFields();
+        if (is_array($customFields) && array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_STATUS, $customFields)) {
+            $status = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_STATUS];
+            //For 0 status we need to make an additional GET call to be sure
+            if (in_array($status, self::STATUS_PAYMENT_CREATED)) {
+                $handler = $this->getHandler($transactionId, $salesChannelContext->getContext());
+                try {
+                    $status = $handler->updatePaymentStatus($transactionId);
+                } catch (\Exception $e) {
+                    $this->finalizeError($transactionId, $e->getMessage());
+                }
+            }
+            $this->checkSuccessStatus($transactionId, $status);
+        } else {
+            $this->finalizeError($transactionId, "Payment status unknown");
         }
+    }
+
+    /**
+     * @param string $transactionId
+     * @param int $status
+     * @return void
+     */
+    private function checkSuccessStatus(string $transactionId, int $status)
+    {
+        if (in_array($status, self::STATUS_PAYMENT_CREATED)
+            || in_array($status, self::STATUS_PAYMENT_REJECTED))
+        {
+            $this->finalizeError($transactionId, 'Status is '. $status);
+        }
+    }
+
+    /**
+     * @param $transactionId
+     * @return mixed
+     */
+    private function finalizeError($transactionId, $message)
+    {
+        throw new AsyncPaymentFinalizeException(
+            $transactionId,
+            $message
+        );
     }
 
     /**
@@ -165,24 +199,16 @@ class Payment implements AsynchronousPaymentHandlerInterface
     private function sendReturnUrlToExternalGateway(AsyncPaymentTransactionStruct $transaction, Context $context)
     {
         $transactionId = $transaction->getOrderTransaction()->getId();
-
-        $criteria = new Criteria([$transactionId]);
-        $criteria->addAssociation('order');
-        $orderTransaction = $this->orderTransactionRepository->search($criteria, $context)->first();
-
-        $handler = new PaymentHandler(
-            $this->systemConfigService,
-            $this->logger,
-            $orderTransaction,
-            $this->translator,
-            $this->orderRepository,
-            $this->orderTransactionRepository,
-            $context,
-            $this->transactionStateHandler
-        );
+        $handler = $this->getHandler($transactionId, $context);
 
         try {
-            $hostedCheckoutResponse = $handler->createPayment();
+            $customFields = $transaction->getOrderTransaction()->getPaymentMethod()->getCustomFields();
+            $worldlinePaymentMethodId = 0;
+            if (is_array($customFields) && array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID, $customFields)) {
+                $worldlinePaymentMethodId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID];
+            }
+
+            $hostedCheckoutResponse = $handler->createPayment($worldlinePaymentMethodId);
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(
                 $transactionId,
@@ -196,6 +222,29 @@ class Payment implements AsynchronousPaymentHandlerInterface
         }
 
         return $link;
+    }
+
+    /**
+     * @param string $transactionId
+     * @param Context $context
+     * @return PaymentHandler
+     */
+    private function getHandler(string $transactionId, Context $context): PaymentHandler
+    {
+        $criteria = new Criteria([$transactionId]);
+        $criteria->addAssociation('order');
+        $orderTransaction = $this->orderTransactionRepository->search($criteria, $context)->first();
+
+        return new PaymentHandler(
+            $this->systemConfigService,
+            $this->logger,
+            $orderTransaction,
+            $this->translator,
+            $this->orderRepository,
+            $this->orderTransactionRepository,
+            $context,
+            $this->transactionStateHandler
+        );
     }
 
     /**
