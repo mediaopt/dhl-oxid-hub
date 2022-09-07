@@ -64,6 +64,25 @@
                                 </tr>
                                 [{assign var="address" value=$shipmentOrder.receiver.address}]
                                 [{if $shipmentOrder.receiver.type == 'address'}]
+                                    [{assign var="communication" value=$shipmentOrder.receiver.communication}]
+                                    <tr>
+                                        <td>
+                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_MAIL'}]
+                                        </td>
+                                        <td>
+                                            <input type="text" name="data[receiver][email]"
+                                                   value="[{$communication->getEmail()}]">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_PHONE'}]
+                                        </td>
+                                        <td>
+                                            <input type="text" name="data[receiver][phone]"
+                                                   value="[{$communication->getPhone()}]">
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td>
                                             [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_COMPANY'}]
