@@ -20,6 +20,7 @@ use Mediaopt\DHL\Api\GKV\Response\GetManifestResponse;
 use Mediaopt\DHL\Api\GKV\Response\GetVersionResponse;
 use Mediaopt\DHL\Api\GKV\Response\UpdateShipmentOrderResponse;
 use Mediaopt\DHL\Api\GKV\Response\ValidateShipmentResponse;
+use Mediaopt\DHL\Api\GKV\Shipment;
 use Mediaopt\DHL\Api\GKV\Version;
 use Mediaopt\DHL\Exception\WebserviceException;
 use Psr\Log\LoggerInterface;
@@ -167,6 +168,7 @@ class GKV extends \SoapClient
             return $this->__soapCall($functionName, [$request], null, $header);
         } catch (\SoapFault $exception) {
             $message = __METHOD__ . " - The SOAP API call for function  $functionName failed due to {$exception->getMessage()}";
+            $message = $this->appendOrderNr($request, $message);
             $this->getLogger()->error($message, ['exception' => $exception]);
             throw new WebserviceException('Failed API call.', 0, $exception);
         }
@@ -279,5 +281,28 @@ class GKV extends \SoapClient
     public function buildVersion(): Version
     {
         return new Version(3, 3);
+    }
+
+    /**
+     * @param $request
+     * @param $message
+     * @return mixed|string
+     */
+    protected function appendOrderNr($request, $message)
+    {
+        if (!method_exists($request, 'getShipmentOrder')) {
+            return $message;
+        }
+        $shipmentOrders = $request->getShipmentOrder();
+        $shipmentOrderNumbers = [];
+        foreach (is_array($shipmentOrders) ? $shipmentOrders : [$shipmentOrders] as $shipmentOrder) {
+            if (method_exists($shipmentOrder, 'getShipment') && $shipmentOrder->getShipment() instanceof Shipment) {
+                $shipmentOrderNumbers[] = $shipmentOrder->getShipment()->getShipmentDetails()->getCustomerReference();
+            }
+        }
+        if ($shipmentOrderNumbers) {
+            $message .= ' for orderNumbers: ' . implode(', ', $shipmentOrderNumbers);
+        }
+        return $message;
     }
 }

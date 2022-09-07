@@ -20,9 +20,9 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__portokasse_password'      => 'Portokasse Passwort',
     'HELP_SHOP_MODULE_mo_dhl__portokasse_password' => 'Ihr Passwort für die <a href="https://portokasse.deutschepost.de/">Portokasse</a>.',
 
-    'SHOP_MODULE_GROUP_mo_dhl__internetmarke'         => 'Internetmarke',
-    'SHOP_MODULE_mo_dhl__internetmarke_layout'        => 'Layout ID für den Druck der Internetmarken',
-    'SHOP_MODULE_mo_dhl__internetmarke_check'         => '',
+    'SHOP_MODULE_GROUP_mo_dhl__internetmarke'  => 'Internetmarke',
+    'SHOP_MODULE_mo_dhl__internetmarke_layout' => 'Layout ID für den Druck der Internetmarken',
+    'SHOP_MODULE_mo_dhl__internetmarke_check'  => '',
 
     'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Versand',
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Nur leitcodierbare Adressen zulassen',
@@ -51,7 +51,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__notification_mode_NEVER'              => 'Niemals',
     'SHOP_MODULE_mo_dhl__notification_mode_ALWAYS'             => 'Immer',
     'SHOP_MODULE_mo_dhl__notification_mode_ASK'                => 'Auf Kundenwunsch übermitteln',
-    
+
     'SHOP_MODULE_GROUP_mo_dhl__cod'        => 'Nachnahme - Kontodaten',
     'SHOP_MODULE_mo_dhl__cod_accountOwner' => 'Kontoinhaber',
     'SHOP_MODULE_mo_dhl__cod_bankName'     => 'Name der Bank',
