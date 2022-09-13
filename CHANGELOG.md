@@ -1,3 +1,6 @@
+# 0.9.2
+- Disable unused control buttons on order page
+
 # 0.9.1
 - Payment fail message
 
