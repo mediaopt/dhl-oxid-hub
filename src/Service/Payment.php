@@ -7,6 +7,7 @@
 
 namespace MoptWorldline\Service;
 
+use Shopware\Core\Checkout\Payment\Exception\CustomerCanceledAsyncPaymentException;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Payment\Cart\AsyncPaymentTransactionStruct;
@@ -163,6 +164,12 @@ class Payment implements AsynchronousPaymentHandlerInterface
                     $this->finalizeError($transactionId, $e->getMessage());
                 }
             }
+            if (in_array($status, self::STATUS_PAYMENT_CANCELLED)) {
+                throw new CustomerCanceledAsyncPaymentException(
+                    $transactionId,
+                    "Payment canceled"
+                );
+            }
             $this->checkSuccessStatus($transactionId, $status);
         } else {
             $this->finalizeError($transactionId, "Payment status unknown");
@@ -295,15 +302,6 @@ class Payment implements AsynchronousPaymentHandlerInterface
             case in_array($status, self::STATUS_CAPTURED): {
                 return [self::REFUND_ALLOWED];
             }
-            case in_array($status, self::STATUS_PAYMENT_CREATED):
-            case in_array($status, self::STATUS_PAYMENT_CANCELLED):
-            case in_array($status, self::STATUS_PAYMENT_REJECTED):
-            case in_array($status, self::STATUS_REJECTED_CAPTURE):
-            case in_array($status, self::STATUS_REDIRECTED):
-            case in_array($status, self::STATUS_AUTHORIZATION_REQUESTED):
-            case in_array($status, self::STATUS_CAPTURE_REQUESTED):
-            case in_array($status, self::STATUS_REFUND_REQUESTED):
-            case in_array($status, self::STATUS_REFUNDED):
             default: {
                 return [];
             }
