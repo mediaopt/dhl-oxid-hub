@@ -34,7 +34,7 @@ class AdminTranslate
 
     static private function getTranslation($id, $dictionary)
     {
-        if (array_key_exists($id, $dictionary)) {
+        if (is_array($dictionary) && array_key_exists($id, $dictionary)) {
             return $dictionary[$id];
         }
         return false;

@@ -46,6 +46,10 @@ class Payment implements AsynchronousPaymentHandlerInterface
     public const STATUS_REFUND_REQUESTED = [81, 82];            //in progress
     public const STATUS_REFUNDED = [7, 8, 85];                  //refunded
 
+    public const CANCEL_ALLOWED = 'WorldlineBtnCancel';
+    public const REFUND_ALLOWED = 'WorldlineBtnRefund';
+    public const CAPTURE_ALLOWED = 'WorldlineBtnCapture';
+
     public const STATUS_LABELS = [
         0 => 'created',
 
@@ -148,12 +152,13 @@ class Payment implements AsynchronousPaymentHandlerInterface
         $transactionId = $transaction->getOrderTransaction()->getId();
         $customFields = $transaction->getOrderTransaction()->getCustomFields();
         if (is_array($customFields) && array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_STATUS, $customFields)) {
-            $status = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_STATUS];
+            $status = (int)$customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_STATUS];
+            $hostedCheckoutId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID];
             //For 0 status we need to make an additional GET call to be sure
             if (in_array($status, self::STATUS_PAYMENT_CREATED)) {
                 $handler = $this->getHandler($transactionId, $salesChannelContext->getContext());
                 try {
-                    $status = $handler->updatePaymentStatus($transactionId);
+                    $status = $handler->updatePaymentStatus($hostedCheckoutId);
                 } catch (\Exception $e) {
                     $this->finalizeError($transactionId, $e->getMessage());
                 }
@@ -277,4 +282,31 @@ class Payment implements AsynchronousPaymentHandlerInterface
         return $session->get(Form::SESSION_OPERATIONS_LOCK . $orderId, false);
     }
 
+    /**
+     * @param int $status
+     * @return array
+     */
+    public static function getAllowedActions(int $status): array
+    {
+        switch ($status) {
+            case in_array($status, self::STATUS_PENDING_CAPTURE):{
+                return [self::CANCEL_ALLOWED, self::CAPTURE_ALLOWED];
+            }
+            case in_array($status, self::STATUS_CAPTURED): {
+                return [self::REFUND_ALLOWED];
+            }
+            case in_array($status, self::STATUS_PAYMENT_CREATED):
+            case in_array($status, self::STATUS_PAYMENT_CANCELLED):
+            case in_array($status, self::STATUS_PAYMENT_REJECTED):
+            case in_array($status, self::STATUS_REJECTED_CAPTURE):
+            case in_array($status, self::STATUS_REDIRECTED):
+            case in_array($status, self::STATUS_AUTHORIZATION_REQUESTED):
+            case in_array($status, self::STATUS_CAPTURE_REQUESTED):
+            case in_array($status, self::STATUS_REFUND_REQUESTED):
+            case in_array($status, self::STATUS_REFUNDED):
+            default: {
+                return [];
+            }
+        }
+    }
 }
