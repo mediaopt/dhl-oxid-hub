@@ -375,7 +375,7 @@
             return provider.number;
         },
         apply: function (provider) {
-            $('#select' + provider.type).prop('selected', true);
+            $('#select' + this.dhl.fromProviderTypeToLabel(provider.type)).prop('selected', true);
             $("#showShipAddress").prop('checked', false).change();
             $(".dd-add-delivery-address").find('label.btn').click();
             var providerIdentifier = this.dhl.fromProviderTypeToIdentifier(provider.type);
