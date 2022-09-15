@@ -352,7 +352,7 @@
             return provider.number;
         },
         apply: function (provider) {
-            $('#select' + provider.type).prop('selected', true);
+            $('#select' + this.dhl.fromProviderTypeToLabel(provider.type)).prop('selected', true);
             $("#showShipAddress").attr('checked', false);
             var providerIdentifier = this.dhl.fromProviderTypeToIdentifier(provider.type);
             $("[name='deladr[oxaddress__oxstreet]']").val(providerIdentifier).parent().removeClass('oxInValid');

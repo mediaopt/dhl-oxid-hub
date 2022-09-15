@@ -1,4 +1,7 @@
 # Changelog
+## 1.6.5
+* bugfix for selecting a Paketshop in the Filialfinder
+
 
 ## 1.6.4
 * new Service PDDP (Postal Delivery Duty Paid) for Paket International
