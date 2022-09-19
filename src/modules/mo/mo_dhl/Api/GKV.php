@@ -3,24 +3,24 @@
 namespace Mediaopt\DHL\Api;
 
 use Mediaopt\DHL\Api\GKV\AuthenticationType;
-use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Request\DoManifestRequest;
-use Mediaopt\DHL\Api\GKV\Request\GetExportDocRequest;
-use Mediaopt\DHL\Api\GKV\Request\GetLabelRequest;
-use Mediaopt\DHL\Api\GKV\Request\GetManifestRequest;
-use Mediaopt\DHL\Api\GKV\Request\UpdateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Request\ValidateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse;
-use Mediaopt\DHL\Api\GKV\Response\DeleteShipmentOrderResponse;
-use Mediaopt\DHL\Api\GKV\Response\DoManifestResponse;
-use Mediaopt\DHL\Api\GKV\Response\GetExportDocResponse;
-use Mediaopt\DHL\Api\GKV\Response\GetLabelResponse;
-use Mediaopt\DHL\Api\GKV\Response\GetManifestResponse;
-use Mediaopt\DHL\Api\GKV\Response\GetVersionResponse;
-use Mediaopt\DHL\Api\GKV\Response\UpdateShipmentOrderResponse;
-use Mediaopt\DHL\Api\GKV\Response\ValidateShipmentResponse;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\DeleteShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\DeleteShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\DoManifestRequest;
+use Mediaopt\DHL\Api\GKV\DoManifestResponse;
+use Mediaopt\DHL\Api\GKV\GetExportDocRequest;
+use Mediaopt\DHL\Api\GKV\GetExportDocResponse;
+use Mediaopt\DHL\Api\GKV\GetLabelRequest;
+use Mediaopt\DHL\Api\GKV\GetLabelResponse;
+use Mediaopt\DHL\Api\GKV\GetManifestRequest;
+use Mediaopt\DHL\Api\GKV\GetManifestResponse;
+use Mediaopt\DHL\Api\GKV\GetVersionResponse;
 use Mediaopt\DHL\Api\GKV\Shipment;
+use Mediaopt\DHL\Api\GKV\UpdateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\UpdateShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\ValidateShipmentResponse;
 use Mediaopt\DHL\Api\GKV\Version;
 use Mediaopt\DHL\Exception\WebserviceException;
 use Psr\Log\LoggerInterface;
@@ -33,8 +33,8 @@ class GKV extends \SoapClient
      */
     private static $classmap = [
         'AuthentificationType'                  => 'Mediaopt\\DHL\\Api\\GKV\\AuthenticationType',
-        'CreateShipmentOrderRequest'            => 'Mediaopt\\DHL\\Api\\GKV\\Request\\CreateShipmentOrderRequest',
-        'CreateShipmentOrderResponse'           => 'Mediaopt\\DHL\\Api\\GKV\\Response\\CreateShipmentOrderResponse',
+        'CreateShipmentOrderRequest'            => 'Mediaopt\\DHL\\Api\\GKV\\CreateShipmentOrderRequest',
+        'CreateShipmentOrderResponse'           => 'Mediaopt\\DHL\\Api\\GKV\\CreateShipmentOrderResponse',
         'Version'                               => 'Mediaopt\\DHL\\Api\\GKV\\Version',
         'ShipmentOrderType'                     => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentOrderType',
         'Shipment'                              => 'Mediaopt\\DHL\\Api\\GKV\\Shipment',
@@ -70,26 +70,26 @@ class GKV extends \SoapClient
         'Statusinformation'                   => 'Mediaopt\\DHL\\Api\\GKV\\Statusinformation',
         'CreationState'                       => 'Mediaopt\\DHL\\Api\\GKV\\CreationState',
         'LabelData'                           => 'Mediaopt\\DHL\\Api\\GKV\\LabelData',
-        'ValidateShipmentOrderRequest'        => 'Mediaopt\\DHL\\Api\\GKV\\Request\\ValidateShipmentOrderRequest',
-        'ValidateShipmentResponse'            => 'Mediaopt\\DHL\\Api\\GKV\\Response\\ValidateShipmentResponse',
+        'ValidateShipmentOrderRequest'        => 'Mediaopt\\DHL\\Api\\GKV\\ValidateShipmentOrderRequest',
+        'ValidateShipmentResponse'            => 'Mediaopt\\DHL\\Api\\GKV\\ValidateShipmentResponse',
         'ValidateShipmentOrderType'           => 'Mediaopt\\DHL\\Api\\GKV\\ValidateShipmentOrderType',
         'ValidationState'                     => 'Mediaopt\\DHL\\Api\\GKV\\ValidationState',
-        'DeleteShipmentOrderRequest'          => 'Mediaopt\\DHL\\Api\\GKV\\Request\\DeleteShipmentOrderRequest',
-        'DeleteShipmentOrderResponse'         => 'Mediaopt\\DHL\\Api\\GKV\\Response\\DeleteShipmentOrderResponse',
+        'DeleteShipmentOrderRequest'          => 'Mediaopt\\DHL\\Api\\GKV\\DeleteShipmentOrderRequest',
+        'DeleteShipmentOrderResponse'         => 'Mediaopt\\DHL\\Api\\GKV\\DeleteShipmentOrderResponse',
         'DeletionState'                           => 'Mediaopt\\DHL\\Api\\GKV\\DeletionState',
-        'DoManifestRequest'                       => 'Mediaopt\\DHL\\Api\\GKV\\Request\\DoManifestRequest',
-        'DoManifestResponse'                      => 'Mediaopt\\DHL\\Api\\GKV\\Response\\DoManifestResponse',
+        'DoManifestRequest'                       => 'Mediaopt\\DHL\\Api\\GKV\\DoManifestRequest',
+        'DoManifestResponse'                      => 'Mediaopt\\DHL\\Api\\GKV\\DoManifestResponse',
         'ManifestState'                           => 'Mediaopt\\DHL\\Api\\GKV\\ManifestState',
-        'GetLabelRequest'                         => 'Mediaopt\\DHL\\Api\\GKV\\Request\\GetLabelRequest',
-        'GetLabelResponse'                        => 'Mediaopt\\DHL\\Api\\GKV\\Response\\GetLabelResponse',
-        'GetVersionResponse'                      => 'Mediaopt\\DHL\\Api\\GKV\\Response\\GetVersionResponse',
-        'GetExportDocRequest'                     => 'Mediaopt\\DHL\\Api\\GKV\\Request\\GetExportDocRequest',
-        'GetExportDocResponse'                    => 'Mediaopt\\DHL\\Api\\GKV\\Response\\GetExportDocResponse',
+        'GetLabelRequest'                         => 'Mediaopt\\DHL\\Api\\GKV\\GetLabelRequest',
+        'GetLabelResponse'                        => 'Mediaopt\\DHL\\Api\\GKV\\GetLabelResponse',
+        'GetVersionResponse'                      => 'Mediaopt\\DHL\\Api\\GKV\\GetVersionResponse',
+        'GetExportDocRequest'                     => 'Mediaopt\\DHL\\Api\\GKV\\GetExportDocRequest',
+        'GetExportDocResponse'                    => 'Mediaopt\\DHL\\Api\\GKV\\GetExportDocResponse',
         'ExportDocData'                           => 'Mediaopt\\DHL\\Api\\GKV\\ExportDocData',
-        'GetManifestRequest'                      => 'Mediaopt\\DHL\\Api\\GKV\\Request\\GetManifestRequest',
-        'GetManifestResponse'                     => 'Mediaopt\\DHL\\Api\\GKV\\Response\\GetManifestResponse',
-        'UpdateShipmentOrderRequest'              => 'Mediaopt\\DHL\\Api\\GKV\\Request\\UpdateShipmentOrderRequest',
-        'UpdateShipmentOrderResponse'             => 'Mediaopt\\DHL\\Api\\GKV\\Response\\UpdateShipmentOrderResponse',
+        'GetManifestRequest'                      => 'Mediaopt\\DHL\\Api\\GKV\\GetManifestRequest',
+        'GetManifestResponse'                     => 'Mediaopt\\DHL\\Api\\GKV\\GetManifestResponse',
+        'UpdateShipmentOrderRequest'              => 'Mediaopt\\DHL\\Api\\GKV\\UpdateShipmentOrderRequest',
+        'UpdateShipmentOrderResponse'             => 'Mediaopt\\DHL\\Api\\GKV\\UpdateShipmentOrderResponse',
     ];
 
     /**

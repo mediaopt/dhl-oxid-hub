@@ -1,11 +1,8 @@
 <?php
 
-namespace Mediaopt\DHL\Api\GKV\Request;
+namespace Mediaopt\DHL\Api\GKV;
 
-use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
-use Mediaopt\DHL\Api\GKV\Version;
-
-class CreateShipmentOrderRequest
+class GetLabelRequest
 {
 
     /**
@@ -14,9 +11,9 @@ class CreateShipmentOrderRequest
     protected $Version = null;
 
     /**
-     * @var ShipmentOrderType[] $ShipmentOrder
+     * @var string $shipmentNumber
      */
-    protected $ShipmentOrder = null;
+    protected $shipmentNumber = null;
 
     /**
      * @var string $labelResponseType
@@ -49,13 +46,13 @@ class CreateShipmentOrderRequest
     protected $feederSystem = null;
 
     /**
-     * @param Version                               $Version
-     * @param ShipmentOrderType|ShipmentOrderType[] $ShipmentOrder
+     * @param Version $Version
+     * @param string  $shipmentNumber
      */
-    public function __construct(Version $Version, $ShipmentOrder)
+    public function __construct(Version $Version, string $shipmentNumber)
     {
         $this->Version = $Version;
-        $this->ShipmentOrder = is_array($ShipmentOrder) ? $ShipmentOrder : [$ShipmentOrder];
+        $this->shipmentNumber = $shipmentNumber;
     }
 
     /**
@@ -68,7 +65,7 @@ class CreateShipmentOrderRequest
 
     /**
      * @param Version $Version
-     * @return CreateShipmentOrderRequest
+     * @return GetLabelRequest
      */
     public function setVersion($Version)
     {
@@ -77,20 +74,20 @@ class CreateShipmentOrderRequest
     }
 
     /**
-     * @return ShipmentOrderType[]
+     * @return string
      */
-    public function getShipmentOrder()
+    public function getShipmentNumber()
     {
-        return $this->ShipmentOrder;
+        return $this->shipmentNumber;
     }
 
     /**
-     * @param ShipmentOrderType[]|ShipmentOrderType $ShipmentOrder
-     * @return CreateShipmentOrderRequest
+     * @param string $shipmentNumber
+     * @return GetLabelRequest
      */
-    public function setShipmentOrder($ShipmentOrder)
+    public function setShipmentNumber($shipmentNumber)
     {
-        $this->ShipmentOrder = is_array($ShipmentOrder) ? $ShipmentOrder : [$ShipmentOrder];
+        $this->shipmentNumber = $shipmentNumber;
         return $this;
     }
 
@@ -104,7 +101,7 @@ class CreateShipmentOrderRequest
 
     /**
      * @param string $labelResponseType
-     * @return CreateShipmentOrderRequest
+     * @return GetLabelRequest
      */
     public function setLabelResponseType($labelResponseType)
     {
@@ -122,7 +119,7 @@ class CreateShipmentOrderRequest
 
     /**
      * @param string $groupProfileName
-     * @return CreateShipmentOrderRequest
+     * @return GetLabelRequest
      */
     public function setGroupProfileName($groupProfileName)
     {
@@ -140,7 +137,7 @@ class CreateShipmentOrderRequest
 
     /**
      * @param string $labelFormat
-     * @return CreateShipmentOrderRequest
+     * @return GetLabelRequest
      */
     public function setLabelFormat($labelFormat)
     {
@@ -158,7 +155,7 @@ class CreateShipmentOrderRequest
 
     /**
      * @param string $labelFormatRetoure
-     * @return CreateShipmentOrderRequest
+     * @return GetLabelRequest
      */
     public function setLabelFormatRetoure($labelFormatRetoure)
     {
@@ -176,7 +173,7 @@ class CreateShipmentOrderRequest
 
     /**
      * @param string $combinedPrinting
-     * @return CreateShipmentOrderRequest
+     * @return GetLabelRequest
      */
     public function setCombinedPrinting($combinedPrinting)
     {
@@ -194,7 +191,7 @@ class CreateShipmentOrderRequest
 
     /**
      * @param string $feederSystem
-     * @return CreateShipmentOrderRequest
+     * @return GetLabelRequest
      */
     public function setFeederSystem($feederSystem)
     {

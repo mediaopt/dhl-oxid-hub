@@ -1,10 +1,8 @@
 <?php
 
-namespace Mediaopt\DHL\Api\GKV\Request;
+namespace Mediaopt\DHL\Api\GKV;
 
-use Mediaopt\DHL\Api\GKV\Version;
-
-class DeleteShipmentOrderRequest
+class DoManifestRequest
 {
 
     /**
@@ -37,7 +35,7 @@ class DeleteShipmentOrderRequest
 
     /**
      * @param Version $Version
-     * @return DeleteShipmentOrderRequest
+     * @return DoManifestRequest
      */
     public function setVersion($Version)
     {
@@ -55,7 +53,7 @@ class DeleteShipmentOrderRequest
 
     /**
      * @param string $shipmentNumber
-     * @return DeleteShipmentOrderRequest
+     * @return DoManifestRequest
      */
     public function setShipmentNumber($shipmentNumber)
     {

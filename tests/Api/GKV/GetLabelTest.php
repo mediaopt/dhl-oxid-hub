@@ -9,8 +9,8 @@ namespace sdk\GKV;
 
 require_once 'BaseGKVTest.php';
 
-use Mediaopt\DHL\Api\GKV\Request\GetLabelRequest;
-use Mediaopt\DHL\Api\GKV\Response\GetLabelResponse;
+use Mediaopt\DHL\Api\GKV\GetLabelRequest;
+use Mediaopt\DHL\Api\GKV\GetLabelResponse;
 
 /**
  * @author Mediaopt GmbH

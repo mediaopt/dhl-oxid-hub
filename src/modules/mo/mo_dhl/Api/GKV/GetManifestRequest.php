@@ -1,8 +1,6 @@
 <?php
 
-namespace Mediaopt\DHL\Api\GKV\Request;
-
-use Mediaopt\DHL\Api\GKV\Version;
+namespace Mediaopt\DHL\Api\GKV;
 
 class GetManifestRequest
 {

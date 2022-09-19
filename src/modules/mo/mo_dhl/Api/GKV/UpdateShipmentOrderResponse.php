@@ -1,11 +1,8 @@
 <?php
 
-namespace Mediaopt\DHL\Api\GKV\Response;
+namespace Mediaopt\DHL\Api\GKV;
 
-use Mediaopt\DHL\Api\GKV\Statusinformation;
-use Mediaopt\DHL\Api\GKV\Version;
-
-class GetManifestResponse
+class UpdateShipmentOrderResponse
 {
 
     /**
@@ -19,20 +16,20 @@ class GetManifestResponse
     protected $Status = null;
 
     /**
-     * @var string $manifestData
+     * @var LabelData[] $LabelData
      */
-    protected $manifestData = null;
+    protected $LabelData = null;
 
     /**
      * @param Version           $Version
      * @param Statusinformation $Status
-     * @param string            $manifestData
+     * @param LabelData[]       $LabelData
      */
-    public function __construct($Version, $Status, $manifestData)
+    public function __construct($Version, $Status, $LabelData)
     {
         $this->Version = $Version;
         $this->Status = $Status;
-        $this->manifestData = $manifestData;
+        $this->LabelData = $LabelData;
     }
 
     /**
@@ -45,7 +42,7 @@ class GetManifestResponse
 
     /**
      * @param Version $Version
-     * @return GetManifestResponse
+     * @return UpdateShipmentOrderResponse
      */
     public function setVersion($Version)
     {
@@ -63,7 +60,7 @@ class GetManifestResponse
 
     /**
      * @param Statusinformation $Status
-     * @return GetManifestResponse
+     * @return UpdateShipmentOrderResponse
      */
     public function setStatus($Status)
     {
@@ -72,20 +69,20 @@ class GetManifestResponse
     }
 
     /**
-     * @return string
+     * @return LabelData[]
      */
-    public function getManifestData()
+    public function getLabelData()
     {
-        return $this->manifestData;
+        return $this->LabelData;
     }
 
     /**
-     * @param string $manifestData
-     * @return GetManifestResponse
+     * @param LabelData[] $LabelData
+     * @return UpdateShipmentOrderResponse
      */
-    public function setManifestData($manifestData)
+    public function setLabelData($LabelData)
     {
-        $this->manifestData = $manifestData;
+        $this->LabelData = $LabelData;
         return $this;
     }
 

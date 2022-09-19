@@ -1,10 +1,8 @@
 <?php
 
-namespace Mediaopt\DHL\Api\GKV\Request;
+namespace Mediaopt\DHL\Api\GKV;
 
-use Mediaopt\DHL\Api\GKV\Version;
-
-class GetExportDocRequest
+class CreateShipmentOrderRequest
 {
 
     /**
@@ -13,14 +11,14 @@ class GetExportDocRequest
     protected $Version = null;
 
     /**
-     * @var string $shipmentNumber
+     * @var ShipmentOrderType[] $ShipmentOrder
      */
-    protected $shipmentNumber = null;
+    protected $ShipmentOrder = null;
 
     /**
-     * @var string $exportDocResponseType
+     * @var string $labelResponseType
      */
-    protected $exportDocResponseType = null;
+    protected $labelResponseType = null;
 
     /**
      * @var string $groupProfileName
@@ -48,13 +46,13 @@ class GetExportDocRequest
     protected $feederSystem = null;
 
     /**
-     * @param Version $Version
-     * @param string  $shipmentNumber
+     * @param Version                               $Version
+     * @param ShipmentOrderType|ShipmentOrderType[] $ShipmentOrder
      */
-    public function __construct(Version $Version, string $shipmentNumber)
+    public function __construct(Version $Version, $ShipmentOrder)
     {
         $this->Version = $Version;
-        $this->shipmentNumber = $shipmentNumber;
+        $this->ShipmentOrder = is_array($ShipmentOrder) ? $ShipmentOrder : [$ShipmentOrder];
     }
 
     /**
@@ -67,7 +65,7 @@ class GetExportDocRequest
 
     /**
      * @param Version $Version
-     * @return GetExportDocRequest
+     * @return CreateShipmentOrderRequest
      */
     public function setVersion($Version)
     {
@@ -76,38 +74,38 @@ class GetExportDocRequest
     }
 
     /**
-     * @return string
+     * @return ShipmentOrderType[]
      */
-    public function getShipmentNumber()
+    public function getShipmentOrder()
     {
-        return $this->shipmentNumber;
+        return $this->ShipmentOrder;
     }
 
     /**
-     * @param string $shipmentNumber
-     * @return GetExportDocRequest
+     * @param ShipmentOrderType[]|ShipmentOrderType $ShipmentOrder
+     * @return CreateShipmentOrderRequest
      */
-    public function setShipmentNumber($shipmentNumber)
+    public function setShipmentOrder($ShipmentOrder)
     {
-        $this->shipmentNumber = $shipmentNumber;
+        $this->ShipmentOrder = is_array($ShipmentOrder) ? $ShipmentOrder : [$ShipmentOrder];
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getExportDocResponseType()
+    public function getLabelResponseType()
     {
-        return $this->exportDocResponseType;
+        return $this->labelResponseType;
     }
 
     /**
-     * @param string $exportDocResponseType
-     * @return GetExportDocRequest
+     * @param string $labelResponseType
+     * @return CreateShipmentOrderRequest
      */
-    public function setExportDocResponseType($exportDocResponseType)
+    public function setLabelResponseType($labelResponseType)
     {
-        $this->exportDocResponseType = $exportDocResponseType;
+        $this->labelResponseType = $labelResponseType;
         return $this;
     }
 
@@ -121,7 +119,7 @@ class GetExportDocRequest
 
     /**
      * @param string $groupProfileName
-     * @return GetExportDocRequest
+     * @return CreateShipmentOrderRequest
      */
     public function setGroupProfileName($groupProfileName)
     {
@@ -139,7 +137,7 @@ class GetExportDocRequest
 
     /**
      * @param string $labelFormat
-     * @return GetExportDocRequest
+     * @return CreateShipmentOrderRequest
      */
     public function setLabelFormat($labelFormat)
     {
@@ -157,7 +155,7 @@ class GetExportDocRequest
 
     /**
      * @param string $labelFormatRetoure
-     * @return GetExportDocRequest
+     * @return CreateShipmentOrderRequest
      */
     public function setLabelFormatRetoure($labelFormatRetoure)
     {
@@ -175,7 +173,7 @@ class GetExportDocRequest
 
     /**
      * @param string $combinedPrinting
-     * @return GetExportDocRequest
+     * @return CreateShipmentOrderRequest
      */
     public function setCombinedPrinting($combinedPrinting)
     {
@@ -193,7 +191,7 @@ class GetExportDocRequest
 
     /**
      * @param string $feederSystem
-     * @return GetExportDocRequest
+     * @return CreateShipmentOrderRequest
      */
     public function setFeederSystem($feederSystem)
     {

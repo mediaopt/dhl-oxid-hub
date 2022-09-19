@@ -2,13 +2,10 @@
 
 namespace Mediaopt\DHL\Adapter;
 
-use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
 use Mediaopt\DHL\Api\Internetmarke\CreateShopOrderIdRequest;
 use Mediaopt\DHL\Api\Internetmarke\ShoppingCartPDFPosition;
 use Mediaopt\DHL\Api\Internetmarke\ShoppingCartPDFRequestType;
-use Mediaopt\DHL\Api\Internetmarke\VoucherLayout;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Model\MoDHLInternetmarkeProduct;
 use OxidEsales\Eshop\Core\DatabaseProvider;

@@ -2,8 +2,6 @@
 
 namespace Mediaopt\DHL\Api\GKV;
 
-use Mediaopt\DHL\Api\GKV\Response\StatusCode;
-
 class Statusinformation
 {
 

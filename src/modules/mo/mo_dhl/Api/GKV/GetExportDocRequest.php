@@ -1,10 +1,8 @@
 <?php
 
-namespace Mediaopt\DHL\Api\GKV\Request;
+namespace Mediaopt\DHL\Api\GKV;
 
-use Mediaopt\DHL\Api\GKV\Version;
-
-class GetLabelRequest
+class GetExportDocRequest
 {
 
     /**
@@ -18,9 +16,9 @@ class GetLabelRequest
     protected $shipmentNumber = null;
 
     /**
-     * @var string $labelResponseType
+     * @var string $exportDocResponseType
      */
-    protected $labelResponseType = null;
+    protected $exportDocResponseType = null;
 
     /**
      * @var string $groupProfileName
@@ -67,7 +65,7 @@ class GetLabelRequest
 
     /**
      * @param Version $Version
-     * @return GetLabelRequest
+     * @return GetExportDocRequest
      */
     public function setVersion($Version)
     {
@@ -85,7 +83,7 @@ class GetLabelRequest
 
     /**
      * @param string $shipmentNumber
-     * @return GetLabelRequest
+     * @return GetExportDocRequest
      */
     public function setShipmentNumber($shipmentNumber)
     {
@@ -96,18 +94,18 @@ class GetLabelRequest
     /**
      * @return string
      */
-    public function getLabelResponseType()
+    public function getExportDocResponseType()
     {
-        return $this->labelResponseType;
+        return $this->exportDocResponseType;
     }
 
     /**
-     * @param string $labelResponseType
-     * @return GetLabelRequest
+     * @param string $exportDocResponseType
+     * @return GetExportDocRequest
      */
-    public function setLabelResponseType($labelResponseType)
+    public function setExportDocResponseType($exportDocResponseType)
     {
-        $this->labelResponseType = $labelResponseType;
+        $this->exportDocResponseType = $exportDocResponseType;
         return $this;
     }
 
@@ -121,7 +119,7 @@ class GetLabelRequest
 
     /**
      * @param string $groupProfileName
-     * @return GetLabelRequest
+     * @return GetExportDocRequest
      */
     public function setGroupProfileName($groupProfileName)
     {
@@ -139,7 +137,7 @@ class GetLabelRequest
 
     /**
      * @param string $labelFormat
-     * @return GetLabelRequest
+     * @return GetExportDocRequest
      */
     public function setLabelFormat($labelFormat)
     {
@@ -157,7 +155,7 @@ class GetLabelRequest
 
     /**
      * @param string $labelFormatRetoure
-     * @return GetLabelRequest
+     * @return GetExportDocRequest
      */
     public function setLabelFormatRetoure($labelFormatRetoure)
     {
@@ -175,7 +173,7 @@ class GetLabelRequest
 
     /**
      * @param string $combinedPrinting
-     * @return GetLabelRequest
+     * @return GetExportDocRequest
      */
     public function setCombinedPrinting($combinedPrinting)
     {
@@ -193,7 +191,7 @@ class GetLabelRequest
 
     /**
      * @param string $feederSystem
-     * @return GetLabelRequest
+     * @return GetExportDocRequest
      */
     public function setFeederSystem($feederSystem)
     {

@@ -5,7 +5,7 @@
  * @copyright 2019 Mediaopt GmbH
  */
 
-namespace Mediaopt\DHL\Api\GKV\Response;
+namespace Mediaopt\DHL\Api\GKV;
 
 
 /**

@@ -1,10 +1,6 @@
 <?php
 
-namespace Mediaopt\DHL\Api\GKV\Response;
-
-use Mediaopt\DHL\Api\GKV\LabelData;
-use Mediaopt\DHL\Api\GKV\Statusinformation;
-use Mediaopt\DHL\Api\GKV\Version;
+namespace Mediaopt\DHL\Api\GKV;
 
 class GetLabelResponse
 {

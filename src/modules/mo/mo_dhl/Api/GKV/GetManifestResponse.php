@@ -1,12 +1,8 @@
 <?php
 
-namespace Mediaopt\DHL\Api\GKV\Response;
+namespace Mediaopt\DHL\Api\GKV;
 
-use Mediaopt\DHL\Api\GKV\ManifestState;
-use Mediaopt\DHL\Api\GKV\Statusinformation;
-use Mediaopt\DHL\Api\GKV\Version;
-
-class DoManifestResponse
+class GetManifestResponse
 {
 
     /**
@@ -20,20 +16,20 @@ class DoManifestResponse
     protected $Status = null;
 
     /**
-     * @var ManifestState $ManifestState
+     * @var string $manifestData
      */
-    protected $ManifestState = null;
+    protected $manifestData = null;
 
     /**
      * @param Version           $Version
      * @param Statusinformation $Status
-     * @param ManifestState     $ManifestState
+     * @param string            $manifestData
      */
-    public function __construct($Version, $Status, $ManifestState)
+    public function __construct($Version, $Status, $manifestData)
     {
         $this->Version = $Version;
         $this->Status = $Status;
-        $this->ManifestState = $ManifestState;
+        $this->manifestData = $manifestData;
     }
 
     /**
@@ -46,7 +42,7 @@ class DoManifestResponse
 
     /**
      * @param Version $Version
-     * @return DoManifestResponse
+     * @return GetManifestResponse
      */
     public function setVersion($Version)
     {
@@ -64,7 +60,7 @@ class DoManifestResponse
 
     /**
      * @param Statusinformation $Status
-     * @return DoManifestResponse
+     * @return GetManifestResponse
      */
     public function setStatus($Status)
     {
@@ -73,20 +69,20 @@ class DoManifestResponse
     }
 
     /**
-     * @return ManifestState
+     * @return string
      */
-    public function getManifestState()
+    public function getManifestData()
     {
-        return $this->ManifestState;
+        return $this->manifestData;
     }
 
     /**
-     * @param ManifestState $ManifestState
-     * @return DoManifestResponse
+     * @param string $manifestData
+     * @return GetManifestResponse
      */
-    public function setManifestState($ManifestState)
+    public function setManifestData($manifestData)
     {
-        $this->ManifestState = $ManifestState;
+        $this->manifestData = $manifestData;
         return $this;
     }
 

@@ -9,8 +9,8 @@ namespace sdk\GKV;
 
 require_once 'BaseGKVTest.php';
 
-use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderResponse;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
 use Mediaopt\DHL\Api\GKV\Version;
 

@@ -1,12 +1,8 @@
 <?php
 
-namespace Mediaopt\DHL\Api\GKV\Response;
+namespace Mediaopt\DHL\Api\GKV;
 
-use Mediaopt\DHL\Api\GKV\DeletionState;
-use Mediaopt\DHL\Api\GKV\Statusinformation;
-use Mediaopt\DHL\Api\GKV\Version;
-
-class DeleteShipmentOrderResponse
+class DoManifestResponse
 {
 
     /**
@@ -20,20 +16,20 @@ class DeleteShipmentOrderResponse
     protected $Status = null;
 
     /**
-     * @var DeletionState[] $DeletionState
+     * @var ManifestState $ManifestState
      */
-    protected $DeletionState = null;
+    protected $ManifestState = null;
 
     /**
      * @param Version           $Version
      * @param Statusinformation $Status
-     * @param DeletionState[]   $DeletionState
+     * @param ManifestState     $ManifestState
      */
-    public function __construct($Version, $Status, $DeletionState)
+    public function __construct($Version, $Status, $ManifestState)
     {
         $this->Version = $Version;
         $this->Status = $Status;
-        $this->DeletionState = $DeletionState;
+        $this->ManifestState = $ManifestState;
     }
 
     /**
@@ -46,7 +42,7 @@ class DeleteShipmentOrderResponse
 
     /**
      * @param Version $Version
-     * @return DeleteShipmentOrderResponse
+     * @return DoManifestResponse
      */
     public function setVersion($Version)
     {
@@ -64,7 +60,7 @@ class DeleteShipmentOrderResponse
 
     /**
      * @param Statusinformation $Status
-     * @return DeleteShipmentOrderResponse
+     * @return DoManifestResponse
      */
     public function setStatus($Status)
     {
@@ -73,20 +69,20 @@ class DeleteShipmentOrderResponse
     }
 
     /**
-     * @return DeletionState[]
+     * @return ManifestState
      */
-    public function getDeletionState()
+    public function getManifestState()
     {
-        return $this->DeletionState;
+        return $this->ManifestState;
     }
 
     /**
-     * @param DeletionState[] $DeletionState
-     * @return DeleteShipmentOrderResponse
+     * @param ManifestState $ManifestState
+     * @return DoManifestResponse
      */
-    public function setDeletionState($DeletionState)
+    public function setManifestState($ManifestState)
     {
-        $this->DeletionState = $DeletionState;
+        $this->ManifestState = $ManifestState;
         return $this;
     }
 

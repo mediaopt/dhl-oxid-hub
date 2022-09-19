@@ -1,12 +1,8 @@
 <?php
 
-namespace Mediaopt\DHL\Api\GKV\Response;
+namespace Mediaopt\DHL\Api\GKV;
 
-use Mediaopt\DHL\Api\GKV\ExportDocData;
-use Mediaopt\DHL\Api\GKV\Statusinformation;
-use Mediaopt\DHL\Api\GKV\Version;
-
-class GetExportDocResponse
+class ValidateShipmentResponse
 {
 
     /**
@@ -20,20 +16,20 @@ class GetExportDocResponse
     protected $Status = null;
 
     /**
-     * @var ExportDocData $ExportDocData
+     * @var ValidationState[] $ValidationState
      */
-    protected $ExportDocData = null;
+    protected $ValidationState = null;
 
     /**
      * @param Version           $Version
      * @param Statusinformation $Status
-     * @param ExportDocData     $ExportDocData
+     * @param ValidationState[] $ValidationState
      */
-    public function __construct($Version, $Status, $ExportDocData)
+    public function __construct($Version, $Status, $ValidationState)
     {
         $this->Version = $Version;
         $this->Status = $Status;
-        $this->ExportDocData = $ExportDocData;
+        $this->ValidationState = $ValidationState;
     }
 
     /**
@@ -46,7 +42,7 @@ class GetExportDocResponse
 
     /**
      * @param Version $Version
-     * @return GetExportDocResponse
+     * @return ValidateShipmentResponse
      */
     public function setVersion($Version)
     {
@@ -64,7 +60,7 @@ class GetExportDocResponse
 
     /**
      * @param Statusinformation $Status
-     * @return GetExportDocResponse
+     * @return ValidateShipmentResponse
      */
     public function setStatus($Status)
     {
@@ -73,20 +69,20 @@ class GetExportDocResponse
     }
 
     /**
-     * @return ExportDocData
+     * @return ValidationState[]
      */
-    public function getExportDocData()
+    public function getValidationState()
     {
-        return $this->ExportDocData;
+        return $this->ValidationState;
     }
 
     /**
-     * @param ExportDocData $ExportDocData
-     * @return GetExportDocResponse
+     * @param ValidationState[] $ValidationState
+     * @return ValidateShipmentResponse
      */
-    public function setExportDocData($ExportDocData)
+    public function setValidationState($ValidationState)
     {
-        $this->ExportDocData = $ExportDocData;
+        $this->ValidationState = $ValidationState;
         return $this;
     }
 

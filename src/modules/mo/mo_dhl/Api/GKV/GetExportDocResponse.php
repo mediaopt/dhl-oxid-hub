@@ -1,12 +1,8 @@
 <?php
 
-namespace Mediaopt\DHL\Api\GKV\Response;
+namespace Mediaopt\DHL\Api\GKV;
 
-use Mediaopt\DHL\Api\GKV\LabelData;
-use Mediaopt\DHL\Api\GKV\Statusinformation;
-use Mediaopt\DHL\Api\GKV\Version;
-
-class UpdateShipmentOrderResponse
+class GetExportDocResponse
 {
 
     /**
@@ -20,20 +16,20 @@ class UpdateShipmentOrderResponse
     protected $Status = null;
 
     /**
-     * @var LabelData[] $LabelData
+     * @var ExportDocData $ExportDocData
      */
-    protected $LabelData = null;
+    protected $ExportDocData = null;
 
     /**
      * @param Version           $Version
      * @param Statusinformation $Status
-     * @param LabelData[]       $LabelData
+     * @param ExportDocData     $ExportDocData
      */
-    public function __construct($Version, $Status, $LabelData)
+    public function __construct($Version, $Status, $ExportDocData)
     {
         $this->Version = $Version;
         $this->Status = $Status;
-        $this->LabelData = $LabelData;
+        $this->ExportDocData = $ExportDocData;
     }
 
     /**
@@ -46,7 +42,7 @@ class UpdateShipmentOrderResponse
 
     /**
      * @param Version $Version
-     * @return UpdateShipmentOrderResponse
+     * @return GetExportDocResponse
      */
     public function setVersion($Version)
     {
@@ -64,7 +60,7 @@ class UpdateShipmentOrderResponse
 
     /**
      * @param Statusinformation $Status
-     * @return UpdateShipmentOrderResponse
+     * @return GetExportDocResponse
      */
     public function setStatus($Status)
     {
@@ -73,20 +69,20 @@ class UpdateShipmentOrderResponse
     }
 
     /**
-     * @return LabelData[]
+     * @return ExportDocData
      */
-    public function getLabelData()
+    public function getExportDocData()
     {
-        return $this->LabelData;
+        return $this->ExportDocData;
     }
 
     /**
-     * @param LabelData[] $LabelData
-     * @return UpdateShipmentOrderResponse
+     * @param ExportDocData $ExportDocData
+     * @return GetExportDocResponse
      */
-    public function setLabelData($LabelData)
+    public function setExportDocData($ExportDocData)
     {
-        $this->LabelData = $LabelData;
+        $this->ExportDocData = $ExportDocData;
         return $this;
     }
 

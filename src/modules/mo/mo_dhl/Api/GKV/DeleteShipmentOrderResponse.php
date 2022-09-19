@@ -1,12 +1,8 @@
 <?php
 
-namespace Mediaopt\DHL\Api\GKV\Response;
+namespace Mediaopt\DHL\Api\GKV;
 
-use Mediaopt\DHL\Api\GKV\Statusinformation;
-use Mediaopt\DHL\Api\GKV\ValidationState;
-use Mediaopt\DHL\Api\GKV\Version;
-
-class ValidateShipmentResponse
+class DeleteShipmentOrderResponse
 {
 
     /**
@@ -20,20 +16,20 @@ class ValidateShipmentResponse
     protected $Status = null;
 
     /**
-     * @var ValidationState[] $ValidationState
+     * @var DeletionState[] $DeletionState
      */
-    protected $ValidationState = null;
+    protected $DeletionState = null;
 
     /**
      * @param Version           $Version
      * @param Statusinformation $Status
-     * @param ValidationState[] $ValidationState
+     * @param DeletionState[]   $DeletionState
      */
-    public function __construct($Version, $Status, $ValidationState)
+    public function __construct($Version, $Status, $DeletionState)
     {
         $this->Version = $Version;
         $this->Status = $Status;
-        $this->ValidationState = $ValidationState;
+        $this->DeletionState = $DeletionState;
     }
 
     /**
@@ -46,7 +42,7 @@ class ValidateShipmentResponse
 
     /**
      * @param Version $Version
-     * @return ValidateShipmentResponse
+     * @return DeleteShipmentOrderResponse
      */
     public function setVersion($Version)
     {
@@ -64,7 +60,7 @@ class ValidateShipmentResponse
 
     /**
      * @param Statusinformation $Status
-     * @return ValidateShipmentResponse
+     * @return DeleteShipmentOrderResponse
      */
     public function setStatus($Status)
     {
@@ -73,20 +69,20 @@ class ValidateShipmentResponse
     }
 
     /**
-     * @return ValidationState[]
+     * @return DeletionState[]
      */
-    public function getValidationState()
+    public function getDeletionState()
     {
-        return $this->ValidationState;
+        return $this->DeletionState;
     }
 
     /**
-     * @param ValidationState[] $ValidationState
-     * @return ValidateShipmentResponse
+     * @param DeletionState[] $DeletionState
+     * @return DeleteShipmentOrderResponse
      */
-    public function setValidationState($ValidationState)
+    public function setDeletionState($DeletionState)
     {
-        $this->ValidationState = $ValidationState;
+        $this->DeletionState = $DeletionState;
         return $this;
     }
 
