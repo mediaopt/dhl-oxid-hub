@@ -26,17 +26,17 @@ class ShipmentService
     protected $VisualCheckOfAge = null;
 
     /**
-     * @var ServiceconfigurationDetails $PreferredLocation
+     * @var ServiceconfigurationDetailsPreferredLocation $PreferredLocation
      */
     protected $PreferredLocation = null;
 
     /**
-     * @var ServiceconfigurationDetails $PreferredNeighbour
+     * @var ServiceconfigurationDetailsPreferredNeighbour $PreferredNeighbour
      */
     protected $PreferredNeighbour = null;
 
     /**
-     * @var ServiceconfigurationDetails $PreferredDay
+     * @var ServiceconfigurationDetailsPreferredDay $PreferredDay
      */
     protected $PreferredDay = null;
 
@@ -56,52 +56,6 @@ class ShipmentService
     protected $ReturnReceipt = null;
 
     /**
-     * @var Serviceconfiguration $CDP
-     */
-    protected $CDP = null;
-
-    /**
-     * @var Serviceconfiguration $Economy
-     */
-    protected $Economy = null;
-
-    /**
-     * @return Serviceconfiguration
-     */
-    public function getCDP()
-    {
-        return $this->CDP;
-    }
-
-    /**
-     * @param Serviceconfiguration $CDP
-     * @return ShipmentService
-     */
-    public function setCDP($CDP)
-    {
-        $this->CDP = $CDP;
-        return $this;
-    }
-
-    /**
-     * @return Serviceconfiguration
-     */
-    public function getEconomy()
-    {
-        return $this->Economy;
-    }
-
-    /**
-     * @param Serviceconfiguration $Economy
-     * @return ShipmentService
-     */
-    public function setEconomy($Economy)
-    {
-        $this->Economy = $Economy;
-        return $this;
-    }
-
-    /**
      * @var Serviceconfiguration $Premium
      */
     protected $Premium = null;
@@ -115,6 +69,16 @@ class ShipmentService
      * @var PDDP $PDDP
      */
     protected $PDDP = null;
+
+    /**
+     * @var CDP $CDP
+     */
+    protected $CDP = null;
+
+    /**
+     * @var Economy $Economy
+     */
+    protected $Economy = null;
 
     /**
      * @var ServiceconfigurationAdditionalInsurance $AdditionalInsurance
@@ -152,7 +116,7 @@ class ShipmentService
 
     /**
      * @param ServiceconfigurationISR $IndividualSenderRequirement
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setIndividualSenderRequirement($IndividualSenderRequirement)
     {
@@ -170,7 +134,7 @@ class ShipmentService
 
     /**
      * @param Serviceconfiguration $PackagingReturn
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setPackagingReturn($PackagingReturn)
     {
@@ -188,7 +152,7 @@ class ShipmentService
 
     /**
      * @param ServiceconfigurationEndorsement $Endorsement
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setEndorsement($Endorsement)
     {
@@ -206,7 +170,7 @@ class ShipmentService
 
     /**
      * @param ServiceconfigurationVisualAgeCheck $VisualCheckOfAge
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setVisualCheckOfAge($VisualCheckOfAge)
     {
@@ -215,7 +179,7 @@ class ShipmentService
     }
 
     /**
-     * @return ServiceconfigurationDetails
+     * @return ServiceconfigurationDetailsPreferredLocation
      */
     public function getPreferredLocation()
     {
@@ -223,8 +187,8 @@ class ShipmentService
     }
 
     /**
-     * @param ServiceconfigurationDetails $PreferredLocation
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @param ServiceconfigurationDetailsPreferredLocation $PreferredLocation
+     * @return ShipmentService
      */
     public function setPreferredLocation($PreferredLocation)
     {
@@ -233,7 +197,7 @@ class ShipmentService
     }
 
     /**
-     * @return ServiceconfigurationDetails
+     * @return ServiceconfigurationDetailsPreferredNeighbour
      */
     public function getPreferredNeighbour()
     {
@@ -241,8 +205,8 @@ class ShipmentService
     }
 
     /**
-     * @param ServiceconfigurationDetails $PreferredNeighbour
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @param ServiceconfigurationDetailsPreferredNeighbour $PreferredNeighbour
+     * @return ShipmentService
      */
     public function setPreferredNeighbour($PreferredNeighbour)
     {
@@ -251,7 +215,7 @@ class ShipmentService
     }
 
     /**
-     * @return ServiceconfigurationDetails
+     * @return ServiceconfigurationDetailsPreferredDay
      */
     public function getPreferredDay()
     {
@@ -259,8 +223,8 @@ class ShipmentService
     }
 
     /**
-     * @param ServiceconfigurationDetails $PreferredDay
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @param ServiceconfigurationDetailsPreferredDay $PreferredDay
+     * @return ShipmentService
      */
     public function setPreferredDay($PreferredDay)
     {
@@ -278,7 +242,7 @@ class ShipmentService
 
     /**
      * @param Serviceconfiguration $NoNeighbourDelivery
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setNoNeighbourDelivery($NoNeighbourDelivery)
     {
@@ -296,7 +260,7 @@ class ShipmentService
 
     /**
      * @param Serviceconfiguration $NamedPersonOnly
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setNamedPersonOnly($NamedPersonOnly)
     {
@@ -314,7 +278,7 @@ class ShipmentService
 
     /**
      * @param Serviceconfiguration $ReturnReceipt
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setReturnReceipt($ReturnReceipt)
     {
@@ -332,7 +296,7 @@ class ShipmentService
 
     /**
      * @param Serviceconfiguration $Premium
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setPremium($Premium)
     {
@@ -350,7 +314,7 @@ class ShipmentService
 
     /**
      * @param ServiceconfigurationCashOnDelivery $CashOnDelivery
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setCashOnDelivery($CashOnDelivery)
     {
@@ -368,11 +332,47 @@ class ShipmentService
 
     /**
      * @param PDDP $PDDP
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setPDDP($PDDP)
     {
         $this->PDDP = $PDDP;
+        return $this;
+    }
+
+    /**
+     * @return CDP
+     */
+    public function getCDP()
+    {
+        return $this->CDP;
+    }
+
+    /**
+     * @param CDP $CDP
+     * @return ShipmentService
+     */
+    public function setCDP($CDP)
+    {
+        $this->CDP = $CDP;
+        return $this;
+    }
+
+    /**
+     * @return Economy
+     */
+    public function getEconomy()
+    {
+        return $this->Economy;
+    }
+
+    /**
+     * @param Economy $Economy
+     * @return ShipmentService
+     */
+    public function setEconomy($Economy)
+    {
+        $this->Economy = $Economy;
         return $this;
     }
 
@@ -386,7 +386,7 @@ class ShipmentService
 
     /**
      * @param ServiceconfigurationAdditionalInsurance $AdditionalInsurance
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setAdditionalInsurance($AdditionalInsurance)
     {
@@ -404,7 +404,7 @@ class ShipmentService
 
     /**
      * @param Serviceconfiguration $BulkyGoods
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setBulkyGoods($BulkyGoods)
     {
@@ -422,7 +422,7 @@ class ShipmentService
 
     /**
      * @param ServiceconfigurationIC $IdentCheck
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setIdentCheck($IdentCheck)
     {
@@ -440,7 +440,7 @@ class ShipmentService
 
     /**
      * @param ServiceconfigurationDetailsOptional $ParcelOutletRouting
-     * @return \Mediaopt\DHL\Api\GKV\ShipmentService
+     * @return ShipmentService
      */
     public function setParcelOutletRouting($ParcelOutletRouting)
     {

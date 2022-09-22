@@ -16,6 +16,16 @@ class UpdateShipmentOrderResponse
     protected $Status = null;
 
     /**
+     * @var string $shipmentNumber
+     */
+    protected $shipmentNumber = null;
+
+    /**
+     * @var string $returnShipmentNumber
+     */
+    protected $returnShipmentNumber = null;
+
+    /**
      * @var LabelData[] $LabelData
      */
     protected $LabelData = null;
@@ -23,12 +33,16 @@ class UpdateShipmentOrderResponse
     /**
      * @param Version           $Version
      * @param Statusinformation $Status
+     * @param string            $shipmentNumber
+     * @param string            $returnShipmentNumber
      * @param LabelData[]       $LabelData
      */
-    public function __construct($Version, $Status, $LabelData)
+    public function __construct($Version, $Status, $shipmentNumber, $returnShipmentNumber, $LabelData)
     {
         $this->Version = $Version;
         $this->Status = $Status;
+        $this->shipmentNumber = $shipmentNumber;
+        $this->returnShipmentNumber = $returnShipmentNumber;
         $this->LabelData = $LabelData;
     }
 
@@ -65,6 +79,42 @@ class UpdateShipmentOrderResponse
     public function setStatus($Status)
     {
         $this->Status = $Status;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getShipmentNumber()
+    {
+        return $this->shipmentNumber;
+    }
+
+    /**
+     * @param string $shipmentNumber
+     * @return UpdateShipmentOrderResponse
+     */
+    public function setShipmentNumber($shipmentNumber)
+    {
+        $this->shipmentNumber = $shipmentNumber;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReturnShipmentNumber()
+    {
+        return $this->returnShipmentNumber;
+    }
+
+    /**
+     * @param string $returnShipmentNumber
+     * @return UpdateShipmentOrderResponse
+     */
+    public function setReturnShipmentNumber($returnShipmentNumber)
+    {
+        $this->returnShipmentNumber = $returnShipmentNumber;
         return $this;
     }
 

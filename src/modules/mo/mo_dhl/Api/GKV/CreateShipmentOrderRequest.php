@@ -41,11 +41,6 @@ class CreateShipmentOrderRequest
     protected $combinedPrinting = null;
 
     /**
-     * @var string $feederSystem
-     */
-    protected $feederSystem = null;
-
-    /**
      * @param Version                               $Version
      * @param ShipmentOrderType|ShipmentOrderType[] $ShipmentOrder
      */
@@ -178,24 +173,6 @@ class CreateShipmentOrderRequest
     public function setCombinedPrinting($combinedPrinting)
     {
         $this->combinedPrinting = $combinedPrinting;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeederSystem()
-    {
-        return $this->feederSystem;
-    }
-
-    /**
-     * @param string $feederSystem
-     * @return CreateShipmentOrderRequest
-     */
-    public function setFeederSystem($feederSystem)
-    {
-        $this->feederSystem = $feederSystem;
         return $this;
     }
 

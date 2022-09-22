@@ -21,7 +21,7 @@ class GetLabelTest extends BaseGKVTest
     public function testGetLabelForIncorrectShipment()
     {
         $gkv = $this->buildGKV();
-        $request = new GetLabelRequest($this->createVersion(), $this->getUniqueShipmentId());
+        $request = new GetLabelRequest($this->createVersion(), $this->getUniqueShipmentId(), null, null, null, null, null);
         $response = $gkv->getLabel($request);
         $this->assertInstanceOf(GetLabelResponse::class, $response);
         $this->assertEquals(2000, $response->getStatus()->getStatusCode());

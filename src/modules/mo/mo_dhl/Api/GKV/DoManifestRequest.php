@@ -16,13 +16,20 @@ class DoManifestRequest
     protected $shipmentNumber = null;
 
     /**
+     * @var mixed $allShipments
+     */
+    protected $allShipments = null;
+
+    /**
      * @param Version $Version
      * @param string  $shipmentNumber
+     * @param mixed   $allShipments
      */
-    public function __construct(Version $Version, string $shipmentNumber)
+    public function __construct($Version, $shipmentNumber, $allShipments)
     {
         $this->Version = $Version;
         $this->shipmentNumber = $shipmentNumber;
+        $this->allShipments = $allShipments;
     }
 
     /**
@@ -58,6 +65,24 @@ class DoManifestRequest
     public function setShipmentNumber($shipmentNumber)
     {
         $this->shipmentNumber = $shipmentNumber;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAllShipments()
+    {
+        return $this->allShipments;
+    }
+
+    /**
+     * @param mixed $allShipments
+     * @return DoManifestRequest
+     */
+    public function setAllShipments($allShipments)
+    {
+        $this->allShipments = $allShipments;
         return $this;
     }
 

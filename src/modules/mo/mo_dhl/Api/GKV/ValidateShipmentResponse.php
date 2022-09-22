@@ -16,14 +16,14 @@ class ValidateShipmentResponse
     protected $Status = null;
 
     /**
-     * @var ValidationState[] $ValidationState
+     * @var ValidationState $ValidationState
      */
     protected $ValidationState = null;
 
     /**
      * @param Version           $Version
      * @param Statusinformation $Status
-     * @param ValidationState[] $ValidationState
+     * @param ValidationState   $ValidationState
      */
     public function __construct($Version, $Status, $ValidationState)
     {
@@ -69,7 +69,7 @@ class ValidateShipmentResponse
     }
 
     /**
-     * @return ValidationState[]
+     * @return ValidationState
      */
     public function getValidationState()
     {
@@ -77,7 +77,7 @@ class ValidateShipmentResponse
     }
 
     /**
-     * @param ValidationState[] $ValidationState
+     * @param ValidationState $ValidationState
      * @return ValidateShipmentResponse
      */
     public function setValidationState($ValidationState)

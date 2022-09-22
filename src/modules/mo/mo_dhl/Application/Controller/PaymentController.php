@@ -88,7 +88,9 @@ class PaymentController extends PaymentController_parent
         $shippingId = $this->getSession()->getBasket()->getShippingId();
         $shipping = oxNew(DeliverySet::class);
         $shipping->load($shippingId);
-        return (bool) $shipping->getFieldData(MoDHLService::MO_DHL__CDP);
+        // return (bool) $shipping->getFieldData(MoDHLService::MO_DHL__CDP);
+        // currently the mail address is sufficient for the CDP service
+        return false;
     }
     
     /**

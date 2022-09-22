@@ -2,7 +2,7 @@
 
 namespace Mediaopt\DHL\Api\GKV;
 
-class ServiceconfigurationShipmentHandling
+class ServiceconfigurationDH
 {
 
     /**
@@ -11,18 +11,18 @@ class ServiceconfigurationShipmentHandling
     protected $active = null;
 
     /**
-     * @var string $type
+     * @var string $Days
      */
-    protected $type = null;
+    protected $Days = null;
 
     /**
-     * @param bool   $active
-     * @param string $type
+     * @param bool $active
+     * @param string $Days
      */
-    public function __construct($active, $type)
+    public function __construct($active, $Days)
     {
         $this->active = $active;
-        $this->type = $type;
+        $this->Days = $Days;
     }
 
     /**
@@ -35,7 +35,7 @@ class ServiceconfigurationShipmentHandling
 
     /**
      * @param bool $active
-     * @return ServiceconfigurationShipmentHandling
+     * @return ServiceconfigurationDH
      */
     public function setActive($active)
     {
@@ -46,18 +46,18 @@ class ServiceconfigurationShipmentHandling
     /**
      * @return string
      */
-    public function getType()
+    public function getDays()
     {
-        return $this->type;
+        return $this->Days;
     }
 
     /**
-     * @param string $type
-     * @return ServiceconfigurationShipmentHandling
+     * @param string $Days
+     * @return ServiceconfigurationDH
      */
-    public function setType($type)
+    public function setDays($Days)
     {
-        $this->type = $type;
+        $this->Days = $Days;
         return $this;
     }
 

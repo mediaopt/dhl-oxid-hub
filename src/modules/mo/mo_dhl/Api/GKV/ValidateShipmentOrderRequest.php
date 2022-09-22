@@ -19,7 +19,7 @@ class ValidateShipmentOrderRequest
      * @param Version                   $Version
      * @param ValidateShipmentOrderType $ShipmentOrder
      */
-    public function __construct(Version $Version, ValidateShipmentOrderType $ShipmentOrder)
+    public function __construct($Version, $ShipmentOrder)
     {
         $this->Version = $Version;
         $this->ShipmentOrder = $ShipmentOrder;

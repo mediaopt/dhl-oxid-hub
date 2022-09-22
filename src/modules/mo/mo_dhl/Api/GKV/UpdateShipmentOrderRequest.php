@@ -46,20 +46,25 @@ class UpdateShipmentOrderRequest
     protected $combinedPrinting = null;
 
     /**
-     * @var string $feederSystem
-     */
-    protected $feederSystem = null;
-
-    /**
      * @param Version           $Version
      * @param string            $shipmentNumber
      * @param ShipmentOrderType $ShipmentOrder
+     * @param string            $labelResponseType
+     * @param string            $groupProfileName
+     * @param string            $labelFormat
+     * @param string            $labelFormatRetoure
+     * @param string            $combinedPrinting
      */
-    public function __construct(Version $Version, string $shipmentNumber, ShipmentOrderType $ShipmentOrder)
+    public function __construct($Version, $shipmentNumber, $ShipmentOrder, $labelResponseType, $groupProfileName, $labelFormat, $labelFormatRetoure, $combinedPrinting)
     {
         $this->Version = $Version;
         $this->shipmentNumber = $shipmentNumber;
         $this->ShipmentOrder = $ShipmentOrder;
+        $this->labelResponseType = $labelResponseType;
+        $this->groupProfileName = $groupProfileName;
+        $this->labelFormat = $labelFormat;
+        $this->labelFormatRetoure = $labelFormatRetoure;
+        $this->combinedPrinting = $combinedPrinting;
     }
 
     /**
@@ -203,24 +208,6 @@ class UpdateShipmentOrderRequest
     public function setCombinedPrinting($combinedPrinting)
     {
         $this->combinedPrinting = $combinedPrinting;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeederSystem()
-    {
-        return $this->feederSystem;
-    }
-
-    /**
-     * @param string $feederSystem
-     * @return UpdateShipmentOrderRequest
-     */
-    public function setFeederSystem($feederSystem)
-    {
-        $this->feederSystem = $feederSystem;
         return $this;
     }
 

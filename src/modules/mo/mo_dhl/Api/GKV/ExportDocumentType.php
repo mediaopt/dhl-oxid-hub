@@ -36,6 +36,11 @@ class ExportDocumentType
     protected $additionalFee = null;
 
     /**
+     * @var string $customsCurrency
+     */
+    protected $customsCurrency = null;
+
+    /**
      * @var string $permitNumber
      */
     protected $permitNumber = null;
@@ -44,6 +49,16 @@ class ExportDocumentType
      * @var string $attestationNumber
      */
     protected $attestationNumber = null;
+
+    /**
+     * @var string $addresseesCustomsReference
+     */
+    protected $addresseesCustomsReference = null;
+
+    /**
+     * @var string $sendersCustomsReference
+     */
+    protected $sendersCustomsReference = null;
 
     /**
      * @var Serviceconfiguration $WithElectronicExportNtfctn
@@ -58,13 +73,11 @@ class ExportDocumentType
     /**
      * @param string $exportType
      * @param string $placeOfCommital
-     * @param float  $additionalFee
      */
-    public function __construct($exportType, $placeOfCommital, $additionalFee)
+    public function __construct($exportType, $placeOfCommital)
     {
         $this->exportType = $exportType;
         $this->placeOfCommital = $placeOfCommital;
-        $this->additionalFee = $additionalFee;
     }
 
     /**
@@ -178,6 +191,24 @@ class ExportDocumentType
     /**
      * @return string
      */
+    public function getCustomsCurrency()
+    {
+        return $this->customsCurrency;
+    }
+
+    /**
+     * @param string $customsCurrency
+     * @return ExportDocumentType
+     */
+    public function setCustomsCurrency($customsCurrency)
+    {
+        $this->customsCurrency = $customsCurrency;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getPermitNumber()
     {
         return $this->permitNumber;
@@ -208,6 +239,42 @@ class ExportDocumentType
     public function setAttestationNumber($attestationNumber)
     {
         $this->attestationNumber = $attestationNumber;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddresseesCustomsReference()
+    {
+        return $this->addresseesCustomsReference;
+    }
+
+    /**
+     * @param string $addresseesCustomsReference
+     * @return ExportDocumentType
+     */
+    public function setAddresseesCustomsReference($addresseesCustomsReference)
+    {
+        $this->addresseesCustomsReference = $addresseesCustomsReference;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSendersCustomsReference()
+    {
+        return $this->sendersCustomsReference;
+    }
+
+    /**
+     * @param string $sendersCustomsReference
+     * @return ExportDocumentType
+     */
+    public function setSendersCustomsReference($sendersCustomsReference)
+    {
+        $this->sendersCustomsReference = $sendersCustomsReference;
         return $this;
     }
 

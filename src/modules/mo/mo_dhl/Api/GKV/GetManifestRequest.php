@@ -19,7 +19,7 @@ class GetManifestRequest
      * @param Version $Version
      * @param string  $manifestDate
      */
-    public function __construct(Version $Version, string $manifestDate)
+    public function __construct($Version, $manifestDate)
     {
         $this->Version = $Version;
         $this->manifestDate = $manifestDate;

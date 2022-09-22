@@ -16,6 +16,8 @@ use Mediaopt\DHL\ServiceProvider\Timetable\Timetable;
 class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
 {
 
+    use \sdk\AddressCreationTrait;
+
     public function testToArrayBasic()
     {
         $array = [
@@ -29,6 +31,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 'district' => 'Neukölln',
                 'country'  => 'DEU',
                 'countryIso2Code'  => 'DE',
+                'countryId' => '',
             ],
             'location'  => [
                 'latitude'  => 52.484766,
@@ -75,6 +78,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 'district' => 'Neukölln',
                 'country'  => 'DEU',
                 'countryIso2Code'  => 'DE',
+                'countryId' => '',
             ],
             'location'  => [
                 'latitude'  => 52.484766,
@@ -122,6 +126,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 'district' => 'Neukölln',
                 'country'  => 'DEU',
                 'countryIso2Code'  => 'DE',
+                'countryId' => '',
             ],
             'location'  => [
                 'latitude'  => 52.484766,
@@ -169,6 +174,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
                 'district' => 'Neukölln',
                 'country'  => 'DEU',
                 'countryIso2Code'  => 'DE',
+                'countryId' => '',
             ],
             'location'  => [
                 'latitude'  => 52.484766,
@@ -273,7 +279,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
      */
     protected function buildSampleAddress()
     {
-        return new Address('Elbestr.', '28', '12045', 'Berlin', 'Neukölln');
+        return $this->buildAddress('Elbestr.', '28', '12045', 'Berlin', 'Neukölln');
     }
 
     /**
@@ -322,7 +328,7 @@ class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
      */
     protected function buildSampleServiceProvider()
     {
-        $address = new Address('Elbestr.', '28', '12045', 'Berlin', 'Neukölln');
+        $address = $this->buildAddress('Elbestr.', '28', '12045', 'Berlin', 'Neukölln');
         $location = new Location(new Coordinates(52.484766, 13.440547), 0);
         $serviceInformation = $this->buildSampleServiceInformation();
         $serviceProvider = new BasicServiceProvider('123', 456, $address, $location, $serviceInformation);

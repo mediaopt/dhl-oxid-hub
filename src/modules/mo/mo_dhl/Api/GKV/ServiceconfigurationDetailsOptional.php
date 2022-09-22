@@ -11,13 +11,13 @@ class ServiceconfigurationDetailsOptional
     protected $active = null;
 
     /**
-     * var string $details
+     * @var string $details
      */
     protected $details = null;
 
     /**
-     * @param bool $active
-     * param string $details
+     * @param bool   $active
+     * @param string $details
      */
     public function __construct($active, $details)
     {
@@ -52,7 +52,7 @@ class ServiceconfigurationDetailsOptional
     }
 
     /**
-     * param string $details
+     * @param string $details
      * @return ServiceconfigurationDetailsOptional
      */
     public function setDetails($details)
