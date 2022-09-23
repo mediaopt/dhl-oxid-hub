@@ -115,6 +115,7 @@ $aLang = [
     'MO_DHL__RETOURE_QR_LABEL'                    => 'Return QR Code',
     'MO_DHL__CREATE_RETOURE'                      => 'Create return label',
     'MO_DHL__DEFAULT_RETOURE_ERROR_MESSAGE'       => 'There was an error creating the return label. Please try again or contact the support.',
+    'MO_DHL__PHONE_NUMBER'                        => 'Please provide your phone number for the delivery service provider.',
     'MO_DHL__BIRTHDAY'                            => 'Please specify your birthday for the Ident-Check.',
     'MO_DHL__BIRTHDAY_ERROR_FORMAT'               => 'The format of your birthday needs to be dd.mm.yyyy.',
     'MO_DHL__BIRTHDAY_ERROR_AGE'                  => 'You have to be at least %s years old.',

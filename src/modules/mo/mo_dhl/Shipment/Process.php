@@ -158,6 +158,16 @@ class Process
     /**
      * @var string
      */
+    const SERVICE_CDP = "SERVICE_CDP";
+
+    /**
+     * @var string
+     */
+    const SERVICE_ECONOMY = "SERVICE_ECONOMY";
+
+    /**
+     * @var string
+     */
     const SERVICE_ENDORSEMENT = "SERVICE_ENDORSEMENT";
 
     /**
@@ -198,6 +208,8 @@ class Process
             self::SERVICE_BULKY_GOOD,
             self::SERVICE_PDDP,
             self::SERVICE_PREMIUM,
+            self::SERVICE_CDP,
+            self::SERVICE_ECONOMY,
             self::SERVICE_ENDORSEMENT,
         ],
         self::EUROPAKET => [
@@ -460,6 +472,22 @@ class Process
         ];
 
         return $identifierToService[$this->identifier];
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsCDP() : bool
+    {
+        return in_array(self::SERVICE_CDP, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsEconomy() : bool
+    {
+        return in_array(self::SERVICE_ECONOMY, self::SUPPORTED_SERVICES[$this->identifier]);
     }
 
     /**

@@ -2,11 +2,6 @@
 
 namespace Mediaopt\DHL\Adapter;
 
-use Mediaopt\DHL\Api\GKV\CountryType;
-use Mediaopt\DHL\Api\GKV\NameType;
-use Mediaopt\DHL\Api\GKV\NativeAddressType;
-use Mediaopt\DHL\Api\GKV\ReceiverType;
-use Mediaopt\DHL\Api\GKV\ShipperType;
 use Mediaopt\DHL\Api\Internetmarke\Address;
 use Mediaopt\DHL\Api\Internetmarke\AddressBinding;
 use Mediaopt\DHL\Api\Internetmarke\CompanyName;
@@ -16,7 +11,6 @@ use Mediaopt\DHL\Api\Internetmarke\PersonName;
 use Mediaopt\DHL\Api\Internetmarke\ShoppingCartPDFPosition;
 use Mediaopt\DHL\Api\Internetmarke\VoucherLayout;
 use Mediaopt\DHL\Api\Internetmarke\VoucherPosition;
-use Mediaopt\DHL\ServiceProvider\Branch;
 use Mediaopt\DHL\Application\Model\Order;
 use OxidEsales\Eshop\Core\Registry;
 

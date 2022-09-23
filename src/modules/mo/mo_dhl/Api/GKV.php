@@ -2,25 +2,25 @@
 
 namespace Mediaopt\DHL\Api;
 
-use Mediaopt\DHL\Api\GKV\AuthenticationType;
-use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Request\DoManifestRequest;
-use Mediaopt\DHL\Api\GKV\Request\GetExportDocRequest;
-use Mediaopt\DHL\Api\GKV\Request\GetLabelRequest;
-use Mediaopt\DHL\Api\GKV\Request\GetManifestRequest;
-use Mediaopt\DHL\Api\GKV\Request\UpdateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Request\ValidateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse;
-use Mediaopt\DHL\Api\GKV\Response\DeleteShipmentOrderResponse;
-use Mediaopt\DHL\Api\GKV\Response\DoManifestResponse;
-use Mediaopt\DHL\Api\GKV\Response\GetExportDocResponse;
-use Mediaopt\DHL\Api\GKV\Response\GetLabelResponse;
-use Mediaopt\DHL\Api\GKV\Response\GetManifestResponse;
-use Mediaopt\DHL\Api\GKV\Response\GetVersionResponse;
-use Mediaopt\DHL\Api\GKV\Response\UpdateShipmentOrderResponse;
-use Mediaopt\DHL\Api\GKV\Response\ValidateShipmentResponse;
+use Mediaopt\DHL\Api\GKV\AuthentificationType;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\DeleteShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\DeleteShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\DoManifestRequest;
+use Mediaopt\DHL\Api\GKV\DoManifestResponse;
+use Mediaopt\DHL\Api\GKV\GetExportDocRequest;
+use Mediaopt\DHL\Api\GKV\GetExportDocResponse;
+use Mediaopt\DHL\Api\GKV\GetLabelRequest;
+use Mediaopt\DHL\Api\GKV\GetLabelResponse;
+use Mediaopt\DHL\Api\GKV\GetManifestRequest;
+use Mediaopt\DHL\Api\GKV\GetManifestResponse;
+use Mediaopt\DHL\Api\GKV\GetVersionResponse;
 use Mediaopt\DHL\Api\GKV\Shipment;
+use Mediaopt\DHL\Api\GKV\UpdateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\UpdateShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\ValidateShipmentResponse;
 use Mediaopt\DHL\Api\GKV\Version;
 use Mediaopt\DHL\Exception\WebserviceException;
 use Psr\Log\LoggerInterface;
@@ -32,64 +32,107 @@ class GKV extends \SoapClient
      * @var array $classmap The defined classes
      */
     private static $classmap = [
-        'AuthentificationType'                  => 'Mediaopt\\DHL\\Api\\GKV\\AuthenticationType',
-        'CreateShipmentOrderRequest'            => 'Mediaopt\\DHL\\Api\\GKV\\Request\\CreateShipmentOrderRequest',
-        'CreateShipmentOrderResponse'           => 'Mediaopt\\DHL\\Api\\GKV\\Response\\CreateShipmentOrderResponse',
-        'Version'                               => 'Mediaopt\\DHL\\Api\\GKV\\Version',
-        'ShipmentOrderType'                     => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentOrderType',
-        'Shipment'                              => 'Mediaopt\\DHL\\Api\\GKV\\Shipment',
-        'ShipmentDetailsType'                   => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentDetailsTypeType',
-        'ShipmentItemType'                      => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentItemType',
-        'ShipmentService'                       => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentService',
-        'ServiceconfigurationDateOfDelivery'    => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDateOfDelivery',
-        'ServiceconfigurationDeliveryTimeframe' => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDeliveryTimeframe',
-        'ServiceconfigurationISR'                 => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationISR',
-        'Serviceconfiguration'                    => 'Mediaopt\\DHL\\Api\\GKV\\Serviceconfiguration',
-        'ServiceconfigurationShipmentHandling'    => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationShipmentHandling',
-        'ServiceconfigurationEndorsement'         => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationEndorsement',
-        'ServiceconfigurationVisualAgeCheck'      => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationVisualAgeCheck',
-        'ServiceconfigurationDetails'             => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDetails',
-        'ServiceconfigurationCashOnDelivery'      => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationCashOnDelivery',
-        'ServiceconfigurationAdditionalInsurance' => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationAdditionalInsurance',
-        'ServiceconfigurationIC'                  => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationIC',
-        'Ident'                               => 'Mediaopt\\DHL\\Api\\GKV\\Ident',
-        'ServiceconfigurationDetailsOptional' => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDetailsOptional',
-        'ShipmentNotificationType'            => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentNotificationType',
-        'BankType'                            => 'Mediaopt\\DHL\\Api\\GKV\\BankType',
-        'ShipperType'                         => 'Mediaopt\\DHL\\Api\\GKV\\ShipperType',
-        'NameType'                            => 'Mediaopt\\DHL\\Api\\GKV\\NameType',
-        'NativeAddressType'                   => 'Mediaopt\\DHL\\Api\\GKV\\NativeAddressType',
-        'CountryType'                         => 'Mediaopt\\DHL\\Api\\GKV\\CountryType',
-        'CommunicationType'                   => 'Mediaopt\\DHL\\Api\\GKV\\CommunicationType',
-        'ReceiverType'                        => 'Mediaopt\\DHL\\Api\\GKV\\ReceiverType',
-        'ReceiverNativeAddressType'           => 'Mediaopt\\DHL\\Api\\GKV\\ReceiverNativeAddressType',
-        'PackStationType'                     => 'Mediaopt\\DHL\\Api\\GKV\\PackStationType',
-        'cis:PostfilialeType'                 => 'Mediaopt\\DHL\\Api\\GKV\\PostfilialeType',
-        'ExportDocumentType'                  => 'Mediaopt\\DHL\\Api\\GKV\\ExportDocumentType',
-        'ExportDocPosition'                   => 'Mediaopt\\DHL\\Api\\GKV\\ExportDocPosition',
-        'Statusinformation'                   => 'Mediaopt\\DHL\\Api\\GKV\\Statusinformation',
-        'CreationState'                       => 'Mediaopt\\DHL\\Api\\GKV\\CreationState',
-        'LabelData'                           => 'Mediaopt\\DHL\\Api\\GKV\\LabelData',
-        'ValidateShipmentOrderRequest'        => 'Mediaopt\\DHL\\Api\\GKV\\Request\\ValidateShipmentOrderRequest',
-        'ValidateShipmentResponse'            => 'Mediaopt\\DHL\\Api\\GKV\\Response\\ValidateShipmentResponse',
-        'ValidateShipmentOrderType'           => 'Mediaopt\\DHL\\Api\\GKV\\ValidateShipmentOrderType',
-        'ValidationState'                     => 'Mediaopt\\DHL\\Api\\GKV\\ValidationState',
-        'DeleteShipmentOrderRequest'          => 'Mediaopt\\DHL\\Api\\GKV\\Request\\DeleteShipmentOrderRequest',
-        'DeleteShipmentOrderResponse'         => 'Mediaopt\\DHL\\Api\\GKV\\Response\\DeleteShipmentOrderResponse',
-        'DeletionState'                           => 'Mediaopt\\DHL\\Api\\GKV\\DeletionState',
-        'DoManifestRequest'                       => 'Mediaopt\\DHL\\Api\\GKV\\Request\\DoManifestRequest',
-        'DoManifestResponse'                      => 'Mediaopt\\DHL\\Api\\GKV\\Response\\DoManifestResponse',
-        'ManifestState'                           => 'Mediaopt\\DHL\\Api\\GKV\\ManifestState',
-        'GetLabelRequest'                         => 'Mediaopt\\DHL\\Api\\GKV\\Request\\GetLabelRequest',
-        'GetLabelResponse'                        => 'Mediaopt\\DHL\\Api\\GKV\\Response\\GetLabelResponse',
-        'GetVersionResponse'                      => 'Mediaopt\\DHL\\Api\\GKV\\Response\\GetVersionResponse',
-        'GetExportDocRequest'                     => 'Mediaopt\\DHL\\Api\\GKV\\Request\\GetExportDocRequest',
-        'GetExportDocResponse'                    => 'Mediaopt\\DHL\\Api\\GKV\\Response\\GetExportDocResponse',
-        'ExportDocData'                           => 'Mediaopt\\DHL\\Api\\GKV\\ExportDocData',
-        'GetManifestRequest'                      => 'Mediaopt\\DHL\\Api\\GKV\\Request\\GetManifestRequest',
-        'GetManifestResponse'                     => 'Mediaopt\\DHL\\Api\\GKV\\Response\\GetManifestResponse',
-        'UpdateShipmentOrderRequest'              => 'Mediaopt\\DHL\\Api\\GKV\\Request\\UpdateShipmentOrderRequest',
-        'UpdateShipmentOrderResponse'             => 'Mediaopt\\DHL\\Api\\GKV\\Response\\UpdateShipmentOrderResponse',
+        'Version'                                       => 'Mediaopt\\DHL\\Api\\GKV\\Version',
+        'AuthentificationType'                          => 'Mediaopt\\DHL\\Api\\GKV\\AuthentificationType',
+        'NativeAddressType'                             => 'Mediaopt\\DHL\\Api\\GKV\\NativeAddressType',
+        'NativeAddressTypeNew'                          => 'Mediaopt\\DHL\\Api\\GKV\\NativeAddressTypeNew',
+        'ReceiverNativeAddressType'                     => 'Mediaopt\\DHL\\Api\\GKV\\ReceiverNativeAddressType',
+        'PickupAddressType'                             => 'Mediaopt\\DHL\\Api\\GKV\\PickupAddressType',
+        'DeliveryAddressType'                           => 'Mediaopt\\DHL\\Api\\GKV\\DeliveryAddressType',
+        'BankType'                                      => 'Mediaopt\\DHL\\Api\\GKV\\BankType',
+        'NameType'                                      => 'Mediaopt\\DHL\\Api\\GKV\\NameType',
+        'ReceiverNameType'                              => 'Mediaopt\\DHL\\Api\\GKV\\ReceiverNameType',
+        'CommunicationType'                             => 'Mediaopt\\DHL\\Api\\GKV\\CommunicationType',
+        'ContactType'                                   => 'Mediaopt\\DHL\\Api\\GKV\\ContactType',
+        'PackStationType'                               => 'Mediaopt\\DHL\\Api\\GKV\\PackStationType',
+        'PostfilialeType'                               => 'Mediaopt\\DHL\\Api\\GKV\\PostfilialeType',
+        'PostfilialeTypeNoCountry'                      => 'Mediaopt\\DHL\\Api\\GKV\\PostfilialeTypeNoCountry',
+        'ParcelShopType'                                => 'Mediaopt\\DHL\\Api\\GKV\\ParcelShopType',
+        'CustomerType'                                  => 'Mediaopt\\DHL\\Api\\GKV\\CustomerType',
+        'ErrorType'                                     => 'Mediaopt\\DHL\\Api\\GKV\\ErrorType',
+        'CountryType'                                   => 'Mediaopt\\DHL\\Api\\GKV\\CountryType',
+        'ShipmentNumberType'                            => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentNumberType',
+        'Status'                                        => 'Mediaopt\\DHL\\Api\\GKV\\Status',
+        'Dimension'                                     => 'Mediaopt\\DHL\\Api\\GKV\\Dimension',
+        'TimeFrame'                                     => 'Mediaopt\\DHL\\Api\\GKV\\TimeFrame',
+        'GetVersionResponse'                            => 'Mediaopt\\DHL\\Api\\GKV\\GetVersionResponse',
+        'CreateShipmentOrderRequest'                    => 'Mediaopt\\DHL\\Api\\GKV\\CreateShipmentOrderRequest',
+        'ValidateShipmentOrderRequest'                  => 'Mediaopt\\DHL\\Api\\GKV\\ValidateShipmentOrderRequest',
+        'CreateShipmentOrderResponse'                   => 'Mediaopt\\DHL\\Api\\GKV\\CreateShipmentOrderResponse',
+        'ValidateShipmentResponse'                      => 'Mediaopt\\DHL\\Api\\GKV\\ValidateShipmentResponse',
+        'GetLabelRequest'                               => 'Mediaopt\\DHL\\Api\\GKV\\GetLabelRequest',
+        'GetLabelResponse'                              => 'Mediaopt\\DHL\\Api\\GKV\\GetLabelResponse',
+        'DoManifestRequest'                             => 'Mediaopt\\DHL\\Api\\GKV\\DoManifestRequest',
+        'DoManifestResponse'                            => 'Mediaopt\\DHL\\Api\\GKV\\DoManifestResponse',
+        'DeleteShipmentOrderRequest'                    => 'Mediaopt\\DHL\\Api\\GKV\\DeleteShipmentOrderRequest',
+        'DeleteShipmentOrderResponse'                   => 'Mediaopt\\DHL\\Api\\GKV\\DeleteShipmentOrderResponse',
+        'GetExportDocRequest'                           => 'Mediaopt\\DHL\\Api\\GKV\\GetExportDocRequest',
+        'GetExportDocResponse'                          => 'Mediaopt\\DHL\\Api\\GKV\\GetExportDocResponse',
+        'GetManifestRequest'                            => 'Mediaopt\\DHL\\Api\\GKV\\GetManifestRequest',
+        'GetManifestResponse'                           => 'Mediaopt\\DHL\\Api\\GKV\\GetManifestResponse',
+        'UpdateShipmentOrderRequest'                    => 'Mediaopt\\DHL\\Api\\GKV\\UpdateShipmentOrderRequest',
+        'UpdateShipmentOrderResponse'                   => 'Mediaopt\\DHL\\Api\\GKV\\UpdateShipmentOrderResponse',
+        'CreationState'                                 => 'Mediaopt\\DHL\\Api\\GKV\\CreationState',
+        'ValidationState'                               => 'Mediaopt\\DHL\\Api\\GKV\\ValidationState',
+        'Statusinformation'                             => 'Mediaopt\\DHL\\Api\\GKV\\Statusinformation',
+        'StatusElement'                                 => 'Mediaopt\\DHL\\Api\\GKV\\StatusElement',
+        'PieceInformation'                              => 'Mediaopt\\DHL\\Api\\GKV\\PieceInformation',
+        'ShipmentOrderType'                             => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentOrderType',
+        'Shipment'                                      => 'Mediaopt\\DHL\\Api\\GKV\\Shipment',
+        'ValidateShipmentOrderType'                     => 'Mediaopt\\DHL\\Api\\GKV\\ValidateShipmentOrderType',
+        'ShipperTypeType'                               => 'Mediaopt\\DHL\\Api\\GKV\\ShipperTypeType',
+        'ShipperType'                                   => 'Mediaopt\\DHL\\Api\\GKV\\ShipperType',
+        'ReceiverTypeType'                              => 'Mediaopt\\DHL\\Api\\GKV\\ReceiverTypeType',
+        'ReceiverType'                                  => 'Mediaopt\\DHL\\Api\\GKV\\ReceiverType',
+        'Ident'                                         => 'Mediaopt\\DHL\\Api\\GKV\\Ident',
+        'ShipmentDetailsType'                           => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentDetailsType',
+        'ShipmentDetailsTypeType'                       => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentDetailsTypeType',
+        'ShipmentItemType'                              => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentItemType',
+        'ShipmentItemTypeType'                          => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentItemTypeType',
+        'ShipmentService'                               => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentService',
+        'Serviceconfiguration'                          => 'Mediaopt\\DHL\\Api\\GKV\\Serviceconfiguration',
+        'ServiceconfigurationDetails'                   => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDetails',
+        'ServiceconfigurationDetailsPreferredDay'       => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDetailsPreferredDay',
+        'ServiceconfigurationDetailsPreferredLocation'  => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDetailsPreferredLocation',
+        'ServiceconfigurationDetailsPreferredNeighbour' => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDetailsPreferredNeighbour',
+        'ServiceconfigurationDetailsOptional'           => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDetailsOptional',
+        'ServiceconfigurationDetailsResponse'           => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDetailsResponse',
+        'ServiceconfigurationType'                      => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationType',
+        'ServiceconfigurationEndorsement'               => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationEndorsement',
+        'ServiceconfigurationISR'                       => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationISR',
+        'ServiceconfigurationDH'                        => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDH',
+        'ServiceconfigurationVisualAgeCheck'            => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationVisualAgeCheck',
+        'ServiceconfigurationDeliveryTimeframe'         => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDeliveryTimeframe',
+        'ServiceconfigurationDateOfDelivery'            => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationDateOfDelivery',
+        'ServiceconfigurationAdditionalInsurance'       => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationAdditionalInsurance',
+        'ServiceconfigurationCashOnDelivery'            => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationCashOnDelivery',
+        'ServiceconfigurationUnfree'                    => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationUnfree',
+        'PDDP'                                          => 'Mediaopt\\DHL\\Api\\GKV\\PDDP',
+        'CDP'                                           => 'Mediaopt\\DHL\\Api\\GKV\\CDP',
+        'Economy'                                       => 'Mediaopt\\DHL\\Api\\GKV\\Economy',
+        'ServiceconfigurationIC'                        => 'Mediaopt\\DHL\\Api\\GKV\\ServiceconfigurationIC',
+        'ShipmentNotificationType'                      => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentNotificationType',
+        'ExportDocumentType'                            => 'Mediaopt\\DHL\\Api\\GKV\\ExportDocumentType',
+        'ExportDocPosition'                             => 'Mediaopt\\DHL\\Api\\GKV\\ExportDocPosition',
+        'FurtherAddressesType'                          => 'Mediaopt\\DHL\\Api\\GKV\\FurtherAddressesType',
+        'DeliveryAdress'                                => 'Mediaopt\\DHL\\Api\\GKV\\DeliveryAdress',
+        'LabelData'                                     => 'Mediaopt\\DHL\\Api\\GKV\\LabelData',
+        'ExportDocData'                                 => 'Mediaopt\\DHL\\Api\\GKV\\ExportDocData',
+        'ManifestState'                                 => 'Mediaopt\\DHL\\Api\\GKV\\ManifestState',
+        'DeletionState'                                 => 'Mediaopt\\DHL\\Api\\GKV\\DeletionState',
+        'BookPickupRequest'                             => 'Mediaopt\\DHL\\Api\\GKV\\BookPickupRequest',
+        'BookPickupResponse'                            => 'Mediaopt\\DHL\\Api\\GKV\\BookPickupResponse',
+        'PickupDetailsType'                             => 'Mediaopt\\DHL\\Api\\GKV\\PickupDetailsType',
+        'PickupOrdererType'                             => 'Mediaopt\\DHL\\Api\\GKV\\PickupOrdererType',
+        'PickupBookingInformationType'                  => 'Mediaopt\\DHL\\Api\\GKV\\PickupBookingInformationType',
+        'CancelPickupRequest'                           => 'Mediaopt\\DHL\\Api\\GKV\\CancelPickupRequest',
+        'CancelPickupResponse'                          => 'Mediaopt\\DHL\\Api\\GKV\\CancelPickupResponse',
+        'IdentityData'                                  => 'Mediaopt\\DHL\\Api\\GKV\\IdentityData',
+        'DrivingLicense'                                => 'Mediaopt\\DHL\\Api\\GKV\\DrivingLicense',
+        'IdentityCard'                                  => 'Mediaopt\\DHL\\Api\\GKV\\IdentityCard',
+        'BankCard'                                      => 'Mediaopt\\DHL\\Api\\GKV\\BankCard',
+        'PackstationType'                               => 'Mediaopt\\DHL\\Api\\GKV\\PackstationType',
+        'ReadShipmentOrderResponse'                     => 'Mediaopt\\DHL\\Api\\GKV\\ReadShipmentOrderResponse',
     ];
 
     /**
@@ -126,14 +169,14 @@ class GKV extends \SoapClient
             'authentication' => SOAP_AUTHENTICATION_BASIC,
             'classmap'       => self::$classmap,
         ];
-        $wsdl = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'GKV' . DIRECTORY_SEPARATOR . 'geschaeftskundenversand-api-3.3.2.wsdl';
+        $wsdl = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'GKV' . DIRECTORY_SEPARATOR . 'geschaeftskundenversand-api-3.4.0.wsdl';
         parent::__construct($wsdl, $options);
     }
 
     /**
      * @return Credentials
      */
-    public function getSoapCredentials() : Credentials
+    public function getSoapCredentials(): Credentials
     {
         return $this->soapCredentials;
     }
@@ -141,7 +184,7 @@ class GKV extends \SoapClient
     /**
      * @return Credentials
      */
-    public function getCustomerGKVCredentials() : Credentials
+    public function getCustomerGKVCredentials(): Credentials
     {
         return $this->customerGKVCredentials;
     }
@@ -163,7 +206,7 @@ class GKV extends \SoapClient
     {
         $this->getLogger()->debug(__METHOD__ . " - SOAP API call for function  $functionName", ['options' => $request]);
         try {
-            $auth = new AuthenticationType($this->getCustomerGKVCredentials()->getUsername(), $this->getCustomerGKVCredentials()->getPassword());
+            $auth = new AuthentificationType($this->getCustomerGKVCredentials()->getUsername(), $this->getCustomerGKVCredentials()->getPassword());
             $header = new \SoapHeader('http://dhl.de/webservice/cisbase', 'Authentification', $auth);
             return $this->__soapCall($functionName, [$request], null, $header);
         } catch (\SoapFault $exception) {
@@ -280,7 +323,7 @@ class GKV extends \SoapClient
      */
     public function buildVersion(): Version
     {
-        return new Version(3, 0);
+        return new Version(3, 4, 0);
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 namespace Mediaopt\DHL;
 
 use OxidEsales\Eshop\Core\Registry;
@@ -214,7 +215,9 @@ class Install
             + self::addColumn('oxdeliveryset', 'MO_DHL_PARTICIPATION', 'CHAR(2)')
             + self::addColumn('oxdeliveryset', 'MO_DHL_PREMIUM', 'TINYINT(1) NOT NULL DEFAULT 0')
             + self::addColumn('oxdeliveryset', 'MO_DHL_ENDORSEMENT', 'TINYINT(1) NOT NULL DEFAULT 0')
-            + self::addColumn('oxdeliveryset', 'MO_DHL_PDDP', 'TINYINT(1) NOT NULL DEFAULT 0');
+            + self::addColumn('oxdeliveryset', 'MO_DHL_PDDP', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxdeliveryset', 'MO_DHL_CDP', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxdeliveryset', 'MO_DHL_ECONOMY', 'TINYINT(1) NOT NULL DEFAULT 0');
         $order = self::addColumn('oxorder', 'MO_DHL_EKP', 'CHAR(10)')
             + self::addColumn('oxorder', 'MO_DHL_PROCESS', 'VARCHAR(32)')
             + self::addColumn('oxorder', 'MO_DHL_OPERATOR', 'VARCHAR(40)')

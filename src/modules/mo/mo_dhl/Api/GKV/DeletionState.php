@@ -35,7 +35,7 @@ class DeletionState
 
     /**
      * @param string $shipmentNumber
-     * @return \Mediaopt\DHL\Api\GKV\DeletionState
+     * @return DeletionState
      */
     public function setShipmentNumber($shipmentNumber)
     {
@@ -53,7 +53,7 @@ class DeletionState
 
     /**
      * @param Statusinformation $Status
-     * @return \Mediaopt\DHL\Api\GKV\DeletionState
+     * @return DeletionState
      */
     public function setStatus($Status)
     {

@@ -5,8 +5,6 @@ namespace Mediaopt\DHL\Api\GKV;
 class NativeAddressType
 {
 
-    use AssignTrait;
-
     /**
      * @var string $streetName
      */
@@ -48,17 +46,15 @@ class NativeAddressType
     protected $Origin = null;
 
     /**
-     * @param string      $streetName
-     * @param string      $streetNumber
-     * @param string      $zip
-     * @param string      $city
-     * @param string      $province
+     * @param string  $streetName
+     * @param string     $zip
+     * @param string        $city
+     * @param string    $province
      * @param CountryType $Origin
      */
-    public function __construct($streetName, $streetNumber, $zip, $city, $province, $Origin)
+    public function __construct($streetName, $zip, $city, $province, $Origin)
     {
         $this->streetName = $streetName;
-        $this->streetNumber = $streetNumber;
         $this->zip = $zip;
         $this->city = $city;
         $this->province = $province;

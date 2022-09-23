@@ -5,3 +5,6 @@
 [{if $oView->moDHLShowIdentCheckFields()}]
     <input type="hidden" id="moDHLIdentCheckBirthdayHidden" name="dynvalue[mo_dhl_ident_check_birthday]" value="[{$oView->moDHLGetBirthday()}]">
 [{/if}]
+[{if $oView->moDHLShowPhoneNumberField()}]
+    <input type="hidden" id="moDHLPhoneNumberHidden" name="dynvalue[mo_dhl_phone_number]" value="[{$oView->moDHLGetPhoneNumber()}]">
+[{/if}]

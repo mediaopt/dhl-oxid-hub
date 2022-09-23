@@ -11,24 +11,17 @@ class ServiceconfigurationCashOnDelivery
     protected $active = null;
 
     /**
-     * @var bool $addFee
-     */
-    protected $addFee = null;
-
-    /**
      * @var float $codAmount
      */
     protected $codAmount = null;
 
     /**
      * @param bool  $active
-     * @param bool  $addFee
      * @param float $codAmount
      */
-    public function __construct($active, $addFee, $codAmount)
+    public function __construct($active, $codAmount)
     {
         $this->active = $active;
-        $this->addFee = $addFee;
         $this->codAmount = $codAmount;
     }
 
@@ -47,24 +40,6 @@ class ServiceconfigurationCashOnDelivery
     public function setActive($active)
     {
         $this->active = $active;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getAddFee()
-    {
-        return $this->addFee;
-    }
-
-    /**
-     * @param bool $addFee
-     * @return ServiceconfigurationCashOnDelivery
-     */
-    public function setAddFee($addFee)
-    {
-        $this->addFee = $addFee;
         return $this;
     }
 
