@@ -20,13 +20,17 @@ trait ErrorDisplayTrait
             $errors = [$errors];
         }
         foreach ($errors as $error) {
-            if ($error instanceof \Exception) {
-                $lang = Registry::getLang();
-                $error = sprintf($lang->translateString('MO_DHL__ERROR_PRINT_FORMAT'), $lang->translateString($error->getMessage()), $error->getLine(), $error->getFile());
-            } elseif ($error instanceof StatusElement) {
-                $error = $error->getStatusElement() . ': ' . $error->getStatusMessage();
+            while ($error) {
+                $nextError = method_exists($error, 'getPrevious') ?  $error->getPrevious() : null;
+                if ($error instanceof \Exception) {
+                    $lang = Registry::getLang();
+                    $error = sprintf($lang->translateString('MO_DHL__ERROR_PRINT_FORMAT'), $lang->translateString($error->getMessage()), $error->getLine(), $error->getFile());
+                } elseif ($error instanceof StatusElement) {
+                    $error = $error->getStatusElement() . ': ' . $error->getStatusMessage();
+                }
+                $utilsView->addErrorToDisplay($error);
+                $error = $nextError;
             }
-            $utilsView->addErrorToDisplay($error);
         }
     }
 }

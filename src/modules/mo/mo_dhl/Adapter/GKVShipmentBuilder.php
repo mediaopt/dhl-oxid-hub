@@ -491,7 +491,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $title = $orderArticle->getArticle()->getFieldData('oxtitle');
         }
 
-        return substr($this->convertSpecialChars($title), 0, 50);
+        return mb_substr($this->convertSpecialChars($title), 0, 50);
     }
 
     /**
