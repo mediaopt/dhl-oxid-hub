@@ -1,4 +1,10 @@
 # Changelog
+## 1.6.6
+* new Service CDP (Closest Droppoint) for Paket International
+* bugfix: multibyte substring problem for article title in export documents 
+* templating changes: proper use of smarty.block.parent call in chipping country form
+* extended output for soap errors
+
 ## 1.6.5
 * bugfix for selecting a Paketshop in the Filialfinder
 
