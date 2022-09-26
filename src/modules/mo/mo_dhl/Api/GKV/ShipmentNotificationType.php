@@ -11,6 +11,11 @@ class ShipmentNotificationType
     protected $recipientEmailAddress = null;
 
     /**
+     * @var string $templateId
+     */
+    protected $templateId = null;
+
+    /**
      * @param string $recipientEmailAddress
      */
     public function __construct($recipientEmailAddress)
@@ -33,6 +38,24 @@ class ShipmentNotificationType
     public function setRecipientEmailAddress($recipientEmailAddress)
     {
         $this->recipientEmailAddress = $recipientEmailAddress;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplateId()
+    {
+        return $this->templateId;
+    }
+
+    /**
+     * @param string $templateId
+     * @return ShipmentNotificationType
+     */
+    public function setTemplateId($templateId)
+    {
+        $this->templateId = $templateId;
         return $this;
     }
 

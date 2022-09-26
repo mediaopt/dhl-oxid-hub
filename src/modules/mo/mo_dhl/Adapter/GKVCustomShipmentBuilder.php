@@ -8,8 +8,12 @@
 namespace Mediaopt\DHL\Adapter;
 
 
+use Mediaopt\DHL\Api\GKV\CDP;
 use Mediaopt\DHL\Api\GKV\CountryType;
+use Mediaopt\DHL\Api\GKV\Economy;
 use Mediaopt\DHL\Api\GKV\ExportDocPosition;
+use Mediaopt\DHL\Api\GKV\Ident;
+use Mediaopt\DHL\Api\GKV\PDDP;
 use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationAdditionalInsurance;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationCashOnDelivery;
@@ -21,7 +25,6 @@ use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Model\MoDHLService;
 use Mediaopt\DHL\Shipment\Process;
-use OxidEsales\Eshop\Core\Language;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
@@ -51,6 +54,7 @@ class GKVCustomShipmentBuilder
                 'name'    => $receiver->getName1(),
                 'type'    => $receiver->getAddress() !== null ? 'address' : ($receiver->getPackstation() !== null ? 'packstation' : 'poftfiliale'),
                 'address' => $receiver->getAddress() ?: $receiver->getPackstation() ?: $receiver->getPostfiliale(),
+                'communication' => $receiver->getCommunication(),
             ],
             'returnReceiver' => [
                 'name'    => $returnReceiver->getName()->getName1() . $returnReceiver->getName()->getName2() . $returnReceiver->getName()->getName3(),
@@ -66,6 +70,8 @@ class GKVCustomShipmentBuilder
                 'cashOnDelivery'      => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getCashOnDelivery(),
                 'visualAgeCheck'      => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getVisualCheckOfAge(),
                 'pddp'                => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getPDDP(),
+                'cdp'                 => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getCDP(),
+                'economy'             => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getEconomy(),
                 'premium'             => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getPremium(),
                 'endorsement'         => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getEndorsement(),
             ],
@@ -140,6 +146,11 @@ class GKVCustomShipmentBuilder
         if ($receiverData['country']) {
             $receiverData['Origin'] = new CountryType($receiverData['country']);
         }
+        if ($communication = $receiver->getCommunication()) {
+            $communication
+                ->setEmail($receiverData['email'])
+                ->setPhone($receiverData['phone']);
+        }
         $receiverAddress = $receiver->getAddress() ?: $receiver->getPackstation() ?: $receiver->getPostfiliale();
         $receiverAddress->assign($receiverData);
     }
@@ -177,7 +188,7 @@ class GKVCustomShipmentBuilder
         if ($process->supportsCashOnDelivery()) {
             $isActive = filter_var($servicesData['cashOnDelivery']['active'], FILTER_VALIDATE_BOOLEAN);
             $details = $servicesData['cashOnDelivery']['codAmount'] ?? null;
-            $services->setCashOnDelivery(new ServiceconfigurationCashOnDelivery($isActive, 0, $details));
+            $services->setCashOnDelivery(new ServiceconfigurationCashOnDelivery($isActive, $details));
         }
         if ($process->supportsIdentCheck()) {
             $isActive = filter_var($servicesData['identCheck']['active'], FILTER_VALIDATE_BOOLEAN);
@@ -199,7 +210,15 @@ class GKVCustomShipmentBuilder
         }
         if ($process->supportsPDDP()) {
             $isActive = filter_var($servicesData['pddp']['active'], FILTER_VALIDATE_BOOLEAN);
-            $services->setPDDP(new Serviceconfiguration($isActive));
+            $services->setPDDP(new PDDP($isActive));
+        }
+        if ($process->supportsCDP()) {
+            $isActive = filter_var($servicesData['cdp']['active'], FILTER_VALIDATE_BOOLEAN);
+            $services->setCDP(new CDP($isActive));
+        }
+        if ($process->supportsEconomy()) {
+            $isActive = filter_var($servicesData['economy']['active'], FILTER_VALIDATE_BOOLEAN);
+            $services->setEconomy(new Economy($isActive));
         }
         if ($process->supportsPremium()) {
             $isActive = filter_var($servicesData['premium']['active'], FILTER_VALIDATE_BOOLEAN);
@@ -216,19 +235,17 @@ class GKVCustomShipmentBuilder
 
     /**
      * @param array $identCheck
-     * @return \stdClass
+     * @return Ident
      * @throws \Exception
      */
-    protected function extractIdent($identCheck) : \stdClass
+    protected function extractIdent($identCheck) : Ident
     {
-        $ident = new \stdClass();
-        $ident->surname = $identCheck['surname'];
-        $ident->givenName = $identCheck['givenName'];
-        $ident->dateOfBirth = $identCheck['dateOfBirth'] ? (new \DateTime($identCheck['dateOfBirth']))->format('Y-m-d') : null;
-        $ident->minimumAge = $identCheck['minimumAge']
-            ? 'A' . $identCheck['minimumAge']
-            : null;
-        return $ident;
+        return new Ident(
+            $identCheck['surname'],
+            $identCheck['givenName'],
+            $identCheck['dateOfBirth'] ? (new \DateTime($identCheck['dateOfBirth']))->format('Y-m-d') : null,
+            $identCheck['minimumAge'] ? 'A' . $identCheck['minimumAge'] : null
+        );
     }
 
     /**

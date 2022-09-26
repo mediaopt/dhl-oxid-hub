@@ -64,6 +64,25 @@
                                 </tr>
                                 [{assign var="address" value=$shipmentOrder.receiver.address}]
                                 [{if $shipmentOrder.receiver.type == 'address'}]
+                                    [{assign var="communication" value=$shipmentOrder.receiver.communication}]
+                                    <tr>
+                                        <td>
+                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_MAIL'}]
+                                        </td>
+                                        <td>
+                                            <input type="text" name="data[receiver][email]"
+                                                   value="[{$communication->getEmail()}]">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_PHONE'}]
+                                        </td>
+                                        <td>
+                                            <input type="text" name="data[receiver][phone]"
+                                                   value="[{$communication->getPhone()}]">
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td>
                                             [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_COMPANY'}]
@@ -488,17 +507,43 @@
                                 </tr>
                                 [{/if}]
                                 [{if $process->supportsPDDP()}]
-                                    [{assign var="service" value=$shipmentOrder.services.pddp}]
-                                    <tr>
-                                        <td>
-                                            [{oxmultilang ident='MO_DHL__PDDP'}]
-                                        </td>
-                                        <td>
-                                            <input type="hidden" name="data[services][pddp][active]" value="false">
-                                            <input type="checkbox" name="data[services][pddp][active]"
-                                                   value="1" [{if $service->getActive()}]checked[{/if}]>
-                                        </td>
-                                    </tr>
+                                [{assign var="service" value=$shipmentOrder.services.pddp}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__PDDP'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][pddp][active]" value="false">
+                                        <input type="checkbox" name="data[services][pddp][active]"
+                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                [{/if}]
+                                [{if $process->supportsCDP()}]
+                                [{assign var="service" value=$shipmentOrder.services.cdp}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__CDP'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][cdp][active]" value="false">
+                                        <input class="deliverySettings" type="checkbox" name="data[services][cdp][active]"
+                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                [{/if}]
+                                [{if $process->supportsEconomy()}]
+                                [{assign var="service" value=$shipmentOrder.services.economy}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__ECONOMY'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][economy][active]" value="false">
+                                        <input class="deliverySettings" type="checkbox" name="data[services][economy][active]"
+                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                    </td>
+                                </tr>
                                 [{/if}]
                                 [{if $process->supportsPremium()}]
                                     [{assign var="service" value=$shipmentOrder.services.premium}]
@@ -508,7 +553,7 @@
                                         </td>
                                         <td>
                                             <input type="hidden" name="data[services][premium][active]" value="false">
-                                            <input type="checkbox" name="data[services][premium][active]"
+                                            <input class="deliverySettings" type="checkbox" name="data[services][premium][active]"
                                                    value="1" [{if $service->getActive()}]checked[{/if}]>
                                         </td>
                                     </tr>
@@ -538,5 +583,6 @@
 </form>
 <br>
 <br>
+<script type="application/javascript" src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/js/admin/mo_dhl_process.js")}]"></script>
 [{include file="bottomnaviitem.tpl"}]
 [{include file="bottomitem.tpl"}]

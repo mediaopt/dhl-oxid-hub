@@ -75,7 +75,7 @@ class LabelData
 
     /**
      * @param Statusinformation $Status
-     * @return \Mediaopt\DHL\Api\GKV\LabelData
+     * @return LabelData
      */
     public function setStatus($Status)
     {
@@ -93,7 +93,7 @@ class LabelData
 
     /**
      * @param string $shipmentNumber
-     * @return \Mediaopt\DHL\Api\GKV\LabelData
+     * @return LabelData
      */
     public function setShipmentNumber($shipmentNumber)
     {
@@ -111,7 +111,7 @@ class LabelData
 
     /**
      * @param string $labelUrl
-     * @return \Mediaopt\DHL\Api\GKV\LabelData
+     * @return LabelData
      */
     public function setLabelUrl($labelUrl)
     {
@@ -129,7 +129,7 @@ class LabelData
 
     /**
      * @param string $labelData
-     * @return \Mediaopt\DHL\Api\GKV\LabelData
+     * @return LabelData
      */
     public function setLabelData($labelData)
     {
@@ -147,7 +147,7 @@ class LabelData
 
     /**
      * @param string $returnLabelUrl
-     * @return \Mediaopt\DHL\Api\GKV\LabelData
+     * @return LabelData
      */
     public function setReturnLabelUrl($returnLabelUrl)
     {
@@ -165,7 +165,7 @@ class LabelData
 
     /**
      * @param string $returnLabelData
-     * @return \Mediaopt\DHL\Api\GKV\LabelData
+     * @return LabelData
      */
     public function setReturnLabelData($returnLabelData)
     {
@@ -183,7 +183,7 @@ class LabelData
 
     /**
      * @param string $exportLabelUrl
-     * @return \Mediaopt\DHL\Api\GKV\LabelData
+     * @return LabelData
      */
     public function setExportLabelUrl($exportLabelUrl)
     {
@@ -201,7 +201,7 @@ class LabelData
 
     /**
      * @param string $exportLabelData
-     * @return \Mediaopt\DHL\Api\GKV\LabelData
+     * @return LabelData
      */
     public function setExportLabelData($exportLabelData)
     {
@@ -219,7 +219,7 @@ class LabelData
 
     /**
      * @param string $codLabelUrl
-     * @return \Mediaopt\DHL\Api\GKV\LabelData
+     * @return LabelData
      */
     public function setCodLabelUrl($codLabelUrl)
     {
@@ -237,7 +237,7 @@ class LabelData
 
     /**
      * @param string $codLabelData
-     * @return \Mediaopt\DHL\Api\GKV\LabelData
+     * @return LabelData
      */
     public function setCodLabelData($codLabelData)
     {

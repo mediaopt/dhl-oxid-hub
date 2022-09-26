@@ -50,6 +50,16 @@ class MoDHLService
     /**
      * @var string
      */
+    const MO_DHL__CDP = 'mo_dhl_cdp';
+
+    /**
+     * @var string
+     */
+    const MO_DHL__ECONOMY = 'mo_dhl_economy';
+
+    /**
+     * @var string
+     */
     const MO_DHL__ENDORSEMENT = 'mo_dhl_endorsement';
 
     /**

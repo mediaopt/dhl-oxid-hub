@@ -2,6 +2,9 @@
 
 namespace Mediaopt\DHL\Address;
 
+use OxidEsales\Eshop\Application\Model\Country;
+use OxidEsales\Eshop\Core\Registry;
+
 /**
  * This class represents an address.
  *
@@ -141,6 +144,15 @@ class Address
             'district' => $this->getDistrict(),
             'country'  => $this->getCountry(),
             'countryIso2Code'  => $this->getCountryIso2Code(),
+            'countryId' => $this->getCountryId(),
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountryId() : string
+    {
+        return Registry::get(Country::class)->getIdByCode($this->getCountryIso2Code());
     }
 }

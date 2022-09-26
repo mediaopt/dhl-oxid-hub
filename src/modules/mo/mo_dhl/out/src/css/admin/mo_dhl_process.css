@@ -1,0 +1,21 @@
+.show-internetmarke {
+    display: none;
+}
+.INTERNETMARKE .show-internetmarke {
+    display: initial;
+}
+.INTERNETMARKE .hide-internetmarke {
+    display: none;
+}
+.PAKET_INTERNATIONAL .show-paket-international {
+    display: table-row;
+}
+.show-paket-international {
+    display: none;
+}
+.WARENPOST_INTERNATIONAL .show-warenpost-international {
+    display: table-row;
+}
+.show-warenpost-international {
+    display: none;
+}

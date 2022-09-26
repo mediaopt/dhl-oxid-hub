@@ -8,11 +8,11 @@ use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
 use Mediaopt\DHL\Adapter\GKVCustomShipmentBuilder;
 use Mediaopt\DHL\Adapter\InternetmarkeRefundRetoureVouchersRequestBuilder;
 use Mediaopt\DHL\Adapter\InternetmarkeShoppingCartPDFRequestBuilder;
-use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Request\DeleteShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse;
-use Mediaopt\DHL\Api\GKV\Response\DeleteShipmentOrderResponse;
-use Mediaopt\DHL\Api\GKV\Response\StatusCode;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\DeleteShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\DeleteShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\StatusCode;
 use Mediaopt\DHL\Api\Internetmarke\ShoppingCartResponseType;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Merchant\Ekp;
@@ -21,10 +21,9 @@ use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 use Mediaopt\DHL\Shipment\RetoureRequest;
+use OxidEsales\Eshop\Application\Model\Order;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\Eshop\Application\Model\Order;
-use OxidEsales\Eshop\Core\Request;
 
 /**
  * @author Mediaopt GmbH
@@ -35,7 +34,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     use ErrorDisplayTrait;
 
     /**
-     * @var \OxidEsales\Eshop\Application\Model\Order|null
+     * @var Order|null
      */
     protected $order;
 
@@ -93,7 +92,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @param \OxidEsales\Eshop\Application\Model\Order|null $order
+     * @param Order|null $order
      */
     public function createRetoure($order = null)
     {
@@ -247,7 +246,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @return \OxidEsales\Eshop\Application\Model\Order
+     * @return Order
      */
     protected function getOrder()
     {
@@ -255,13 +254,13 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             return $this->order;
         }
 
-        $this->order = \oxNew(\OxidEsales\Eshop\Application\Model\Order::class);
+        $this->order = \oxNew(Order::class);
         $this->order->load($this->getEditObjectId());
         return $this->order;
     }
 
     /**
-     * @param \OxidEsales\Eshop\Application\Model\Order
+     * @param Order
      */
     public function setOrder(Order $order)
     {
@@ -311,7 +310,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     public function save()
     {
         try {
-            $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
+            $db = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
             $information = [
                 'MO_DHL_EKP'                    => $this->validateEkp(),
                 'MO_DHL_PROCESS'                => $this->validateProcessIdentifier(),
@@ -329,7 +328,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             if ($tuples === []) {
                 return;
             }
-            $viewNameGenerator = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\TableViewNameGenerator::class);
+            $viewNameGenerator = Registry::get(\OxidEsales\Eshop\Core\TableViewNameGenerator::class);
             $viewName = $viewNameGenerator->getViewName('oxorder');
             $query = ' UPDATE ' . $viewName . ' SET ' . implode(', ', $tuples) . " WHERE OXID = {$db->quote($this->getEditObjectId())}";
             $db->execute($query);
@@ -421,7 +420,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     protected function moDHLGetPreferredLocation($remark)
     {
-        list($type, $locationPart1, $locationPart2) = $this->getWunschpaket()->extractLocation($remark);
+        [$type, $locationPart1, $locationPart2] = $this->getWunschpaket()->extractLocation($remark);
         switch ($type) {
             case Wunschpaket::WUNSCHNACHBAR:
                 return [$this->translateString('MO_DHL__WUNSCHNACHBAR') => "{$locationPart2}, {$locationPart1}"];

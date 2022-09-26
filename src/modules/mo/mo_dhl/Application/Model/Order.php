@@ -319,6 +319,8 @@ class Order extends Order_parent
         switch ($service) {
             case MoDHLService::MO_DHL__IDENT_CHECK:
             case MoDHLService::MO_DHL__ADDITIONAL_INSURANCE:
+            case MoDHLService::MO_DHL__CDP:
+            case MoDHLService::MO_DHL__ECONOMY:
             case MoDHLService::MO_DHL__PREMIUM:
             case MoDHLService::MO_DHL__PDDP:
             case MoDHLService::MO_DHL__ENDORSEMENT:

@@ -9,7 +9,7 @@ namespace sdk\GKV;
 
 require_once 'BaseGKVTest.php';
 
-use Mediaopt\DHL\Api\GKV\Response\GetVersionResponse;
+use Mediaopt\DHL\Api\GKV\GetVersionResponse;
 use Mediaopt\DHL\Api\GKV\Version;
 
 /**

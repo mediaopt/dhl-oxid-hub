@@ -8,37 +8,37 @@ class PostfilialeType
     use AssignTrait;
 
     /**
-     * @var string $postfilialNumber
+     * @var string $PostfilialNumber
      */
-    protected $postfilialNumber = null;
+    protected $PostfilialNumber = null;
 
     /**
-     * @var string $postNumber
+     * @var string $PostNumber
      */
-    protected $postNumber = null;
+    protected $PostNumber = null;
 
     /**
-     * @var string $zip
+     * @var string $Zip
      */
-    protected $zip = null;
+    protected $Zip = null;
 
     /**
-     * @var string $city
+     * @var string $City
      */
-    protected $city = null;
+    protected $City = null;
 
     /**
-     * @param string $postfilialNumber
-     * @param string $postNumber
-     * @param string $zip
-     * @param string $city
+     * @param string $PostfilialNumber
+     * @param string $PostNumber
+     * @param string $Zip
+     * @param string $City
      */
-    public function __construct($postfilialNumber, $postNumber, $zip, $city)
+    public function __construct($PostfilialNumber, $PostNumber, $Zip, $City)
     {
-        $this->postfilialNumber = $postfilialNumber;
-        $this->postNumber = $postNumber;
-        $this->zip = $zip;
-        $this->city = $city;
+        $this->PostfilialNumber = $PostfilialNumber;
+        $this->PostNumber = $PostNumber;
+        $this->Zip = $Zip;
+        $this->City = $City;
     }
 
     /**
@@ -46,16 +46,16 @@ class PostfilialeType
      */
     public function getPostfilialNumber()
     {
-        return $this->postfilialNumber;
+        return $this->PostfilialNumber;
     }
 
     /**
-     * @param string $postfilialNumber
+     * @param string $PostfilialNumber
      * @return PostfilialeType
      */
-    public function setPostfilialNumber($postfilialNumber)
+    public function setPostfilialNumber($PostfilialNumber)
     {
-        $this->postfilialNumber = $postfilialNumber;
+        $this->PostfilialNumber = $PostfilialNumber;
         return $this;
     }
 
@@ -64,16 +64,16 @@ class PostfilialeType
      */
     public function getPostNumber()
     {
-        return $this->postNumber;
+        return $this->PostNumber;
     }
 
     /**
-     * @param string $postNumber
+     * @param string $PostNumber
      * @return PostfilialeType
      */
-    public function setPostNumber($postNumber)
+    public function setPostNumber($PostNumber)
     {
-        $this->postNumber = $postNumber;
+        $this->PostNumber = $PostNumber;
         return $this;
     }
 
@@ -82,16 +82,16 @@ class PostfilialeType
      */
     public function getZip()
     {
-        return $this->zip;
+        return $this->Zip;
     }
 
     /**
-     * @param string $zip
+     * @param string $Zip
      * @return PostfilialeType
      */
-    public function setZip($zip)
+    public function setZip($Zip)
     {
-        $this->zip = $zip;
+        $this->Zip = $Zip;
         return $this;
     }
 
@@ -100,16 +100,16 @@ class PostfilialeType
      */
     public function getCity()
     {
-        return $this->city;
+        return $this->City;
     }
 
     /**
-     * @param string $city
+     * @param string $City
      * @return PostfilialeType
      */
-    public function setCity($city)
+    public function setCity($City)
     {
-        $this->city = $city;
+        $this->City = $City;
         return $this;
     }
 

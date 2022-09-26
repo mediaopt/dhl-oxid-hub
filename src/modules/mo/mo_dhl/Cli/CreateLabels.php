@@ -10,7 +10,7 @@ namespace Mediaopt\DHL\Cli;
 
 use Mediaopt\DHL\Adapter\DHLAdapter;
 use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
-use Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderResponse;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use OxidEsales\Eshop\Core\DatabaseProvider;

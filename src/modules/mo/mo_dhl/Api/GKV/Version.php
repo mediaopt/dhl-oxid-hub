@@ -21,11 +21,11 @@ class Version
     protected $build = null;
 
     /**
-     * @param string      $majorRelease
-     * @param string      $minorRelease
-     * @param string|null $build
+     * @param string $majorRelease
+     * @param string $minorRelease
+     * @param string $build
      */
-    public function __construct($majorRelease, $minorRelease, $build = null)
+    public function __construct($majorRelease, $minorRelease, $build)
     {
         $this->majorRelease = $majorRelease;
         $this->minorRelease = $minorRelease;
