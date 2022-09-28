@@ -56,7 +56,15 @@ class PaymentMethodController
         $this->pluginIdProvider = $pluginIdProvider;
     }
 
-    public function saveMethod(Request $request, Context $context): JsonResponse
+    /**
+     * @param Request $request
+     * @param Context $context
+     * @param ?string $countryIso3
+     * @param ?string $currencyIsoCode
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function saveMethod(Request $request, Context $context, ?string $countryIso3, ?string $currencyIsoCode): JsonResponse
     {
         $data = $request->request->get('data');
         $salesChannelId = $request->request->get('salesChannelId');
@@ -79,7 +87,7 @@ class PaymentMethodController
         }
         $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         $adapter->getMerchantClient();
-        $paymentMethods = $adapter->getPaymentMethods();
+        $paymentMethods = $adapter->getPaymentMethods($countryIso3, $currencyIsoCode);
         foreach ($paymentMethods->getPaymentProducts() as $method) {
             if (in_array($method->getId(), $toCreate)) {
                 $this->createPaymentMethod($method, $context, $salesChannelId);
@@ -91,11 +99,18 @@ class PaymentMethodController
 
     /**
      * @param array $credentials
-     * @param string $salesChannelId
+     * @param ?string $salesChannelId
+     * @param ?string $countryIso3
+     * @param ?string $currencyIsoCode
      * @return array
      * @throws \Exception
      */
-    public function getPaymentMentodsList(array $credentials, ?string $salesChannelId)
+    public function getPaymentMentodsList(
+        array $credentials,
+        ?string $salesChannelId,
+        ?string $countryIso3,
+        ?string $currencyIsoCode
+    )
     {
         $fullRedirectMethod = $this->getPaymentMethod('Worldline');
         $toFrontend[] = [
@@ -114,7 +129,7 @@ class PaymentMethodController
             return $toFrontend;
         }
 
-        $paymentMethods = $adapter->getPaymentMethods();
+        $paymentMethods = $adapter->getPaymentMethods($countryIso3, $currencyIsoCode);
 
         foreach ($paymentMethods->getPaymentProducts() as $method) {
             $name = $this->getPaymentMethodName($method->getDisplayHints()->getLabel());

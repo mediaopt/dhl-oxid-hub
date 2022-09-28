@@ -101,25 +101,17 @@ class WorldlineSDKAdapter
     }
 
     /**
+     * @param string $countryIso3
+     * @param string $currencyIsoCode
      * @return GetPaymentProductsResponse
      * @throws \Exception
      */
-    public function getPaymentMethods(): GetPaymentProductsResponse
+    public function getPaymentMethods(string $countryIso3, string $currencyIsoCode): GetPaymentProductsResponse
     {
         $queryParams = new GetPaymentProductsParams();
 
-        $connection = Kernel::getConnection();
-        $sql = "SELECT
-            cou.iso as countryISO, cur.iso_code as currencyISO
-            FROM `sales_channel` sc
-            left JOIN country cou on (cou.id = sc.country_id)
-            left JOIN currency cur on (cur.id = sc.currency_id)
-            WHERE sc.id = UNHEX('$this->salesChannelId')";
-        $salesChannelData = $connection->executeQuery($sql)->fetchAssociative();
-
-        $queryParams->setCountryCode($salesChannelData['countryISO']);
-        $queryParams->setCurrencyCode($salesChannelData['currencyISO']);
-
+        $queryParams->setCountryCode($countryIso3);
+        $queryParams->setCurrencyCode($currencyIsoCode);
         return $this->merchantClient
             ->products()
             ->getPaymentProducts($queryParams);
