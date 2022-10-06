@@ -84,17 +84,24 @@ class CronTaskHandler extends ScheduledTaskHandler
         $daysInterval = $this->getDaysInterval($captureConfig);
         $connection = Kernel::getConnection();
 
-        $sql = "SELECT ot.custom_fields, ot.updated_at
-                FROM  `order` o
-                LEFT JOIN order_transaction ot ON (ot.order_id = o.id)
-                WHERE o.sales_channel_id = UNHEX('$salesChannelId')
-                AND (ot.custom_fields LIKE '%payment_transaction_status\": \"5%'
-                    OR ot.custom_fields LIKE '%payment_transaction_status\": \"56%') " .
-                (($daysInterval > 0) ? "AND DATEDIFF(NOW(), ot.updated_at) > $daysInterval " : "") .
-                "ORDER BY `ot`.`updated_at` DESC;
-            ";
+        $qb = $connection->createQueryBuilder();
+        $qb->select('ot.custom_fields, ot.updated_at')
+            ->from('`order`', 'o')
+            ->leftJoin('o', 'order_transaction', 'ot', "ot.order_id = o.id")
+            ->where("o.sales_channel_id = UNHEX('$salesChannelId')")
+            ->andWhere(
+                $qb->expr()->or(
+                    $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"5%'"),
+                    $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"56%'")
+                )
+            )
+            ->orderBy('ot.updated_at','DESC');
 
-        return $connection->executeQuery($sql)->fetchAllAssociative();
+        if ($daysInterval > 0) {
+            $qb->andWhere("DATEDIFF(NOW(), ot.updated_at) > $daysInterval");
+        }
+
+        return $qb->execute()->fetchAllAssociative();
     }
 
     /**
