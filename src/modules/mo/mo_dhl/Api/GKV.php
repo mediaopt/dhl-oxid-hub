@@ -131,7 +131,6 @@ class GKV extends \SoapClient
         'DrivingLicense'                                => 'Mediaopt\\DHL\\Api\\GKV\\DrivingLicense',
         'IdentityCard'                                  => 'Mediaopt\\DHL\\Api\\GKV\\IdentityCard',
         'BankCard'                                      => 'Mediaopt\\DHL\\Api\\GKV\\BankCard',
-        'PackstationType'                               => 'Mediaopt\\DHL\\Api\\GKV\\PackstationType',
         'ReadShipmentOrderResponse'                     => 'Mediaopt\\DHL\\Api\\GKV\\ReadShipmentOrderResponse',
     ];
 
