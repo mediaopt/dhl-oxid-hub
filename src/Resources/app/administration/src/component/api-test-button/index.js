@@ -44,14 +44,14 @@ Component.register('api-test-button', {
                 if (res.success) {
                     this.isSaveSuccessful = true;
                     this.createNotificationSuccess({
-                        title: this.$tc('api-test-button.title'),
-                        message: this.$tc('api-test-button.success')
+                        title: this.$tc('worldline.api-test-button.title'),
+                        message: this.$tc('worldline.api-test-button.success')
                     });
                     document.querySelector('.sw-extension-config__save-action').click();
                 } else {
                     this.createNotificationError({
-                        title: this.$tc('api-test-button.title'),
-                        message: this.$tc('api-test-button.error') + res.message
+                        title: this.$tc('worldline.api-test-button.title'),
+                        message: this.$tc('worldline.api-test-button.error') + res.message
                     });
                 }
 

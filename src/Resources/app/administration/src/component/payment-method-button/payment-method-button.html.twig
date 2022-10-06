@@ -1,11 +1,11 @@
 <div class="component">
     <div class="headline">
-        <label>{{ $tc('payment-method-button.headline') }}</label>
+        <label>{{ $tc('worldline.payment-method-button.headline') }}</label>
     </div>
     <div class="border">
         <div class="subline">
-            <p class="subline">{{ $tc('payment-method-button.subline') }}</p>
-            <p @click="selectCheckbox" class="select-all">{{ $tc('payment-method-button.selectAll') }}</p>
+            <p class="subline">{{ $tc('worldline.payment-method-button.subline') }}</p>
+            <p @click="selectCheckbox" class="select-all">{{ $tc('worldline.payment-method-button.selectAll') }}</p>
         </div>
         <div class="border-inner">
         </div>
@@ -13,7 +13,7 @@
             <sw-button-process
                 :isLoading="isLoading"
                 @click="saveButton"
-            >{{ $tc('payment-method-button.save') }}</sw-button-process>
+            >{{ $tc('worldline.payment-method-button.save') }}</sw-button-process>
         </div>
     </div>
 </div>

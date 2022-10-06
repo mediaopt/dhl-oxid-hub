@@ -16,6 +16,9 @@ class AdminTranslate
             return $id;
         }
 
+        //Adding module prefix
+        $id = "worldline.$id";
+
         $transJson = file_get_contents($path);
         $dictionary = json_decode($transJson, true);
 
