@@ -1,3 +1,6 @@
+# 1.0.0
+- Shopware store release updates
+
 # 0.9.2
 - Disable unused control buttons on order page
 
