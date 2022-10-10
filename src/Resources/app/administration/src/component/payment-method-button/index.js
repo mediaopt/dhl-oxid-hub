@@ -75,13 +75,13 @@ Component.register('payment-method-button', {
                 if (res.success) {
                     this.isSaveSuccessful = true;
                     this.createNotificationSuccess({
-                        title: this.$tc('payment-method-button.APITitle'),
-                        message: this.$tc('payment-method-button.success')
+                        title: this.$tc('worldline.payment-method-button.APITitle'),
+                        message: this.$tc('worldline.payment-method-button.success')
                     });
                 } else {
                     this.createNotificationError({
-                        title: this.$tc('payment-method-button.APITitle'),
-                        message: this.$tc('payment-method-button.errorAPI') + res.message
+                        title: this.$tc('worldline.payment-method-button.APITitle'),
+                        message: this.$tc('worldline.payment-method-button.errorAPI') + res.message
                     });
                 }
 
@@ -99,7 +99,7 @@ Component.register('payment-method-button', {
                 document.querySelector('.select-all').innerHTML = '';
             }
             if (paymentMethods.length == 0) {
-                this.display(`<p class="innerText">${this.$tc('payment-method-button.requestEmpty')}</p>`);
+                this.display(`<p class="innerText">${this.$tc('worldline.payment-method-button.requestEmpty')}</p>`);
             } else {
                 let checkboxTemplate = paymentMethods.map((item) => {
 
@@ -118,21 +118,21 @@ Component.register('payment-method-button', {
         },
 
         getPaymentMethods() {
-            this.display(`<p class="innerText">${this.$tc('payment-method-button.request')}</p>`);
+            this.display(`<p class="innerText">${this.$tc('worldline.payment-method-button.request')}</p>`);
             this.isLoading = true;
             this.apiTest.check(this.pluginConfig).then((res) => {//todo split this
                 if (res.success) {
                     this.renderPaymentMethods(res.paymentMethods);
                 } else {
-                    this.display(`<p class="innerText">${this.$tc('payment-method-button.error')}</p>`);
+                    this.display(`<p class="innerText">${this.$tc('worldline.payment-method-button.error')}</p>`);
                     this.createNotificationError({
-                        title: this.$tc('payment-method-button.title'),
-                        message: this.$tc('payment-method-button.error') + res.message
+                        title: this.$tc('worldline.payment-method-button.title'),
+                        message: this.$tc('worldline.payment-method-button.error') + res.message
                     });
                 }
                 this.isLoading = false;
             }).catch((error) => {
-                this.display(`<p class="innerText">${this.$tc('payment-method-button.error')}</p>`);
+                this.display(`<p class="innerText">${this.$tc('worldline.payment-method-button.error')}</p>`);
             });
         }
     },

@@ -26,14 +26,14 @@ Component.override('sw-order-detail-base', {
                 if (res.success) {
                     this.isSaveSuccessful = true;
                     this.createNotificationSuccess({
-                        title: this.$tc('check-status-button.title'),
-                        message: this.$tc('check-status-button.success')
+                        title: this.$tc('worldline.check-status-button.title'),
+                        message: this.$tc('worldline.check-status-button.success')
                     });
                     location.reload();
                 } else {
                     this.createNotificationError({
-                        title: this.$tc('check-status-button.title'),
-                        message: this.$tc('check-status-button.error') + res.message
+                        title: this.$tc('worldline.check-status-button.title'),
+                        message: this.$tc('worldline.check-status-button.error') + res.message
                     });
                 }
 
@@ -47,14 +47,14 @@ Component.override('sw-order-detail-base', {
                 if (res.success) {
                     this.isSaveSuccessful = true;
                     this.createNotificationSuccess({
-                        title: this.$tc('capture-payment-button.title'),
-                        message: this.$tc('capture-payment-button.success')
+                        title: this.$tc('worldline.capture-payment-button.title'),
+                        message: this.$tc('worldline.capture-payment-button.success')
                     });
                     location.reload();
                 } else {
                     this.createNotificationError({
-                        title: this.$tc('capture-payment-button.title'),
-                        message: this.$tc('capture-payment-button.error') + res.message
+                        title: this.$tc('worldline.capture-payment-button.title'),
+                        message: this.$tc('worldline.capture-payment-button.error') + res.message
                     });
                 }
 
@@ -67,14 +67,14 @@ Component.override('sw-order-detail-base', {
                 if (res.success) {
                     this.isSaveSuccessful = true;
                     this.createNotificationSuccess({
-                        title: this.$tc('cancel-payment-button.title'),
-                        message: this.$tc('cancel-payment-button.success')
+                        title: this.$tc('worldline.cancel-payment-button.title'),
+                        message: this.$tc('worldline.cancel-payment-button.success')
                     });
                     location.reload();
                 } else {
                     this.createNotificationError({
-                        title: this.$tc('cancel-payment-button.title'),
-                        message: this.$tc('cancel-payment-button.error') + res.message
+                        title: this.$tc('worldline.cancel-payment-button.title'),
+                        message: this.$tc('worldline.cancel-payment-button.error') + res.message
                     });
                 }
 
@@ -87,14 +87,14 @@ Component.override('sw-order-detail-base', {
                 if (res.success) {
                     this.isSaveSuccessful = true;
                     this.createNotificationSuccess({
-                        title: this.$tc('refund-payment-button.title'),
-                        message: this.$tc('refund-payment-button.success')
+                        title: this.$tc('worldline.refund-payment-button.title'),
+                        message: this.$tc('worldline.refund-payment-button.success')
                     });
                     location.reload();
                 } else {
                     this.createNotificationError({
-                        title: this.$tc('refund-payment-button.title'),
-                        message: this.$tc('refund-payment-button.error') + res.message
+                        title: this.$tc('worldline.refund-payment-button.title'),
+                        message: this.$tc('worldline.refund-payment-button.error') + res.message
                     });
                 }
 
