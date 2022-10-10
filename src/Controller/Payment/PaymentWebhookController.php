@@ -7,7 +7,10 @@
 
 namespace MoptWorldline\Controller\Payment;
 
-use Symfony\Component\HttpFoundation\InputBag;
+use MoptWorldline\Adapter\WorldlineSDKAdapter;
+use MoptWorldline\Bootstrap\Form;
+use OnlinePayments\Sdk\Webhooks\InMemorySecretKeyStore;
+use OnlinePayments\Sdk\Webhooks\WebhooksHelper;
 use MoptWorldline\Service\AdminTranslate;
 use MoptWorldline\Service\PaymentHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
@@ -74,7 +77,7 @@ class PaymentWebhookController extends AbstractController
      */
     public function webhook(Request $request, SalesChannelContext $salesChannelContext): Response
     {
-        $data = $this->parseRequest($request->request);
+        $data = $this->parseRequest($request, $salesChannelContext->getSalesChannelId());
         if ($data === false) {
             return new Response();
         }
@@ -109,41 +112,38 @@ class PaymentWebhookController extends AbstractController
     }
 
     /**
-     * @param InputBag $request
+     * @param Request $request
+     * @param string $salesChannelId
      * @return array|false
      */
-    private function parseRequest(InputBag $request): ?array
+    private function parseRequest(Request $request, string $salesChannelId): ?array
     {
-        $id = $request->get('id');
-        $type = $request->get('type');
-        $merchantId = $request->get('merchantId');
-        $payment = $request->get('payment');
-
-        $hostedCheckoutId = false;
-        if (is_array($payment) && array_key_exists('id', $payment)) {
-            $paymentId = explode('_', $payment['id']);
-            if (!empty($paymentId[0])) {
-                $hostedCheckoutId = $paymentId[0];
-            }
+        // Get rid of additional array level
+        $headers = $request->headers->all();
+        foreach ($headers as $key => $header) {
+            $headers[$key] = $header[0];
         }
 
-        $statusCode = false;
-        if (is_array($payment) && array_key_exists('statusOutput', $payment)) {
-            if ($payment['statusOutput'] && array_key_exists('statusCode', $payment['statusOutput'])) {
-                $statusCode = $payment['statusOutput']['statusCode'];
-            }
-        }
+        $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
+        $webhookKey = $adapter->getPluginConfig(Form::WEBHOOK_KEY_FIELD);
+        $webhookSecret = $adapter->getPluginConfig(Form::WEBHOOK_SECRET_FIELD);
+        $keys = new InMemorySecretKeyStore([$webhookKey => $webhookSecret]);
+        $helper = new WebhooksHelper($keys);
 
-        if ($statusCode === false || $hostedCheckoutId === false) {
-            $this->log('wrongRequestFormat', $request->all());
+        try {
+            //Request validation
+            $event = $helper->unmarshal($request->getContent(), $headers);
+
+            $paymentId = $event->getPayment()->getId();
+            $paymentId = explode('_', $paymentId);
+            $hostedCheckoutId = $paymentId[0];
+            $statusCode = $event->getPayment()->getStatusOutput()->getStatusCode();
+        } catch (\Exception $e) {
+            $this->log($e->getMessage(), [$request->getContent(), $request->headers->all()]);
             return false;
         }
 
         return [
-            'id' => $id,
-            'type' => $type,
-            'merchantId' => $merchantId,
-            'payment' => $payment,
             'hostedCheckoutId' => $hostedCheckoutId,
             'statusCode' => $statusCode
         ];
