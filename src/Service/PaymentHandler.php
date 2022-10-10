@@ -328,10 +328,7 @@ class PaymentHandler
                     ['status' => $statusCode, 'hostedCheckoutId' => $hostedCheckoutId]
                 );
                 $this->transactionStateHandler->cancel($orderTransactionId, $this->context);
-
-                $orderId = $this->orderTransaction->getOrder()->getId();
-                header("Location: /account/order/edit/$orderId", true, 301);
-                exit();
+                break;
             }
             case in_array($statusCode, Payment::STATUS_PAYMENT_REJECTED):
             case in_array($statusCode, Payment::STATUS_REJECTED_CAPTURE):

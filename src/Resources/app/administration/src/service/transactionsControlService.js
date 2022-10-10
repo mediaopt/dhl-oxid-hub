@@ -46,6 +46,16 @@ class transactionsControlService extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+    enableButtons(values) {
+        const headers = this.getBasicHeaders({});
+        return this.httpClient
+            .post(`_action/${this.getApiBasePath()}/enableButtons`, values,{
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 Application.addServiceProvider('transactionsControl', (container) => {

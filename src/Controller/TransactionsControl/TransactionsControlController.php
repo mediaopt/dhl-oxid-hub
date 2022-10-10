@@ -82,8 +82,7 @@ class TransactionsControlController extends AbstractController
             return $this->response($success, $message);
         }
         $handler = $this->getHandler($hostedCheckoutId, $context);
-        $status = $handler->updatePaymentStatus($hostedCheckoutId);
-        if ($status != 0) {
+        if ($handler->updatePaymentStatus($hostedCheckoutId)) {
             $success = true;
             $message = AdminTranslate::trans($this->translator->getLocale(), "statusUpdateRequestSent");
         }
@@ -124,6 +123,31 @@ class TransactionsControlController extends AbstractController
     public function refund(Request $request, Context $context): JsonResponse
     {
         return $this->processPayment($request, $context, 'refundPayment');
+    }
+
+    /**
+     * @Route(
+     *     "/api/_action/transactions-control/enableButtons",
+     *     name="api.action.transactions.control.enableButtons",
+     *     methods={"POST"}
+     * )
+     */
+    public function enableButtons(Request $request, Context $context): JsonResponse
+    {
+        try {
+            $hostedCheckoutId = $this->getTransactionId($request);
+            $orderTransaction = PaymentHandler::getOrderTransaction($context, $this->orderTransactionRepository, $hostedCheckoutId);
+            $fields = $orderTransaction->getCustomFields();
+            $status =  $fields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_STATUS];
+            $allowedActions = Payment::getAllowedActions($status);
+        } catch (\Exception $e) {
+            return $this->response(false,'');
+        }
+        return
+            new JsonResponse([
+                'success' => true,
+                'message' => $allowedActions
+            ]);
     }
 
     /**

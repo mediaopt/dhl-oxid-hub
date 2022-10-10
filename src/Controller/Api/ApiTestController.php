@@ -11,8 +11,12 @@ use Monolog\Logger;
 use MoptWorldline\Bootstrap\Form;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\System\Country\CountryEntity;
+use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,6 +30,9 @@ use MoptWorldline\Controller\PaymentMethod\PaymentMethodController;
 class ApiTestController extends AbstractController
 {
     private SystemConfigService $systemConfigService;
+    private EntityRepositoryInterface $salesChannelRepository;
+    private EntityRepositoryInterface $countryRepository;
+    private EntityRepositoryInterface $currencyRepository;
     private Logger $logger;
     private EntityRepositoryInterface $paymentMethodRepository;
     private EntityRepositoryInterface $salesChannelPaymentRepository;
@@ -41,6 +48,9 @@ class ApiTestController extends AbstractController
 
     /**
      * @param SystemConfigService $systemConfigService
+     * @param EntityRepositoryInterface $salesChannelRepository
+     * @param EntityRepositoryInterface $countryRepository
+     * @param EntityRepositoryInterface $currencyRepository
      * @param Logger $logger
      * @param EntityRepositoryInterface $paymentMethodRepository
      * @param EntityRepositoryInterface $salesChannelPaymentRepository
@@ -48,6 +58,9 @@ class ApiTestController extends AbstractController
      */
     public function __construct(
         SystemConfigService       $systemConfigService,
+        EntityRepositoryInterface $salesChannelRepository,
+        EntityRepositoryInterface $countryRepository,
+        EntityRepositoryInterface $currencyRepository,
         Logger                    $logger,
         EntityRepositoryInterface $paymentMethodRepository,
         EntityRepositoryInterface $salesChannelPaymentRepository,
@@ -55,6 +68,9 @@ class ApiTestController extends AbstractController
     )
     {
         $this->systemConfigService = $systemConfigService;
+        $this->salesChannelRepository = $salesChannelRepository;
+        $this->countryRepository = $countryRepository;
+        $this->currencyRepository = $currencyRepository;
         $this->logger = $logger;
         $this->paymentMethodRepository = $paymentMethodRepository;
         $this->salesChannelPaymentRepository = $salesChannelPaymentRepository;
@@ -78,13 +94,20 @@ class ApiTestController extends AbstractController
 
         $salesChannelId = $request->request->get('salesChannelId');
 
+        [$countryIso3, $currencyIsoCode] = $this->getSalesChannelData($salesChannelId, $context);
+
         $credentials = $this->buildCredentials($salesChannelId, $configFormData);
 
         $paymentMethods = [];
         $message = '';
         try {
             $paymentMethodController = $this->getPaymentMethodController();
-            $paymentMethods = $paymentMethodController->getPaymentMentodsList($credentials, $salesChannelId);
+            $paymentMethods = $paymentMethodController->getPaymentMentodsList(
+                $credentials,
+                $salesChannelId,
+                $countryIso3,
+                $currencyIsoCode
+            );
         } catch (\Exception $e) {
             $message = '<br/>' . $e->getMessage();
         }
@@ -104,7 +127,31 @@ class ApiTestController extends AbstractController
     public function saveMethod(Request $request, Context $context): JsonResponse
     {
         $paymentMethodController = $this->getPaymentMethodController();
-        return $paymentMethodController->saveMethod($request, $context);
+        $salesChannelId = $request->request->get('salesChannelId');
+        [$countryIso3, $currencyIsoCode] = $this->getSalesChannelData($salesChannelId, $context);
+
+        return $paymentMethodController->saveMethod($request, $context, $countryIso3, $currencyIsoCode);
+    }
+
+    /**
+     * @param ?string $salesChannelId
+     * @param Context $context
+     * @return array
+     */
+    private function getSalesChannelData(?string $salesChannelId, Context $context): array
+    {
+        if (is_null($salesChannelId)) {
+            return [null, null];
+        }
+
+        /* @var $salesChannel SalesChannelEntity */
+        $salesChannel = $this->salesChannelRepository->search(new Criteria([$salesChannelId]), $context)->first();
+        /* @var $country CountryEntity */
+        $country = $this->countryRepository->search(new Criteria([$salesChannel->getCountryId()]), $context)->first();
+        /* @var $currency CurrencyEntity */
+        $currency = $this->currencyRepository->search(new Criteria([$salesChannel->getCurrencyId()]), $context)->first();
+
+        return [$country->getIso3(), $currency->getIsoCode()];
     }
 
     /**
