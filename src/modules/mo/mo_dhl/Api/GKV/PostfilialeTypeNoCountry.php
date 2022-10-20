@@ -5,6 +5,8 @@ namespace Mediaopt\DHL\Api\GKV;
 class PostfilialeTypeNoCountry
 {
 
+    use AssignTrait;
+
     /**
      * @var string $postfilialNumber
      */
