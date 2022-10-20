@@ -1,4 +1,9 @@
 # Changelog
+## 1.6.7
+* bugfix: remove PackstationType.php
+* bugfix: prevent null parameter in html_entity_decode
+* bugfix for custom label with Postfiliale
+
 ## 1.6.6
 * new Service CDP (Closest Droppoint) for Paket International
 * bugfix: multibyte substring problem for article title in export documents 
