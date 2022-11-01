@@ -33,7 +33,8 @@ class MoptWorldline extends Plugin
         $customField->addCustomFields($context);
 
         $paymentMethod = new PaymentMethod($this->container);
-        $paymentMethod->addPaymentMethod($context->getContext());
+        $paymentMethod->addPaymentMethod($context->getContext(), 'Worldline', 'Worldline full redirect payment method');
+        $paymentMethod->addPaymentMethod($context->getContext(), 'Worldline Iframe', 'Worldline Iframe payment method');
     }
 
     /**
@@ -44,7 +45,8 @@ class MoptWorldline extends Plugin
         parent::uninstall($context);
 
         $paymentMethod = new PaymentMethod($this->container);
-        $paymentMethod->setPaymentMethodStatus(false, $context->getContext());
+        $paymentMethod->setPaymentMethodStatus(false, $context->getContext(), 'Worldline');
+        $paymentMethod->setPaymentMethodStatus(false, $context->getContext(), 'Worldline Iframe');
     }
 
     /**
@@ -55,7 +57,8 @@ class MoptWorldline extends Plugin
         parent::activate($context);
 
         $paymentMethod = new PaymentMethod($this->container);
-        $paymentMethod->setPaymentMethodStatus(true, $context->getContext());
+        $paymentMethod->setPaymentMethodStatus(true, $context->getContext(), 'Worldline');
+        $paymentMethod->setPaymentMethodStatus(true, $context->getContext(), 'Worldline Iframe');
     }
 
     /**
@@ -66,7 +69,8 @@ class MoptWorldline extends Plugin
         parent::deactivate($context);
 
         $paymentMethod = new PaymentMethod($this->container);
-        $paymentMethod->setPaymentMethodStatus(false, $context->getContext());
+        $paymentMethod->setPaymentMethodStatus(false, $context->getContext(), 'Worldline');
+        $paymentMethod->setPaymentMethodStatus(false, $context->getContext(), 'Worldline Iframe');
     }
 }
 

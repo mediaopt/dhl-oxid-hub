@@ -30,11 +30,13 @@ class PaymentMethod
 
     /**
      * @param Context $context
+     * @param string $methodName
+     * @param string $description
      */
-    public function addPaymentMethod(Context $context)
+    public function addPaymentMethod(Context $context, string $methodName, string $description)
     {
-        $paymentMethiodsExists = $this->getPaymentMethodId();
-        if ($paymentMethiodsExists) {
+        $paymentMethodExists = $this->getPaymentMethodId($methodName);
+        if ($paymentMethodExists) {
             return;
         }
 
@@ -46,8 +48,8 @@ class PaymentMethod
         $paymentData = [
             'id' => $methodId,
             'handlerIdentifier' => Payment::class,
-            'name' => 'Worldline',
-            'description' => 'Worldline full redirect payment method',
+            'name' => $methodName,
+            'description' => $description,
             'pluginId' => $pluginId,
             'afterOrderEnabled' => true,
             'active' => true
@@ -76,13 +78,14 @@ class PaymentMethod
     /**
      * @param bool $active
      * @param Context $context
+     * @param string $methodName
      */
-    public function setPaymentMethodStatus(bool $active, Context $context)
+    public function setPaymentMethodStatus(bool $active, Context $context, string $methodName)
     {
         /** @var EntityRepositoryInterface $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
 
-        $paymentMethodId = $this->getPaymentMethodId();
+        $paymentMethodId = $this->getPaymentMethodId($methodName);
         if (!$paymentMethodId) {
             return;
         }
@@ -96,9 +99,10 @@ class PaymentMethod
     }
 
     /**
+     * @param string $methodName
      * @return string|null
      */
-    private function getPaymentMethodId(): ?string
+    private function getPaymentMethodId(string $methodName): ?string
     {
         /** @var EntityRepositoryInterface $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
@@ -106,7 +110,7 @@ class PaymentMethod
         $paymentCriteria = (
         new Criteria())
             ->addFilter(new EqualsFilter('handlerIdentifier', Payment::class))
-            ->addFilter(new EqualsFilter('name', 'Worldline'));
+            ->addFilter(new EqualsFilter('name', $methodName));
         $paymentIds = $paymentRepository->searchIds($paymentCriteria, Context::createDefaultContext());
 
         if ($paymentIds->getTotal() === 0) {
