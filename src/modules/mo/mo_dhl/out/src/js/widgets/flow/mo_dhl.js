@@ -116,10 +116,19 @@
         },
         fixCountryToGermany: function () {
             var germany = $("#germany-oxid").text();
-            $("[name='deladr[oxaddress__oxcountryid]']").val(germany).attr('disabled', 'disabled').selectpicker('refresh');
+            var $hiddenInput = $('<input type="hidden" class="mo-hidden-deladr-country" name="deladr[oxaddress__oxcountryid]">');
+            $hiddenInput.val(germany);
+            $("[name='deladr[oxaddress__oxcountryid]']")
+                .val(germany)
+                .attr('disabled', 'disabled')
+                .selectpicker('refresh')
+                .parent()
+                .append($hiddenInput)
+            ;
         },
         loosenFixedCountry: function () {
-            $("[name='deladr[oxaddress__oxcountryid]']").removeAttr("disabled");
+            $("[name='deladr[oxaddress__oxcountryid]']").removeAttr("disabled").selectpicker('refresh');
+            $(".mo-hidden-deladr-country").remove();
         },
         addAddressChangeListener: function () {
             var self = this;
