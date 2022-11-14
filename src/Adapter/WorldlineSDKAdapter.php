@@ -8,6 +8,8 @@ use OnlinePayments\Sdk\Domain\CancelPaymentResponse;
 use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
 use OnlinePayments\Sdk\Domain\CaptureResponse;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
+use OnlinePayments\Sdk\Domain\CreateHostedTokenizationRequest;
+use OnlinePayments\Sdk\Domain\CreatePaymentRequest;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
 use OnlinePayments\Sdk\Domain\Order;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
@@ -182,6 +184,60 @@ class WorldlineSDKAdapter
 
         $hostedCheckoutClient = $merchantClient->hostedCheckout();
         return $hostedCheckoutClient->createHostedCheckout($hostedCheckoutRequest);
+    }
+
+    public function createHostedTokenizationRequest() {
+        $merchantClient = $this->getMerchantClient();
+        $paymentsClient = $merchantClient->payments();
+
+        $hostedTokenizationClient =
+            $merchantClient->hostedTokenization();
+        $createHostedTokenizationRequest =
+            new CreateHostedTokenizationRequest();
+        $createHostedTokenizationRequest->setVariant(
+            "template.html"
+        );
+
+        // Get the response for the HostedTokenizationClient
+        $createHostedTokenizationResponse = $hostedTokenizationClient
+            ->createHostedTokenization(
+                $createHostedTokenizationRequest
+
+            );
+        $hostedTokenizationId = $createHostedTokenizationResponse->getHostedTokenizationId();
+        $partialRedirectUrl = $createHostedTokenizationResponse->getPartialRedirectUrl();
+       return     $partialRedirectUrl;
+/*
+        $createPaymentRequest = new CreatePaymentRequest();
+
+        $order = new Order();
+
+        $amountOfMoney = new AmountOfMoney();
+        $amountOfMoney->setCurrencyCode("EUR");
+        $amountOfMoney->setAmount(100);
+        $order->setAmountOfMoney($amountOfMoney);
+
+        $createPaymentRequest->setOrder($order);
+
+        $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
+        $cardPaymentMethodSpecificInput->setTokenize(true);
+        $cardPaymentMethodSpecificInput->setToken($hostedTokenizationId);
+        $createPaymentRequest->setCardPaymentMethodSpecificInput(
+            $cardPaymentMethodSpecificInput
+        );
+
+        debug($createPaymentRequest->toJson());
+        try {
+            // Get the response for the PaymentsClient
+            $createPaymentResponse =
+                $paymentsClient->createPayment($createPaymentRequest);
+
+            debug($createPaymentResponse->toJson());
+        } catch (\Exception $e) {
+            debug($e->getMessage());
+            debug($e->getTraceAsString());
+        }*/
+
     }
 
     /**

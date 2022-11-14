@@ -3,6 +3,7 @@
 namespace MoptWorldline\Subscriber;
 
 use Monolog\Logger;
+use MoptWorldline\Adapter\WorldlineSDKAdapter;
 use MoptWorldline\Bootstrap\Form;
 use MoptWorldline\Service\AdminTranslate;
 use MoptWorldline\Service\Payment;
@@ -59,8 +60,17 @@ class OrderChangesSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
+            //StorefrontRenderEvent::class => 'test',
             OrderEvents::ORDER_WRITTEN_EVENT => 'onOrderWritten',
         ];
+    }
+
+    public function test(StorefrontRenderEvent $event)
+    {
+        $data = $event->getSalesChannelContext()->getSalesChannelId();
+        debug($data);
+        $aw = new WorldlineSDKAdapter($this->systemConfigService, $this->logger,$event->getSalesChannelContext()->getSalesChannelId());
+        $aw->createHostedTokenizationRequest();
     }
 
     /**

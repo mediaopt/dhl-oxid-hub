@@ -1,0 +1,29 @@
+{% sw_extends '@Storefront/storefront/component/payment/payment-method.html.twig' %}
+{% block component_payment_method_control %}
+    {{ parent() }}
+    {% if (payment.name == "Worldline Iframe") and (payment.id == selectedPaymentMethodId) %}
+        <div>
+            <div data-ajax-helper>
+                <div id="ajax-display"></div>
+            </div>
+        </div>
+
+        <div id="div-hosted-tokenization"></div>
+        <button onclick="submitForm()" type="button">submit</button>
+        <script src="https://payment.preprod.direct.worldline-solutions.com/hostedtokenization/js/client/tokenizer.min.js"/>
+        <script>
+            var tokenizer = new Tokenizer('https://payment.preprod.direct.worldline-solutions.com/hostedtokenization/tokenization/form/be956c41e6e1437798e5cfd9e384f4b6', 'div-hosted-tokenization', {hideCardholderName: false });
+            tokenizer.initialize().then(() => {
+            })
+            .catch(reason => {
+            })
+            function submitForm(){
+                tokenizer.submitTokenization().then((result) => {
+                    if (result.success) {
+                    } else {
+                    }
+                });
+            }
+        </script>
+    {% endif %}
+{% endblock %}

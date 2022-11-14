@@ -126,6 +126,13 @@ class Payment implements AsynchronousPaymentHandlerInterface
      */
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
     {
+        // Iframe handling
+        if ($this->isHostedTokenizationMethod($transaction))
+        {
+            //todo here should be iframe processing
+
+        }
+
         // Method that sends the return URL to the external gateway and gets a redirect URL back
         try {
             $redirectUrl = $this->sendReturnUrlToExternalGateway($transaction, $salesChannelContext->getContext());
@@ -138,6 +145,15 @@ class Payment implements AsynchronousPaymentHandlerInterface
         return new RedirectResponse($redirectUrl);
     }
 
+    /**
+     * @param AsyncPaymentTransactionStruct $transaction
+     * @return bool
+     */
+    private function isHostedTokenizationMethod(AsyncPaymentTransactionStruct $transaction): bool
+    {
+        $paymentMethodName = strtolower($transaction->getOrderTransaction()->getPaymentMethod()->getName());
+        return (bool) strpos($paymentMethodName, 'iframe');
+    }
     /**
      * @param AsyncPaymentTransactionStruct $transaction
      * @param Request $request
