@@ -1,4 +1,8 @@
 # Changelog
+
+## new version
+* bugfix: improved PHP 8.1 compatibility
+
 ## 1.6.7
 * bugfix: remove PackstationType.php
 * bugfix: prevent null parameter in html_entity_decode
