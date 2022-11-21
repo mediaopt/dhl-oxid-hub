@@ -27,7 +27,8 @@ class Form
     const WEBHOOK_SECRET_FIELD = 'MoptWorldline.config.webhookSecret';
     const LOG_LEVEL = 'MoptWorldline.config.logLevel';
     const AUTO_CAPTURE = 'MoptWorldline.config.autoCapture';
-    const AUTO_CAPTURE_DISABLED = 'disabled';
+    const AUTO_CANCEL = 'MoptWorldline.config.autoCancel';
+    const AUTO_PROCESSING_DISABLED = 'disabled';
     const AUTO_CAPTURE_IMMEDIATELY = '0_day';
     const AUTO_CAPTURE_1_DAY = '1_day';
     const AUTO_CAPTURE_2_DAYS = '2_days';
