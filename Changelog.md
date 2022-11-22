@@ -1,4 +1,8 @@
 # Changelog
+
+## new version
+* fixed country value not being sent in form
+
 ## 1.6.7
 * bugfix: remove PackstationType.php
 * bugfix: prevent null parameter in html_entity_decode
