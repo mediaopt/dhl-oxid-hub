@@ -1,4 +1,9 @@
 # Changelog
+
+## 1.6.8
+* bugfix: improved PHP 8.1 compatibility
+* fixed country value not being sent in form
+
 ## 1.6.7
 * bugfix: remove PackstationType.php
 * bugfix: prevent null parameter in html_entity_decode

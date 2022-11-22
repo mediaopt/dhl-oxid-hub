@@ -32,7 +32,7 @@ class Install
         static::cleanUp();
     }
 
-    protected function ensureDocumentsFolderExists()
+    protected static function ensureDocumentsFolderExists()
     {
         $path = Registry::get(ViewConfig::class)->getModulePath('mo_dhl', '') . 'documents';
         if (!is_dir($path)) {
@@ -251,7 +251,7 @@ class Install
 
     /**
      */
-    protected function alterColumns()
+    protected static function alterColumns()
     {
         self::alterColumn('oxorder', 'MO_DHL_PARTICIPATION', 'CHAR(5)');
         self::alterColumn('oxdeliveryset', 'MO_DHL_PARTICIPATION', 'CHAR(5)');
