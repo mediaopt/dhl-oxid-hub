@@ -1,6 +1,6 @@
 # Changelog
 
-## new version
+## 1.6.8
 * bugfix: improved PHP 8.1 compatibility
 * fixed country value not being sent in form
 
