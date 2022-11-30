@@ -141,22 +141,35 @@ class PaymentHandler
     public function cancelPayment(string $hostedCheckoutId): bool
     {
         $status = $this->updatePaymentTransactionStatus($hostedCheckoutId);
-        if (!in_array($status, Payment::STATUS_PENDING_CAPTURE)) {
-            $this->log('operationIsNotPossibleDueToCurrentStatus' . $status, Logger::ERROR);
-            return false;
+
+        //todo test this
+        switch ($status) {
+            // For this status we should cancel order transaction and make an API call
+            case in_array($status, Payment::STATUS_PENDING_CAPTURE): {
+                $cancelResponse = $this->adapter->cancelPayment($hostedCheckoutId);
+                $this->log('cancelPayment', 0, $cancelResponse->toJson());
+                $newStatus = $this->adapter->getCancelStatus($cancelResponse);
+
+                $this->saveOrderCustomFields($newStatus, $hostedCheckoutId);
+                $this->updateOrderTransactionState($newStatus, $hostedCheckoutId);
+
+                if (!in_array($newStatus, Payment::STATUS_PAYMENT_CANCELLED)) {
+                    return false;
+                }
+                return true;
+            }
+            // For the next statuses we should cancel order transaction only
+            case in_array($status, Payment::STATUS_PAYMENT_CREATED):
+            case in_array($status, Payment::STATUS_REDIRECTED):
+            case in_array($status, Payment::STATUS_AUTHORIZATION_REQUESTED):
+            {
+                $this->updateOrderTransactionState(Payment::STATUS_PAYMENT_CANCELLED[0], $hostedCheckoutId);
+                return true;
+            }
         }
 
-        $cancelResponse = $this->adapter->cancelPayment($hostedCheckoutId);
-        $this->log('cancelPayment', 0, $cancelResponse->toJson());
-        $newStatus = $this->adapter->getCancelStatus($cancelResponse);
-
-        $this->saveOrderCustomFields($newStatus, $hostedCheckoutId);
-        $this->updateOrderTransactionState($newStatus, $hostedCheckoutId);
-
-        if (!in_array($newStatus, Payment::STATUS_PAYMENT_CANCELLED)) {
-            return false;
-        }
-        return true;
+        $this->log('operationIsNotPossibleDueToCurrentStatus' . $status, Logger::ERROR);
+        return false;
     }
 
     /**

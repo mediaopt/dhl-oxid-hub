@@ -35,10 +35,6 @@ class Payment implements AsynchronousPaymentHandlerInterface
     private Logger $logger;
     private OrderTransactionStateHandler $transactionStateHandler;
 
-    // todo cancel 50, 51, 55 no API request
-    // 0 46 no request
-    // 5 56 with API request
-
     public const STATUS_PAYMENT_CREATED = [0];                  //open
     public const STATUS_PAYMENT_CANCELLED = [1, 6, 61, 62, 64, 75]; //cancelled
     public const STATUS_PAYMENT_REJECTED = [2, 57, 59, 73, 83]; //failed
