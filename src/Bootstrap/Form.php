@@ -26,6 +26,7 @@ class Form
     const WEBHOOK_KEY_FIELD  = 'MoptWorldline.config.webhookKey';
     const WEBHOOK_SECRET_FIELD = 'MoptWorldline.config.webhookSecret';
     const LOG_LEVEL = 'MoptWorldline.config.logLevel';
+    const IFRAME_TEMPLATE_NAME = 'MoptWorldline.config.iframeTemplateName';
     const AUTO_CAPTURE = 'MoptWorldline.config.autoCapture';
     const AUTO_CAPTURE_DISABLED = 'disabled';
     const AUTO_CAPTURE_IMMEDIATELY = '0_day';
@@ -44,7 +45,10 @@ class Form
     const CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_READABLE_STATUS = 'payment_transaction_readable_status';
     const CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID = 'worldline_payment_method_id';
 
+    /** @var string Field name for the cart form */
+    const WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID_FIELD = 'moptWorldlineHostedTokenizationId';
 
     /** @var string Field name for the plugin session key */
     const SESSION_OPERATIONS_LOCK = 'order_locked';
+    const SESSION_TOKENISATION_ID = 'worldline_hosted_tokenisation_key';
 }

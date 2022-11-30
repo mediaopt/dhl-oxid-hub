@@ -5,6 +5,7 @@ namespace MoptWorldline\Service;
 use Monolog\Logger;
 use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
+use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
@@ -103,6 +104,28 @@ class PaymentHandler
         $status = Payment::STATUS_PAYMENT_CREATED[0];
         $this->saveOrderCustomFields($status, $hostedCheckoutResponse->getHostedCheckoutId());
         return $hostedCheckoutResponse;
+    }
+
+    /**
+     * @param int $worldlinePaymentMethodId
+     * @return CreateHostedCheckoutResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function createHostedTokenizationPayment(string $hostedTokenizationId): CreatePaymentResponse
+    {
+        $order = $this->orderTransaction->getOrder();
+        $amountTotal = $order->getAmountTotal();
+        $currencyISO = $this->getCurrencyISO();
+
+        $this->log(AdminTranslate::trans($this->translator->getLocale(), 'buildingHostdTokenizationOrder'));
+        debug('createHostedTokenizationPayment - ok');
+
+        $hostedTokenizationPaymentResponse = $this->adapter->createHostedTokenizationPayment($amountTotal, $currencyISO, $hostedTokenizationId);
+        //$status = Payment::STATUS_PAYMENT_CREATED[0];
+        //$this->saveOrderCustomFields($status, $hostedCheckoutResponse->getHostedCheckoutId());
+
+        return $hostedTokenizationPaymentResponse;
     }
 
     /**

@@ -7,9 +7,11 @@ use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\CancelPaymentResponse;
 use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
 use OnlinePayments\Sdk\Domain\CaptureResponse;
+use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
 use OnlinePayments\Sdk\Domain\CreateHostedTokenizationRequest;
 use OnlinePayments\Sdk\Domain\CreatePaymentRequest;
+use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
 use OnlinePayments\Sdk\Domain\Order;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
@@ -170,7 +172,7 @@ class WorldlineSDKAdapter
         $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
 
         if ($worldlinePaymentMethodId != 0) {
-            $paymentProductFilter= new PaymentProductFilter();
+            $paymentProductFilter = new PaymentProductFilter();
             $paymentProductFilter->setProducts([$worldlinePaymentMethodId]);
 
             $paymentProductFiltersHostedCheckout = new PaymentProductFiltersHostedCheckout();
@@ -186,58 +188,54 @@ class WorldlineSDKAdapter
         return $hostedCheckoutClient->createHostedCheckout($hostedCheckoutRequest);
     }
 
-    public function createHostedTokenizationRequest() {
+    public function createHostedTokenizationUrl()
+    {
+        $iframeTemplateName = $this->getPluginConfig(Form::IFRAME_TEMPLATE_NAME);
+
         $merchantClient = $this->getMerchantClient();
-        $paymentsClient = $merchantClient->payments();
+        $hostedTokenizationClient = $merchantClient->hostedTokenization();
+        $createHostedTokenizationRequest = new CreateHostedTokenizationRequest();
+        $createHostedTokenizationRequest->setVariant($iframeTemplateName);
 
-        $hostedTokenizationClient =
-            $merchantClient->hostedTokenization();
-        $createHostedTokenizationRequest =
-            new CreateHostedTokenizationRequest();
-        $createHostedTokenizationRequest->setVariant(
-            "template.html"
-        );
-
-        // Get the response for the HostedTokenizationClient
         $createHostedTokenizationResponse = $hostedTokenizationClient
-            ->createHostedTokenization(
-                $createHostedTokenizationRequest
+            ->createHostedTokenization($createHostedTokenizationRequest);
+        $tok = $createHostedTokenizationResponse->getHostedTokenizationId();
+        debug($tok . 'tok!');
+        return 'https://payment.' . $createHostedTokenizationResponse->getPartialRedirectUrl();
+    }
 
-            );
-        $hostedTokenizationId = $createHostedTokenizationResponse->getHostedTokenizationId();
-        $partialRedirectUrl = $createHostedTokenizationResponse->getPartialRedirectUrl();
-       return     $partialRedirectUrl;
-/*
-        $createPaymentRequest = new CreatePaymentRequest();
-
-        $order = new Order();
+    public function createHostedTokenizationPayment(float $amountTotal, string $currencyISO, string $hostedTokenizationId): CreatePaymentResponse
+    {
+        $merchantClient = $this->getMerchantClient();
 
         $amountOfMoney = new AmountOfMoney();
-        $amountOfMoney->setCurrencyCode("EUR");
-        $amountOfMoney->setAmount(100);
+        $amountOfMoney->setCurrencyCode($currencyISO);
+        $amountOfMoney->setAmount($amountTotal * 100);
+
+        $order = new Order();
         $order->setAmountOfMoney($amountOfMoney);
 
+        $createPaymentRequest = new CreatePaymentRequest();
         $createPaymentRequest->setOrder($order);
 
+        $createPaymentRequest->setHostedTokenizationId($hostedTokenizationId);
+        /*
         $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
         $cardPaymentMethodSpecificInput->setTokenize(true);
         $cardPaymentMethodSpecificInput->setToken($hostedTokenizationId);
         $createPaymentRequest->setCardPaymentMethodSpecificInput(
             $cardPaymentMethodSpecificInput
-        );
+        );/**/
 
+        // Get the response for the PaymentsClient
+        $paymentsClient = $merchantClient->payments();
+
+        debug('createHostedTokenizationPayment adapter - ok');
+        debug($hostedTokenizationId . ' - tokId');
         debug($createPaymentRequest->toJson());
-        try {
-            // Get the response for the PaymentsClient
-            $createPaymentResponse =
-                $paymentsClient->createPayment($createPaymentRequest);
-
-            debug($createPaymentResponse->toJson());
-        } catch (\Exception $e) {
-            debug($e->getMessage());
-            debug($e->getTraceAsString());
-        }*/
-
+        $createPaymentResponse = $paymentsClient->createPayment($createPaymentRequest);
+        debug($createPaymentResponse->toJson());
+        return $createPaymentResponse;
     }
 
     /**

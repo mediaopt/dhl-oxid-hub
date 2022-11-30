@@ -35,6 +35,10 @@
             <name>returnUrl</name>
             <label>Return URL</label>
         </input-field>
+        <input-field>
+            <name>iframeTemplateName</name>
+            <label>Iframe template name</label>
+        </input-field>
         <input-field type="bool">
             <name>isLiveMode</name>
             <defaultValue>false</defaultValue>

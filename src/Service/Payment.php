@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Monolog\Logger;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use MoptWorldline\Bootstrap\Form;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -34,6 +35,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
     private TranslatorInterface $translator;
     private Logger $logger;
     private OrderTransactionStateHandler $transactionStateHandler;
+    private Session $session;
 
     public const STATUS_PAYMENT_CREATED = [0];                  //open
     public const STATUS_PAYMENT_CANCELLED = [1, 6, 61, 62, 64, 75]; //cancelled
@@ -100,6 +102,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
      * @param TranslatorInterface $translator
      * @param Logger $logger
      * @param OrderTransactionStateHandler $transactionStateHandler
+     * @param Session $session
      */
     public function __construct(
         SystemConfigService          $systemConfigService,
@@ -107,7 +110,8 @@ class Payment implements AsynchronousPaymentHandlerInterface
         EntityRepositoryInterface    $orderRepository,
         TranslatorInterface          $translator,
         Logger                       $logger,
-        OrderTransactionStateHandler $transactionStateHandler
+        OrderTransactionStateHandler $transactionStateHandler,
+        Session                      $session
     )
     {
         $this->systemConfigService = $systemConfigService;
@@ -116,6 +120,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
         $this->translator = $translator;
         $this->logger = $logger;
         $this->transactionStateHandler = $transactionStateHandler;
+        $this->session = $session;
     }
 
     /**
@@ -126,16 +131,16 @@ class Payment implements AsynchronousPaymentHandlerInterface
      */
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
     {
-        // Iframe handling
-        if ($this->isHostedTokenizationMethod($transaction))
-        {
-            //todo here should be iframe processing
-
-        }
-
         // Method that sends the return URL to the external gateway and gets a redirect URL back
         try {
-            $redirectUrl = $this->sendReturnUrlToExternalGateway($transaction, $salesChannelContext->getContext());
+            if ($this->isHostedTokenizationMethod($transaction)) {
+                $hostedTokenizationId = $this->getHostedTokenizationId($dataBag);
+                debug($hostedTokenizationId);
+                //todo here should be iframe processing
+                $this->hostedTokenization($transaction, $salesChannelContext->getContext(), $hostedTokenizationId);
+            } else {
+                $redirectUrl = $this->sendReturnUrlToExternalGateway($transaction, $salesChannelContext->getContext());
+            }
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
@@ -152,8 +157,25 @@ class Payment implements AsynchronousPaymentHandlerInterface
     private function isHostedTokenizationMethod(AsyncPaymentTransactionStruct $transaction): bool
     {
         $paymentMethodName = strtolower($transaction->getOrderTransaction()->getPaymentMethod()->getName());
-        return (bool) strpos($paymentMethodName, 'iframe');
+        return (bool)strpos($paymentMethodName, 'iframe');
     }
+
+    /**
+     * @param RequestDataBag $dataBag
+     * @return false|string
+     */
+    private function getHostedTokenizationId(RequestDataBag $dataBag)
+    {
+        if ($hostedTokenizationsId = $dataBag->get(Form::WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID_FIELD)) {
+            return $hostedTokenizationsId;
+        }
+        if ($hostedTokenizationsId = $this->session->get(Form::SESSION_TOKENISATION_ID)) {
+            $this->session->set(Form::SESSION_TOKENISATION_ID, null);
+            return $hostedTokenizationsId;
+        }
+        return false;
+    }
+
     /**
      * @param AsyncPaymentTransactionStruct $transaction
      * @param Request $request
@@ -200,9 +222,8 @@ class Payment implements AsynchronousPaymentHandlerInterface
     private function checkSuccessStatus(string $transactionId, int $status)
     {
         if (in_array($status, self::STATUS_PAYMENT_CREATED)
-            || in_array($status, self::STATUS_PAYMENT_REJECTED))
-        {
-            $this->finalizeError($transactionId, 'Status is '. $status);
+            || in_array($status, self::STATUS_PAYMENT_REJECTED)) {
+            $this->finalizeError($transactionId, 'Status is ' . $status);
         }
     }
 
@@ -237,6 +258,37 @@ class Payment implements AsynchronousPaymentHandlerInterface
             }
 
             $hostedCheckoutResponse = $handler->createPayment($worldlinePaymentMethodId);
+        } catch (\Exception $e) {
+            throw new AsyncPaymentProcessException(
+                $transactionId,
+                \sprintf('An error occurred during the communication with Worldline%s%s', \PHP_EOL, $e->getMessage())
+            );
+        }
+
+        $link = $hostedCheckoutResponse->getRedirectUrl();
+        if ($link === null) {
+            throw new AsyncPaymentProcessException($transactionId, 'No redirect link provided by Worldline');
+        }
+
+        return $link;
+    }
+
+    /**
+     * @param AsyncPaymentTransactionStruct $transaction
+     * @param Context $context
+     * @return string
+     * @throws \Exception
+     */
+    private function hostedTokenization(AsyncPaymentTransactionStruct $transaction, Context $context, $hostedTokenizationId)
+    {
+        $transactionId = $transaction->getOrderTransaction()->getId();
+        $handler = $this->getHandler($transactionId, $context);
+
+        try {
+            $customFields = $transaction->getOrderTransaction()->getPaymentMethod()->getCustomFields();
+            debug('hostedTokenization - ok');
+            $hostedCheckoutResponse = $handler->createHostedTokenizationPayment($hostedTokenizationId);
+
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(
                 $transactionId,
