@@ -17,9 +17,13 @@
             $("#showShipAddress")
                 .parent()
                 .after(finderButton.parent());
-            $('#moDHLFinder').on('shown.bs.modal', function () {
-                self.tailorer.dhlfinder.resizeMap();
-            });
+            $('#moDHLFinder')
+                .on('shown.bs.modal', function () {
+                    self.tailorer.dhlfinder.resizeMap();
+                })
+                .on('hidden.bs.modal', function () {
+                    self.closeInfoBoxes();
+                });
         },
         initialize: function (tailorer) {
             var self = this;
@@ -32,36 +36,50 @@
                 ), true);
                 return false;
             });
+            document.querySelector('.moDhlCloseOverlays').addEventListener('click', () => self.closeInfoBoxes());
         },
         openInfoBoxes: [],
+        activeMarker: [],
+        showAdditionalInformation: function(providerId, address) {
+            var self = this;
+            document.querySelectorAll('.moDhlMapOverlays').forEach(overlay => {
+                overlay.classList.remove('hidden');
+            });
+            document.querySelector('.moDhlMapSelectProvider').id = providerId;
+            document.querySelector('.moDhlAddressText span').innerText = address;
+            self.activeMarker.forEach(mark => {
+                var icon = mark.getIcon();
+                mark.setIcon(icon.replace('icon-', 'marked_icon-'));
+            });
+        },
+        hideAdditionalInformation: function() {
+            document.querySelectorAll('.moDhlMapOverlays').forEach(overlay => {
+                overlay.classList.add('hidden');
+            });
+            document.querySelector('.moDhlMapSelectProvider').removeAttribute('id');
+        },
+        closeInfoBoxes: function () {
+            var self = this;
+            self.openInfoBoxes.forEach(function (box) {
+                box.close();
+            });
+            self.hideAdditionalInformation();
+            self.activeMarker.forEach(mark => {
+                var icon = mark.getIcon();
+                mark.setIcon(icon.replace('marked_icon-', 'icon-'));
+            });
+            self.openInfoBoxes = [];
+            self.activeMarker = [];
+        },
         addInfoBox: function (provider, marker) {
             var self = this;
             var providerId = "provider_" + provider.id;
-            var address = provider.address.street + " " + provider.address.streetNo + "<br/>"
+            var address = marker.title + ", " + provider.address.street + " " + provider.address.streetNo + ", "
                 + provider.address.zip + " "
                 + provider.address.city + (provider.address.district !== null ? "-" + provider.address.district : '')
                 + (provider.remark.length ? "<br/><br/>" + provider.remark : '');
-            var providerIcon = 'img.' + provider.type.toLowerCase();
-            var providerLabel = provider.type;
             var dhlWindow = $("#moDHLWindow");
-            var window = dhlWindow
-                .clone().removeAttr('id')
-                .find('img').hide().end()
-                .find(providerIcon).show().end()
-                .find('h4').text(providerLabel + ' ' + mo_dhl.getProviderId(provider)).end()
-                .find('address').html(address).end()
-                .find('button').attr('id', providerId).end();
-            $(dhlWindow.find('address')).addClass('moAddressInformation');
-
-            provider.services.forEach(function (service) {
-                if (service === 'PARKING') {
-                    window.find('img.parking').show();
-                    return;
-                }
-                if (service === 'HANDICAPPED_ACCESS') {
-                    window.find('img.wheelchair').show();
-                }
-            });
+            var window = dhlWindow.clone().removeAttr('id');
 
             if (provider.type === 'Filiale' || provider.type === 'Paketshop') {
                 window.find('h5').show().css('margin-bottom', '0px');
@@ -90,18 +108,18 @@
                 content: window.html()
             });
             marker.addListener('click', function () {
-                self.openInfoBoxes.forEach(function (box) {
-                    box.close();
-                });
+                self.closeInfoBoxes();
                 info.open(self.map, marker);
+                google.maps.event.addListener(info, 'closeclick', () => {
+                    self.closeInfoBoxes();
+                });
+                self.activeMarker = [marker];
+                self.showAdditionalInformation(providerId, address);
                 self.openInfoBoxes = [info];
                 google.maps.event.addListener(info, 'domready', function() {
                     $('#provider_' + provider.id).click(function () {
                         mo_dhl.apply(provider);
-                        self.openInfoBoxes.forEach(function (box) {
-                            box.close();
-                        });
-                        self.openInfoBoxes = [];
+                        self.closeInfoBoxes();
                         $('#moDHLFinder').modal('hide');
                     });
                 });
