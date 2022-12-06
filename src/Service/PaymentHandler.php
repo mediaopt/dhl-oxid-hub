@@ -101,29 +101,34 @@ class PaymentHandler
 
         $this->log(AdminTranslate::trans($this->translator->getLocale(), 'buildingOrder'));
         $hostedCheckoutResponse = $this->adapter->createPayment($amountTotal, $currencyISO, $worldlinePaymentMethodId);
-        $status = Payment::STATUS_PAYMENT_CREATED[0];
-        $this->saveOrderCustomFields($status, $hostedCheckoutResponse->getHostedCheckoutId());
+
+        $this->saveOrderCustomFields(
+            Payment::STATUS_PAYMENT_CREATED[0],
+            $hostedCheckoutResponse->getHostedCheckoutId()
+        );
         return $hostedCheckoutResponse;
     }
 
     /**
-     * @param int $worldlinePaymentMethodId
-     * @return CreateHostedCheckoutResponse
+     * @param array $iframeData
+     * @return CreatePaymentResponse
      * @throws \Doctrine\DBAL\Driver\Exception
      * @throws \Doctrine\DBAL\Exception
      */
-    public function createHostedTokenizationPayment(string $hostedTokenizationId): CreatePaymentResponse
+    public function createHostedTokenizationPayment(array $iframeData): CreatePaymentResponse
     {
         $order = $this->orderTransaction->getOrder();
         $amountTotal = $order->getAmountTotal();
         $currencyISO = $this->getCurrencyISO();
 
         $this->log(AdminTranslate::trans($this->translator->getLocale(), 'buildingHostdTokenizationOrder'));
-        debug('createHostedTokenizationPayment - ok');
+        $hostedTokenizationPaymentResponse = $this->adapter->createHostedTokenizationPayment($amountTotal, $currencyISO, $iframeData);
 
-        $hostedTokenizationPaymentResponse = $this->adapter->createHostedTokenizationPayment($amountTotal, $currencyISO, $hostedTokenizationId);
-        //$status = Payment::STATUS_PAYMENT_CREATED[0];
-        //$this->saveOrderCustomFields($status, $hostedCheckoutResponse->getHostedCheckoutId());
+        $id = explode('_', $hostedTokenizationPaymentResponse->getPayment()->getId());
+        $this->saveOrderCustomFields(
+            $hostedTokenizationPaymentResponse->getPayment()->getStatusOutput()->getStatusCode(),
+            $id[0]
+        );
 
         return $hostedTokenizationPaymentResponse;
     }

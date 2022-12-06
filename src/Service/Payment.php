@@ -134,12 +134,16 @@ class Payment implements AsynchronousPaymentHandlerInterface
         // Method that sends the return URL to the external gateway and gets a redirect URL back
         try {
             if ($this->isHostedTokenizationMethod($transaction)) {
-                $hostedTokenizationId = $this->getHostedTokenizationId($dataBag);
-                debug($hostedTokenizationId);
-                //todo here should be iframe processing
-                $this->hostedTokenization($transaction, $salesChannelContext->getContext(), $hostedTokenizationId);
+                $redirectUrl = $this->getHostedTokenizationRedirectUrl(
+                    $transaction,
+                    $salesChannelContext->getContext(),
+                    $this->getIframeData($dataBag)
+                );
             } else {
-                $redirectUrl = $this->sendReturnUrlToExternalGateway($transaction, $salesChannelContext->getContext());
+                $redirectUrl = $this->getHostedCheckoutRedirectUrl(
+                    $transaction,
+                    $salesChannelContext->getContext()
+                );
             }
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(
@@ -162,16 +166,24 @@ class Payment implements AsynchronousPaymentHandlerInterface
 
     /**
      * @param RequestDataBag $dataBag
-     * @return false|string
+     * @return false|array
      */
-    private function getHostedTokenizationId(RequestDataBag $dataBag)
+    private function getIframeData(RequestDataBag $dataBag)
     {
-        if ($hostedTokenizationsId = $dataBag->get(Form::WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID_FIELD)) {
-            return $hostedTokenizationsId;
+        $iframeData = [];
+        if (!is_null($dataBag->get(Form::WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID))) {
+            foreach (Form::WORLDLINE_CART_FORM_KEYS as $key) {
+                $iframeData[$key] = $dataBag->get($key);
+                if (is_null($iframeData[$key])) {
+                    return false;
+                }
+            }
+            return $iframeData;
         }
-        if ($hostedTokenizationsId = $this->session->get(Form::SESSION_TOKENISATION_ID)) {
-            $this->session->set(Form::SESSION_TOKENISATION_ID, null);
-            return $hostedTokenizationsId;
+
+        if ($iframeData = $this->session->get(Form::SESSION_IFRAME_DATA)) {
+            $this->session->set(Form::SESSION_IFRAME_DATA, null);
+            return $iframeData;
         }
         return false;
     }
@@ -245,7 +257,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
      * @return string
      * @throws \Exception
      */
-    private function sendReturnUrlToExternalGateway(AsyncPaymentTransactionStruct $transaction, Context $context)
+    private function getHostedCheckoutRedirectUrl(AsyncPaymentTransactionStruct $transaction, Context $context)
     {
         $transactionId = $transaction->getOrderTransaction()->getId();
         $handler = $this->getHandler($transactionId, $context);
@@ -276,19 +288,17 @@ class Payment implements AsynchronousPaymentHandlerInterface
     /**
      * @param AsyncPaymentTransactionStruct $transaction
      * @param Context $context
+     * @param array $iframeData
      * @return string
-     * @throws \Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
-    private function hostedTokenization(AsyncPaymentTransactionStruct $transaction, Context $context, $hostedTokenizationId)
+    private function getHostedTokenizationRedirectUrl(AsyncPaymentTransactionStruct $transaction, Context $context, array $iframeData)
     {
         $transactionId = $transaction->getOrderTransaction()->getId();
         $handler = $this->getHandler($transactionId, $context);
 
         try {
-            $customFields = $transaction->getOrderTransaction()->getPaymentMethod()->getCustomFields();
-            debug('hostedTokenization - ok');
-            $hostedCheckoutResponse = $handler->createHostedTokenizationPayment($hostedTokenizationId);
-
+            $link = $handler->createHostedTokenizationPayment($iframeData)->getMerchantAction()->getRedirectData()->getRedirectURL();
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(
                 $transactionId,
@@ -296,7 +306,6 @@ class Payment implements AsynchronousPaymentHandlerInterface
             );
         }
 
-        $link = $hostedCheckoutResponse->getRedirectUrl();
         if ($link === null) {
             throw new AsyncPaymentProcessException($transactionId, 'No redirect link provided by Worldline');
         }

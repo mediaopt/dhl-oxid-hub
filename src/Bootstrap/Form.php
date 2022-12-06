@@ -46,9 +46,27 @@ class Form
     const CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID = 'worldline_payment_method_id';
 
     /** @var string Field name for the cart form */
-    const WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID_FIELD = 'moptWorldlineHostedTokenizationId';
+    const WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID = 'moptWorldlineHostedTokenizationId';
+    const WORLDLINE_CART_FORM_BROWSER_DATA_COLOR_DEPTH = 'moptWorldlineBrowserDataColorDepth';
+    const WORLDLINE_CART_FORM_BROWSER_DATA_JAVA_ENABLED = 'moptWorldlineBrowserDataJavaEnabled';
+    const WORLDLINE_CART_FORM_LOCALE = 'moptWorldlineLocale';
+    const WORLDLINE_CART_FORM_BROWSER_DATA_SCREEN_HEIGHT = 'moptWorldlineBrowserDataScreenHeight';
+    const WORLDLINE_CART_FORM_BROWSER_DATA_SCREEN_WIDTH = 'moptWorldlineBrowserDataScreenWidth';
+    const WORLDLINE_CART_FORM_TIMZONE_OFFSET_MINUTES = 'moptWorldlineTimezoneOffsetUtcMinutes';
+    const WORLDLINE_CART_FORM_USER_AGENT = 'moptWorldlineUserAgent';
+
+    const WORLDLINE_CART_FORM_KEYS = [
+        self::WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID,
+        self::WORLDLINE_CART_FORM_BROWSER_DATA_COLOR_DEPTH,
+        self::WORLDLINE_CART_FORM_BROWSER_DATA_JAVA_ENABLED,
+        self::WORLDLINE_CART_FORM_LOCALE,
+        self::WORLDLINE_CART_FORM_BROWSER_DATA_SCREEN_HEIGHT,
+        self::WORLDLINE_CART_FORM_BROWSER_DATA_SCREEN_WIDTH,
+        self::WORLDLINE_CART_FORM_TIMZONE_OFFSET_MINUTES,
+        self::WORLDLINE_CART_FORM_USER_AGENT,
+    ];
 
     /** @var string Field name for the plugin session key */
     const SESSION_OPERATIONS_LOCK = 'order_locked';
-    const SESSION_TOKENISATION_ID = 'worldline_hosted_tokenisation_key';
+    const SESSION_IFRAME_DATA = 'worldline_iframe_data';
 }

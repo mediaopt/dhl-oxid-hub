@@ -4,6 +4,7 @@ namespace MoptWorldline\Adapter;
 
 use Monolog\Logger;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
+use OnlinePayments\Sdk\Domain\BrowserData;
 use OnlinePayments\Sdk\Domain\CancelPaymentResponse;
 use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
 use OnlinePayments\Sdk\Domain\CaptureResponse;
@@ -12,14 +13,18 @@ use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
 use OnlinePayments\Sdk\Domain\CreateHostedTokenizationRequest;
 use OnlinePayments\Sdk\Domain\CreatePaymentRequest;
 use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
+use OnlinePayments\Sdk\Domain\Customer;
+use OnlinePayments\Sdk\Domain\CustomerDevice;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
 use OnlinePayments\Sdk\Domain\Order;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use OnlinePayments\Sdk\Domain\PaymentProductFilter;
 use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
 use OnlinePayments\Sdk\Domain\PaymentReferences;
+use OnlinePayments\Sdk\Domain\RedirectionData;
 use OnlinePayments\Sdk\Domain\RefundRequest;
 use OnlinePayments\Sdk\Domain\RefundResponse;
+use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
 use Shopware\Core\Kernel;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -199,14 +204,39 @@ class WorldlineSDKAdapter
 
         $createHostedTokenizationResponse = $hostedTokenizationClient
             ->createHostedTokenization($createHostedTokenizationRequest);
-        $tok = $createHostedTokenizationResponse->getHostedTokenizationId();
-        debug($tok . 'tok!');
+
         return 'https://payment.' . $createHostedTokenizationResponse->getPartialRedirectUrl();
     }
 
-    public function createHostedTokenizationPayment(float $amountTotal, string $currencyISO, string $hostedTokenizationId): CreatePaymentResponse
+    /**
+     * @param float $amountTotal
+     * @param string $currencyISO
+     * @param array $iframeData
+     * @return CreatePaymentResponse
+     * @throws \Exception
+     */
+    public function createHostedTokenizationPayment(float $amountTotal, string $currencyISO, array $iframeData): CreatePaymentResponse
     {
         $merchantClient = $this->getMerchantClient();
+        $hostedTokenization = $merchantClient->hostedTokenization()->getHostedTokenization($iframeData[Form::WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID]);
+        $token = $hostedTokenization->getToken()->getId();
+        $merchantClient = $this->getMerchantClient();
+
+        $browserData = new BrowserData();
+        $browserData->setColorDepth($iframeData[Form::WORLDLINE_CART_FORM_BROWSER_DATA_COLOR_DEPTH]);
+        $browserData->setJavaEnabled($iframeData[Form::WORLDLINE_CART_FORM_BROWSER_DATA_JAVA_ENABLED]);
+        $browserData->setScreenHeight($iframeData[Form::WORLDLINE_CART_FORM_BROWSER_DATA_SCREEN_HEIGHT]);
+        $browserData->setScreenWidth($iframeData[Form::WORLDLINE_CART_FORM_BROWSER_DATA_SCREEN_WIDTH]);
+
+        $customerDevice = new CustomerDevice();
+        $customerDevice->setLocale($iframeData[Form::WORLDLINE_CART_FORM_LOCALE]);
+        $customerDevice->setTimezoneOffsetUtcMinutes($iframeData[Form::WORLDLINE_CART_FORM_TIMZONE_OFFSET_MINUTES]);
+        $customerDevice->setAcceptHeader("*\/*");
+        $customerDevice->setUserAgent($iframeData[Form::WORLDLINE_CART_FORM_USER_AGENT]);
+        $customerDevice->setBrowserData($browserData);
+
+        $customer = new Customer();
+        $customer->setDevice($customerDevice);
 
         $amountOfMoney = new AmountOfMoney();
         $amountOfMoney->setCurrencyCode($currencyISO);
@@ -214,27 +244,32 @@ class WorldlineSDKAdapter
 
         $order = new Order();
         $order->setAmountOfMoney($amountOfMoney);
+        $order->setCustomer($customer);
+
+        $returnUrl = $this->getPluginConfig(Form::RETURN_URL_FIELD);
+        $redirectionData = new RedirectionData();
+        $redirectionData->setReturnUrl($returnUrl);
+
+        $threeDSecure = new ThreeDSecure();
+        $threeDSecure->setRedirectionData($redirectionData);
+        $threeDSecure->setChallengeIndicator('challenge-required');
+
+        $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
+        $cardPaymentMethodSpecificInput->setAuthorizationMode("FINAL_AUTHORIZATION");
+        $cardPaymentMethodSpecificInput->setToken($token);
+        $cardPaymentMethodSpecificInput->setPaymentProductId(1);
+        $cardPaymentMethodSpecificInput->setTokenize(false);
+        $cardPaymentMethodSpecificInput->setThreeDSecure($threeDSecure);
+        $cardPaymentMethodSpecificInput->setReturnUrl($returnUrl);
 
         $createPaymentRequest = new CreatePaymentRequest();
         $createPaymentRequest->setOrder($order);
-
-        $createPaymentRequest->setHostedTokenizationId($hostedTokenizationId);
-        /*
-        $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
-        $cardPaymentMethodSpecificInput->setTokenize(true);
-        $cardPaymentMethodSpecificInput->setToken($hostedTokenizationId);
-        $createPaymentRequest->setCardPaymentMethodSpecificInput(
-            $cardPaymentMethodSpecificInput
-        );/**/
+        $createPaymentRequest->setCardPaymentMethodSpecificInput($cardPaymentMethodSpecificInput);
 
         // Get the response for the PaymentsClient
         $paymentsClient = $merchantClient->payments();
-
-        debug('createHostedTokenizationPayment adapter - ok');
-        debug($hostedTokenizationId . ' - tokId');
-        debug($createPaymentRequest->toJson());
         $createPaymentResponse = $paymentsClient->createPayment($createPaymentRequest);
-        debug($createPaymentResponse->toJson());
+
         return $createPaymentResponse;
     }
 

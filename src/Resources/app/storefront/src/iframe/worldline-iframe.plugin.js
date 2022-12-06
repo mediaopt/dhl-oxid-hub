@@ -32,13 +32,28 @@ export default class WorldlineIframePlugin extends Plugin {
     }
 
     _fetch() {
-        this.tokenizer.submitTokenization().then((result) => {
+        this.tokenizer.submitTokenization({ storePermanently:false }).then((result) => {
             if (result.success) {
-                var newElement = '<input type="hidden" name="moptWorldlineHostedTokenizationId" value="' + result.hostedTokenizationId + '">';
-                this.confirmForm.innerHTML+= newElement;
+                this._createHiddenInput(this.confirmForm, "moptWorldlineHostedTokenizationId",  result.hostedTokenizationId);
+                this._createHiddenInput(this.confirmForm, "moptWorldlineBrowserDataColorDepth", screen.colorDepth);
+                this._createHiddenInput(this.confirmForm, "moptWorldlineBrowserDataScreenHeight", screen.height);
+                this._createHiddenInput(this.confirmForm, "moptWorldlineBrowserDataScreenWidth", screen.width);
+                this._createHiddenInput(this.confirmForm, "moptWorldlineBrowserDataJavaEnabled", navigator.javaEnabled());
+                this._createHiddenInput(this.confirmForm, "moptWorldlineLocale", navigator.language);
+                this._createHiddenInput(this.confirmForm, "moptWorldlineUserAgent", navigator.userAgent);
+                this._createHiddenInput(this.confirmForm, "moptWorldlineTimezoneOffsetUtcMinutes", new Date().getTimezoneOffset());
                 this.confirmForm.submit();
             } else {
             }
         });
     }
+
+    _createHiddenInput(form, name, value)
+     {
+         var input = document.createElement("input");
+         input.setAttribute("type", "hidden");
+         input.setAttribute("name", name);
+         input.setAttribute("value", value);
+         form.appendChild(input);
+     }
 }
