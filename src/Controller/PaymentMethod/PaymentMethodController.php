@@ -120,6 +120,14 @@ class PaymentMethodController
             'isActive' => $fullRedirectMethod['isActive'],
             'internalId' => $fullRedirectMethod['internalId']
         ];
+        $iframeMethod = $this->getPaymentMethod('Worldline iframe');
+        $toFrontend[] = [
+            'id' => '0_iframe',
+            'logo' => '',
+            'label' => 'Worldline iframe',
+            'isActive' => $iframeMethod['isActive'],
+            'internalId' => $iframeMethod['internalId']
+        ];
 
         $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         $adapter->getMerchantClient($credentials);

@@ -32,8 +32,10 @@ class PaymentMethod
      * @param Context $context
      * @param string $methodName
      * @param string $description
+     * @param bool $active
+     * @return void
      */
-    public function addPaymentMethod(Context $context, string $methodName, string $description)
+    public function addPaymentMethod(Context $context, string $methodName, string $description, bool $active)
     {
         $paymentMethodExists = $this->getPaymentMethodId($methodName);
         if ($paymentMethodExists) {
@@ -52,7 +54,7 @@ class PaymentMethod
             'description' => $description,
             'pluginId' => $pluginId,
             'afterOrderEnabled' => true,
-            'active' => true
+            'active' => $active
         ];
 
         /** @var EntityRepositoryInterface $paymentRepository */

@@ -33,8 +33,8 @@ class MoptWorldline extends Plugin
         $customField->addCustomFields($context);
 
         $paymentMethod = new PaymentMethod($this->container);
-        $paymentMethod->addPaymentMethod($context->getContext(), 'Worldline', 'Worldline full redirect payment method');
-        $paymentMethod->addPaymentMethod($context->getContext(), 'Worldline Iframe', 'Worldline Iframe payment method');
+        $paymentMethod->addPaymentMethod($context->getContext(), 'Worldline', 'Worldline full redirect payment method', true);
+        $paymentMethod->addPaymentMethod($context->getContext(), 'Worldline Iframe', 'Worldline Iframe payment method', false);
     }
 
     /**
