@@ -20,7 +20,7 @@ class MoptWorldline extends Plugin
 {
     const PLUGIN_NAME = 'MoptWorldline';
 
-    const PLUGIN_VERSION = '1.0.0';
+    const PLUGIN_VERSION = '1.0.1';
 
     /**
      * @param InstallContext $installContext
