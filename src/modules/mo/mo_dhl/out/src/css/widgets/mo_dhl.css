@@ -425,6 +425,18 @@ a.privacy-policy:hover {
     opacity: .2;
 }
 
+.moDhlAddressChange + div {
+    display: none !important;
+}
+
+.moDhlAddressChangeButton {
+    width: 100%;
+}
+
+.moDhlPickupDistance {
+    color: #fc0;
+}
+
 @media screen and (min-width: 48em) {
     #moDHLProviders {
         display: inline-flex;
