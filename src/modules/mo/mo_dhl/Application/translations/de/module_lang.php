@@ -120,4 +120,8 @@ $aLang = [
     'MO_DHL__BIRTHDAY_ERROR_FORMAT'               => 'Das Format für das Geburtsdatum ist dd.mm.yyyy.',
     'MO_DHL__BIRTHDAY_ERROR_AGE'                  => 'Sie müssen mindestens %s Jahre alt sein.',
     'MO_DHL__GUEST_ORDER'                         => 'Gastbestellung',
+    'MO_DHL__SHIPPING_ADDRESS_DIFFERENT'          => 'Different shipping address',
+    'MO_DHL__SHIPPING_TO_SHOP_FILIALE'            => 'Paketshops / Filialen (DHL)',
+    'MO_DHL__SHIPPING_TO_PACKSTATION'             => 'Packstation (DHL)',
+    'MO_DHL__SHIPPING_PICKUP_DISTANCE'            => '(Entfernung PLACEHOLDER m)',
 ];
