@@ -16,17 +16,18 @@ use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
 use OnlinePayments\Sdk\Domain\Customer;
 use OnlinePayments\Sdk\Domain\CustomerDevice;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
+use OnlinePayments\Sdk\Domain\MerchantAction;
 use OnlinePayments\Sdk\Domain\Order;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use OnlinePayments\Sdk\Domain\PaymentProductFilter;
 use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
 use OnlinePayments\Sdk\Domain\PaymentReferences;
+use OnlinePayments\Sdk\Domain\RedirectData;
 use OnlinePayments\Sdk\Domain\RedirectionData;
 use OnlinePayments\Sdk\Domain\RefundRequest;
 use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
-use Shopware\Core\Kernel;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\DefaultConnection;
@@ -269,8 +270,27 @@ class WorldlineSDKAdapter
         // Get the response for the PaymentsClient
         $paymentsClient = $merchantClient->payments();
         $createPaymentResponse = $paymentsClient->createPayment($createPaymentRequest);
-
+        $this->setRedirectUrl($createPaymentResponse, $returnUrl);
         return $createPaymentResponse;
+    }
+
+    /**
+     * @param CreatePaymentResponse $createPaymentResponse
+     * @param string $returnUrl
+     * @return void
+     */
+    private function setRedirectUrl(CreatePaymentResponse &$createPaymentResponse, string $returnUrl)
+    {
+        if ($createPaymentResponse->getMerchantAction()) {
+            return;
+        }
+
+        $paymentId = $createPaymentResponse->getPayment()->getId();
+        $redirectData = new RedirectData();
+        $redirectData->setRedirectURL("$returnUrl?paymentId=$paymentId");
+        $merchantAction = new MerchantAction();
+        $merchantAction->setRedirectData($redirectData);
+        $createPaymentResponse->setMerchantAction($merchantAction);
     }
 
     /**
