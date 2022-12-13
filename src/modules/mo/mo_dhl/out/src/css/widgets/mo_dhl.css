@@ -429,6 +429,10 @@ a.privacy-policy:hover {
     display: none !important;
 }
 
+.moDhlAddressChange.is--flow .btn{
+    margin-bottom: 1em;
+}
+
 .moDhlAddressChangeButton {
     width: 100%;
 }

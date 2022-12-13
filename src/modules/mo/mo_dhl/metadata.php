@@ -94,6 +94,11 @@ $aModule = [
             'file'     => 'views/blocks/user_checkout_change.tpl',
         ],
         [
+            'template' => 'form/user_checkout_change.tpl',
+            'block'    => 'user_checkout_shipping_change',
+            'file'     => 'views/blocks/user_checkout_shipping_change.tpl',
+        ],
+        [
             'template' => 'form/user_checkout_noregistration.tpl',
             'block'    => 'user_checkout_noregistration',
             'file'     => 'views/blocks/user_checkout_noregistration.tpl',
