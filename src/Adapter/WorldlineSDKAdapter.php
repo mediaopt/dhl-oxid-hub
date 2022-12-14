@@ -196,6 +196,7 @@ class WorldlineSDKAdapter
 
     public function createHostedTokenizationUrl()
     {
+        debug(123131);
         $iframeTemplateName = $this->getPluginConfig(Form::IFRAME_TEMPLATE_NAME);
 
         $merchantClient = $this->getMerchantClient();
@@ -221,6 +222,7 @@ class WorldlineSDKAdapter
         $merchantClient = $this->getMerchantClient();
         $hostedTokenization = $merchantClient->hostedTokenization()->getHostedTokenization($iframeData[Form::WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID]);
         $token = $hostedTokenization->getToken()->getId();
+        $paymentProductId = $hostedTokenization->getToken()->getPaymentProductId();
         $merchantClient = $this->getMerchantClient();
 
         $browserData = new BrowserData();
@@ -258,7 +260,7 @@ class WorldlineSDKAdapter
         $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
         $cardPaymentMethodSpecificInput->setAuthorizationMode("FINAL_AUTHORIZATION");
         $cardPaymentMethodSpecificInput->setToken($token);
-        $cardPaymentMethodSpecificInput->setPaymentProductId(1);
+        $cardPaymentMethodSpecificInput->setPaymentProductId($paymentProductId);
         $cardPaymentMethodSpecificInput->setTokenize(false);
         $cardPaymentMethodSpecificInput->setThreeDSecure($threeDSecure);
         $cardPaymentMethodSpecificInput->setReturnUrl($returnUrl);
