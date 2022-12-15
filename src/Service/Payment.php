@@ -7,6 +7,7 @@
 
 namespace MoptWorldline\Service;
 
+use MoptWorldline\MoptWorldline;
 use Shopware\Core\Checkout\Payment\Exception\CustomerCanceledAsyncPaymentException;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
@@ -160,8 +161,8 @@ class Payment implements AsynchronousPaymentHandlerInterface
      */
     private function isHostedTokenizationMethod(AsyncPaymentTransactionStruct $transaction): bool
     {
-        $paymentMethodName = strtolower($transaction->getOrderTransaction()->getPaymentMethod()->getName());
-        return (bool)strpos($paymentMethodName, 'iframe');
+        $paymentMethodName = $transaction->getOrderTransaction()->getPaymentMethod()->getName();
+        return $paymentMethodName == MoptWorldline::IFRAME_PAYMENT_METHOD_NAME;
     }
 
     /**

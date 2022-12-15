@@ -46,6 +46,8 @@ use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
  */
 class WorldlineSDKAdapter
 {
+    const HOSTED_TOKENIZATION_URL_PREFIX = 'https://payment.';
+
     /** @var string */
     const INTEGRATOR_NAME = 'Mediaopt';
 
@@ -194,9 +196,12 @@ class WorldlineSDKAdapter
         return $hostedCheckoutClient->createHostedCheckout($hostedCheckoutRequest);
     }
 
-    public function createHostedTokenizationUrl()
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function createHostedTokenizationUrl(): string
     {
-        debug(123131);
         $iframeTemplateName = $this->getPluginConfig(Form::IFRAME_TEMPLATE_NAME);
 
         $merchantClient = $this->getMerchantClient();
@@ -207,7 +212,7 @@ class WorldlineSDKAdapter
         $createHostedTokenizationResponse = $hostedTokenizationClient
             ->createHostedTokenization($createHostedTokenizationRequest);
 
-        return 'https://payment.' . $createHostedTokenizationResponse->getPartialRedirectUrl();
+        return self::HOSTED_TOKENIZATION_URL_PREFIX . $createHostedTokenizationResponse->getPartialRedirectUrl();
     }
 
     /**
@@ -289,7 +294,9 @@ class WorldlineSDKAdapter
 
         $paymentId = $createPaymentResponse->getPayment()->getId();
         $redirectData = new RedirectData();
-        $redirectData->setRedirectURL("$returnUrl?paymentId=$paymentId");
+        $returnUrlParams = ['paymentId' => $paymentId];
+        $redirectUrl = $returnUrl . "?" . http_build_query($returnUrlParams);
+        $redirectData->setRedirectURL($redirectUrl);
         $merchantAction = new MerchantAction();
         $merchantAction->setRedirectData($redirectData);
         $createPaymentResponse->setMerchantAction($merchantAction);

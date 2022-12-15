@@ -112,7 +112,7 @@ class PaymentMethodController
         ?string $currencyIsoCode
     )
     {
-        $fullRedirectMethod = $this->getPaymentMethod('Worldline');
+        $fullRedirectMethod = $this->getPaymentMethod(MoptWorldline::FULL_REDIRECT_PAYMENT_METHOD_NAME);
         $toFrontend[] = [
             'id' => 0,
             'logo' => '',
@@ -120,11 +120,11 @@ class PaymentMethodController
             'isActive' => $fullRedirectMethod['isActive'],
             'internalId' => $fullRedirectMethod['internalId']
         ];
-        $iframeMethod = $this->getPaymentMethod('Worldline iframe');
+        $iframeMethod = $this->getPaymentMethod(MoptWorldline::IFRAME_PAYMENT_METHOD_NAME);
         $toFrontend[] = [
             'id' => '0_iframe',
             'logo' => '',
-            'label' => 'Worldline iframe',
+            'label' => MoptWorldline::IFRAME_PAYMENT_METHOD_NAME,
             'isActive' => $iframeMethod['isActive'],
             'internalId' => $iframeMethod['internalId']
         ];
