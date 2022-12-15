@@ -120,4 +120,5 @@ $aLang = [
     'MO_DHL__BIRTHDAY_ERROR_FORMAT'               => 'The format of your birthday needs to be dd.mm.yyyy.',
     'MO_DHL__BIRTHDAY_ERROR_AGE'                  => 'You have to be at least %s years old.',
     'MO_DHL__GUEST_ORDER'                         => 'Guest order',
+    'MO_DHL__SHIPPING_OPTIONS'                    => 'DHL shipping options',
 ];

@@ -157,17 +157,8 @@ dl.moEmpfaengerserviceWunschpaketBox {
     background-color: #f0ad4e;
 }
 
-div#moDHLWunschpaket {
-    border: 1px solid #FFCC00;
-    padding: 5px;
-}
-
 div#moDHLWunschpaket p {
     margin-bottom: 5px;
-}
-
-div#moDHLWunschpaket > img {
-    width: 96px;
 }
 
 div#moDHLWunschpaket input:disabled {
@@ -230,43 +221,6 @@ div.moDHLWunschpaketWave {
     margin-bottom: 20px;
 }
 
-div.moDHLWunschpaketFlow dd ul, div.moDHLWunschpaketWave dd ul {
-    padding: 0px;
-    margin: 0px;
-}
-
-div#moDHLWunschpaket dd ul li {
-    background-color: #e3e3e3;
-    width: 49px;
-    padding: 10px 0 0;
-    margin: 0 10px 5px 0;
-    list-style-type: none;
-    text-align: center;
-}
-
-div#moDHLWunschpaket dl dd ul li label {
-    background-color: rgb(238, 244, 242);
-    text-align: center;
-    font-weight: bold;
-    display: inline-block;
-    width: 100%;
-}
-
-div.moDHLWunschpaketFlow dl dd ul li label, div.moDHLWunschpaketWave dl dd ul li label {
-    margin-bottom: 0px;
-}
-
-div#moDHLWunschpaket dl dd ul li input {
-    display: none;
-}
-
-div#moDHLWunschpaket dl dd ul li input:disabled + label {
-    color: #cecece;
-}
-
-div#moDHLWunschpaket dl dd ul li input:checked + label {
-    background-color: #fc0;
-}
 
 div#moDHLWunschpaket ul#moDHLWunschtag li {
     width: 45px;
@@ -279,6 +233,24 @@ div#moDHLWunschpaket input[type="text"] {
 
 div#moDHLWunschpaket.theme--is-azure input[type="checkbox"] {
     margin-left: 0;
+}
+
+#moDHLWunschpaket .moDhlWunschpaketServiceLabel {
+    display: grid;
+    grid-template-columns: 20px 1fr 10px;
+    align-items: center;
+    cursor: pointer;
+}
+#moDHLWunschpaket .moDhlWunschpaketServiceLabel input {
+    margin: 0;
+}
+
+#moDHLWunschpaket .moDhlWunschpaketServiceLabel.collapsed .fa.fa-caret-up {
+    display: none;
+}
+
+#moDHLWunschpaket .moDhlWunschpaketServiceLabel:not(.collapsed) .fa.fa-caret-down {
+    display: none;
 }
 
 h5.moDHLOpeningHours {
