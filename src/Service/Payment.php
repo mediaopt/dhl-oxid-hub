@@ -7,6 +7,7 @@
 
 namespace MoptWorldline\Service;
 
+use MoptWorldline\MoptWorldline;
 use Shopware\Core\Checkout\Payment\Exception\CustomerCanceledAsyncPaymentException;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
@@ -23,6 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Monolog\Logger;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use MoptWorldline\Bootstrap\Form;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -34,6 +36,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
     private TranslatorInterface $translator;
     private Logger $logger;
     private OrderTransactionStateHandler $transactionStateHandler;
+    private Session $session;
 
     public const STATUS_PAYMENT_CREATED = [0];                  //open
     public const STATUS_PAYMENT_CANCELLED = [1, 6, 61, 62, 64, 75]; //cancelled
@@ -100,6 +103,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
      * @param TranslatorInterface $translator
      * @param Logger $logger
      * @param OrderTransactionStateHandler $transactionStateHandler
+     * @param Session $session
      */
     public function __construct(
         SystemConfigService          $systemConfigService,
@@ -107,7 +111,8 @@ class Payment implements AsynchronousPaymentHandlerInterface
         EntityRepositoryInterface    $orderRepository,
         TranslatorInterface          $translator,
         Logger                       $logger,
-        OrderTransactionStateHandler $transactionStateHandler
+        OrderTransactionStateHandler $transactionStateHandler,
+        Session                      $session
     )
     {
         $this->systemConfigService = $systemConfigService;
@@ -116,6 +121,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
         $this->translator = $translator;
         $this->logger = $logger;
         $this->transactionStateHandler = $transactionStateHandler;
+        $this->session = $session;
     }
 
     /**
@@ -128,7 +134,18 @@ class Payment implements AsynchronousPaymentHandlerInterface
     {
         // Method that sends the return URL to the external gateway and gets a redirect URL back
         try {
-            $redirectUrl = $this->sendReturnUrlToExternalGateway($transaction, $salesChannelContext->getContext());
+            if ($this->isHostedTokenizationMethod($transaction)) {
+                $redirectUrl = $this->getHostedTokenizationRedirectUrl(
+                    $transaction,
+                    $salesChannelContext->getContext(),
+                    $this->getIframeData($dataBag)
+                );
+            } else {
+                $redirectUrl = $this->getHostedCheckoutRedirectUrl(
+                    $transaction,
+                    $salesChannelContext->getContext()
+                );
+            }
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(
                 $transaction->getOrderTransaction()->getId(),
@@ -136,6 +153,40 @@ class Payment implements AsynchronousPaymentHandlerInterface
             );
         }
         return new RedirectResponse($redirectUrl);
+    }
+
+    /**
+     * @param AsyncPaymentTransactionStruct $transaction
+     * @return bool
+     */
+    private function isHostedTokenizationMethod(AsyncPaymentTransactionStruct $transaction): bool
+    {
+        $paymentMethodName = $transaction->getOrderTransaction()->getPaymentMethod()->getName();
+        return $paymentMethodName == MoptWorldline::IFRAME_PAYMENT_METHOD_NAME;
+    }
+
+    /**
+     * @param RequestDataBag $dataBag
+     * @return false|array
+     */
+    private function getIframeData(RequestDataBag $dataBag)
+    {
+        $iframeData = [];
+        if (!is_null($dataBag->get(Form::WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID))) {
+            foreach (Form::WORLDLINE_CART_FORM_KEYS as $key) {
+                $iframeData[$key] = $dataBag->get($key);
+                if (is_null($iframeData[$key])) {
+                    return false;
+                }
+            }
+            return $iframeData;
+        }
+
+        if ($iframeData = $this->session->get(Form::SESSION_IFRAME_DATA)) {
+            $this->session->set(Form::SESSION_IFRAME_DATA, null);
+            return $iframeData;
+        }
+        return false;
     }
 
     /**
@@ -184,9 +235,8 @@ class Payment implements AsynchronousPaymentHandlerInterface
     private function checkSuccessStatus(string $transactionId, int $status)
     {
         if (in_array($status, self::STATUS_PAYMENT_CREATED)
-            || in_array($status, self::STATUS_PAYMENT_REJECTED))
-        {
-            $this->finalizeError($transactionId, 'Status is '. $status);
+            || in_array($status, self::STATUS_PAYMENT_REJECTED)) {
+            $this->finalizeError($transactionId, 'Status is ' . $status);
         }
     }
 
@@ -208,7 +258,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
      * @return string
      * @throws \Exception
      */
-    private function sendReturnUrlToExternalGateway(AsyncPaymentTransactionStruct $transaction, Context $context)
+    private function getHostedCheckoutRedirectUrl(AsyncPaymentTransactionStruct $transaction, Context $context)
     {
         $transactionId = $transaction->getOrderTransaction()->getId();
         $handler = $this->getHandler($transactionId, $context);
@@ -229,6 +279,34 @@ class Payment implements AsynchronousPaymentHandlerInterface
         }
 
         $link = $hostedCheckoutResponse->getRedirectUrl();
+        if ($link === null) {
+            throw new AsyncPaymentProcessException($transactionId, 'No redirect link provided by Worldline');
+        }
+
+        return $link;
+    }
+
+    /**
+     * @param AsyncPaymentTransactionStruct $transaction
+     * @param Context $context
+     * @param array $iframeData
+     * @return string
+     * @throws \Doctrine\DBAL\Driver\Exception
+     */
+    private function getHostedTokenizationRedirectUrl(AsyncPaymentTransactionStruct $transaction, Context $context, array $iframeData)
+    {
+        $transactionId = $transaction->getOrderTransaction()->getId();
+        $handler = $this->getHandler($transactionId, $context);
+
+        try {
+            $link = $handler->createHostedTokenizationPayment($iframeData)->getMerchantAction()->getRedirectData()->getRedirectURL();
+        } catch (\Exception $e) {
+            throw new AsyncPaymentProcessException(
+                $transactionId,
+                \sprintf('An error occurred during the communication with Worldline%s%s', \PHP_EOL, $e->getMessage())
+            );
+        }
+
         if ($link === null) {
             throw new AsyncPaymentProcessException($transactionId, 'No redirect link provided by Worldline');
         }

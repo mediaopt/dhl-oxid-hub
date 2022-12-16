@@ -20,7 +20,9 @@ class MoptWorldline extends Plugin
 {
     const PLUGIN_NAME = 'MoptWorldline';
 
-    const PLUGIN_VERSION = '1.0.0';
+    const PLUGIN_VERSION = '1.0.1';
+    const FULL_REDIRECT_PAYMENT_METHOD_NAME = "Worldline";
+    const IFRAME_PAYMENT_METHOD_NAME = "Worldline Iframe";
 
     /**
      * @param InstallContext $installContext
@@ -33,7 +35,18 @@ class MoptWorldline extends Plugin
         $customField->addCustomFields($context);
 
         $paymentMethod = new PaymentMethod($this->container);
-        $paymentMethod->addPaymentMethod($context->getContext());
+        $paymentMethod->addPaymentMethod(
+            $context->getContext(),
+            self::FULL_REDIRECT_PAYMENT_METHOD_NAME,
+            'Worldline full redirect payment method',
+            true
+        );
+        $paymentMethod->addPaymentMethod(
+            $context->getContext(),
+            self::IFRAME_PAYMENT_METHOD_NAME,
+            'Worldline Iframe payment method',
+            false
+        );
     }
 
     /**
@@ -44,7 +57,16 @@ class MoptWorldline extends Plugin
         parent::uninstall($context);
 
         $paymentMethod = new PaymentMethod($this->container);
-        $paymentMethod->setPaymentMethodStatus(false, $context->getContext());
+        $paymentMethod->setPaymentMethodStatus(
+            false,
+            $context->getContext(),
+            self::FULL_REDIRECT_PAYMENT_METHOD_NAME
+        );
+        $paymentMethod->setPaymentMethodStatus(
+            false,
+            $context->getContext(),
+            self::IFRAME_PAYMENT_METHOD_NAME
+        );
     }
 
     /**
@@ -55,7 +77,16 @@ class MoptWorldline extends Plugin
         parent::activate($context);
 
         $paymentMethod = new PaymentMethod($this->container);
-        $paymentMethod->setPaymentMethodStatus(true, $context->getContext());
+        $paymentMethod->setPaymentMethodStatus(
+            true,
+            $context->getContext(),
+            self::FULL_REDIRECT_PAYMENT_METHOD_NAME
+        );
+        $paymentMethod->setPaymentMethodStatus(
+            true,
+            $context->getContext(),
+            self::IFRAME_PAYMENT_METHOD_NAME
+        );
     }
 
     /**
@@ -66,7 +97,16 @@ class MoptWorldline extends Plugin
         parent::deactivate($context);
 
         $paymentMethod = new PaymentMethod($this->container);
-        $paymentMethod->setPaymentMethodStatus(false, $context->getContext());
+        $paymentMethod->setPaymentMethodStatus(
+            false,
+            $context->getContext(),
+            self::FULL_REDIRECT_PAYMENT_METHOD_NAME
+        );
+        $paymentMethod->setPaymentMethodStatus(
+            false,
+            $context->getContext(),
+            self::IFRAME_PAYMENT_METHOD_NAME
+        );
     }
 }
 

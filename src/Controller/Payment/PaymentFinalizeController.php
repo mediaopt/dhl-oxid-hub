@@ -22,6 +22,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -83,7 +84,7 @@ class PaymentFinalizeController extends AbstractController
      */
     public function finalizeTransaction(Request $request, SalesChannelContext $salesChannelContext): RedirectResponse
     {
-        $hostedCheckoutId = $request->query->get('hostedCheckoutId');
+        $hostedCheckoutId = $this->getHostedCheckoutId($request->query);
         if (is_null($hostedCheckoutId)) {
             return new RedirectResponse('/');
         }
@@ -108,6 +109,22 @@ class PaymentFinalizeController extends AbstractController
         $finishUrl = $this->buildFinishUrl($request, $orderTransaction, $salesChannelContext, $context);
 
         return new RedirectResponse($finishUrl);
+    }
+
+    /**
+     * @param InputBag $query
+     * @return string|null
+     */
+    private function getHostedCheckoutId(InputBag $query): ?string
+    {
+        if ($hostedCheckoutId = $query->get('hostedCheckoutid')) {
+            return $hostedCheckoutId;
+        } elseif ($hostedCheckoutId = $query->get('paymentId')) {
+            $id = explode('_', $hostedCheckoutId);
+            return $id[0] ?: null;
+        }
+
+        return null;
     }
 
     /**

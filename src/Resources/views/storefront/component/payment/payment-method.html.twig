@@ -1,0 +1,14 @@
+{% sw_extends '@Storefront/storefront/component/payment/payment-method.html.twig' %}
+{% block component_payment_method_control %}
+    {{ parent() }}
+    {% if (payment.name == "Worldline Iframe") and (payment.id == selectedPaymentMethodId) %}
+        <script src="https://payment.preprod.direct.worldline-solutions.com/hostedtokenization/js/client/tokenizer.min.js"/>
+        <script type="text/javascript"></script>
+        <div>
+            <div data-ajax-helper>
+                <div id="div-hosted-tokenization"></div>
+                <input type="hidden" id="moptWorldlineSalesChannelId" value="{{ context.salesChannel.id }}">
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

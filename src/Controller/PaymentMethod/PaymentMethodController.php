@@ -112,13 +112,21 @@ class PaymentMethodController
         ?string $currencyIsoCode
     )
     {
-        $fullRedirectMethod = $this->getPaymentMethod('Worldline');
+        $fullRedirectMethod = $this->getPaymentMethod(MoptWorldline::FULL_REDIRECT_PAYMENT_METHOD_NAME);
         $toFrontend[] = [
             'id' => 0,
             'logo' => '',
             'label' => 'Worldline full redirect',
             'isActive' => $fullRedirectMethod['isActive'],
             'internalId' => $fullRedirectMethod['internalId']
+        ];
+        $iframeMethod = $this->getPaymentMethod(MoptWorldline::IFRAME_PAYMENT_METHOD_NAME);
+        $toFrontend[] = [
+            'id' => '0_iframe',
+            'logo' => '',
+            'label' => MoptWorldline::IFRAME_PAYMENT_METHOD_NAME,
+            'isActive' => $iframeMethod['isActive'],
+            'internalId' => $iframeMethod['internalId']
         ];
 
         $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);

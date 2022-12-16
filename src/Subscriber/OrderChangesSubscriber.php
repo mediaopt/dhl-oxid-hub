@@ -4,7 +4,6 @@ namespace MoptWorldline\Subscriber;
 
 use Monolog\Logger;
 use MoptWorldline\Bootstrap\Form;
-use MoptWorldline\Service\AdminTranslate;
 use MoptWorldline\Service\Payment;
 use MoptWorldline\Service\PaymentHandler;
 use Psr\Log\LogLevel;
@@ -17,11 +16,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Shopware\Storefront\Event\StorefrontRenderEvent;
+use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class OrderChangesSubscriber implements EventSubscriberInterface
 {
@@ -32,10 +32,17 @@ class OrderChangesSubscriber implements EventSubscriberInterface
     private RequestStack $requestStack;
     private TranslatorInterface $translator;
     private OrderTransactionStateHandler $transactionStateHandler;
+    private Session $session;
 
     /**
      * @param SystemConfigService $systemConfigService
+     * @param EntityRepositoryInterface $orderRepository
+     * @param EntityRepositoryInterface $orderTransactionRepository
      * @param Logger $logger
+     * @param RequestStack $requestStack
+     * @param TranslatorInterface $translator
+     * @param OrderTransactionStateHandler $transactionStateHandler
+     * @param Session $session
      */
     public function __construct(
         SystemConfigService          $systemConfigService,
@@ -44,7 +51,8 @@ class OrderChangesSubscriber implements EventSubscriberInterface
         Logger                       $logger,
         RequestStack                 $requestStack,
         TranslatorInterface          $translator,
-        OrderTransactionStateHandler $transactionStateHandler
+        OrderTransactionStateHandler $transactionStateHandler,
+        Session                      $session
     )
     {
         $this->systemConfigService = $systemConfigService;
@@ -54,13 +62,31 @@ class OrderChangesSubscriber implements EventSubscriberInterface
         $this->requestStack = $requestStack;
         $this->translator = $translator;
         $this->transactionStateHandler = $transactionStateHandler;
+        $this->session = $session;
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
+            HandlePaymentMethodRouteRequestEvent::class => 'setIframeFields',
             OrderEvents::ORDER_WRITTEN_EVENT => 'onOrderWritten',
         ];
+    }
+
+    /**
+     * @param HandlePaymentMethodRouteRequestEvent $event
+     * @return void
+     */
+    public function setIframeFields(HandlePaymentMethodRouteRequestEvent $event)
+    {
+        $iframeData = [];
+        foreach (Form::WORLDLINE_CART_FORM_KEYS as $key) {
+            $iframeData[$key] = $event->getStorefrontRequest()->request->get($key);
+            if (is_null($iframeData[$key])) {
+                return;
+            }
+        }
+        $this->session->set(Form::SESSION_IFRAME_DATA, $iframeData);
     }
 
     /**

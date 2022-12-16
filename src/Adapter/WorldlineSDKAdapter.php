@@ -4,20 +4,30 @@ namespace MoptWorldline\Adapter;
 
 use Monolog\Logger;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
+use OnlinePayments\Sdk\Domain\BrowserData;
 use OnlinePayments\Sdk\Domain\CancelPaymentResponse;
 use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
 use OnlinePayments\Sdk\Domain\CaptureResponse;
+use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
+use OnlinePayments\Sdk\Domain\CreateHostedTokenizationRequest;
+use OnlinePayments\Sdk\Domain\CreatePaymentRequest;
+use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
+use OnlinePayments\Sdk\Domain\Customer;
+use OnlinePayments\Sdk\Domain\CustomerDevice;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
+use OnlinePayments\Sdk\Domain\MerchantAction;
 use OnlinePayments\Sdk\Domain\Order;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use OnlinePayments\Sdk\Domain\PaymentProductFilter;
 use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
 use OnlinePayments\Sdk\Domain\PaymentReferences;
+use OnlinePayments\Sdk\Domain\RedirectData;
+use OnlinePayments\Sdk\Domain\RedirectionData;
 use OnlinePayments\Sdk\Domain\RefundRequest;
 use OnlinePayments\Sdk\Domain\RefundResponse;
+use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
-use Shopware\Core\Kernel;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\DefaultConnection;
@@ -36,6 +46,8 @@ use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
  */
 class WorldlineSDKAdapter
 {
+    const HOSTED_TOKENIZATION_URL_PREFIX = 'https://payment.';
+
     /** @var string */
     const INTEGRATOR_NAME = 'Mediaopt';
 
@@ -168,7 +180,7 @@ class WorldlineSDKAdapter
         $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
 
         if ($worldlinePaymentMethodId != 0) {
-            $paymentProductFilter= new PaymentProductFilter();
+            $paymentProductFilter = new PaymentProductFilter();
             $paymentProductFilter->setProducts([$worldlinePaymentMethodId]);
 
             $paymentProductFiltersHostedCheckout = new PaymentProductFiltersHostedCheckout();
@@ -182,6 +194,112 @@ class WorldlineSDKAdapter
 
         $hostedCheckoutClient = $merchantClient->hostedCheckout();
         return $hostedCheckoutClient->createHostedCheckout($hostedCheckoutRequest);
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function createHostedTokenizationUrl(): string
+    {
+        $iframeTemplateName = $this->getPluginConfig(Form::IFRAME_TEMPLATE_NAME);
+
+        $merchantClient = $this->getMerchantClient();
+        $hostedTokenizationClient = $merchantClient->hostedTokenization();
+        $createHostedTokenizationRequest = new CreateHostedTokenizationRequest();
+        $createHostedTokenizationRequest->setVariant($iframeTemplateName);
+
+        $createHostedTokenizationResponse = $hostedTokenizationClient
+            ->createHostedTokenization($createHostedTokenizationRequest);
+
+        return self::HOSTED_TOKENIZATION_URL_PREFIX . $createHostedTokenizationResponse->getPartialRedirectUrl();
+    }
+
+    /**
+     * @param float $amountTotal
+     * @param string $currencyISO
+     * @param array $iframeData
+     * @return CreatePaymentResponse
+     * @throws \Exception
+     */
+    public function createHostedTokenizationPayment(float $amountTotal, string $currencyISO, array $iframeData): CreatePaymentResponse
+    {
+        $merchantClient = $this->getMerchantClient();
+        $hostedTokenization = $merchantClient->hostedTokenization()->getHostedTokenization($iframeData[Form::WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID]);
+        $token = $hostedTokenization->getToken()->getId();
+        $paymentProductId = $hostedTokenization->getToken()->getPaymentProductId();
+        $merchantClient = $this->getMerchantClient();
+
+        $browserData = new BrowserData();
+        $browserData->setColorDepth($iframeData[Form::WORLDLINE_CART_FORM_BROWSER_DATA_COLOR_DEPTH]);
+        $browserData->setJavaEnabled($iframeData[Form::WORLDLINE_CART_FORM_BROWSER_DATA_JAVA_ENABLED]);
+        $browserData->setScreenHeight($iframeData[Form::WORLDLINE_CART_FORM_BROWSER_DATA_SCREEN_HEIGHT]);
+        $browserData->setScreenWidth($iframeData[Form::WORLDLINE_CART_FORM_BROWSER_DATA_SCREEN_WIDTH]);
+
+        $customerDevice = new CustomerDevice();
+        $customerDevice->setLocale($iframeData[Form::WORLDLINE_CART_FORM_LOCALE]);
+        $customerDevice->setTimezoneOffsetUtcMinutes($iframeData[Form::WORLDLINE_CART_FORM_TIMZONE_OFFSET_MINUTES]);
+        $customerDevice->setAcceptHeader("*\/*");
+        $customerDevice->setUserAgent($iframeData[Form::WORLDLINE_CART_FORM_USER_AGENT]);
+        $customerDevice->setBrowserData($browserData);
+
+        $customer = new Customer();
+        $customer->setDevice($customerDevice);
+
+        $amountOfMoney = new AmountOfMoney();
+        $amountOfMoney->setCurrencyCode($currencyISO);
+        $amountOfMoney->setAmount($amountTotal * 100);
+
+        $order = new Order();
+        $order->setAmountOfMoney($amountOfMoney);
+        $order->setCustomer($customer);
+
+        $returnUrl = $this->getPluginConfig(Form::RETURN_URL_FIELD);
+        $redirectionData = new RedirectionData();
+        $redirectionData->setReturnUrl($returnUrl);
+
+        $threeDSecure = new ThreeDSecure();
+        $threeDSecure->setRedirectionData($redirectionData);
+        $threeDSecure->setChallengeIndicator('challenge-required');
+
+        $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
+        $cardPaymentMethodSpecificInput->setAuthorizationMode("FINAL_AUTHORIZATION");
+        $cardPaymentMethodSpecificInput->setToken($token);
+        $cardPaymentMethodSpecificInput->setPaymentProductId($paymentProductId);
+        $cardPaymentMethodSpecificInput->setTokenize(false);
+        $cardPaymentMethodSpecificInput->setThreeDSecure($threeDSecure);
+        $cardPaymentMethodSpecificInput->setReturnUrl($returnUrl);
+
+        $createPaymentRequest = new CreatePaymentRequest();
+        $createPaymentRequest->setOrder($order);
+        $createPaymentRequest->setCardPaymentMethodSpecificInput($cardPaymentMethodSpecificInput);
+
+        // Get the response for the PaymentsClient
+        $paymentsClient = $merchantClient->payments();
+        $createPaymentResponse = $paymentsClient->createPayment($createPaymentRequest);
+        $this->setRedirectUrl($createPaymentResponse, $returnUrl);
+        return $createPaymentResponse;
+    }
+
+    /**
+     * @param CreatePaymentResponse $createPaymentResponse
+     * @param string $returnUrl
+     * @return void
+     */
+    private function setRedirectUrl(CreatePaymentResponse &$createPaymentResponse, string $returnUrl)
+    {
+        if ($createPaymentResponse->getMerchantAction()) {
+            return;
+        }
+
+        $paymentId = $createPaymentResponse->getPayment()->getId();
+        $redirectData = new RedirectData();
+        $returnUrlParams = ['paymentId' => $paymentId];
+        $redirectUrl = $returnUrl . "?" . http_build_query($returnUrlParams);
+        $redirectData->setRedirectURL($redirectUrl);
+        $merchantAction = new MerchantAction();
+        $merchantAction->setRedirectData($redirectData);
+        $createPaymentResponse->setMerchantAction($merchantAction);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace MoptWorldline\Service;
 use Monolog\Logger;
 use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
+use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
@@ -100,9 +101,36 @@ class PaymentHandler
 
         $this->log(AdminTranslate::trans($this->translator->getLocale(), 'buildingOrder'));
         $hostedCheckoutResponse = $this->adapter->createPayment($amountTotal, $currencyISO, $worldlinePaymentMethodId);
-        $status = Payment::STATUS_PAYMENT_CREATED[0];
-        $this->saveOrderCustomFields($status, $hostedCheckoutResponse->getHostedCheckoutId());
+
+        $this->saveOrderCustomFields(
+            Payment::STATUS_PAYMENT_CREATED[0],
+            $hostedCheckoutResponse->getHostedCheckoutId()
+        );
         return $hostedCheckoutResponse;
+    }
+
+    /**
+     * @param array $iframeData
+     * @return CreatePaymentResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function createHostedTokenizationPayment(array $iframeData): CreatePaymentResponse
+    {
+        $order = $this->orderTransaction->getOrder();
+        $amountTotal = $order->getAmountTotal();
+        $currencyISO = $this->getCurrencyISO();
+
+        $this->log(AdminTranslate::trans($this->translator->getLocale(), 'buildingHostdTokenizationOrder'));
+        $hostedTokenizationPaymentResponse = $this->adapter->createHostedTokenizationPayment($amountTotal, $currencyISO, $iframeData);
+
+        $id = explode('_', $hostedTokenizationPaymentResponse->getPayment()->getId());
+        $this->saveOrderCustomFields(
+            $hostedTokenizationPaymentResponse->getPayment()->getStatusOutput()->getStatusCode(),
+            $id[0]
+        );
+
+        return $hostedTokenizationPaymentResponse;
     }
 
     /**
