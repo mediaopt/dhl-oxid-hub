@@ -7,6 +7,7 @@ export default class WorldlineIframePlugin extends Plugin {
 
         this.tokenizationDiv = "div-hosted-tokenization";
         this.salesChannelId = document.getElementById("moptWorldlineSalesChannelId").value;
+        this.savePaymentCardCheckbox = document.getElementById("moptWorldlineSavePaymentCard");
         this.confirmForm = document.getElementById("confirmOrderForm");
 
         this._client.get(
@@ -32,7 +33,8 @@ export default class WorldlineIframePlugin extends Plugin {
     }
 
     _fetch() {
-        this.tokenizer.submitTokenization({ storePermanently:false }).then((result) => {
+        var storeCard = this.savePaymentCardCheckbox.checked;
+        this.tokenizer.submitTokenization({ storePermanently:storeCard }).then((result) => {
             if (result.success) {
                 this._createHiddenInput(this.confirmForm, "moptWorldlineHostedTokenizationId",  result.hostedTokenizationId);
                 this._createHiddenInput(this.confirmForm, "moptWorldlineBrowserDataColorDepth", screen.colorDepth);

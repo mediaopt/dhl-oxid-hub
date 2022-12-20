@@ -6,6 +6,8 @@ use Monolog\Logger;
 use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
 use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
+use OnlinePayments\Sdk\Domain\GetHostedTokenizationResponse;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
@@ -13,6 +15,7 @@ use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
@@ -30,6 +33,7 @@ class PaymentHandler
     private EntityRepositoryInterface $orderTransactionRepository;
     private Context $context;
     private OrderTransactionStateHandler $transactionStateHandler;
+    private EntityRepositoryInterface $customerRepository;
 
     /**
      * @param SystemConfigService $systemConfigService
@@ -38,6 +42,7 @@ class PaymentHandler
      * @param TranslatorInterface $translator
      * @param EntityRepositoryInterface $orderRepository
      * @param EntityRepositoryInterface $orderTransactionRepository
+     * @param EntityRepositoryInterface $customerRepository
      * @param Context $context
      * @param OrderTransactionStateHandler $transactionStateHandler
      */
@@ -48,6 +53,7 @@ class PaymentHandler
         TranslatorInterface          $translator,
         EntityRepositoryInterface    $orderRepository,
         EntityRepositoryInterface    $orderTransactionRepository,
+        EntityRepositoryInterface    $customerRepository,
         Context                      $context,
         OrderTransactionStateHandler $transactionStateHandler
     )
@@ -58,6 +64,7 @@ class PaymentHandler
         $this->translator = $translator;
         $this->orderRepository = $orderRepository;
         $this->orderTransactionRepository = $orderTransactionRepository;
+        $this->customerRepository = $customerRepository;
         $this->context = $context;
         $this->transactionStateHandler = $transactionStateHandler;
     }
@@ -68,6 +75,14 @@ class PaymentHandler
     public function getOrderId(): string
     {
         return $this->orderTransaction->getOrder()->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerId(): string
+    {
+        return $this->orderTransaction->getOrder()->getOrderCustomer()->getCustomerId();
     }
 
     /**
@@ -122,7 +137,14 @@ class PaymentHandler
         $currencyISO = $this->getCurrencyISO();
 
         $this->log(AdminTranslate::trans($this->translator->getLocale(), 'buildingHostdTokenizationOrder'));
-        $hostedTokenizationPaymentResponse = $this->adapter->createHostedTokenizationPayment($amountTotal, $currencyISO, $iframeData);
+        $hostedTokenization = $this->adapter->createHostedTokenization($iframeData);
+        $hostedTokenizationPaymentResponse = $this->adapter->createHostedTokenizationPayment(
+            $amountTotal,
+            $currencyISO,
+            $iframeData,
+            $hostedTokenization
+        );
+        $this->saveCustomerCustomFields($hostedTokenization);
 
         $id = explode('_', $hostedTokenizationPaymentResponse->getPayment()->getId());
         $this->saveOrderCustomFields(
@@ -492,5 +514,37 @@ class PaymentHandler
     public function translate($id)
     {
         return AdminTranslate::trans($this->translator->getLocale(), $id);
+    }
+
+    /**
+     * @param GetHostedTokenizationResponse $hostedTokenization
+     * @return void
+     */
+    private function saveCustomerCustomFields(GetHostedTokenizationResponse $hostedTokenization)
+    {
+        if ($hostedTokenization->getToken()->getIsTemporary()) {
+            return;
+        }
+
+        $customerId = $this->getCustomerId();
+
+        /** @var EntitySearchResult $customer */
+        $customer = $this->customerRepository->search(new Criteria([$customerId]), $this->context);
+        $customFields = $customer->first()->getCustomFields();
+
+        $key = Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN;
+        $token = $hostedTokenization->getToken()->getId();
+        if (!is_null($customFields) && array_key_exists($key, $customFields)) {
+            $customFields[$key] = array_merge($customFields[$key], [$token]);
+        } else {
+            $customFields[$key] = [$token];
+        }
+
+        $this->customerRepository->update([
+            [
+                'id' => $customerId,
+                'customFields' => $customFields
+            ]
+        ], $this->context);/**/
     }
 }

@@ -33,6 +33,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
     private SystemConfigService $systemConfigService;
     private EntityRepositoryInterface $orderTransactionRepository;
     private EntityRepositoryInterface $orderRepository;
+    private EntityRepositoryInterface $customerRepository;
     private TranslatorInterface $translator;
     private Logger $logger;
     private OrderTransactionStateHandler $transactionStateHandler;
@@ -100,6 +101,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
      * @param SystemConfigService $systemConfigService
      * @param EntityRepositoryInterface $orderTransactionRepository
      * @param EntityRepositoryInterface $orderRepository
+     * @param EntityRepositoryInterface $customerRepository
      * @param TranslatorInterface $translator
      * @param Logger $logger
      * @param OrderTransactionStateHandler $transactionStateHandler
@@ -109,6 +111,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
         SystemConfigService          $systemConfigService,
         EntityRepositoryInterface    $orderTransactionRepository,
         EntityRepositoryInterface    $orderRepository,
+        EntityRepositoryInterface    $customerRepository,
         TranslatorInterface          $translator,
         Logger                       $logger,
         OrderTransactionStateHandler $transactionStateHandler,
@@ -118,6 +121,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
         $this->systemConfigService = $systemConfigService;
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->orderRepository = $orderRepository;
+        $this->customerRepository = $customerRepository;
         $this->translator = $translator;
         $this->logger = $logger;
         $this->transactionStateHandler = $transactionStateHandler;
@@ -332,6 +336,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
             $this->translator,
             $this->orderRepository,
             $this->orderTransactionRepository,
+            $this->customerRepository,
             $context,
             $this->transactionStateHandler
         );

@@ -30,6 +30,9 @@
             "error": "Connection could not be established. Please check the access data.",
             "button": "Refund payment"
         },
+        "save-payment-card": {
+            "label": "Save payment card"
+        },
         "forwardToPaymentHandler": "Forwarding to payment handler.",
         "errorWithConfirmRedirect": "Error. Redirecting to confirm page.",
         "buildingOrder": "Building order",

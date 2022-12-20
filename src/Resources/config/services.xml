@@ -21,6 +21,7 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="order.repository"/>
+            <argument type="service" id="customer.repository"/>
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="monolog.logger" />
             <argument type="service" id="translator" />
@@ -33,6 +34,7 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="order.repository"/>
+            <argument type="service" id="customer.repository"/>
             <argument type="service" id="translator" />
             <argument type="service" id="monolog.logger" />
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
@@ -43,6 +45,7 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="order.repository"/>
+            <argument type="service" id="customer.repository"/>
             <argument type="service" id="MoptWorldline\Service\Payment"/>
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="router"/>
@@ -56,6 +59,7 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="order.repository"/>
+            <argument type="service" id="customer.repository"/>
             <argument type="service" id="MoptWorldline\Service\Payment"/>
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="router"/>
@@ -69,6 +73,7 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="order.repository" />
             <argument type="service" id="order_transaction.repository"/>
+            <argument type="service" id="customer.repository"/>
             <argument type="service" id="monolog.logger" />
             <argument type="service" id="request_stack"/>
             <argument type="service" id="translator" />
@@ -86,6 +91,7 @@
             <argument type="service" id="monolog.logger" />
             <argument type="service" id="order_transaction.repository"/>
             <argument type="service" id="order.repository"/>
+            <argument type="service" id="customer.repository"/>
             <argument type="service" id="Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler"/>
             <argument type="service" id="translator" />
             <tag name="messenger.message_handler" />

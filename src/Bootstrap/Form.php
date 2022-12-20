@@ -44,6 +44,7 @@ class Form
     const CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_STATUS = 'payment_transaction_status';
     const CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_READABLE_STATUS = 'payment_transaction_readable_status';
     const CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID = 'worldline_payment_method_id';
+    const CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN = 'worldline_saved_payment_card_token';
 
     /** @var string Field name for the cart form */
     const WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID = 'moptWorldlineHostedTokenizationId';

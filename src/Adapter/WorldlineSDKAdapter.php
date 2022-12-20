@@ -15,6 +15,7 @@ use OnlinePayments\Sdk\Domain\CreatePaymentRequest;
 use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
 use OnlinePayments\Sdk\Domain\Customer;
 use OnlinePayments\Sdk\Domain\CustomerDevice;
+use OnlinePayments\Sdk\Domain\GetHostedTokenizationResponse;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
 use OnlinePayments\Sdk\Domain\MerchantAction;
 use OnlinePayments\Sdk\Domain\Order;
@@ -118,7 +119,24 @@ class WorldlineSDKAdapter
      * @return GetPaymentProductsResponse
      * @throws \Exception
      */
-    public function getPaymentMethods(string $countryIso3, string $currencyIsoCode): GetPaymentProductsResponse
+    public function getPaymentProducts(string $countryIso3, string $currencyIsoCode): GetPaymentProductsResponse
+    {
+        $queryParams = new GetPaymentProductsParams();
+
+        $queryParams->setCountryCode($countryIso3);
+        $queryParams->setCurrencyCode($currencyIsoCode);
+        return $this->merchantClient
+            ->products()
+            ->getPaymentProducts($queryParams);
+    }
+
+    /**
+     * @param string $countryIso3
+     * @param string $currencyIsoCode
+     * @return GetPaymentProductsResponse
+     * @throws \Exception
+     */
+    public function getPaymentProduct(string $countryIso3, string $currencyIsoCode): GetPaymentProductsResponse
     {
         $queryParams = new GetPaymentProductsParams();
 
@@ -216,16 +234,31 @@ class WorldlineSDKAdapter
     }
 
     /**
+     * @param array $iframeData
+     * @return GetHostedTokenizationResponse
+     * @throws \Exception
+     */
+    public function createHostedTokenization(array $iframeData): GetHostedTokenizationResponse
+    {
+        $merchantClient = $this->getMerchantClient();
+        return $merchantClient->hostedTokenization()->getHostedTokenization($iframeData[Form::WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID]);
+    }
+
+    /**
      * @param float $amountTotal
      * @param string $currencyISO
      * @param array $iframeData
+     * @param GetHostedTokenizationResponse $hostedTokenization
      * @return CreatePaymentResponse
      * @throws \Exception
      */
-    public function createHostedTokenizationPayment(float $amountTotal, string $currencyISO, array $iframeData): CreatePaymentResponse
+    public function createHostedTokenizationPayment(
+        float $amountTotal,
+        string $currencyISO,
+        array $iframeData,
+        GetHostedTokenizationResponse $hostedTokenization
+    ): CreatePaymentResponse
     {
-        $merchantClient = $this->getMerchantClient();
-        $hostedTokenization = $merchantClient->hostedTokenization()->getHostedTokenization($iframeData[Form::WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID]);
         $token = $hostedTokenization->getToken()->getId();
         $paymentProductId = $hostedTokenization->getToken()->getPaymentProductId();
         $merchantClient = $this->getMerchantClient();

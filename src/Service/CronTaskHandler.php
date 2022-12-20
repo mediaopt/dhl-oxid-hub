@@ -21,6 +21,7 @@ class CronTaskHandler extends ScheduledTaskHandler
     private Logger $logger;
     private EntityRepositoryInterface $orderTransactionRepository;
     private EntityRepositoryInterface $orderRepository;
+    private EntityRepositoryInterface $customerRepository;
     private OrderTransactionStateHandler $transactionStateHandler;
     private TranslatorInterface $translator;
 
@@ -31,6 +32,7 @@ class CronTaskHandler extends ScheduledTaskHandler
         Logger                       $logger,
         EntityRepositoryInterface    $orderTransactionRepository,
         EntityRepositoryInterface    $orderRepository,
+        EntityRepositoryInterface    $customerRepository,
         OrderTransactionStateHandler $transactionStateHandler,
         TranslatorInterface          $translator
     )
@@ -40,6 +42,7 @@ class CronTaskHandler extends ScheduledTaskHandler
         $this->logger = $logger;
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->orderRepository = $orderRepository;
+        $this->customerRepository = $customerRepository;
         $this->transactionStateHandler = $transactionStateHandler;
         $this->translator = $translator;
         parent::__construct($scheduledTaskRepository);
@@ -88,17 +91,19 @@ class CronTaskHandler extends ScheduledTaskHandler
         $qb->select('ot.custom_fields, ot.updated_at')
             ->from('`order`', 'o')
             ->leftJoin('o', 'order_transaction', 'ot', "ot.order_id = o.id")
-            ->where("o.sales_channel_id = UNHEX('$salesChannelId')")
+            ->where("o.sales_channel_id = UNHEX(:salesChannelId)")
             ->andWhere(
                 $qb->expr()->or(
                     $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"5%'"),
                     $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"56%'")
                 )
             )
-            ->orderBy('ot.updated_at','DESC');
+            ->orderBy('ot.updated_at','DESC')
+            ->setParameter('salesChannelId', $salesChannelId);
 
         if ($daysInterval > 0) {
-            $qb->andWhere("DATEDIFF(NOW(), ot.updated_at) > $daysInterval");
+            $qb->andWhere("DATEDIFF(NOW(), ot.updated_at) > :daysInterval")
+                ->setParameter('daysInterval', $daysInterval);
         }
 
         return $qb->execute()->fetchAllAssociative();
@@ -141,6 +146,7 @@ class CronTaskHandler extends ScheduledTaskHandler
             $this->translator,
             $this->orderRepository,
             $this->orderTransactionRepository,
+            $this->customerRepository,
             Context::createDefaultContext(),
             $this->transactionStateHandler
         );
