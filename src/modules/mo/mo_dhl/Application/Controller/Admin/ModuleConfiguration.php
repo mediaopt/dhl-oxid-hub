@@ -8,6 +8,8 @@ namespace Mediaopt\DHL\Application\Controller\Admin;
  * @copyright 2016 Mediaopt GmbH
  */
 
+use Mediaopt\DHL\Adapter\ParcelShippingConverter;
+use Mediaopt\DHL\Api\GKV;
 use Mediaopt\DHL\Api\GKV\CountryType;
 use Mediaopt\DHL\Api\GKV\NameType;
 use Mediaopt\DHL\Api\GKV\NativeAddressTypeNew;
@@ -21,12 +23,14 @@ use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderType;
 use Mediaopt\DHL\Api\GKV\Version;
 use Mediaopt\DHL\Api\Internetmarke;
+use Mediaopt\DHL\Api\ParcelShipping\Client;
 use Mediaopt\DHL\Application\Model\DeliverySetList;
 use Mediaopt\DHL\Controller\Admin\ErrorDisplayTrait;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Shipment\BillingNumber;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
+use OxidEsales\Eshop\Application\Model\DeliverySet;
 use OxidEsales\Eshop\Core\Registry;
 
 /** @noinspection LongInheritanceChainInspection */
@@ -45,7 +49,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
      * @var string[]
      */
     const SURCHARGE_SNIPPETS = [
-        'mo_dhl__wunschtag_surcharge_text'            => 'MO_DHL__WUNSCHTAG_COSTS',
+        'mo_dhl__wunschtag_surcharge_text' => 'MO_DHL__WUNSCHTAG_COSTS',
     ];
 
     /**
@@ -132,7 +136,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         $weightSetting = [
             'mo_dhl__default_weight',
             'mo_dhl__packing_weight_in_percent',
-            'mo_dhl__packing_weight_absolute'
+            'mo_dhl__packing_weight_absolute',
         ];
         $changed = false;
         foreach ($weightSetting as $setting) {
@@ -179,14 +183,17 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             }
             $this->checkWunschpaket($adapter);
             $deliveries = oxNew(DeliverySetList::class);
-            $deliveries = array_filter((array) $deliveries->getDeliverySetList(null, null), function ($deliverySet) { return !$deliverySet->oxdeliveryset__mo_dhl_excluded->value;});
+            $deliveries = array_filter((array)$deliveries->getDeliverySetList(null, null), function ($deliverySet) {
+                return !$deliverySet->oxdeliveryset__mo_dhl_excluded->value;
+            });
             if ($deliveries === []) {
                 Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__NO_DELIVERYSET');
                 return;
             }
             $gkv = $adapter->buildGKV();
+            $parcelShipping = $adapter->buildParcelShipping();
             foreach ($deliveries as $delivery) {
-                $this->checkGKV($gkv, $delivery);
+                $this->checkShippingAPIs($gkv, $parcelShipping, $delivery);
             }
         } catch (\Exception $e) {
             $this->displayErrors($e);
@@ -272,7 +279,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     {
         try {
             $response = $internetmarke->authenticateUser();
-            $message = sprintf(Registry::getLang()->translateString('MO_DHL__WALLAT_BALANCE_CHECK'), $response->getWalletBalance()/100.);
+            $message = sprintf(Registry::getLang()->translateString('MO_DHL__WALLAT_BALANCE_CHECK'), $response->getWalletBalance() / 100.);
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($message);
         } catch (\RuntimeException $e) {
             $e = $e->getPrevious() ?: $e;
@@ -281,10 +288,12 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     }
 
     /**
-     * @param \Mediaopt\DHL\Api\GKV $gkv
-     * @param \OxidEsales\Eshop\Application\Model\DeliverySet $deliveryset
+     * @param GKV         $gkv
+     * @param Client      $parcelShipping
+     * @param DeliverySet $deliveryset
+     * @throws \Exception
      */
-    private function checkGKV(\Mediaopt\DHL\Api\GKV $gkv, $deliveryset)
+    private function checkShippingAPIs(\Mediaopt\DHL\Api\GKV $gkv, Client $parcelShipping, $deliveryset)
     {
         $lang = Registry::getLang();
         Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($lang->translateString('MO_DHL__CHECKING_DELIVERYSET') . $deliveryset->oxdeliveryset__oxtitle->value);
@@ -297,41 +306,58 @@ class ModuleConfiguration extends ModuleConfiguration_parent
                 return;
             }
             $shipment = $this->createTestShipment($gkv, $deliveryset);
-            $shipmentOrder = new ValidateShipmentOrderType('123', $shipment);
+            $shipmentOrder = new ValidateShipmentOrderType('123456', $shipment);
             $request = new ValidateShipmentOrderRequest(new Version(3, 4, 0), $shipmentOrder);
 
-            $response = $gkv->validateShipment($request);
+            if (Registry::getConfig()->getConfigParam('mo_dhl__account_rest_api')) {
+                $converter = Registry::get(ParcelShippingConverter::class);
+                [$query, $request] = $converter->convertValidateShipmentOrderRequest($request);
+                $response = $parcelShipping->ordersPost($request, $query, [], Client::FETCH_RESPONSE);
+                if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
+                    $payload = json_decode($response->getBody()->getContents(), true);
+                    if ($payload['status'] == 401) {
+                        Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__LOGIN_FAILED');
+                        return;
+                    }
+                    foreach ($converter->extractErrorsFromResponsePayload($payload) as $error) {
+                        Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($error);
+                    }
+                    return;
+                }
+            } else {
+                $response = $gkv->validateShipment($request);
+                if ($response->getStatus()->getStatusCode() !== 0) {
+                    switch ($response->getStatus()->getStatusText()) {
+                        case 'login failed':
+                            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__LOGIN_FAILED');
+                            return;
+                        default:
+                            Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($response->getStatus()->getStatusText());
+                            if (!isset($response->getValidationState()[0])) {
+                                return;
+                            }
+                            $errors = array_unique($response->getValidationState()[0]->getStatus()->getStatusMessage());
+                            foreach ($errors as $error) {
+                                Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($error);
+                            }
+                            return;
+                    }
+                }
+            }
         } catch (\RuntimeException $e) {
             $e = $e->getPrevious() ?: $e;
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($e->getMessage());
             return;
         }
-        if ($response->getStatus()->getStatusCode() !== 0) {
-            switch ($response->getStatus()->getStatusText()) {
-                case 'login failed':
-                    Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__LOGIN_FAILED');
-                    return;
-                default:
-                    Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($response->getStatus()->getStatusText());
-                    if (!isset($response->getValidationState()[0])) {
-                        return;
-                    }
-                    $errors = array_unique($response->getValidationState()[0]->getStatus()->getStatusMessage());
-                    foreach ($errors as $error) {
-                        Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($error);
-                    }
-                    return;
-            }
-        }
         Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__CORRECT_CREDENTIALS');
     }
 
     /**
-     * @param \Mediaopt\DHL\Api\GKV $gkv
+     * @param \Mediaopt\DHL\Api\GKV                           $gkv
      * @param \OxidEsales\Eshop\Application\Model\DeliverySet $deliveryset
      * @return Shipment
      */
-    protected function createTestShipment(\Mediaopt\DHL\Api\GKV $gkv, $deliveryset) : Shipment
+    protected function createTestShipment(\Mediaopt\DHL\Api\GKV $gkv, $deliveryset): Shipment
     {
         $process = Process::build($deliveryset->oxdeliveryset__mo_dhl_process->value);
         $receiverCountryCode = $process->isInternational() ? 'FR' : 'DE';

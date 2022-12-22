@@ -10,7 +10,7 @@ namespace Mediaopt\DHL\Api;
 /**
  * Encapsulates credentials for REST APIs of DHL.
  *
- * @author Mediaopt GmbH
+ * @author  Mediaopt GmbH
  * @version ${VERSION}, ${REVISION}
  * @package Mediaopt\DHL\Standortsuche
  */
@@ -135,8 +135,8 @@ class Credentials
     }
 
     /**
-     * @param string      $keyName
-     * @param string      $password
+     * @param string $keyName
+     * @param string $password
      * @return self
      */
     public static function createStandortsucheEndpoint($keyName, $password)
@@ -167,8 +167,30 @@ class Credentials
     }
 
     /**
-     * @param string      $username
-     * @param string      $password
+     * @param string $username
+     * @param string $password
+     * @param string $apiKey
+     * @return static
+     */
+    public static function createSandboxParcelShippingCredentials($username, $password, $apiKey)
+    {
+        return new static('https://api-sandbox.dhl.com/parcel/de/shipping', $username, $password, null, true, ['api-key' => $apiKey]);
+    }
+
+    /**
+     * @param string $username
+     * @param string $password
+     * @param string $apiKey
+     * @return static
+     */
+    public static function createProductionParcelShippingCredentials($username, $password, $apiKey)
+    {
+        return new static('https://api.dhl.com/parcel/de/shipping', $username, $password, null, false, ['api-key' => $apiKey]);
+    }
+
+    /**
+     * @param string $username
+     * @param string $password
      * @return self
      */
     public static function createSandboxInternetmarkeEndpoint($username, $password)
@@ -177,8 +199,8 @@ class Credentials
     }
 
     /**
-     * @param string      $username
-     * @param string      $password
+     * @param string $username
+     * @param string $password
      * @return self
      */
     public static function createProductionInternetmarkeEndpoint($username, $password)
@@ -187,8 +209,8 @@ class Credentials
     }
 
     /**
-     * @param string      $username
-     * @param string      $password
+     * @param string $username
+     * @param string $password
      * @return self
      */
     public static function createProdWSEndpoint($username, $password)

@@ -4,6 +4,8 @@ namespace Mediaopt\DHL;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use Http\Client\Common\Plugin;
+use Http\Promise\Promise;
 use Mediaopt\DHL\Api\Credentials;
 use Mediaopt\DHL\Api\Internetmarke;
 use Mediaopt\DHL\Api\InternetmarkeRefund;
@@ -13,9 +15,10 @@ use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Api\GKV;
-use Mediaopt\DHL\Api\Warenpost;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Jane\Component\OpenApiRuntime\Client\AuthenticationPlugin;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * This class is used to configure the SDK.
@@ -69,6 +72,19 @@ abstract class Configurator
     protected function buildCustomerGKVCredentials()
     {
         return Credentials::createCustomerCredentials($this->getCustomerGKVLogin(), $this->getCustomerGKVPassword());
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildParcelShippingCredentials(): Credentials
+    {
+        $username = $this->getCustomerParcelShippingUsername();
+        $password = $this->getCustomerParcelShippingPassword();
+        $apiKey = $this->getParcelShippingApiKey();
+        return $this->isProductionEnvironment()
+            ? Credentials::createProductionParcelShippingCredentials($username, $password, $apiKey)
+            : Credentials::createSandboxParcelShippingCredentials($username, $password, $apiKey);
     }
 
     /**
@@ -132,6 +148,21 @@ abstract class Configurator
      * @return string
      */
     abstract protected function getCustomerGKVPassword();
+
+    /**
+     * @return string
+     */
+    abstract protected function getParcelShippingApiKey();
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerParcelShippingUsername();
+
+    /**
+     * @return string
+     */
+    abstract protected function getCustomerParcelShippingPassword();
 
     /**
      * @return string
@@ -235,8 +266,8 @@ abstract class Configurator
      * @return Standortsuche
      */
     public function buildStandortsuche(
-        LoggerInterface $logger = null,
-        ClientInterface $client = null,
+        LoggerInterface        $logger = null,
+        ClientInterface        $client = null,
         ServiceProviderBuilder $serviceProviderBuilder = null
     ) {
         return new Standortsuche(
@@ -275,6 +306,82 @@ abstract class Configurator
     }
 
     /**
+     * @param LoggerInterface $logger
+     * @return Api\ParcelShipping\Client
+     */
+    public function buildParcelShipping(LoggerInterface $logger): \Mediaopt\DHL\Api\ParcelShipping\Client
+    {
+        $credentials = $this->buildParcelShippingCredentials();
+
+        $httpClient = \Http\Discovery\Psr18ClientDiscovery::find();
+        $uri = \Http\Discovery\Psr17FactoryDiscovery::findUriFactory()->createUri($credentials->getEndpoint());
+        $apiKeyAuthentication = new class($credentials) implements AuthenticationPlugin {
+            private $credentials;
+
+            public function __construct(Credentials $credentials)
+            {
+                $this->credentials = $credentials;
+            }
+
+            public function authentication(RequestInterface $request): RequestInterface
+            {
+                return $request->withHeader('dhl-api-key', $this->credentials->getAdditionalFields()['api-key']);
+            }
+
+            public function getScope(): string
+            {
+                return 'ApiKey';
+            }
+        };
+        $basicAuthentication = new class($credentials) implements AuthenticationPlugin {
+            protected $credentials;
+
+            public function __construct(Credentials $credentials)
+            {
+                $this->credentials = $credentials;
+            }
+
+            public function authentication(RequestInterface $request): RequestInterface
+            {
+                return $request->withHeader('Authorization', 'Basic ' . $this->credentials->getBasicAuth());
+            }
+
+            public function getScope(): string
+            {
+                return 'BasicAuth';
+            }
+        };
+        $loggingPlugin = new class($logger) implements Plugin {
+            private $logger;
+
+            public function __construct(LoggerInterface $logger)
+            {
+                $this->logger = $logger;
+            }
+
+            public function handleRequest(RequestInterface $request, callable $next, callable $first): Promise
+            {
+                $context = [
+                    'method' => $request->getMethod(),
+                    'url'    => (string)$request->getUri(),
+                    'body'   => $request->getBody()->getContents(),
+                ];
+                $this->logger->debug('Parcel Shipping API Call', $context);
+                return $next($request);
+            }
+        };
+        $registry = new \Jane\Component\OpenApiRuntime\Client\Plugin\AuthenticationRegistry([$apiKeyAuthentication, $basicAuthentication]);
+        $plugins = [
+            new \Http\Client\Common\Plugin\AddHostPlugin($uri),
+            new \Http\Client\Common\Plugin\AddPathPlugin($uri),
+            $registry,
+            $loggingPlugin,
+        ];
+        $httpClient = new \Http\Client\Common\PluginClient($httpClient, $plugins);
+        return \Mediaopt\DHL\Api\ParcelShipping\Client::create($httpClient);
+    }
+
+    /**
      * @param LoggerInterface|null $logger
      * @return Internetmarke
      */
@@ -299,6 +406,7 @@ abstract class Configurator
             $logger ?: $this->buildLogger()
         );
     }
+
     /**
      * @param LoggerInterface|null $logger
      * @return ProdWSService

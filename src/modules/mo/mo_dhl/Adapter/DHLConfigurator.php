@@ -38,6 +38,12 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const TEST_GKV_PASSWORD = 'pass';
 
+    const TEST_PARCEL_SHIPPING_USERNAME = self::TEST_GKV_USERNAME;
+
+    const TEST_PARCEL_SHIPPING_PASSWORD = self::TEST_GKV_PASSWORD;
+
+    const PARCEL_SHIPPING_API_KEY = 'AYjXP5URDZnGbNVtxQa8iHNvXlboQqtG';
+
     const TEST_RETOURE_USERNAME = '2222222222_customer';
 
     const TEST_RETOURE_PASSWORD = 'uBQbZ62!ZiBiVVbhc';
@@ -129,7 +135,9 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerGKVLogin()
     {
-        return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '') : self::TEST_GKV_USERNAME;
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '')
+            : self::TEST_GKV_USERNAME;
     }
 
     /**
@@ -137,7 +145,38 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getCustomerGKVPassword()
     {
-        return $this->isProductionEnvironment() ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '') : self::TEST_GKV_PASSWORD;
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '')
+            : self::TEST_GKV_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getParcelShippingApiKey()
+    {
+        return self::PARCEL_SHIPPING_API_KEY;
+    }
+
+
+    /**
+     * @return string
+     */
+    protected function getCustomerParcelShippingUsername()
+    {
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '')
+            : self::TEST_PARCEL_SHIPPING_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerParcelShippingPassword()
+    {
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '')
+            : self::TEST_PARCEL_SHIPPING_PASSWORD;
     }
 
     /**
@@ -264,7 +303,8 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
         $retentionNumbers = ['UNLIMITED' => 0, 'ONE_DAY' => 1, 'TWO_DAYS' => 2, 'THREE_DAYS' => 3, 'FOUR_DAYS' => 4, 'FIVE_DAYS' => 5, 'SIX_DAYS' => 6, 'ONE_WEEK' => 7, 'TWO_WEEKS' => 14, 'THREE_WEEKS' => 21, 'ONE_MONTH' => 30, 'TWO_MONTHS' => 61, 'QUARTER_YEAR' => 122, 'HALF_YEAR' => 183, 'YEAR' => 365];
         /** @var string|null $retentionPeriod */
         $retentionPeriod = \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__retention');
-        return array_key_exists($retentionPeriod, $retentionNumbers) ? $retentionNumbers[$retentionPeriod] : self::DEFAULT_LOG_RETENTION_SIZE;
+        return array_key_exists($retentionPeriod, $retentionNumbers) ? $retentionNumbers[$retentionPeriod]
+            : self::DEFAULT_LOG_RETENTION_SIZE;
     }
 
     /**

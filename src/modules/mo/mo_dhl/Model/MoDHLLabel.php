@@ -16,7 +16,6 @@ use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\ViewConfig;
-use Mediaopt\DHL\Api\Warenpost\WarenpostResponse;
 
 /**
  * @author Mediaopt GmbH
@@ -78,7 +77,28 @@ class MoDHLLabel extends BaseModel
     }
 
     /**
-     * @param Order         $order
+     * @param Order $order
+     * @param array $item
+     * @return MoDHLLabel
+     */
+    public static function fromOrderAndParcelShippingResponseItem(Order $order, array $item)
+    {
+        $label = new self();
+        $label->assign(array_filter([
+            'oxshopid'             => $order->getShopId(),
+            'orderId'              => $order->getId(),
+            'type'                 => self::TYPE_DELIVERY,
+            'shipmentNumber'       => $item['shipmentNo'],
+            'returnShipmentNumber' => $item['returnShipmentNo'] ?: $item['shipmentNo'],
+            'labelUrl'             => $item['label']['url'],
+            'returnLabelUrl'       => $item['returnLabel']['url'] ?? null,
+            'exportLabelUrl'       => $item['customsDoc']['url'],
+        ]));
+        return $label;
+    }
+
+    /**
+     * @param Order                    $order
      * @param ShoppingCartResponseType $creationState
      * @return MoDHLLabel
      */
@@ -86,11 +106,11 @@ class MoDHLLabel extends BaseModel
     {
         $label = new self();
         $label->assign([
-            'oxshopid'             => $order->getShopId(),
-            'orderId'              => $order->getId(),
-            'type'                 => self::TYPE_DELIVERY,
-            'shipmentNumber'       => $internetmarkeResponse->getShoppingCart()->getShopOrderId(),
-            'labelUrl'             => $internetmarkeResponse->getLink(),
+            'oxshopid'       => $order->getShopId(),
+            'orderId'        => $order->getId(),
+            'type'           => self::TYPE_DELIVERY,
+            'shipmentNumber' => $internetmarkeResponse->getShoppingCart()->getShopOrderId(),
+            'labelUrl'       => $internetmarkeResponse->getLink(),
         ]);
         return $label;
     }
@@ -153,7 +173,7 @@ class MoDHLLabel extends BaseModel
     }
 
     /**
-     * @param  null|string $oxid
+     * @param null|string $oxid
      * @return bool
      */
     public function delete($oxid = null)
@@ -217,9 +237,9 @@ class MoDHLLabel extends BaseModel
     {
         $this->_addField('oxid', 0);
         $query = $this->buildSelectString([
-            $this->getViewName() . '.orderId' => $orderId,
+            $this->getViewName() . '.orderId'        => $orderId,
             $this->getViewName() . '.shipmentNumber' => $shipmentNumber,
-            ]);
+        ]);
         $this->_isLoaded = $this->assignRecord($query);
 
         return $this->_isLoaded;

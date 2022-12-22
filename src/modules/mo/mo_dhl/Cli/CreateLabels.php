@@ -10,7 +10,9 @@ namespace Mediaopt\DHL\Cli;
 
 use Mediaopt\DHL\Adapter\DHLAdapter;
 use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
-use Mediaopt\DHL\Api\GKV\CreateShipmentOrderResponse;
+use Mediaopt\DHL\Adapter\ParcelShippingConverter;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderRequest;
+use Mediaopt\DHL\Api\ParcelShipping\Client;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use OxidEsales\Eshop\Core\DatabaseProvider;
@@ -66,27 +68,47 @@ class CreateLabels extends Command
         if (!$orderIds = $this->getOrderIds($input->getOption('paid'), $input->getOption('status'))) {
             return;
         }
-        $this->handleCreationResponse($this->callCreation($orderIds));
-    }
-
-    /**
-     * @param string[] $orderIds
-     * @return CreateShipmentOrderResponse
-     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
-     * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
-     */
-    protected function callCreation(array $orderIds)
-    {
         $request = Registry::get(GKVCreateShipmentOrderRequestBuilder::class)->build($orderIds);
-        return Registry::get(DHLAdapter::class)->buildGKV()->createShipmentOrder($request);
+        if (Registry::getConfig()->getConfigParam('mo_dhl__account_rest_api')) {
+            $this->createWithParcelShipping($request);
+        } else {
+            $this->createWithGKV($request);
+        }
     }
 
     /**
-     * @param CreateShipmentOrderResponse $response
+     * @param CreateShipmentOrderRequest $request
      * @throws \Exception
      */
-    protected function handleCreationResponse(CreateShipmentOrderResponse $response)
+    protected function createWithParcelShipping(CreateShipmentOrderRequest $request)
     {
+        [$query, $request] = Registry::get(ParcelShippingConverter::class)->convertCreateShipmentOrderRequest($request);
+        $response = Registry::get(DHLAdapter::class)->buildParcelShipping()->ordersPost($request, $query, [], Client::FETCH_RESPONSE);
+        $payload = \json_decode($response->getBody(), true);
+        $createdLabels = 0;
+        foreach ($payload['items'] as $item) {
+            $statusInformation = $item['sstatus'];
+            $order = \oxNew(Order::class);
+            $order->load($item['shipmentRefNo']);
+            $order->storeCreationStatus($statusInformation['title']);
+            if ($detail = $statusInformation['detail']) {
+                $this->output->writeln($this->translate('MO_DHL__BATCH_ERROR_CREATION_ERROR', [$order->getFieldData('oxordernr'), $detail]));
+                continue;
+            }
+            $label = MoDHLLabel::fromOrderAndParcelShippingResponseItem($order, $item);
+            $label->save();
+            $createdLabels++;
+        }
+        $this->output->writeln($this->translate('MO_DHL__BATCH_LABELS_CREATED', [$createdLabels]));
+    }
+
+    /**
+     * @param CreateShipmentOrderRequest $request
+     * @throws \Exception
+     */
+    protected function createWithGKV(CreateShipmentOrderRequest $request)
+    {
+        $response = Registry::get(DHLAdapter::class)->buildGKV()->createShipmentOrder($request);
         $createdLabels = 0;
         foreach ($response->getCreationState() as $creationState) {
             $statusInformation = $creationState->getLabelData()->getStatus();

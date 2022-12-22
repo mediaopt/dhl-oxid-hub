@@ -1,0 +1,58 @@
+<?php
+
+namespace Mediaopt\DHL\Api\ParcelShipping\Normalizer;
+
+use Mediaopt\DHL\Api\ParcelShipping\Runtime\Normalizer\CheckArray;
+use Mediaopt\DHL\Api\ParcelShipping\Runtime\Normalizer\ValidatorTrait;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+class JaneObjectNormalizer implements DenormalizerInterface, NormalizerInterface, DenormalizerAwareInterface, NormalizerAwareInterface
+{
+    use DenormalizerAwareTrait;
+    use NormalizerAwareTrait;
+    use CheckArray;
+    use ValidatorTrait;
+    protected $normalizers = array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ApiVersionResponse' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ApiVersionResponseNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ErrorResponseNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Document' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\DocumentNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\JSONStatus' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\JSONStatusNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\LabelDataResponse' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\LabelDataResponseNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ResponseItem' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ResponseItemNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ValidationMessageItem' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ValidationMessageItemNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\GetManifestData' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\GetManifestDataNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\GetManifestResponse200' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\GetManifestResponse200Normalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\GetManifestStatus' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\GetManifestStatusNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\DoManifestResponse207' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\DoManifestResponse207Normalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\DoManifestStatusResponse' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\DoManifestStatusResponseNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ShortResponseItem' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ShortResponseItemNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ShipmentManifestingRequest' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ShipmentManifestingRequestNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\BankAccount' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\BankAccountNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Commodity' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\CommodityNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ContactAddress' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ContactAddressNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\CustomsDetails' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\CustomsDetailsNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Dimensions' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\DimensionsNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Locker' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\LockerNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\PostOffice' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\PostOfficeNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Shipment' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ShipmentNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ShipmentDetails' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ShipmentDetailsNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ShipmentOrderRequest' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ShipmentOrderRequestNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Shipper' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ShipperNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ShippingConfirmation' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ShippingConfirmationNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VAS' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\VASNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASCashOnDelivery' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\VASCashOnDeliveryNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASDhlRetoure' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\VASDhlRetoureNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASIdentCheck' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\VASIdentCheckNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Value' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\ValueNormalizer', 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Weight' => 'Mediaopt\\DHL\\Api\\ParcelShipping\\Normalizer\\WeightNormalizer', '\\Jane\\Component\\JsonSchemaRuntime\\Reference' => '\\Mediaopt\\DHL\\Api\\ParcelShipping\\Runtime\\Normalizer\\ReferenceNormalizer'), $normalizersCache = array();
+    public function supportsDenormalization($data, $type, $format = null) : bool
+    {
+        return array_key_exists($type, $this->normalizers);
+    }
+    public function supportsNormalization($data, $format = null) : bool
+    {
+        return is_object($data) && array_key_exists(get_class($data), $this->normalizers);
+    }
+    /**
+     * @return array|string|int|float|bool|\ArrayObject|null
+     */
+    public function normalize($object, $format = null, array $context = array())
+    {
+        $normalizerClass = $this->normalizers[get_class($object)];
+        $normalizer = $this->getNormalizer($normalizerClass);
+        return $normalizer->normalize($object, $format, $context);
+    }
+    /**
+     * @return mixed
+     */
+    public function denormalize($data, $class, $format = null, array $context = array())
+    {
+        $denormalizerClass = $this->normalizers[$class];
+        $denormalizer = $this->getNormalizer($denormalizerClass);
+        return $denormalizer->denormalize($data, $class, $format, $context);
+    }
+    private function getNormalizer(string $normalizerClass)
+    {
+        return $this->normalizersCache[$normalizerClass] ?? $this->initNormalizer($normalizerClass);
+    }
+    private function initNormalizer(string $normalizerClass)
+    {
+        $normalizer = new $normalizerClass();
+        $normalizer->setNormalizer($this->normalizer);
+        $normalizer->setDenormalizer($this->denormalizer);
+        $this->normalizersCache[$normalizerClass] = $normalizer;
+        return $normalizer;
+    }
+}
