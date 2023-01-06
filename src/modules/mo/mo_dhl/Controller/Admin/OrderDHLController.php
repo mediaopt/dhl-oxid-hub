@@ -235,7 +235,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      * @param string $shipmentNumber
      * @return DeleteShipmentOrderResponse
      */
-    public function callDeleteShipment(string $shipmentNumber): DeleteShipmentOrderResponse
+    public function callGKVDeleteShipment(string $shipmentNumber): DeleteShipmentOrderResponse
     {
         $gkvClient = Registry::get(DHLAdapter::class)->buildGKV();
         return $gkvClient->deleteShipmentOrder(new DeleteShipmentOrderRequest($gkvClient->buildVersion(), $shipmentNumber));
@@ -515,7 +515,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      * @param MoDHLLabel                  $label
      * @param DeleteShipmentOrderResponse $response
      */
-    protected function handleDeletionResponse(MoDHLLabel $label, DeleteShipmentOrderResponse $response)
+    protected function handleGKVDeletionResponse(MoDHLLabel $label, DeleteShipmentOrderResponse $response)
     {
         $statusInformation = $response->getDeletionState() ? $response->getDeletionState()[0]->getStatus() : $response->getStatus();
         if ($errors = $statusInformation->getErrors()) {
@@ -643,6 +643,6 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     protected function deleteShipmentWithGKV(MoDHLLabel $label)
     {
-        $this->handleDeletionResponse($label, $this->callDeleteShipment($label->getFieldData('shipmentNumber')));
+        $this->handleGKVDeletionResponse($label, $this->callGKVDeleteShipment($label->getFieldData('shipmentNumber')));
     }
 }
