@@ -434,6 +434,7 @@ class ParcelShippingConverter
         if ($description = $legacyExportDocument->getExportTypeDescription()) {
             $customsDetails->setExportDescription($description);
         }
+        $customsDetails->setPostalCharges($this->createValue($legacyExportDocument->getAdditionalFee(), $legacyExportDocument->getCustomsCurrency()));
         $customsDetails->setItems(array_map([$this, 'convertToCommodity'], $legacyExportDocument->getExportDocPosition()));
         if ($attestationNo = $legacyExportDocument->getAttestationNumber()) {
             $customsDetails->setAttestationNo($attestationNo);
@@ -449,9 +450,6 @@ class ParcelShippingConverter
         }
         if ($permitNo = $legacyExportDocument->getPermitNumber()) {
             $customsDetails->setPermitNo($permitNo);
-        }
-        if ($postalCharges = $legacyExportDocument->getAdditionalFee()) {
-            $customsDetails->setPostalCharges($this->createValue($postalCharges, $legacyExportDocument->getCustomsCurrency()));
         }
         if ($shippingConditions = $legacyExportDocument->getTermsOfTrade()) {
             $customsDetails->setShippingConditions($shippingConditions);
