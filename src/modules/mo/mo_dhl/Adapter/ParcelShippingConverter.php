@@ -27,6 +27,7 @@ use Mediaopt\DHL\Api\ParcelShipping\Model\VASDhlRetoure;
 use Mediaopt\DHL\Api\ParcelShipping\Model\VASIdentCheck;
 use Mediaopt\DHL\Api\ParcelShipping\Model\Weight;
 use Mediaopt\DHL\Export\CsvExporter;
+use Mediaopt\DHL\Model\MoDHLService;
 use function array_map;
 
 /**
@@ -583,7 +584,10 @@ class ParcelShippingConverter
             $initialized = true;
         }
         if ($legacyServices->getEndorsement() !== null && $legacyServices->getEndorsement()->getActive()) {
-            $services->setEndorsement($legacyServices->getEndorsement()->getType());
+            $endorsement = $legacyServices->getEndorsement()->getType() === MoDHLService::MO_DHL__ENDORSEMENT_ABANDONMENT
+                ? 'ABANDON'
+                : 'RETURN';
+            $services->setEndorsement($endorsement);
             $initialized = true;
         }
         if ($legacyServices->getPreferredDay() !== null && $legacyServices->getPreferredDay()->getActive()) {
