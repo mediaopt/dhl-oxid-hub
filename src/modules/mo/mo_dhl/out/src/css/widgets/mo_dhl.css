@@ -35,10 +35,14 @@
 }
 
 #moDHLWunschpaket .form-group {
+    margin: 0 0 0 20px;
+}
+
+#moDHLWunschpaket.theme--is-azure .form-group {
     margin: 0;
 }
 
-#moDHLWunschpaket .form-control {
+#moDHLWunschpaket.theme--is-azure .form-control {
     border-radius: 0;
     padding-bottom: 0;
     padding-top: 0;
@@ -208,6 +212,12 @@ div#moDHLWunschpaket dt {
     justify-content: flex-start;
     flex-wrap: wrap;
     margin: 0 0 10px 0;
+    padding-left: 20px;
+    list-style: none;
+}
+
+input[name="moDHLWunschtag"] {
+    display: none;
 }
 
 
@@ -221,13 +231,26 @@ div.moDHLWunschpaketWave {
     margin-bottom: 20px;
 }
 
-
-div#moDHLWunschpaket ul#moDHLWunschtag li {
-    width: 45px;
-    margin-bottom: 5px;
+.moDHL--wunschtag-surcharge {
+    padding-left: 20px;
 }
 
-div#moDHLWunschpaket input[type="text"] {
+div#moDHLWunschpaket ul#moDHLWunschtag li {
+    width: 70px;
+    margin: 5px 0;
+    color: black;
+    background-color: #fc2;
+    padding: 12px;
+    cursor: pointer;
+}
+
+div#moDHLWunschpaket ul#moDHLWunschtag li label {
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+}
+
+div#moDHLWunschpaket.theme--is-azure input[type="text"] {
     width: 94%;
 }
 
@@ -276,7 +299,6 @@ div.ttip {
 
 .moDHLPrivacy {
     text-align: right;
-    width: 94%;
     font-size: 10px;
 }
 
@@ -359,14 +381,73 @@ a.privacy-policy:hover {
     color: #a94442;
 }
 
+.moDHLShowRetoure {
+    display: inline-block;
+}
+
+.moDhlAddressCard {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px 15px;
+    display: grid;
+    grid-template-columns: 1fr 50px;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.moDhlAddressCardAddress span {
+    display: block;
+}
+
+.moDhlAddressCard.active {
+    border-color: #009ec0;
+}
+
+.moDhlAddressCard.moDhlShipping {
+    border-color: #fc0;
+}
+
+.moDhlAddressCard label {
+    cursor: pointer;
+    margin: 0;
+}
+
+.moDhlAddressCardActions {
+    display: none;
+}
+
+.moDhlAddressCardOption {
+    cursor: pointer;
+    font-size: 18px;
+    text-align: right;
+}
+
+.moDhlWunschpaketServiceHeadline {
+    font-size: 16px;
+}
+
+.moDhlWunschpaketServiceOption {
+    margin-top: 10px;
+}
+
+@media screen and (max-width: 48em) {
+    #moDHLWunschpaket .moDhlWunschpaketServiceLabel input {
+        margin-left: -5px;
+    }
+}
+
 @media screen and (min-width: 48em) {
     #moDHLProviders {
         display: inline-flex;
         position: absolute;
         right: 20px;
     }
-}
 
-.moDHLShowRetoure {
-    display: inline-block;
+    #moDHLWunschpaket .moDhlWunschpaketServiceOption:first-of-type {
+        margin-top: 0;
+    }
+
+    .moDhlWunschpaketServiceHeadline {
+        text-align: right;
+    }
 }

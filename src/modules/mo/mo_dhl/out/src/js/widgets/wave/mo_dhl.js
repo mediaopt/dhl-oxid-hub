@@ -227,13 +227,9 @@
         },
         rearrangeAddresses: function () {
             $("div.dd-available-addresses")
-                .find("div.card-body")
+                .find("div.moDhlAddressCardAddress")
                 .html(function () {
-                    var buttons = $(this).find("button");
-                    var editButton = buttons.length > 0 ? buttons[0].outerHTML : '';
-                    var deleteButton = buttons.length > 1 ? buttons[1].outerHTML : '';
-                    buttons.remove();
-                    return editButton + deleteButton + mo_dhl__deliveryAddress.reformatAdressString($(this).html());
+                    return mo_dhl__deliveryAddress.reformatAndStyleAddressString(this);
                 });
             $('.dd-edit-shipping-address').click(function() {
                 $('#shippingAddressForm').show();

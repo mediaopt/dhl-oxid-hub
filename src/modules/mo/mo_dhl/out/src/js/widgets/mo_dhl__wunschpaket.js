@@ -73,6 +73,7 @@
                     $wunschnachbarName.val('').trigger('change');
                     $wunschnachbarName.parent().removeClass(classesToRemove);
                     $wunschnachbarAddress.parent().removeClass(classesToRemove);
+                    $('#moDHL--wunschnachbar-values').collapse('hide');
                 }
             });
             $wunschnachbarCheckbox.change(function () {
@@ -82,6 +83,7 @@
                 } else {
                     $wunschort.val('').trigger('change');
                     $wunschort.parent().removeClass(classesToRemove);
+                    $('#moDHL--wunschort-values').collapse('hide');
                 }
             });
             $wunschtagCheckbox.change(function () {

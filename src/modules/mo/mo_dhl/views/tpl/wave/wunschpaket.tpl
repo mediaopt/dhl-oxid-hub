@@ -5,31 +5,31 @@
              data-translatefailedblacklist="[{oxmultilang ident='MO_DHL__FAILED_BLACKLIST'}]"
              data-theme="wave" data-dateajax="[{$oViewConf->getSslSelfLink()}]cl=MoDHLYellowBox&zip=">
 
+            <span class="col-lg-3 col-xs-12 moDhlWunschpaketServiceHeadline">[{oxmultilang ident='MO_DHL__SHIPPING_OPTIONS'}]</span>
 
-            <span class="col-lg-3 text-right">[{oxmultilang ident='MO_DHL__SHIPPING_OPTIONS'}]</span>
-
-            <div class="col-lg-9">
+            <div class="col-lg-9 col-xs-12">
                 [{assign var="wunschtagCosts" value=$oView->moDHLGetWunschtagCosts()}]
                 <div id="moDHL--wunschtag-info"
-                     [{if !$oViewConf->moIsWunschtagActivated()}] class="moDHL--deactivated" [{/if}]>
+                    class="moDhlWunschpaketServiceOption [{if !$oViewConf->moIsWunschtagActivated()}] moDHL--deactivated [{/if}]">
                     <label class="collapsed moDhlWunschpaketServiceLabel" data-toggle="collapse" data-target="#moDHL--wunschtag-values">
                         <input type="checkbox" id="moDHLWunschtagCheckbox" value=""/>
                         <strong>[{oxmultilang ident="MO_DHL__WUNSCHTAG_LABEL_CONTENT"}]</strong>
                         <i class="fa fa-caret-up"></i>
                         <i class="fa fa-caret-down"></i>
-                        [{if $wunschtagCosts && $wunschtagCosts->getPrice() > 0}]
-                    <br/>
-                        [{if $oViewConf->isFunctionalityEnabled('blShowVATForDelivery')}]
-                        ([{oxmultilang ident="MO_DHL__SURCHARGE_NET" suffix="COLON"}]
-                        [{oxprice price=$wunschtagCosts->getNettoPrice() currency=$currency}])
-                        [{else}]
-                        ([{oxmultilang ident="MO_DHL__SURCHARGE_GROSS" suffix="COLON"}]
-                        [{oxprice price=$wunschtagCosts->getBruttoPrice() currency=$currency}])
-                        [{/if}]
-                        [{/if}]
                     </label>
                 </div>
-                <div id="moDHL--wunschtag-values" class="collapse [{if !$oViewConf->moIsWunschtagActivated()}] moDHL--deactivated[{/if}]">
+                <div class="collapse [{if !$oViewConf->moIsWunschtagActivated()}] moDHL--deactivated[{/if}]" id="moDHL--wunschtag-values">
+                    <span class="moDHL--wunschtag-surcharge">
+                        [{if $wunschtagCosts && $wunschtagCosts->getPrice() > 0}]
+                            [{if $oViewConf->isFunctionalityEnabled('blShowVATForDelivery')}]
+                                ([{oxmultilang ident="MO_DHL__SURCHARGE_NET" suffix="COLON"}]
+                                [{oxprice price=$wunschtagCosts->getNettoPrice() currency=$currency}])
+                            [{else}]
+                                ([{oxmultilang ident="MO_DHL__SURCHARGE_GROSS" suffix="COLON"}]
+                                [{oxprice price=$wunschtagCosts->getBruttoPrice() currency=$currency}])
+                            [{/if}]
+                        [{/if}]
+                    </span>
                     <ul id="moDHLWunschtag">
                         <li>
                             <input type="radio" name="moDHLWunschtag" id="wunschtag:none" value=""/>
@@ -54,7 +54,7 @@
                 </div>
 
                 [{assign var="location" value=$oView->moDHLGetLocation()}]
-                <div [{if !$oViewConf->moIsWunschortActivated()}] class="moDHL--deactivated" [{/if}]>
+                <div class="moDhlWunschpaketServiceOption [{if !$oViewConf->moIsWunschortActivated()}] moDHL--deactivated [{/if}]">
                     <label class="collapsed moDhlWunschpaketServiceLabel" data-toggle="collapse" data-target="#moDHL--wunschort-values">
                         <input type="checkbox" id="moDHLWunschortCheckbox" value=""/>
                         <strong>[{oxmultilang ident="MO_DHL__WUNSCHORT_LABEL_CONTENT"}]</strong>
@@ -77,7 +77,7 @@
                         <p class="moShowOnError">[{oxmultilang ident="MO_DHL__WRONG_OR_MISSING_INPUT"}]</p>
                     </div>
                 </div>
-                <div [{if !$oViewConf->moIsWunschnachbarActivated()}] class="moDHL--deactivated" [{/if}]>
+                <div class="moDhlWunschpaketServiceOption [{if !$oViewConf->moIsWunschnachbarActivated()}] moDHL--deactivated [{/if}]">
                     <label class="collapsed moDhlWunschpaketServiceLabel" data-toggle="collapse" data-target="#moDHL--wunschnachbar-values">
                         <input type="checkbox" id="moDHLWunschnachbarCheckbox" value=""/>
                         <strong>[{oxmultilang ident="MO_DHL__WUNSCHNACHBAR_LABEL_CONTENT"}]</strong>

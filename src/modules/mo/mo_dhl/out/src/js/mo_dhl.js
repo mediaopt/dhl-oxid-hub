@@ -54,7 +54,7 @@ Empfaengerservices = function ($, tailorer) {
         }
         this.tailorer.hideAdditionalInformation();
         this.tailorer.showPostnummer(empty);
-        this.tailorer.doNotRequirePostnummer();
+        this.tailorer.requirePostnummer();
         this.tailorer.showServiceProviderNumber("Postfiliale", this.serviceProviderNumberLabel.postfiliale, empty);
         this.tailorer.fixCountryToGermany();
         this.state = "postfiliale";
