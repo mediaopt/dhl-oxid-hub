@@ -365,7 +365,7 @@ class ParcelShippingConverter
         if ($product = $legacyShipmentOrder->getShipment()->getShipmentDetails()->getProduct()) {
             $shipment->setProduct($product);
         }
-        if ($refNo = $legacyShipmentOrder->getSequenceNumber()) {
+        if ($refNo = $legacyShipmentOrder->getShipment()->getShipmentDetails()->getCustomerReference()) {
             $shipment->setRefNo($refNo);
         }
         if ($services = $this->extractServices($legacyShipmentOrder)) {
