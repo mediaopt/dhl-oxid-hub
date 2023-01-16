@@ -47,7 +47,7 @@ class GKVCustomShipmentBuilder
                 'total' => ['weight' => $shipmentOrder->getShipment()->getShipmentDetails()->getShipmentItem()->getWeightInKG(), 'title' => Registry::getLang()->translateString('GENERAL_ATALL')],
             ], $this->getExportDocPositionWeights($shipmentOrder)),
             'shipper'        => [
-                'name'    => $shipper->getName()->getName1() . $shipper->getName()->getName2() . $shipper->getName()->getName3(),
+                'name'    => $shipper->getName(),
                 'address' => $shipper->getAddress(),
             ],
             'receiver'       => [
@@ -57,7 +57,7 @@ class GKVCustomShipmentBuilder
                 'communication' => $receiver->getCommunication(),
             ],
             'returnReceiver' => [
-                'name'    => $returnReceiver->getName()->getName1() . $returnReceiver->getName()->getName2() . $returnReceiver->getName()->getName3(),
+                'name'    => $returnReceiver->getName(),
                 'address' => $returnReceiver->getAddress(),
             ],
             'services'       => [
@@ -118,7 +118,7 @@ class GKVCustomShipmentBuilder
     protected function useCustomShipper(ShipmentOrderType $shipmentOrder, $shipperData)
     {
         $shipper = $shipmentOrder->getShipment()->getShipper();
-        $shipper->getName()->setName1($shipperData['name']);
+        $shipper->getName()->setName1($shipperData['name1'])->setName2($shipperData['name2'])->setName3($shipperData['name3']);
         $shipperData['Origin'] = new CountryType($shipperData['country']);
         $shipper->getAddress()->assign($shipperData);
     }
@@ -130,7 +130,7 @@ class GKVCustomShipmentBuilder
     protected function useCustomReturnReceiver(ShipmentOrderType $shipmentOrder, $returnReceiverData)
     {
         $returnReceiver = $shipmentOrder->getShipment()->getReturnReceiver();
-        $returnReceiver->getName()->setName1($returnReceiverData['name']);
+        $returnReceiver->getName()->setName1($returnReceiverData['name1'])->setName2($returnReceiverData['name2'])->setName3($returnReceiverData['name3']);
         $returnReceiverData['Origin'] = new CountryType($returnReceiverData['country']);
         $returnReceiver->getAddress()->assign($returnReceiverData);
     }
