@@ -59,7 +59,8 @@ DHLFinder = function ($, tailorer) {
         self.map = new google.maps.Map(mapDiv, {
             center: {lat: 51.16591, lng: 10.451526},
             zoom: 6,
-            noClear: false
+            noClear: false,
+            disableDefaultUI: true,
         });
         self.mapcenter = self.map.getCenter();
         self.map.addListener('dragend', function () {
