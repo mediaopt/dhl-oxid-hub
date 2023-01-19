@@ -6,7 +6,7 @@ class Shipment
 {
 
     /**
-     * @var ShipmentDetailsType $ShipmentDetails
+     * @var ShipmentDetailsTypeType $ShipmentDetails
      */
     protected $ShipmentDetails = null;
 
@@ -31,19 +31,30 @@ class Shipment
     protected $ExportDocument = null;
 
     /**
-     * @param ShipmentDetailsType $ShipmentDetails
-     * @param ShipperType         $Shipper
-     * @param ReceiverType        $Receiver
+     * @var string $feederSystem
      */
-    public function __construct(ShipmentDetailsType $ShipmentDetails, ShipperType $Shipper, ReceiverType $Receiver)
+    protected $feederSystem = null;
+
+    /**
+     * @param ShipmentDetailsTypeType $ShipmentDetails
+     * @param ShipperType             $Shipper
+     * @param ReceiverType            $Receiver
+     * @param ShipperType             $ReturnReceiver
+     * @param ExportDocumentType      $ExportDocument
+     * @param string                  $feederSystem
+     */
+    public function __construct($ShipmentDetails, $Shipper, $Receiver, $ReturnReceiver = null, $ExportDocument = null, $feederSystem = null)
     {
         $this->ShipmentDetails = $ShipmentDetails;
         $this->Shipper = $Shipper;
         $this->Receiver = $Receiver;
+        $this->ReturnReceiver = $ReturnReceiver;
+        $this->ExportDocument = $ExportDocument;
+        $this->feederSystem = $feederSystem;
     }
 
     /**
-     * @return ShipmentDetailsType
+     * @return ShipmentDetailsTypeType
      */
     public function getShipmentDetails()
     {
@@ -51,7 +62,7 @@ class Shipment
     }
 
     /**
-     * @param ShipmentDetailsType $ShipmentDetails
+     * @param ShipmentDetailsTypeType $ShipmentDetails
      * @return Shipment
      */
     public function setShipmentDetails($ShipmentDetails)
@@ -129,6 +140,24 @@ class Shipment
     public function setExportDocument($ExportDocument)
     {
         $this->ExportDocument = $ExportDocument;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFeederSystem()
+    {
+        return $this->feederSystem;
+    }
+
+    /**
+     * @param string $feederSystem
+     * @return Shipment
+     */
+    public function setFeederSystem($feederSystem)
+    {
+        $this->feederSystem = $feederSystem;
         return $this;
     }
 

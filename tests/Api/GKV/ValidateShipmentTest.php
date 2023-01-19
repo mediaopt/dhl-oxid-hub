@@ -10,9 +10,9 @@ namespace sdk\GKV;
 require_once 'BaseGKVTest.php';
 
 use Mediaopt\DHL\Api\GKV\CountryType;
-use Mediaopt\DHL\Api\GKV\Request\ValidateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Response\ValidateShipmentResponse;
+use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderType;
+use Mediaopt\DHL\Api\GKV\ValidateShipmentResponse;
 
 /**
  * @author Mediaopt GmbH

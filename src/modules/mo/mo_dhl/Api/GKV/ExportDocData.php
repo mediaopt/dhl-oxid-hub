@@ -45,7 +45,7 @@ class ExportDocData
 
     /**
      * @param string $shipmentNumber
-     * @return \Mediaopt\DHL\Api\GKV\ExportDocData
+     * @return ExportDocData
      */
     public function setShipmentNumber($shipmentNumber)
     {
@@ -63,7 +63,7 @@ class ExportDocData
 
     /**
      * @param Statusinformation $Status
-     * @return \Mediaopt\DHL\Api\GKV\ExportDocData
+     * @return ExportDocData
      */
     public function setStatus($Status)
     {
@@ -81,7 +81,7 @@ class ExportDocData
 
     /**
      * @param string $exportDocData
-     * @return \Mediaopt\DHL\Api\GKV\ExportDocData
+     * @return ExportDocData
      */
     public function setExportDocData($exportDocData)
     {
@@ -99,7 +99,7 @@ class ExportDocData
 
     /**
      * @param string $exportDocURL
-     * @return \Mediaopt\DHL\Api\GKV\ExportDocData
+     * @return ExportDocData
      */
     public function setExportDocURL($exportDocURL)
     {

@@ -1,4 +1,40 @@
 # Changelog
+
+## 1.6.8
+* bugfix: improved PHP 8.1 compatibility
+* fixed country value not being sent in form
+
+## 1.6.7
+* bugfix: remove PackstationType.php
+* bugfix: prevent null parameter in html_entity_decode
+* bugfix for custom label with Postfiliale
+
+## 1.6.6
+* new Service CDP (Closest Droppoint) for Paket International
+* bugfix: multibyte substring problem for article title in export documents 
+* templating changes: proper use of smarty.block.parent call in chipping country form
+* extended output for soap errors
+
+## 1.6.5
+* bugfix for selecting a Paketshop in the Filialfinder
+
+
+## 1.6.4
+* new Service PDDP (Postal Delivery Duty Paid) for Paket International
+
+## 1.6.3
+* bugfix: don't apply the billing country to an existing delivery address
+* add order numbers to Soap fault log messages in GKV calls
+
+## 1.6.2
+* filter out results not suitable to receive packages
+
+## 1.6.1
+* add weight inputs for articles in custom label form
+* use article weight over orderarticle weight
+* handle comma in weight inputs in custom label form
+* added optional radius as parameter for location searches
+
 ## 1.6.0
 * new Warenpost International process
 

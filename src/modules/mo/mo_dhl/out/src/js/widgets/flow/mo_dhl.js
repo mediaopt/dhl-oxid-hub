@@ -116,22 +116,19 @@
         },
         fixCountryToGermany: function () {
             var germany = $("#germany-oxid").text();
-            var label = $('#delCountrySelect').children('[value="' + germany + '"]').text();
-            $('#dropdownCountry')
-                .css("display", "none")
-                .find("span.filter-option").text(label).end()
-                .find("div.dropdown-menu")
-                .find("span:contains('" + label + "')")
-                .parents('li')
-                .addClass('selected');
-            $('#staticCountry').css("display", "");
-            document.getElementById(germany).value = label;
-            $("[name='deladr[oxaddress__oxcountryid]']").val(germany);
+            var $hiddenInput = $('<input type="hidden" class="mo-hidden-deladr-country" name="deladr[oxaddress__oxcountryid]">');
+            $hiddenInput.val(germany);
+            $("[name='deladr[oxaddress__oxcountryid]']")
+                .val(germany)
+                .attr('disabled', 'disabled')
+                .selectpicker('refresh')
+                .parent()
+                .append($hiddenInput)
+            ;
         },
         loosenFixedCountry: function () {
-            $('#dropdownCountry').css("display", "");
-            $('#staticCountry').css("display", "none");
-            $("[name='deladr[oxaddress__oxcountryid]']").show().nextAll("span").hide();
+            $("[name='deladr[oxaddress__oxcountryid]']").removeAttr("disabled").selectpicker('refresh');
+            $(".mo-hidden-deladr-country").remove();
         },
         addAddressChangeListener: function () {
             var self = this;
@@ -375,7 +372,7 @@
             return provider.number;
         },
         apply: function (provider) {
-            $('#select' + provider.type).prop('selected', true);
+            $('#select' + this.dhl.fromProviderTypeToLabel(provider.type)).prop('selected', true);
             $("#showShipAddress").prop('checked', false).change();
             $(".dd-add-delivery-address").find('label.btn').click();
             var providerIdentifier = this.dhl.fromProviderTypeToIdentifier(provider.type);
@@ -383,22 +380,14 @@
             $("[name='deladr[oxaddress__oxstreetnr]']").val(this.getProviderId(provider));
             $("[name='deladr[oxaddress__oxzip]']").val(provider.address.zip).parent().removeClass('oxInValid');
             $("[name='deladr[oxaddress__oxcity]']").val(provider.address.city);
-            $("[name='deladr[oxaddress__oxcountryid]']").val($("#germany-oxid").text());
+            this.fixCountryToGermany();
         },
         setDeliveryCountryToBillingCountry: function () {
+            if ($('#delCountrySelect').val()) {
+                return;
+            }
             var invCountry = $("#invCountrySelect").val();
-
-            var label = $('#invCountrySelect').children('[value="' + invCountry + '"]').text();
-
-            $('#delCountrySelect').val(invCountry);
-            $('#dropdownCountry')
-                .find("button.dropdown-toggle").attr("title", label).end()
-                .find("li.selected").removeClass("selected").end()
-                .find("span.filter-option").text(label).end()
-                .find("div.dropdown-menu")
-                .find("span:contains('" + label + "')")
-                .parents('li')
-                .addClass('selected');
+            $('#delCountrySelect').val(invCountry).selectpicker('refresh');
         }
     };
 })(jQuery);

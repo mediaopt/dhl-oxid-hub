@@ -9,6 +9,7 @@ namespace Mediaopt\DHL\Application\Controller;
 
 
 use Mediaopt\DHL\Model\MoDHLNotificationMode;
+use Mediaopt\DHL\Model\MoDHLService;
 use OxidEsales\Eshop\Application\Model\DeliverySet;
 use OxidEsales\Eshop\Core\Exception\InputException;
 use OxidEsales\Eshop\Core\Registry;
@@ -26,11 +27,24 @@ class PaymentController extends PaymentController_parent
     {
         $status = parent::validatePayment();
         $session = $this->getSession();
-        if ($session->getVariable('payerror') || !$this->moDHLShowIdentCheckFields()) {
+        if ($session->getVariable('payerror')) {
             return $status;
         }
         $dynvalue = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('dynvalue')
             ?: $session->getVariable('dynvalue');
+        if ($this->moDHLShowPhoneNumberField()) {
+            if (empty($dynvalue['mo_dhl_phone_number'])) {
+                $this->addTplParam('mo_dhl_phone_number_errors', [new InputException(Registry::getLang()->translateString('MO_DHL__PHONE_NUMBER'))]);
+                return;
+            } else {
+                $address = $this->getUser()->getSelectedAddressId() ? $this->getUser()->getSelectedAddress() : $this->getUser();
+                $address->assign(['oxfon' => $dynvalue['mo_dhl_phone_number']]);
+                $address->save();
+            }
+        }
+        if (!$this->moDHLShowIdentCheckFields()) {
+            return $status;
+        }
         if (!isset($dynvalue['mo_dhl_ident_check_birthday']) || !preg_match("#[0-9]{1,2}\.[0-9]{1,2}\.[12][0-9]{3}#", $dynvalue['mo_dhl_ident_check_birthday'])) {
             $this->addTplParam('mo_dhl_birthday_errors', [new InputException(Registry::getLang()->translateString('MO_DHL__BIRTHDAY_ERROR_FORMAT'))]);
             return;
@@ -69,6 +83,16 @@ class PaymentController extends PaymentController_parent
         return (bool) $shipping->getFieldData('MO_DHL_IDENT_CHECK');
     }
 
+    public function moDHLShowPhoneNumberField() : bool
+    {
+        $shippingId = $this->getSession()->getBasket()->getShippingId();
+        $shipping = oxNew(DeliverySet::class);
+        $shipping->load($shippingId);
+        // return (bool) $shipping->getFieldData(MoDHLService::MO_DHL__CDP);
+        // currently the mail address is sufficient for the CDP service
+        return false;
+    }
+    
     /**
      * @return bool
      */
@@ -82,5 +106,12 @@ class PaymentController extends PaymentController_parent
     {
         $dynamicValues = $this->getSession()->getVariable('dynvalue');
         return $dynamicValues['mo_dhl_ident_check_birthday'] ?? '';
+    }
+
+    public function moDHLGetPhoneNumber() : string
+    {
+        $dynamicValues = $this->getSession()->getVariable('dynvalue');
+        $address = $this->getUser()->getSelectedAddressId() ? $this->getUser()->getSelectedAddress() : $this->getUser();
+        return $dynamicValues['mo_dhl_phone_number'] ?? $address->getFieldData('oxfon');
     }
 }

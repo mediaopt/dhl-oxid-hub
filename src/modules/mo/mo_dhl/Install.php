@@ -1,4 +1,5 @@
 <?php
+
 namespace Mediaopt\DHL;
 
 use OxidEsales\Eshop\Core\Registry;
@@ -31,7 +32,7 @@ class Install
         static::cleanUp();
     }
 
-    protected function ensureDocumentsFolderExists()
+    protected static function ensureDocumentsFolderExists()
     {
         $path = Registry::get(ViewConfig::class)->getModulePath('mo_dhl', '') . 'documents';
         if (!is_dir($path)) {
@@ -213,7 +214,10 @@ class Install
             + self::addColumn('oxdeliveryset', 'MO_DHL_OPERATOR', 'VARCHAR(40)')
             + self::addColumn('oxdeliveryset', 'MO_DHL_PARTICIPATION', 'CHAR(2)')
             + self::addColumn('oxdeliveryset', 'MO_DHL_PREMIUM', 'TINYINT(1) NOT NULL DEFAULT 0')
-            + self::addColumn('oxdeliveryset', 'MO_DHL_ENDORSEMENT', 'TINYINT(1) NOT NULL DEFAULT 0');
+            + self::addColumn('oxdeliveryset', 'MO_DHL_ENDORSEMENT', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxdeliveryset', 'MO_DHL_PDDP', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxdeliveryset', 'MO_DHL_CDP', 'TINYINT(1) NOT NULL DEFAULT 0')
+            + self::addColumn('oxdeliveryset', 'MO_DHL_ECONOMY', 'TINYINT(1) NOT NULL DEFAULT 0');
         $order = self::addColumn('oxorder', 'MO_DHL_EKP', 'CHAR(10)')
             + self::addColumn('oxorder', 'MO_DHL_PROCESS', 'VARCHAR(32)')
             + self::addColumn('oxorder', 'MO_DHL_OPERATOR', 'VARCHAR(40)')
@@ -247,10 +251,11 @@ class Install
 
     /**
      */
-    protected function alterColumns()
+    protected static function alterColumns()
     {
         self::alterColumn('oxorder', 'MO_DHL_PARTICIPATION', 'CHAR(5)');
         self::alterColumn('oxdeliveryset', 'MO_DHL_PARTICIPATION', 'CHAR(5)');
+        self::alterColumn('mo_dhl_internetmarke_products', 'OXID', "VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ProdWS-Id'");
         \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\DbMetaDataHandler::class)->updateViews();
     }
 

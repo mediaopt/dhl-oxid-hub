@@ -100,10 +100,10 @@ class Standortsuche extends Base
      * @param string|null $countryIso2Code
      * @return string
      */
-    protected function buildAddressString($address, $postalCode = null, $countryIso2Code = null)
+    protected function buildAddressString($address, $postalCode = null, $countryIso2Code = null, $radius = 0)
     {
         if ($address instanceof Address) {
-            $postalCode = $address->getZip();
+            $postalCode = implode(' ', array_filter([$address->getZip(), $address->getCity()]));
             $countryIso2Code = $address->getCountryIso2Code();
             $address = $address->getStreet() . " " . $address->getStreetNo();
         }
@@ -115,7 +115,30 @@ class Standortsuche extends Base
             'limit=50'
         ];
 
+        if ($radius) {
+            $urlOptions[] = "radius=$radius";
+        }
+
         return $this->sanitizeAddressString(implode('&', $urlOptions));
+    }
+
+    /**
+     * @param $location
+     * @return bool
+     */
+    public function locationFilterFunction($location)
+    {
+        return $location->location->keyword !== "" && $location->location->keywordId !== "";
+    }
+
+    /**
+     * @param $locations
+     * @return object
+     */
+    protected function filterUndelivarableLocations($locations)
+    {
+        $filteredLocations = array_filter($locations->locations, [$this, "locationFilterFunction"]);
+        return (object)['locations' => $filteredLocations];
     }
 
     /**
@@ -125,14 +148,15 @@ class Standortsuche extends Base
      * @return ServiceProviderList
      * @throws WebserviceException
      */
-    public function getParcellocationByAddress($address, $postalCode = null, $countryIso2Code = null)
+    public function getParcellocationByAddress($address, $postalCode = null, $countryIso2Code = null, $radius = null)
     {
-        $addressString = $this->buildAddressString($address, $postalCode, $countryIso2Code);
+        $addressString = $this->buildAddressString($address, $postalCode, $countryIso2Code, $radius);
         if ($addressString === '') {
             return new ServiceProviderList([]);
         }
         $locations = $this->callApi($addressString);
-        $oldAPIstandart = $this->convert($locations);
+        $filteredLocations = $this->filterUndelivarableLocations($locations);
+        $oldAPIstandart = $this->convert($filteredLocations);
 
         return $this->extractServiceProviders($oldAPIstandart);
     }

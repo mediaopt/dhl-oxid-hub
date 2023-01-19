@@ -180,6 +180,7 @@ class ServiceProviderBuilder
             $object->zipCode,
             $object->city,
             $object->district,
+            $object->countryCode,
             $object->countryCode
         );
     }

@@ -40,7 +40,22 @@ class MoDHLService
     /**
      * @var string
      */
+    const MO_DHL__PDDP = 'mo_dhl_pddp';
+
+    /**
+     * @var string
+     */
     const MO_DHL__PREMIUM = 'mo_dhl_premium';
+
+    /**
+     * @var string
+     */
+    const MO_DHL__CDP = 'mo_dhl_cdp';
+
+    /**
+     * @var string
+     */
+    const MO_DHL__ECONOMY = 'mo_dhl_economy';
 
     /**
      * @var string

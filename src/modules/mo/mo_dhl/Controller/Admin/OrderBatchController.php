@@ -10,16 +10,15 @@ namespace Mediaopt\DHL\Controller\Admin;
 
 use Mediaopt\DHL\Adapter\DHLAdapter;
 use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
-use Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderResponse;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Export\CsvExporter;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use Mediaopt\DHL\Model\MoDHLLabelList;
+use Mediaopt\DHL\Shipment\Process;
 use Mediaopt\DHL\Shipment\RetoureRequest;
 use Mediaopt\DHL\Shipment\Shipment;
-use Mediaopt\DHL\Shipment\Process;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\Eshop\Core\TableViewNameGenerator;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -76,9 +75,9 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         $this->_aViewData["OrderLabels"] = $orderLabels;
         if (Registry::getConfig()->getShopConfVar('mo_dhl__retoure_admin_approve')) {
             $retoureRequestStatuses = RetoureRequest::getRetoureRequestStatuses();
-            $retoureRequestStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter("RetoureRequestStatusFilter");
-            $deliveryLabelStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter("DeliveryLabelStatusFilter");
-            $retoureLabelStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter("RetoureLabelStatusFilter");
+            $retoureRequestStatusFilter = Registry::getConfig()->getRequestParameter("RetoureRequestStatusFilter");
+            $deliveryLabelStatusFilter = Registry::getConfig()->getRequestParameter("DeliveryLabelStatusFilter");
+            $retoureLabelStatusFilter = Registry::getConfig()->getRequestParameter("RetoureLabelStatusFilter");
 
             $this->_aViewData["RetoureRequestStatuses"] = $retoureRequestStatuses;
             $this->_aViewData["RetoureRequestStatusFilter"] = $retoureRequestStatusFilter;
@@ -103,7 +102,7 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         $database = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
         $query = parent::_prepareWhereQuery($whereQuery, $fullQuery);
 
-        $retoureRequestStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('RetoureRequestStatusFilter');
+        $retoureRequestStatusFilter = Registry::getConfig()->getRequestParameter('RetoureRequestStatusFilter');
 
         if (isset((RetoureRequest::getRetoureRequestStatuses())[$retoureRequestStatusFilter])) {
             $query .= " and ( oxorder.mo_dhl_retoure_request_status = " . $database->quote($retoureRequestStatusFilter) . " )";
@@ -111,8 +110,8 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
             $query .= " and ( oxorder.mo_dhl_retoure_request_status IS NULL )";
         }
 
-        $deliveryLabelStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('DeliveryLabelStatusFilter');
-        $retoureLabelStatusFilter = \OxidEsales\Eshop\Core\Registry::getConfig()->getRequestParameter('RetoureLabelStatusFilter');
+        $deliveryLabelStatusFilter = Registry::getConfig()->getRequestParameter('DeliveryLabelStatusFilter');
+        $retoureLabelStatusFilter = Registry::getConfig()->getRequestParameter('RetoureLabelStatusFilter');
 
         if (!empty($deliveryLabelStatusFilter)) {
             $joinQuery = 'from oxorder left join mo_dhl_labels mdl_delivery on oxorder.OXID = mdl_delivery.orderId and mdl_delivery.type = "delivery"';
@@ -270,7 +269,7 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         assert(!empty($orderIds));
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
         $sanitizedIds = implode(', ', array_map([$db, 'quote'], $orderIds));
-        $viewNameGenerator = \OxidEsales\Eshop\Core\Registry::get(\OxidEsales\Eshop\Core\TableViewNameGenerator::class);
+        $viewNameGenerator = Registry::get(\OxidEsales\Eshop\Core\TableViewNameGenerator::class);
         $orderView = $viewNameGenerator->getViewName('oxorder');
         $query = "SELECT * FROM  {$orderView} WHERE OXID IN ({$sanitizedIds})";
         $orderList = \oxNew(\OxidEsales\Eshop\Core\Model\ListModel::class);

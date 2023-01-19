@@ -10,14 +10,14 @@ namespace Mediaopt\DHL\Application\Controller\Admin;
 
 use Mediaopt\DHL\Api\GKV\CountryType;
 use Mediaopt\DHL\Api\GKV\NameType;
-use Mediaopt\DHL\Api\GKV\NativeAddressType;
+use Mediaopt\DHL\Api\GKV\NativeAddressTypeNew;
 use Mediaopt\DHL\Api\GKV\ReceiverNativeAddressType;
 use Mediaopt\DHL\Api\GKV\ReceiverType;
-use Mediaopt\DHL\Api\GKV\Request\ValidateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Shipment;
-use Mediaopt\DHL\Api\GKV\ShipmentDetailsType;
+use Mediaopt\DHL\Api\GKV\ShipmentDetailsTypeType;
 use Mediaopt\DHL\Api\GKV\ShipmentItemType;
 use Mediaopt\DHL\Api\GKV\ShipperType;
+use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderType;
 use Mediaopt\DHL\Api\GKV\Version;
 use Mediaopt\DHL\Api\Internetmarke;
@@ -298,7 +298,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             }
             $shipment = $this->createTestShipment($gkv, $deliveryset);
             $shipmentOrder = new ValidateShipmentOrderType('123', $shipment);
-            $request = new ValidateShipmentOrderRequest(new Version(3, 0, null), $shipmentOrder);
+            $request = new ValidateShipmentOrderRequest(new Version(3, 4, 0), $shipmentOrder);
 
             $response = $gkv->validateShipment($request);
         } catch (\RuntimeException $e) {
@@ -335,9 +335,9 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     {
         $process = Process::build($deliveryset->oxdeliveryset__mo_dhl_process->value);
         $receiverCountryCode = $process->isInternational() ? 'FR' : 'DE';
-        $ShipmentDetails = new ShipmentDetailsType($process->getServiceIdentifier(), new BillingNumber(Ekp::build($gkv->getSoapCredentials()->getEkp()), $process, Participation::build($deliveryset->oxdeliveryset__mo_dhl_participation->value)), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
+        $ShipmentDetails = new ShipmentDetailsTypeType($process->getServiceIdentifier(), new BillingNumber(Ekp::build($gkv->getSoapCredentials()->getEkp()), $process, Participation::build($deliveryset->oxdeliveryset__mo_dhl_participation->value)), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
         $Receiver = (new ReceiverType('a b'))->setAddress(new ReceiverNativeAddressType(null, null, 'Elbestr.', '28/29', '12045', 'Berlin', null, new CountryType($receiverCountryCode)));
-        $Shipper = (new ShipperType(new NameType('a b', null, null), new NativeAddressType('Elbestr.', '28', '12045', 'Berlin', null, new CountryType('DE'))));
+        $Shipper = (new ShipperType(new NameType('a b', null, null), new NativeAddressTypeNew('Elbestr.', '28', '12045', 'Berlin', new CountryType('DE'))));
         $shipment = new Shipment($ShipmentDetails, $Shipper, $Receiver);
         return $shipment;
     }

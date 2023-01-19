@@ -9,11 +9,11 @@ namespace sdk\GKV;
 
 use Mediaopt\DHL\Api\GKV\CountryType;
 use Mediaopt\DHL\Api\GKV\NameType;
-use Mediaopt\DHL\Api\GKV\NativeAddressType;
+use Mediaopt\DHL\Api\GKV\NativeAddressTypeNew;
 use Mediaopt\DHL\Api\GKV\ReceiverNativeAddressType;
 use Mediaopt\DHL\Api\GKV\ReceiverType;
 use Mediaopt\DHL\Api\GKV\Shipment;
-use Mediaopt\DHL\Api\GKV\ShipmentDetailsType;
+use Mediaopt\DHL\Api\GKV\ShipmentDetailsTypeType;
 use Mediaopt\DHL\Api\GKV\ShipmentItemType;
 use Mediaopt\DHL\Api\GKV\ShipperType;
 use Mediaopt\DHL\Api\GKV\Version;
@@ -51,9 +51,9 @@ class BaseGKVTest extends \PHPUnit_Framework_TestCase
     protected function createShipmentToGermany($product = 'V01PAK'): Shipment
     {
         $gkv = $this->buildGKV();
-        $ShipmentDetails = new ShipmentDetailsType($product, new BillingNumber(Ekp::build($gkv->getSoapCredentials()->getEkp()), Process::build(Process::PAKET), Participation::build('01')), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
+        $ShipmentDetails = new ShipmentDetailsTypeType($product, new BillingNumber(Ekp::build($gkv->getSoapCredentials()->getEkp()), Process::build(Process::PAKET), Participation::build('01')), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
         $Receiver = (new ReceiverType('a b'))->setAddress(new ReceiverNativeAddressType(null, null, 'Elbestr.', '28/29', '12045', 'Berlin', null, new CountryType('DE')));
-        $Shipper = (new ShipperType(new NameType('a b', null, null), new NativeAddressType('Elbestr.', '28', '12045', 'Berlin', null, new CountryType('DE'))));
+        $Shipper = (new ShipperType(new NameType('a b', null, null), new NativeAddressTypeNew('Elbestr.', '28', '12045', 'Berlin', new CountryType('DE'))));
         $shipment = new Shipment($ShipmentDetails, $Shipper, $Receiver);
         return $shipment;
     }
@@ -74,7 +74,7 @@ class BaseGKVTest extends \PHPUnit_Framework_TestCase
      */
     protected function createVersion(): Version
     {
-        return new Version(3, 0, null);
+        return new Version(3, 4, 0);
     }
 
     public function testDummy()

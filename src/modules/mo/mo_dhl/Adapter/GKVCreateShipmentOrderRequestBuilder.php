@@ -8,7 +8,7 @@
 namespace Mediaopt\DHL\Adapter;
 
 
-use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
 use Mediaopt\DHL\Application\Model\Order;

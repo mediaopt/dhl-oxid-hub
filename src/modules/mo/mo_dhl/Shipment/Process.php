@@ -106,7 +106,22 @@ class Process
     /**
      * @var string
      */
+    const SERVICE_PDDP = "SERVICE_PDDP";
+
+    /**
+     * @var string
+     */
     const SERVICE_PREMIUM = "SERVICE_PREMIUM";
+
+    /**
+     * @var string
+     */
+    const SERVICE_CDP = "SERVICE_CDP";
+
+    /**
+     * @var string
+     */
+    const SERVICE_ECONOMY = "SERVICE_ECONOMY";
 
     /**
      * @var string
@@ -136,7 +151,10 @@ class Process
             self::SERVICE_GO_GREEN,
             self::SERVICE_ADDITIONAL_INSURANCE,
             self::SERVICE_BULKY_GOOD,
+            self::SERVICE_PDDP,
             self::SERVICE_PREMIUM,
+            self::SERVICE_CDP,
+            self::SERVICE_ECONOMY,
             self::SERVICE_ENDORSEMENT,
         ],
         self::EUROPAKET => [
@@ -346,6 +364,14 @@ class Process
         return in_array(self::SERVICE_PREMIUM, self::SUPPORTED_SERVICES[$this->identifier]);
     }
 
+    /**
+     * @return bool
+     */
+    public function supportsPDDP() : bool
+    {
+        return in_array(self::SERVICE_PDDP, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
     public function supportsEndorsement() : bool
     {
         return in_array(self::SERVICE_ENDORSEMENT, self::SUPPORTED_SERVICES[$this->identifier]);
@@ -366,6 +392,22 @@ class Process
         ];
 
         return $identifierToService[$this->identifier];
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsCDP() : bool
+    {
+        return in_array(self::SERVICE_CDP, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsEconomy() : bool
+    {
+        return in_array(self::SERVICE_ECONOMY, self::SUPPORTED_SERVICES[$this->identifier]);
     }
 
     /**

@@ -35,7 +35,7 @@ class ManifestState
 
     /**
      * @param string $shipmentNumber
-     * @return \Mediaopt\DHL\Api\GKV\ManifestState
+     * @return ManifestState
      */
     public function setShipmentNumber($shipmentNumber)
     {
@@ -53,7 +53,7 @@ class ManifestState
 
     /**
      * @param Statusinformation $Status
-     * @return \Mediaopt\DHL\Api\GKV\ManifestState
+     * @return ManifestState
      */
     public function setStatus($Status)
     {

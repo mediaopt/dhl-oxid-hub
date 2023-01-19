@@ -98,6 +98,10 @@ Empfaengerservices = function ($, tailorer) {
         return type !== 'Packstation' ? 'Postfiliale' : type;
     };
 
+    this.fromProviderTypeToLabel = function (type) {
+        return type !== 'Packstation' ? 'Filiale' : type;
+    };
+
     this.getState = function () {
         return this.tailorer.isShippedToSeparateAddress() ? this.state : 'regular';
     };

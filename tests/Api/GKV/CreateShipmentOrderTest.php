@@ -9,8 +9,8 @@ namespace sdk\GKV;
 
 require_once 'BaseGKVTest.php';
 
-use Mediaopt\DHL\Api\GKV\Request\CreateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\Response\CreateShipmentOrderResponse;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderRequest;
+use Mediaopt\DHL\Api\GKV\CreateShipmentOrderResponse;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
 use Mediaopt\DHL\Api\GKV\Version;
 
@@ -24,7 +24,7 @@ class CreateShipmentOrderTest extends BaseGKVTest
     {
         $shipment = $this->createShipmentToGermany();
         $shipmentOrder = new ShipmentOrderType('123', $shipment);
-        $request = new CreateShipmentOrderRequest(new Version(3, 0), $shipmentOrder);
+        $request = new CreateShipmentOrderRequest(new Version(3, 4, 0), $shipmentOrder);
         $response = $this->buildGKV()->createShipmentOrder($request);
         $this->assertInstanceOf(CreateShipmentOrderResponse::class, $response);
         $this->assertEquals(0, $response->getStatus()->getStatusCode(), implode(', ', $response->getCreationState()[0]->getLabelData()->getStatus()->getStatusMessage()));
@@ -34,7 +34,7 @@ class CreateShipmentOrderTest extends BaseGKVTest
     {
         $shipment = $this->createShipmentToAustria();
         $shipmentOrder = new ShipmentOrderType('123', $shipment);
-        $request = new CreateShipmentOrderRequest(new Version(3, 0), $shipmentOrder);
+        $request = new CreateShipmentOrderRequest(new Version(3, 4, 0), $shipmentOrder);
         $response = $this->buildGKV()->createShipmentOrder($request);
         $this->assertInstanceOf(CreateShipmentOrderResponse::class, $response);
         $this->assertEquals(1101, $response->getStatus()->getStatusCode(), $response->getStatus()->getStatusText());

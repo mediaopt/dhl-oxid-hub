@@ -3,31 +3,36 @@
 namespace Mediaopt\DHL\Adapter;
 
 use Mediaopt\DHL\Api\GKV\BankType;
+use Mediaopt\DHL\Api\GKV\CDP;
 use Mediaopt\DHL\Api\GKV\CommunicationType;
 use Mediaopt\DHL\Api\GKV\CountryType;
+use Mediaopt\DHL\Api\GKV\Economy;
 use Mediaopt\DHL\Api\GKV\ExportDocPosition;
 use Mediaopt\DHL\Api\GKV\ExportDocumentType;
+use Mediaopt\DHL\Api\GKV\Ident;
 use Mediaopt\DHL\Api\GKV\NameType;
-use Mediaopt\DHL\Api\GKV\NativeAddressType;
+use Mediaopt\DHL\Api\GKV\NativeAddressTypeNew;
 use Mediaopt\DHL\Api\GKV\PackStationType;
-use Mediaopt\DHL\Api\GKV\PostfilialeType;
+use Mediaopt\DHL\Api\GKV\PDDP;
+use Mediaopt\DHL\Api\GKV\PostfilialeTypeNoCountry;
 use Mediaopt\DHL\Api\GKV\ReceiverNativeAddressType;
 use Mediaopt\DHL\Api\GKV\ReceiverType;
 use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationAdditionalInsurance;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationCashOnDelivery;
-use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetails;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsOptional;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsPreferredDay;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsPreferredLocation;
+use Mediaopt\DHL\Api\GKV\ServiceconfigurationDetailsPreferredNeighbour;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationEndorsement;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationIC;
 use Mediaopt\DHL\Api\GKV\ServiceconfigurationVisualAgeCheck;
 use Mediaopt\DHL\Api\GKV\Shipment;
-use Mediaopt\DHL\Api\GKV\ShipmentDetailsType;
+use Mediaopt\DHL\Api\GKV\ShipmentDetailsTypeType;
 use Mediaopt\DHL\Api\GKV\ShipmentItemType;
 use Mediaopt\DHL\Api\GKV\ShipmentNotificationType;
 use Mediaopt\DHL\Api\GKV\ShipmentService;
 use Mediaopt\DHL\Api\GKV\ShipperType;
-use Mediaopt\DHL\Application\Model\Article;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Model\MoDHLNotificationMode;
 use Mediaopt\DHL\Model\MoDHLService;
@@ -68,11 +73,11 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
 
     /**
      * @param Order $order
-     * @return ShipmentDetailsType
+     * @return ShipmentDetailsTypeType
      */
-    protected function buildShipmentDetails(Order $order): ShipmentDetailsType
+    protected function buildShipmentDetails(Order $order): ShipmentDetailsTypeType
     {
-        $details = new ShipmentDetailsType($this->getProcess($order)->getServiceIdentifier(), $this->buildAccountNumber($order), $this->buildShipmentDate(), $this->buildShipmentItem($order));
+        $details = new ShipmentDetailsTypeType($this->getProcess($order)->getServiceIdentifier(), $this->buildAccountNumber($order), $this->buildShipmentDate(), $this->buildShipmentItem($order));
         if (Registry::getConfig()->getShopConfVar('mo_dhl__beilegerretoure_active') && $this->getProcess($order)->supportsDHLRetoure() && $returnBookingNumber = $this->buildReturnAccountNumber($order)) {
             $details->setReturnShipmentAccountNumber($returnBookingNumber);
         }
@@ -190,14 +195,14 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         if ($wunschpaket->hasWunschtag($remark) && $process->supportsPreferredDay()) {
             $wunschtag = $wunschpaket->extractWunschtag($remark);
             $wunschtag = date('Y-m-d', strtotime($wunschtag));
-            $service->setPreferredDay(new ServiceconfigurationDetails(1, $wunschtag));
+            $service->setPreferredDay(new ServiceconfigurationDetailsPreferredDay(1, $wunschtag));
         }
         [$type, $locationPart1, $locationPart2] = $wunschpaket->extractLocation($remark);
         if ($wunschpaket->hasWunschnachbar($remark) && $process->supportsPreferredNeighbour()) {
-            $service->setPreferredNeighbour(new ServiceconfigurationDetails(1, "$locationPart2, $locationPart1"));
+            $service->setPreferredNeighbour(new ServiceconfigurationDetailsPreferredNeighbour(1, "$locationPart2, $locationPart1"));
         }
         if ($wunschpaket->hasWunschort($remark) && $process->supportsPreferredLocation()) {
-            $service->setPreferredLocation(new ServiceconfigurationDetails(1, $locationPart1));
+            $service->setPreferredLocation(new ServiceconfigurationDetailsPreferredLocation(1, $locationPart1));
         }
         if ($process->supportsParcelOutletRouting()) {
             $isActive = (int) Registry::getConfig()->getShopConfVar('mo_dhl__filialrouting_active');
@@ -216,7 +221,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         }
         if ($process->supportsCashOnDelivery()) {
             $active = (int) $order->moDHLUsesService(MoDHLService::MO_DHL__CASH_ON_DELIVERY);
-            $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery($active, 0, $this->getEURPrice($order, $order->oxorder__oxtotalordersum->value)));
+            $service->setCashOnDelivery(new ServiceconfigurationCashOnDelivery($active, $this->getEURPrice($order, $order->oxorder__oxtotalordersum->value)));
         }
         $orderBrutSum = $this->getEURPrice($order, $order->oxorder__oxtotalbrutsum->value);
         if ($process->supportsAdditionalInsurance()) {
@@ -227,31 +232,42 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $active = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__PREMIUM));
             $service->setPremium(new Serviceconfiguration($active));
         }
+        if ($process->supportsCDP()) {
+            $active = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__CDP));
+            $service->setCDP(new CDP($active));
+        }
+        if ($process->supportsEconomy()) {
+            $active = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__ECONOMY));
+            $service->setEconomy(new Economy($active));
+        }
         if ($process->supportsEndorsement()) {
             $abandonment = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__ENDORSEMENT));
             $service->setEndorsement(new ServiceconfigurationEndorsement(true, $abandonment ? MoDHLService::MO_DHL__ENDORSEMENT_ABANDONMENT : MoDHLService::MO_DHL__ENDORSEMENT_IMMEDIATE));
         }
-
+        if ($process->supportsPDDP()) {
+            $active = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__PDDP));
+            $service->setPDDP(new PDDP($active));
+        }
         return $service;
     }
 
     /**
      * @param Order $order
-     * @return \stdClass
+     * @return Ident
      */
-    protected function createIdent(Order $order) : \stdClass
+    protected function createIdent(Order $order) : Ident
     {
-        $ident = new \stdClass();
-        $ident->surname = $order->moDHLGetAddressData('lname');
-        $ident->givenName = $order->moDHLGetAddressData('fname');
-        $ident->dateOfBirth = $order->getFieldData('mo_dhl_ident_check_birthday');
-        $ident->minimumAge = Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
+        $ident = new Ident(
+            $order->moDHLGetAddressData('lname'),
+            $order->moDHLGetAddressData('fname'),
+            $order->getFieldData('mo_dhl_ident_check_birthday'),
+            Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
             ? 'A' . Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
-            : null;
+            : null);
         if ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK18)) {
-            $ident->minimumAge = 'A18';
-        } elseif ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK16) && !$ident->minimumAge) {
-            $ident->minimumAge = 'A16';
+            $ident->setMinimumAge('A18');
+        } elseif ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK16) && !$ident->getMinimumAge()) {
+            $ident->setMinimumAge('A16');
         }
         return $ident;
     }
@@ -269,7 +285,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         $name = new NameType($config->getShopConfVar('mo_dhl__retoure_receiver_line1'), $config->getShopConfVar('mo_dhl__retoure_receiver_line2'), $config->getShopConfVar('mo_dhl__retoure_receiver_line3'));
         $iso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__retoure_receiver_country'));
         $country = new CountryType($iso2);
-        $address = new NativeAddressType($config->getShopConfVar('mo_dhl__retoure_receiver_street'), $config->getShopConfVar('mo_dhl__retoure_receiver_street_number'), $config->getShopConfVar('mo_dhl__retoure_receiver_zip'), $config->getShopConfVar('mo_dhl__retoure_receiver_city'), null, $country);
+        $address = new NativeAddressTypeNew($config->getShopConfVar('mo_dhl__retoure_receiver_street'), $config->getShopConfVar('mo_dhl__retoure_receiver_street_number'), $config->getShopConfVar('mo_dhl__retoure_receiver_zip'), $config->getShopConfVar('mo_dhl__retoure_receiver_city'), $country);
         return new ShipperType($name, $address);
     }
 
@@ -288,12 +304,11 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
         );
         $iso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__sender_country'));
         $country = new CountryType($iso2);
-        $address = new NativeAddressType(
+        $address = new NativeAddressTypeNew(
             $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_street')),
             $config->getShopConfVar('mo_dhl__sender_street_number'),
             $config->getShopConfVar('mo_dhl__sender_zip'),
             $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')),
-            null,
             $country
         );
         return new ShipperType($name, $address);
@@ -301,11 +316,11 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
 
     /**
      * @param Order $order
-     * @return PostfilialeType
+     * @return PostfilialeTypeNoCountry
      */
-    private function buildPostfiliale(Order $order): PostfilialeType
+    private function buildPostfiliale(Order $order): PostfilialeTypeNoCountry
     {
-        return new PostfilialeType($order->moDHLGetAddressData('streetnr'), $order->moDHLGetAddressData('addinfo'), $order->moDHLGetAddressData('zip'), $order->moDHLGetAddressData('city'));
+        return new PostfilialeTypeNoCountry($order->moDHLGetAddressData('streetnr'), $order->moDHLGetAddressData('addinfo'), $order->moDHLGetAddressData('zip'), $order->moDHLGetAddressData('city'));
     }
 
     /**
@@ -370,11 +385,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             return null;
         }
         $config = Registry::getConfig();
-        $exportDocumentType = new ExportDocumentType(
+        $exportDocumentType = (new ExportDocumentType(
             'COMMERCIAL_GOODS',
-            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')),
-            $this->getEURPrice($order, $order->oxorder__oxdelcost->value)
-        );
+            $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city'))
+        ))->setAdditionalFee($this->getEURPrice($order, $order->oxorder__oxdelcost->value));
 
         $iso2 = $this->getIsoalpha2FromIsoalpha3($config->getShopConfVar('mo_dhl__sender_country'));
 
@@ -390,7 +404,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
                 $iso2,
                 $orderArticle->getArticle()->getFieldData(MoDHLService::MO_DHL__ZOLLTARIF),
                 $count,
-                $this->getArticleWeight($orderArticle, $config, true),
+                $this->getArticleWeight($orderArticle, $config),
                 $this->getEURPrice($order, $orderArticle->getPrice()->getPrice())
             );
         }
@@ -477,14 +491,14 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $title = $orderArticle->getArticle()->getFieldData('oxtitle');
         }
 
-        return substr($this->convertSpecialChars($title), 0, 50);
+        return mb_substr($this->convertSpecialChars($title), 0, 50);
     }
 
     /**
      * @param string $string
      * @return string
      */
-    public static function convertSpecialChars(string $string): string
+    public static function convertSpecialChars($string = ''): string
     {
         return html_entity_decode($string);
     }
