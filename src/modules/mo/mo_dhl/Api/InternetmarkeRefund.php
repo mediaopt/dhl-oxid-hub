@@ -155,7 +155,7 @@ class InternetmarkeRefund extends \SoapClient
      */
     protected function addUserTokenIfNecessary(&$request)
     {
-        if (method_exists($request, 'getUserToken') && method_exists($request, 'setUserToken') && !$request->getUserToken()) {
+        if (isset($request) && method_exists($request, 'getUserToken') && method_exists($request, 'setUserToken') && !$request->getUserToken()) {
             $request->setUserToken($this->getUserToken());
         }
     }
