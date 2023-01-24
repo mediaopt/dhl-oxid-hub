@@ -3,6 +3,10 @@
     mo_dhl = {
         dhl: null,
         isWunschboxAvailable: null,
+        initialResults: {
+            branch: {},
+            packstation: {}
+        },
         addPostnummer: function () {
             var $addInfoField = $("[name='deladr[oxaddress__oxaddinfo]']");
             $addInfoField.after($('<div></div>').addClass('help-block'));
@@ -159,6 +163,38 @@
                 }, 500);
             });
         },
+        differentShippingAddressHandler: function () {
+            var self = this;
+            document.querySelectorAll('.moDhlAddressChangeButton').forEach((element) => {
+                element.classList.remove('btn-primary', 'btn-outline-dark');
+            });
+            var checkedInput = $('[name="moDhlAddressChange"]:checked');
+            var active = checkedInput.next()[0];
+            active.classList.add('btn-primary');
+            $('[name="moDhlAddressChange"]:not(:checked)').each(function () {
+                this.nextElementSibling.classList.add('btn-outline-dark');
+            });
+            $('#showShipAddress').prop('checked', (checkedInput.val() === "1")).change();
+            switch (active.id) {
+                case 'moDhlDifferentAddressBtn':
+                    $('#addressId').val("-1").change();
+                    break;
+                case 'moDhlBranchAddress':
+                    self.apply(self.initialResults.branch);
+                    break;
+                case 'moDhlPackstationAddress':
+                    self.apply(self.initialResults.packstation);
+                    break;
+                default:
+                    break;
+            }
+        },
+        addDhlAddressButtonListener: function() {
+            var self = this;
+            $('[name="moDhlAddressChange"]').change(function () {
+                self.differentShippingAddressHandler();
+            });
+        },
         addShippingAddressListener: function () {
             var self = this;
             $("#showShipAddress").change(function () {
@@ -190,7 +226,35 @@
                 return this.getCountryIdOfBillingAddress();
             }
         },
+        initialSearch: function () {
+            var self = this;
+            this.dhlfinder.preEmptiveSearch().then(results => {
+                var branch = results.payload.filter(payload => (payload.type === 'Paketshop' || payload === 'Filiale'));
+                var station = results.payload.filter(payload => payload.type === 'Packstation');
+                if (branch.length) {
+                    var branchElement = document.getElementById('moDhlBranchAddress');
+                    branchElement.classList.remove('hidden');
+                    var text = branchElement.querySelector('.moDhlPickupDistance').innerText.replace('PLACEHOLDER', branch[0].location.distance);
+                    branchElement.querySelector('.moDhlPickupDistance').innerText = text;
+                    self.initialResults.branch = branch[0];
+                }
+                if (station.length) {
+                    var stationElement = document.getElementById('moDhlPackstationAddress');
+                    stationElement.classList.remove('hidden');
+                    var text = stationElement.querySelector('.moDhlPickupDistance').innerText.replace('PLACEHOLDER', station[0].location.distance);
+                    stationElement.querySelector('.moDhlPickupDistance').innerText = text;
+                    self.initialResults.packstation = station[0];
+                }
+            });
+        },
         setInitialState: function () {
+            var self = this;
+            if (self.isShippedToSeparateAddress()) {
+                $('#moDhlDifferentAddressBtn').click();
+            } else {
+                $('#moDhlSameAddressBtn').click();
+            }
+            self.differentShippingAddressHandler();
             var availableAddresses = $(".dd-available-addresses");
             if (!availableAddresses.is(":visible")) {
                 $("#showShipAddress").change();
@@ -263,6 +327,7 @@
             this.addShippingAddressListener();
             this.setInitialState();
             this.handleInvoiceAddresses();
+            this.addDhlAddressButtonListener();
 
             this.rearrangeAddresses();
             this.integrateAddressDropdown();
@@ -341,6 +406,7 @@
         initializeFinder: function () {
             this.dhlfinder = new DHLFinder($, this);
             mo_dhl__finder.initialize(this);
+            this.initialSearch();
         },
         validatePreferredAddress: function ($input, value, callback) {
             var validator = new DHLValidator();

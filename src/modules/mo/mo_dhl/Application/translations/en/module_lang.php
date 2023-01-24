@@ -121,4 +121,8 @@ $aLang = [
     'MO_DHL__BIRTHDAY_ERROR_AGE'                  => 'You have to be at least %s years old.',
     'MO_DHL__GUEST_ORDER'                         => 'Guest order',
     'MO_DHL__SHIPPING_OPTIONS'                    => 'DHL shipping options',
+    'MO_DHL__SHIPPING_ADDRESS_DIFFERENT'          => 'Different shipping address',
+    'MO_DHL__SHIPPING_TO_SHOP_FILIALE'            => 'Paketshops / Filialen (DHL)',
+    'MO_DHL__SHIPPING_TO_PACKSTATION'             => 'Packstation (DHL)',
+    'MO_DHL__SHIPPING_PICKUP_DISTANCE'            => '(Distance PLACEHOLDER m)',
 ];

@@ -152,10 +152,6 @@ dl.moEmpfaengerserviceWunschpaketBox {
     margin-bottom: 35px;
 }
 
-.moAddressInformation {
-    margin-bottom: 0px;
-}
-
 .dd-available-addresses label.active {
     color: white;
     background-color: #f0ad4e;
@@ -175,27 +171,6 @@ li.moDHLRadioInputs div {
 
 div#moDHLInfo a {
     text-decoration: underline;
-}
-
-div.icons {
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
-
-img.icon {
-    margin: 0 auto;
-    width: 48px;
-    height: 48px;
-}
-
-#moDHLProviders img.icon.postfiliale {
-    position: relative;
-    left: -5px;
-}
-
-#moDHLProviders img.icon.paketshop {
-    position: relative;
-    left: -15px;
 }
 
 div#moDHLProviders label:first-of-type {
@@ -278,6 +253,11 @@ div#moDHLWunschpaket.theme--is-azure input[type="checkbox"] {
 
 h5.moDHLOpeningHours {
     margin-top: 0px;
+}
+
+ul.moDHLOpeningHours {
+    list-style: none;
+    padding: 0;
 }
 
 .font-weight--normal {
@@ -385,6 +365,76 @@ a.privacy-policy:hover {
     display: inline-block;
 }
 
+#moDhlAddressOnMap, #moDhlApplyOnMap {
+    position: absolute;
+    width: calc(100% - 30px);
+    text-align: center;
+    z-index: 1;
+}
+
+#moDhlAddressOnMap {
+    top: 25px;
+    color: #38333c;
+}
+
+#moDhlAddressOnMap .moDhlAddressText {
+    width: 80%;
+    background-color: #FC0;
+    padding: 10px 7px;
+    border-radius: 5px;
+    margin: auto;
+    position: relative;
+}
+
+#moDhlApplyOnMap {
+    bottom: 45px;
+}
+
+#moDhlApplyOnMap .btn {
+    width: 80%;
+}
+
+#moDHLMap .gm-style-iw.gm-style-iw-c {
+    box-shadow: none;
+    border: 1px solid #fc0;
+}
+
+#moDHLMap .gm-style-iw-tc {
+    filter: drop-shadow(0 1px 0 #fc0);
+}
+
+.moDhlCloseOverlays {
+    position: absolute;
+    right: 15px;
+    height: 100%;
+    top: 0;
+    background: unset;
+    border: none;
+    width: 20px;
+    font-size: 21px;
+    font-weight: bold;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .2;
+}
+
+.moDhlAddressChange + div {
+    display: none !important;
+}
+
+.moDhlAddressChange.is--flow .btn{
+    margin-bottom: 1em;
+}
+
+.moDhlAddressChangeButton {
+    width: 100%;
+}
+
+.moDhlPickupDistance {
+    color: #fc0;
+}
+
+
 .moDhlAddressCard {
     border: 1px solid black;
     border-radius: 5px;
@@ -434,6 +484,13 @@ a.privacy-policy:hover {
     #moDHLWunschpaket .moDhlWunschpaketServiceLabel input {
         margin-left: -5px;
     }
+
+    #moDHLFinder {
+        top: 20vh;
+    }
+    #modalMap {
+        margin: 0;
+    }
 }
 
 @media screen and (min-width: 48em) {
@@ -445,6 +502,10 @@ a.privacy-policy:hover {
 
     #moDHLWunschpaket .moDhlWunschpaketServiceOption:first-of-type {
         margin-top: 0;
+    }
+
+    .moDHLShowRetoure {
+        display: inline-block;
     }
 
     .moDhlWunschpaketServiceHeadline {

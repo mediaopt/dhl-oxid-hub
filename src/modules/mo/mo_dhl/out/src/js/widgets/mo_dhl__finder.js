@@ -59,7 +59,8 @@ DHLFinder = function ($, tailorer) {
         self.map = new google.maps.Map(mapDiv, {
             center: {lat: 51.16591, lng: 10.451526},
             zoom: 6,
-            noClear: false
+            noClear: false,
+            disableDefaultUI: true,
         });
         self.mapcenter = self.map.getCenter();
         self.map.addListener('dragend', function () {
@@ -76,7 +77,7 @@ DHLFinder = function ($, tailorer) {
         });
     };
 
-    this.preFillInputs = function () {
+    this.preFillSetup = function () {
         var self = this;
         var locality = ($("[name='deladr[oxaddress__oxzip]']").val()).trim();
         var street = ($("[name='deladr[oxaddress__oxstreet]']").val() + " " + $("[name='deladr[oxaddress__oxstreetnr]']").val()).trim();
@@ -95,8 +96,23 @@ DHLFinder = function ($, tailorer) {
         $("#moDHLCountry").val(countryId);
 
         var countryIso2Code = $('#moDHLCountry option:selected').attr('isoalpha2');
-        if (street && locality && countryIso2Code) {
-            var address = new self.tailorer.dhlfinder.addressObject(locality, street, countryIso2Code);
+        return new self.tailorer.dhlfinder.addressObject(locality, street, countryIso2Code);
+    };
+
+    this.preEmptiveSearch = async function () {
+        var self = this;
+        var address = this.preFillSetup();
+        if (!address.isEmpty()) {
+            return await self.tailorer.dhlfinder.findOneEach(address);
+        } else {
+            return null;
+        }
+    };
+
+    this.preFillInputs = function () {
+        var self = this;
+        var address = this.preFillSetup();
+        if (!address.isEmpty()) {
             self.tailorer.dhlfinder.find(address, true);
         }
     };
@@ -107,6 +123,25 @@ DHLFinder = function ($, tailorer) {
         });
     };
     this.markers = [];
+    this.findOneEach = async function (addressObject) {
+        var self = this;
+        if (self.tailorer.busyFinder) {
+            return;
+        }
+
+        self.tailorer.busyFinder = true;
+        return await $.ajax(self.tailorer.dhl.findCall(addressObject.locality, addressObject.street, addressObject.countryIso2Code, true, true)).done(function (response) {
+            self.tailorer.busyFinder = false;
+            if (response.status === 'success') {
+                return  response.payload;
+            } else if (response.status === 'error') {
+                return {};
+            }
+        }).fail(function () {
+            self.tailorer.busyFinder = false;
+            return {}
+        });
+    };
     this.find = function (addressObject, recenterMapParameter) {
         var recenterMap = recenterMapParameter !== undefined ? recenterMapParameter : true;
         var self = this;
