@@ -453,7 +453,7 @@ a.privacy-policy:hover {
     border-color: #009ec0;
 }
 
-.moDhlAddressCard.moDhlShipping {
+.moDhlAddressCard.active.moDhlShipping {
     border-color: #fc0;
 }
 
@@ -494,6 +494,9 @@ a.privacy-policy:hover {
 }
 
 @media screen and (min-width: 48em) {
+    .moDhlAvailableAddresses {
+        margin-left: -7px;
+    }
     #moDHLProviders {
         display: inline-flex;
         position: absolute;

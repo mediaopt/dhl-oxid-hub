@@ -220,6 +220,7 @@ $aModule = [
         'mo_dhl__internetmarke_refunds_list.tpl'     => 'mo/mo_dhl/views/admin/tpl/internetmarke_refunds_list.tpl',
         'mo_dhl__internetmarke_refunds_details.tpl'  => 'mo/mo_dhl/views/admin/tpl/internetmarke_refunds_details.tpl',
         'mo_dhl__internetmarke_products_search.tpl' => 'mo/mo_dhl/views/admin/tpl/internetmarke_products_search.tpl',
+        'mo_dhl__shipping_address.tpl'              => 'mo/mo_dhl/views/tpl/widget/shipping_address.tpl',
     ],
     'settings'    => [
         [

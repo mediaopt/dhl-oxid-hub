@@ -169,6 +169,9 @@
                 element.classList.remove('btn-primary', 'btn-outline-dark');
             });
             var checkedInput = $('[name="moDhlAddressChange"]:checked');
+            if (checkedInput.length === 0) {
+                return
+            }
             var active = checkedInput.next()[0];
             active.classList.add('btn-primary');
             $('[name="moDhlAddressChange"]:not(:checked)').each(function () {
@@ -229,6 +232,10 @@
         initialSearch: function () {
             var self = this;
             this.dhlfinder.preEmptiveSearch().then(results => {
+                if (results.status === "error") {
+                    console.error(results.payload);
+                    return;
+                }
                 var branch = results.payload.filter(payload => (payload.type === 'Paketshop' || payload === 'Filiale'));
                 var station = results.payload.filter(payload => payload.type === 'Packstation');
                 if (branch.length) {
