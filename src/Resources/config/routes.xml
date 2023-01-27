@@ -9,4 +9,6 @@
     <import resource="../../Controller/Payment/PaymentWebhookController.php" type="annotation"/>
     <import resource="../../Controller/Payment/IframeController.php" type="annotation"/>
     <import resource="../../Controller/TransactionsControl/TransactionsControlController.php" type="annotation"/>
+    <import resource="../../Core/Checkout/Payment/SalesChannel/OverwritePaymentMethodRoute.php" type="annotation" />
+
 </routes>

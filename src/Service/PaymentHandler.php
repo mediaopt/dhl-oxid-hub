@@ -519,6 +519,8 @@ class PaymentHandler
     /**
      * @param GetHostedTokenizationResponse $hostedTokenization
      * @return void
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
     private function saveCustomerCustomFields(GetHostedTokenizationResponse $hostedTokenization)
     {
@@ -533,18 +535,19 @@ class PaymentHandler
         $customFields = $customer->first()->getCustomFields();
 
         $key = Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN;
-        $token = $hostedTokenization->getToken()->getId();
-        if (!is_null($customFields) && array_key_exists($key, $customFields)) {
-            $customFields[$key] = array_merge($customFields[$key], [$token]);
-        } else {
-            $customFields[$key] = [$token];
-        }
+        $paymentProductId = $hostedTokenization->getToken()->getPaymentProductId();
+        $paymentProduct = PaymentMethod::getPaymentProductDetails($paymentProductId);
+        $paymentProduct['paymentProductId'] = $paymentProductId;
+        $paymentProduct['token'] = $hostedTokenization->getToken()->getId();
+        $paymentProduct['paymentCard'] = $hostedTokenization->getToken()->getCard()->getData()->getCardWithoutCvv()->getCardNumber();
+
+        $customFields[$key][] = $paymentProduct;
 
         $this->customerRepository->update([
             [
                 'id' => $customerId,
                 'customFields' => $customFields
             ]
-        ], $this->context);/**/
+        ], $this->context);
     }
 }

@@ -1,0 +1,10 @@
+{% sw_extends '@Storefront/storefront/component/payment/payment-fields.html.twig' %}
+{% block component_payment_method %}
+    {% set myArray = {
+        "first": 1
+    } %}
+    {{ dump(page.paymentMethods) }}
+    {{ dump(context) }}
+    {{ parent() }}
+    {{ set  }}
+{% endblock %}

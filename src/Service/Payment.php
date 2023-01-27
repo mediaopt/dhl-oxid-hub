@@ -138,17 +138,24 @@ class Payment implements AsynchronousPaymentHandlerInterface
     {
         // Method that sends the return URL to the external gateway and gets a redirect URL back
         try {
-            if ($this->isHostedTokenizationMethod($transaction)) {
-                $redirectUrl = $this->getHostedTokenizationRedirectUrl(
-                    $transaction,
-                    $salesChannelContext->getContext(),
-                    $this->getIframeData($dataBag)
-                );
-            } else {
-                $redirectUrl = $this->getHostedCheckoutRedirectUrl(
-                    $transaction,
-                    $salesChannelContext->getContext()
-                );
+            $paymentMethodName = $transaction->getOrderTransaction()->getPaymentMethod()->getName();
+            switch ($paymentMethodName) {
+                case MoptWorldline::IFRAME_PAYMENT_METHOD_NAME:
+                case MoptWorldline::SAVED_CARD_PAYMENT_METHOD_NAME:
+                {
+                    $redirectUrl = $this->getHostedTokenizationRedirectUrl(
+                        $transaction,
+                        $salesChannelContext->getContext(),
+                        $this->getIframeData($dataBag)
+                    );
+                    break;
+                }
+                default: {
+                    $redirectUrl = $this->getHostedCheckoutRedirectUrl(
+                        $transaction,
+                        $salesChannelContext->getContext()
+                    );
+                }
             }
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(
@@ -157,16 +164,6 @@ class Payment implements AsynchronousPaymentHandlerInterface
             );
         }
         return new RedirectResponse($redirectUrl);
-    }
-
-    /**
-     * @param AsyncPaymentTransactionStruct $transaction
-     * @return bool
-     */
-    private function isHostedTokenizationMethod(AsyncPaymentTransactionStruct $transaction): bool
-    {
-        $paymentMethodName = $transaction->getOrderTransaction()->getPaymentMethod()->getName();
-        return $paymentMethodName == MoptWorldline::IFRAME_PAYMENT_METHOD_NAME;
     }
 
     /**

@@ -9,6 +9,7 @@ namespace MoptWorldline\Controller\Api;
 
 use Monolog\Logger;
 use MoptWorldline\Bootstrap\Form;
+use MoptWorldline\Service\Helper;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -94,7 +95,7 @@ class ApiTestController extends AbstractController
 
         $salesChannelId = $request->request->get('salesChannelId');
 
-        [$countryIso3, $currencyIsoCode] = $this->getSalesChannelData($salesChannelId, $context);
+        [$countryIso3, $currencyIsoCode] = Helper::getSalesChannelData($salesChannelId);
 
         $credentials = $this->buildCredentials($salesChannelId, $configFormData);
 
@@ -128,30 +129,9 @@ class ApiTestController extends AbstractController
     {
         $paymentMethodController = $this->getPaymentMethodController();
         $salesChannelId = $request->request->get('salesChannelId');
-        [$countryIso3, $currencyIsoCode] = $this->getSalesChannelData($salesChannelId, $context);
+        [$countryIso3, $currencyIsoCode] = Helper::getSalesChannelData($salesChannelId);
 
         return $paymentMethodController->saveMethod($request, $context, $countryIso3, $currencyIsoCode);
-    }
-
-    /**
-     * @param ?string $salesChannelId
-     * @param Context $context
-     * @return array
-     */
-    private function getSalesChannelData(?string $salesChannelId, Context $context): array
-    {
-        if (is_null($salesChannelId)) {
-            return [null, null];
-        }
-
-        /* @var $salesChannel SalesChannelEntity */
-        $salesChannel = $this->salesChannelRepository->search(new Criteria([$salesChannelId]), $context)->first();
-        /* @var $country CountryEntity */
-        $country = $this->countryRepository->search(new Criteria([$salesChannel->getCountryId()]), $context)->first();
-        /* @var $currency CurrencyEntity */
-        $currency = $this->currencyRepository->search(new Criteria([$salesChannel->getCurrencyId()]), $context)->first();
-
-        return [$country->getIso3(), $currency->getIsoCode()];
     }
 
     /**

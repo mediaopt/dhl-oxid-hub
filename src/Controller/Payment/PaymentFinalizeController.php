@@ -114,7 +114,7 @@ class PaymentFinalizeController extends AbstractController
      */
     private function getHostedCheckoutId(InputBag $query): ?string
     {
-        if ($hostedCheckoutId = $query->get('hostedCheckoutid')) {
+        if ($hostedCheckoutId = $query->get('hostedCheckoutId')) {
             return $hostedCheckoutId;
         } elseif ($hostedCheckoutId = $query->get('paymentId')) {
             $id = explode('_', $hostedCheckoutId);

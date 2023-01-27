@@ -20,6 +20,7 @@ use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
 use OnlinePayments\Sdk\Domain\MerchantAction;
 use OnlinePayments\Sdk\Domain\Order;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
+use OnlinePayments\Sdk\Domain\PaymentProduct;
 use OnlinePayments\Sdk\Domain\PaymentProductFilter;
 use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
 use OnlinePayments\Sdk\Domain\PaymentReferences;
@@ -29,6 +30,7 @@ use OnlinePayments\Sdk\Domain\RefundRequest;
 use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
+use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductParams;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\DefaultConnection;
@@ -131,23 +133,6 @@ class WorldlineSDKAdapter
     }
 
     /**
-     * @param string $countryIso3
-     * @param string $currencyIsoCode
-     * @return GetPaymentProductsResponse
-     * @throws \Exception
-     */
-    public function getPaymentProduct(string $countryIso3, string $currencyIsoCode): GetPaymentProductsResponse
-    {
-        $queryParams = new GetPaymentProductsParams();
-
-        $queryParams->setCountryCode($countryIso3);
-        $queryParams->setCurrencyCode($currencyIsoCode);
-        return $this->merchantClient
-            ->products()
-            ->getPaymentProducts($queryParams);
-    }
-
-    /**
      * @return void
      * @throws \Exception
      */
@@ -196,6 +181,7 @@ class WorldlineSDKAdapter
         $hostedCheckoutSpecificInput = new HostedCheckoutSpecificInput();
         $returnUrl = $this->getPluginConfig(Form::RETURN_URL_FIELD);
         $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
+        $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
 
         if ($worldlinePaymentMethodId != 0) {
             $paymentProductFilter = new PaymentProductFilter();
@@ -204,21 +190,49 @@ class WorldlineSDKAdapter
             $paymentProductFiltersHostedCheckout = new PaymentProductFiltersHostedCheckout();
             $paymentProductFiltersHostedCheckout->setRestrictTo($paymentProductFilter);
             $hostedCheckoutSpecificInput->setPaymentProductFilters($paymentProductFiltersHostedCheckout);
+            $this->setCustomProperties(
+                $worldlinePaymentMethodId,
+                $cardPaymentMethodSpecificInput,
+                $hostedCheckoutSpecificInput
+            );
         }
 
         $hostedCheckoutRequest = new CreateHostedCheckoutRequest();
         $hostedCheckoutRequest->setOrder($order);
         $hostedCheckoutRequest->setHostedCheckoutSpecificInput($hostedCheckoutSpecificInput);
+        $hostedCheckoutRequest->setCardPaymentMethodSpecificInput($cardPaymentMethodSpecificInput);
 
         $hostedCheckoutClient = $merchantClient->hostedCheckout();
         return $hostedCheckoutClient->createHostedCheckout($hostedCheckoutRequest);
     }
 
     /**
+     * @param string $worldlinePaymentMethodId
+     * @param CardPaymentMethodSpecificInput $cardPaymentMethodSpecificInput
+     * @param HostedCheckoutSpecificInput $hostedCheckoutSpecificInput
+     * @return void
+     */
+    private function setCustomProperties(
+        string $worldlinePaymentMethodId,
+        CardPaymentMethodSpecificInput &$cardPaymentMethodSpecificInput,
+        HostedCheckoutSpecificInput &$hostedCheckoutSpecificInput
+    )
+    {
+        switch ($worldlinePaymentMethodId) {
+            case '5700': {
+                $cardPaymentMethodSpecificInput->setAuthorizationMode('SALE');
+                $hostedCheckoutSpecificInput->setIsRecurring(false);
+                break;
+            }
+        }
+    }
+
+    /**
+     * @param string|null $token
      * @return string
      * @throws \Exception
      */
-    public function createHostedTokenizationUrl(): string
+    public function createHostedTokenizationUrl(?string $token = null): string
     {
         $iframeTemplateName = $this->getPluginConfig(Form::IFRAME_TEMPLATE_NAME);
 
@@ -226,6 +240,9 @@ class WorldlineSDKAdapter
         $hostedTokenizationClient = $merchantClient->hostedTokenization();
         $createHostedTokenizationRequest = new CreateHostedTokenizationRequest();
         $createHostedTokenizationRequest->setVariant($iframeTemplateName);
+        if ($token) {
+            $createHostedTokenizationRequest->setTokens($token);
+        }
 
         $createHostedTokenizationResponse = $hostedTokenizationClient
             ->createHostedTokenization($createHostedTokenizationRequest);

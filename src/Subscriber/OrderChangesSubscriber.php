@@ -4,6 +4,7 @@ namespace MoptWorldline\Subscriber;
 
 use Monolog\Logger;
 use MoptWorldline\Bootstrap\Form;
+use MoptWorldline\Service\Helper;
 use MoptWorldline\Service\Payment;
 use MoptWorldline\Service\PaymentHandler;
 use Psr\Log\LogLevel;
@@ -17,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
+use Shopware\Storefront\Event\StorefrontRenderEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -74,7 +76,14 @@ class OrderChangesSubscriber implements EventSubscriberInterface
         return [
             HandlePaymentMethodRouteRequestEvent::class => 'setIframeFields',
             OrderEvents::ORDER_WRITTEN_EVENT => 'onOrderWritten',
+//            StorefrontRenderEvent::class => 'test'
         ];
+    }
+
+    public function test(StorefrontRenderEvent  $event)
+    {
+        $sId = $event->getSalesChannelContext()->getSalesChannelId();
+        Helper::getSalesChannelData($sId);
     }
 
     /**
