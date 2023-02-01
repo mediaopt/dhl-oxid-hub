@@ -87,11 +87,7 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
         }
 
         if (isset($savedCardMethod)) {
-            debug('test1');
             if ($savedCardsMethods = $this->getSavedPaymentMethods($context, $savedCardMethod)) {
-                debug('test 10');
-                debug($savedCardsMethods);
-
                 $savedCardsMethods->merge($paymentMethods);
                 $paymentMethods = $savedCardsMethods;
             }
@@ -119,20 +115,16 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
     private function getSavedPaymentMethods(SalesChannelContext $context, PaymentMethodEntity $savedCardMethod): ?PaymentMethodCollection
     {
         $customer = $context->getCustomer();
-        debug('test 0');
         if (is_null($customer) || !$customerCustomFields = $customer->getCustomFields()) {
-            debug('test 2');
+            return null;
+        }
+        $tokenKey = Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN;
+        if (!array_key_exists($tokenKey, $customerCustomFields)) {
             return null;
         }
 
-        if (!array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN, $customerCustomFields)) {
-
-            debug('test 3');
-            return null;
-        }
-
-        $savedCards = $customerCustomFields[Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN];
-        $sessionToken = $this->session->get(Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN);
+        $savedCards = $customerCustomFields[$tokenKey];
+        $sessionToken = $this->session->get($tokenKey);
 
         $savedCardsMethods = new PaymentMethodCollection();
         $uniqueId = false;
