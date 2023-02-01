@@ -530,18 +530,23 @@ class PaymentHandler
 
         $customerId = $this->getCustomerId();
 
-        /** @var EntitySearchResult $customer */
         $customer = $this->customerRepository->search(new Criteria([$customerId]), $this->context);
         $customFields = $customer->first()->getCustomFields();
 
+        //todo remove default from all other cards
         $key = Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN;
         $paymentProductId = $hostedTokenization->getToken()->getPaymentProductId();
-        $paymentProduct = PaymentMethod::getPaymentProductDetails($paymentProductId);
-        $paymentProduct['paymentProductId'] = $paymentProductId;
-        $paymentProduct['token'] = $hostedTokenization->getToken()->getId();
-        $paymentProduct['paymentCard'] = $hostedTokenization->getToken()->getCard()->getData()->getCardWithoutCvv()->getCardNumber();
-
-        $customFields[$key][] = $paymentProduct;
+        $token = $hostedTokenization->getToken()->getId();
+        $paymentProduct = array_merge(
+            [
+                'paymentProductId' => $paymentProductId,
+                'token' => $token,
+                'paymentCard' => $hostedTokenization->getToken()->getCard()->getData()->getCardWithoutCvv()->getCardNumber(),
+                'default' => true,
+            ],
+            PaymentMethod::getPaymentProductDetails($paymentProductId)
+        );
+        $customFields[$key][$token] = $paymentProduct;
 
         $this->customerRepository->update([
             [

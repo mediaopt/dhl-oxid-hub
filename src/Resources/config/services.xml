@@ -100,6 +100,7 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="monolog.logger" />
             <argument type="service" id="session" />
+            <argument type="service" id="customer.repository"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>

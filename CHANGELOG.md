@@ -1,3 +1,6 @@
+# 1.1.0
+- Tokenization
+
 # 1.0.1
 - Iframe basic flow
 

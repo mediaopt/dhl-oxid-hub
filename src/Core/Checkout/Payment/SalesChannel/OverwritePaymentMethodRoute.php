@@ -55,6 +55,7 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
     public function load(Request $request, SalesChannelContext $context, Criteria $criteria): PaymentMethodRouteResponse
     {
         $selectedPaymentMethodId = $context->getPaymentMethod()->getId();
+        $defaultPaymentMethodId = $context->getCustomer()->getDefaultPaymentMethodId();
         $criteria
             ->addFilter(new EqualsFilter('active', true))
             ->addSorting(new FieldSorting('position'))
@@ -77,12 +78,20 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
                 continue;
             }
             if ($method->getId() == $selectedPaymentMethodId) {
-                $method->setCustomFields(['selected' => 1]);
+                $this->session->set(Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN, null);
+                $method->setCustomFields(['selected' => true]);
+            }
+            if ($method->getId() == $defaultPaymentMethodId) {
+                $method->setCustomFields(['default' => true]);
             }
         }
 
         if (isset($savedCardMethod)) {
+            debug('test1');
             if ($savedCardsMethods = $this->getSavedPaymentMethods($context, $savedCardMethod)) {
+                debug('test 10');
+                debug($savedCardsMethods);
+
                 $savedCardsMethods->merge($paymentMethods);
                 $paymentMethods = $savedCardsMethods;
             }
@@ -110,11 +119,15 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
     private function getSavedPaymentMethods(SalesChannelContext $context, PaymentMethodEntity $savedCardMethod): ?PaymentMethodCollection
     {
         $customer = $context->getCustomer();
+        debug('test 0');
         if (is_null($customer) || !$customerCustomFields = $customer->getCustomFields()) {
+            debug('test 2');
             return null;
         }
 
         if (!array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN, $customerCustomFields)) {
+
+            debug('test 3');
             return null;
         }
 
@@ -122,9 +135,8 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
         $sessionToken = $this->session->get(Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN);
 
         $savedCardsMethods = new PaymentMethodCollection();
-
+        $uniqueId = false;
         foreach ($savedCards as $savedCard) {
-            debug($savedCard);
             $newMethod = clone $savedCardMethod;
             $newMethod->setTranslated([
                 'name' => "Pay with my previously saved card {$savedCard['paymentCard']} {$savedCard['title']}"
@@ -133,11 +145,19 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
                 'token' => $savedCard['token']
             ];
             if ($sessionToken === $savedCard['token']) {
-                $customFields['selected'] = 1;
+                $customFields['selected'] = true;
+            }
+            if ($savedCard['default']) {
+                $customFields['default'] = true;
             }
             $newMethod->setCustomFields($customFields);
-            $newMethod->setUniqueIdentifier(md5($savedCard['token']));
 
+            // For validation reasons we need to have at least one saved card method with uniqueId from saved payment methods
+            if ($uniqueId) {
+                $newMethod->setUniqueIdentifier(md5($savedCard['token']));
+            } else {
+                $uniqueId = true;
+            }
             $savedCardsMethods->add($newMethod);
         }
 

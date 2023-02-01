@@ -76,14 +76,7 @@ class OrderChangesSubscriber implements EventSubscriberInterface
         return [
             HandlePaymentMethodRouteRequestEvent::class => 'setIframeFields',
             OrderEvents::ORDER_WRITTEN_EVENT => 'onOrderWritten',
-//            StorefrontRenderEvent::class => 'test'
         ];
-    }
-
-    public function test(StorefrontRenderEvent  $event)
-    {
-        $sId = $event->getSalesChannelContext()->getSalesChannelId();
-        Helper::getSalesChannelData($sId);
     }
 
     /**

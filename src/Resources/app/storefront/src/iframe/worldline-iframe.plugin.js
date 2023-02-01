@@ -3,17 +3,26 @@ import Plugin from 'src/plugin-system/plugin.class';
 
 export default class WorldlineIframePlugin extends Plugin {
     init() {
+        if (document.getElementById("moptWorldlinePageId") === null) {
+            return;
+        } else {
+            this.page = document.getElementById("moptWorldlinePageId").value;
+        }
+
         this._client = new HttpClient();
 
-        this.changePaymentForm = document.getElementById("changePaymentForm");
-        this.changePaymentForm.addEventListener("change", (event)=>{
-            event.preventDefault();
-            this._changePaymentForm();
-        });
+        if (this.page === 'cartConfirm') {
+            this.changePaymentForm = document.getElementById("changePaymentForm");
+            this.changePaymentForm.addEventListener("change", (event)=>{
+                event.preventDefault();
+                this._changePaymentForm();
+            });
 
-        this.moptWorldlineSalesChannel = document.getElementById("moptWorldlineSalesChannelId");
-        if (this.moptWorldlineSalesChannel !== null && this.moptWorldlineSalesChannel.value !== null) {
-            this._initIframe();
+            this.moptWorldlineSalesChannel = document.getElementById("moptWorldlineSalesChannelId");
+            var showIframe = document.getElementById("moptWorldlineShowIframe");
+            if (showIframe !== null && showIframe.value) {
+                this._initIframe();
+            }
         }
     }
 
@@ -75,9 +84,22 @@ export default class WorldlineIframePlugin extends Plugin {
 
     //Send saved card token if exist
     _changePaymentForm() {
-        this._client.get(
-            '/worldline_cardToken?worldline_cardToken='+this._getCurrentToken()
-        );
+        var token = this._getCurrentToken();
+        if (token) {
+            this._client.get(
+                '/worldline_cardToken?worldline_cardToken='+token
+            );
+        }
+        var submit = true;
+        var showIframe = document.getElementById("moptWorldlineShowIframe");
+        if (showIframe !== null && showIframe.value) {
+            if (this.savePaymentCardCheckbox !== null) {
+                submit = this.savePaymentCardCheckbox.checked ? false : true;
+            }
+        }
+        if(submit) {
+            this.changePaymentForm.submit();
+        }
     }
 
     _getCurrentToken() {

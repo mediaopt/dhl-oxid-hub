@@ -21,7 +21,7 @@ class MoptWorldline extends Plugin
 {
     const PLUGIN_NAME = 'MoptWorldline';
 
-    const PLUGIN_VERSION = '1.0.1';
+    const PLUGIN_VERSION = '1.1.0';
     const FULL_REDIRECT_PAYMENT_METHOD_NAME = "Worldline";
     const IFRAME_PAYMENT_METHOD_NAME = "Worldline Iframe";
     const SAVED_CARD_PAYMENT_METHOD_NAME = "Worldline saved card";

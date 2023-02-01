@@ -104,9 +104,7 @@ Component.override('sw-order-detail-base', {
         enableButtons() {
             this.transactionsControl.enableButtons(this.pluginConfig).then((res) => {
                 if (res.message.length > 0) {
-                    console.log(res.message);
                     for (const element of res.message) {
-                        console.log(element);
                         document.getElementById(element).disabled = false;
 
                     }
