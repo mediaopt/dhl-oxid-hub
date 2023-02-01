@@ -1,8 +1,5 @@
 {% sw_extends '@Storefront/storefront/component/payment/payment-fields.html.twig' %}
 {% block component_payment_method %}
-    {# { dump(moptPageId) }}
-    {{ dump(page.paymentMethods) }}
-    {{ dump(context) }#}
     <input type="hidden" id="moptWorldlinePageId" value="{{ moptPageId }}">
     <input type="hidden" id="moptWorldlineSalesChannelId" value="{{ context.salesChannel.id }}">
     <input type="hidden" id="moptWorldlineCustomerId" value="{{ context.customer.id }}">
