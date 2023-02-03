@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.9
+* removed unused DHL products
+* bugfix for Ident in GKV API
+* split name of sender and return receiver in name1, name2 and name3 for custom labels
+
 ## 1.6.8
 * bugfix: improved PHP 8.1 compatibility
 * fixed country value not being sent in form
