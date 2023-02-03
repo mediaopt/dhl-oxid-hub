@@ -198,13 +198,32 @@
                                         <b>[{oxmultilang ident='MO_DHL__CUSTOM_LABEL_SHIPPER'}]</b>
                                     </td>
                                 </tr>
+                                [{assign var="name" value=$shipmentOrder.shipper.name}]
                                 <tr>
                                     <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_NAME'}]
+                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__sender_line1'}]
                                     </td>
                                     <td>
-                                        <input type="text" name="data[shipper][name]"
-                                               value="[{$shipmentOrder.shipper.name}]">
+                                        <input type="text" name="data[shipper][name1]"
+                                               value="[{$name->getName1()}]">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__sender_line2'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[shipper][name2]"
+                                               value="[{$name->getName2()}]">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__sender_line3'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[shipper][name3]"
+                                               value="[{$name->getName3()}]">
                                     </td>
                                 </tr>
                                 [{assign var="address" value=$shipmentOrder.shipper.address}]
@@ -264,13 +283,32 @@
                                         <b>[{oxmultilang ident='MO_DHL__CUSTOM_LABEL_RETURN_RECEIVER'}]</b>
                                     </td>
                                 </tr>
+                                [{assign var="name" value=$shipmentOrder.returnReceiver.name}]
                                 <tr>
                                     <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_NAME'}]
+                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__retoure_receiver_line1'}]
                                     </td>
                                     <td>
-                                        <input type="text" name="data[returnReceiver][name]"
-                                               value="[{$shipmentOrder.returnReceiver.name}]">
+                                        <input type="text" name="data[returnReceiver][name1]"
+                                               value="[{$name->getName1()}]">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__retoure_receiver_line2'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[returnReceiver][name2]"
+                                               value="[{$name->getName2()}]">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__retoure_receiver_line3'}]
+                                    </td>
+                                    <td>
+                                        <input type="text" name="data[returnReceiver][name3]"
+                                               value="[{$name->getName3()}]">
                                     </td>
                                 </tr>
                                 [{assign var="address" value=$shipmentOrder.returnReceiver.address}]
@@ -432,7 +470,7 @@
                                     </td>
                                     <td>
                                         <input type="text" name="data[services][identCheck][surname]"
-                                               value="[{if $identDetails}][{$identDetails->surname}][{/if}]">
+                                               value="[{if $identDetails}][{$identDetails->getSurname()}][{/if}]">
                                     </td>
                                 </tr>
                                 <tr>
@@ -441,7 +479,7 @@
                                     </td>
                                     <td>
                                         <input type="text" name="data[services][identCheck][givenName]"
-                                               value="[{if $identDetails}][{$identDetails->givenName}][{/if}]">
+                                               value="[{if $identDetails}][{$identDetails->getGivenName()}][{/if}]">
                                     </td>
                                 </tr>
                                 <tr>
@@ -450,7 +488,7 @@
                                     </td>
                                     <td>
                                         <input type="text" name="data[services][identCheck][dateOfBirth]"
-                                               value="[{if $identDetails}][{$identDetails->dateOfBirth}][{/if}]">
+                                               value="[{if $identDetails}][{$identDetails->getDateOfBirth()}][{/if}]">
                                     </td>
                                 </tr>
                                 <tr>
@@ -460,8 +498,8 @@
                                     <td>
                                         <select name="data[services][identCheck][minimumAge]">
                                             <option value="">-</option>
-                                            <option value="16" [{if $identDetails && $identDetails->minimumAge === 'A16'}] selected[{/if}]>16</option>
-                                            <option value="18" [{if $identDetails && $identDetails->minimumAge === 'A18'}] selected[{/if}]>18</option>
+                                            <option value="16" [{if $identDetails && $identDetails->getMinimumAge() === 'A16'}] selected[{/if}]>16</option>
+                                            <option value="18" [{if $identDetails && $identDetails->getMinimumAge() === 'A18'}] selected[{/if}]>18</option>
                                         </select>
                                     </td>
                                 </tr>
