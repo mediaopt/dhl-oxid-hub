@@ -426,7 +426,7 @@ a.privacy-policy:hover {
     margin-bottom: 1em;
 }
 
-.moDhlAddressChangeButton {
+.moDhlAddressChangeButton, .moDhlNewAddressButton {
     width: 100%;
 }
 
@@ -457,13 +457,40 @@ a.privacy-policy:hover {
     border-color: #fc0;
 }
 
+.moDhlNewAddressCard .moDhlShipping .moDhlAddressSpanFName,
+.moDhlNewAddressCard .moDhlShipping .moDhlAddressSpanLName {
+    display: none;
+}
+
 .moDhlAddressCard label {
     cursor: pointer;
     margin: 0;
 }
 
-.moDhlAddressCardActions {
+.moDhlAddressCardActions,
+.moDhlAddressCardChangeName,
+.moDhlAddressChangeSpanSave {
     display: none;
+}
+
+.moDhlAddressCardActions {
+    position: absolute;
+    border: 1px solid;
+    border-radius: 3px;
+    width: min(60%, 350px);
+    background-color: white;
+    right: -10px;
+    text-align: left;
+    font-size: 16px;
+}
+
+.moDhlAddressCardActions div {
+    padding: 5px 0;
+    margin: 0 5px;
+}
+
+.moDhlAddressCardActions > div {
+    border-bottom: 1px solid #c0c0c0;
 }
 
 .moDhlAddressCardOption {
@@ -478,6 +505,23 @@ a.privacy-policy:hover {
 
 .moDhlWunschpaketServiceOption {
     margin-top: 10px;
+}
+
+#shippingAddressForm {
+    display: none !important;
+}
+
+.moDhlNewAddressCard {
+    display: none;
+}
+
+.moDhlNewAddressCard .moDhlAddressCard {
+    display: block;
+    margin-top: 1em;
+}
+
+.moDhlNewAddressCard .moDhlAddressCard span input {
+    margin-bottom: 5px;
 }
 
 @media screen and (max-width: 48em) {

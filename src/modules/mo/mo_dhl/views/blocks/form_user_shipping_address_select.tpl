@@ -34,35 +34,57 @@
                                autocomplete="off">
                     [{else}]
                         <div class="moDhlAddressCardAddress">
-                            [{include file="mo_dhl__shipping_address.tpl" delivadr=$address}]
+                            [{include file="mo_dhl__shipping_address.tpl" delivadr=$address selected=$address->isSelected()}]
                         </div>
                     [{/if}]
                     [{block name="form_user_shipping_address_actions"}]
                         [{if $address->isSelected()}]
                             <div class="moDhlAddressCardOption">
                                 <i class="fa fa-ellipsis-v"></i>
+                                <div class="moDhlAddressCardActions">
+                                    <div class="moDhlAddressChangeName">name ändern</div>
+                                    <div>adresse ändern</div>
+                                    [{block name="form_user_shipping_address_edit_action"}][{/block}]
+                                    [{block name="form_user_shipping_address_delete_action"}][{/block}]
+                                </div>
                             </div>
-                            <div class="moDhlAddressCardActions">
-                                [{block name="form_user_shipping_address_edit_action"}]
-                                <button class="btn btn-warning btn-sm hasTooltip float-right dd-action dd-edit-shipping-address edit-button"
-                                        title="[{oxmultilang ident="CHANGE"}]">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </button>
-                                [{/block}]
-                                [{block name="form_user_shipping_address_delete_action"}]
-                                <button class="btn btn-danger btn-sm hasTooltip float-right dd-action dd-delete-shipping-address edit-button"
-                                        title="[{oxmultilang ident="DD_DELETE"}]"
-                                        data-toggle="modal"
-                                        data-target="#delete_shipping_address_[{$smarty.foreach.shippingAdresses.iteration}]">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                                [{/block}]
-                            </div>
+                            <span class="moDhlAddressChangeSpanSave text-right">
+                                <button class="btn btn-primary moDhlNewAddressSaveButton" type="button">Save</button>
+                            </span>
                         [{/if}]
                     [{/block}]
                 </div>
             </div>
         [{/foreach}]
+    </div>
+    <div class="row">
+        <button class="btn btn-primary moDhlNewAddressButton" type="button" id="moDhlNewAddressButton"
+                data-toggle="modal" data-target="#moDHLFinder">
+            Add new shipping address
+        </button>
+    </div>
+    <div class="row">
+        <div class="moDhlNewAddressCard">
+            <div class="moDhlAddressCard">
+                <div class="moDhlAddressCardAddress">
+                    <span class="moDhlAddressSpanFName">
+                        <input type="text" class="js-oxValidate js-oxValidate_notEmpty form-control" maxlength="255" required name="moDhlNewAddressFName" placeholder="Vorname">
+                    </span>
+                    <span class="moDhlAddressSpanLName">
+                        <input type="text" class="js-oxValidate js-oxValidate_notEmpty form-control" maxlength="255" required name="moDhlNewAddressLName" placeholder="Nachname">
+                    </span>
+                    <span class="moDhlAddressSpanStreetAdditional">
+                        <input type="text" class="js-oxValidate js-oxValidate_notEmpty form-control" maxlength="255" required name="moDhlNewAddressStreetAdditional" placeholder="Adresszusatz">
+                    </span>
+                    <span class="moDhlAddressSpanStreet"></span>
+                    <span class="moDhlAddressSpanZipCity"></span>
+                    <span class="moDhlAddressSpanCountry"></span>
+                    <span class="moDhlAddressSpanSave text-right">
+                        <button class="btn btn-primary moDhlNewAddressSaveButton" type="button">Save</button>
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
 [{else}]
     [{$smarty.block.parent}]

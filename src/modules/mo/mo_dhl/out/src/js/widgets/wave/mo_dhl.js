@@ -208,7 +208,7 @@
                         mo_dhl__wunschpaket.showOrHideWunschbox();
                     }
                 } else {
-                    $(".dd-add-delivery-address").find('label.btn').click();
+                    //$(".dd-add-delivery-address").find('label.btn').click();
                     $('[name="deladr[oxaddress__oxsal]"]').val($('[name="invadr[oxuser__oxsal]"]').val());
                     $('[name="deladr[oxaddress__oxfname]"]').val($('[name="invadr[oxuser__oxfname]"]').val());
                     $('[name="deladr[oxaddress__oxlname]"]').val($('[name="invadr[oxuser__oxlname]"]').val());
@@ -363,6 +363,38 @@
                 $(this).parent().removeClass('has-error custom-error');
             });
 
+            $('.moDhlAddressCard label').click(function () {
+                $(this.nextElementSibling).click();
+            });
+
+            $('.moDhlNewAddressSaveButton').click(function () {
+                $("[name='deladr[oxaddress__oxfname]']").val($("[name='moDhlNewAddressFName']").val());
+                $("[name='deladr[oxaddress__oxlname]']").val($("[name='moDhlNewAddressLName']").val());
+                $("[name='deladr[oxaddress__oxaddinfo]']").val($("[name='moDhlNewAddressStreetAdditional']").val());
+                $(this).parents('form').submit();
+            });
+
+            $('.moDhlAddressCardOption').click(function () {
+                $('.moDhlAddressCardActions').show();
+            });
+
+            $('.moDhlAddressChangeName').click(function () {
+                $('.moDhlAddressCardActions').hide();
+                $('.moDhlAddressSpanName').hide();
+                $('.moDhlAddressCardChangeName').show();
+                $('.moDhlAddressChangeSpanSave').show();
+                $("[name='deladr[oxaddress__oxstreet]']").val($('.moDhlAddressSpanStreet').data('streetname'));
+                $("[name='deladr[oxaddress__oxstreetnr]']").val($('.moDhlAddressSpanStreet').data('streetnr'));
+                $("[name='deladr[oxaddress__oxcity]']").val($('.moDhlAddressSpanZipCity').data('city'));
+                $("[name='deladr[oxaddress__oxzip]']").val($('.moDhlAddressSpanZipCity').data('zip'));
+            });
+
+            $('.moDhlAddressChangeSpanSave').click(function () {
+                $("[name='deladr[oxaddress__oxfname]']").val($("[name='moDhlAddressChangeFName']").val());
+                $("[name='deladr[oxaddress__oxlname]']").val($("[name='moDhlAddressChangeLName']").val());
+                $(this).parents('form').submit();
+            });
+
             $("form").submit(function (event) {
                 var wunschName = $("#moDHLWunschnachbarName");
                 var wunschAddress = $("#moDHLWunschnachbarAddress");
@@ -440,15 +472,36 @@
             return provider.number;
         },
         apply: function (provider) {
+            var self = this;
             $('#select' + this.dhl.fromProviderTypeToLabel(provider.type)).prop('selected', true);
-            $("#showShipAddress").prop('checked', false).change();
-            $(".dd-add-delivery-address").find('label.btn').click();
+            $("#addressId").change();
+
             var providerIdentifier = this.dhl.fromProviderTypeToIdentifier(provider.type);
+            $('#deladr_oxaddress__oxsal').val('');
+            var $newAddressCard = $('.moDhlNewAddressCard')
+            $newAddressCard.find('.moDhlAddressCard').addClass('active').removeClass('moDhlShipping');
+            if (provider.type === 'regular') {
+                self.dhl.toRegularAddress();
+                $("[name='deladr[oxaddress__oxstreet]']").val(provider.addressParts.street);
+                $("[name='deladr[oxaddress__oxstreetnr]']").val(provider.addressParts.streetNr);
+                $("[name='deladr[oxaddress__oxzip]']").val(provider.addressParts.postalCode);
+                $("[name='deladr[oxaddress__oxcity]']").val(provider.addressParts.city);
+                $('.moDhlAddressSpanStreetAdditional').find('input').prop('placeholder', 'Adresszusatz');
+            } else {
+                $newAddressCard.find('.moDhlAddressCard').addClass('moDhlShipping');
             $("[name='deladr[oxaddress__oxstreet]']").val(providerIdentifier).parent().removeClass('oxInValid');
             $("[name='deladr[oxaddress__oxstreetnr]']").val(this.getProviderId(provider));
             $("[name='deladr[oxaddress__oxzip]']").val(provider.address.zip).parent().removeClass('oxInValid');
             $("[name='deladr[oxaddress__oxcity]']").val(provider.address.city);
-            this.fixCountryToGermany();
+                self.fixCountryToGermany();
+                $('.moDhlAddressSpanStreetAdditional').find('input').prop('placeholder', 'Postnummer');
+            }
+            $('.moDhlAddressCard.active').removeClass('active');
+
+            $newAddressCard.find('.moDhlAddressCard').addClass('active');
+            $newAddressCard.find('.moDhlAddressSpanStreet').text($("[name='deladr[oxaddress__oxstreet]']").val() + ' ' + $("[name='deladr[oxaddress__oxstreetnr]']").val());
+            $newAddressCard.find('.moDhlAddressSpanZipCity').text($("[name='deladr[oxaddress__oxzip]']").val() + ' ' + $("[name='deladr[oxaddress__oxcity]']").val());
+            $newAddressCard.show();
         },
         setDeliveryCountryToBillingCountry: function () {
             if ($('#delCountrySelect').val()) {

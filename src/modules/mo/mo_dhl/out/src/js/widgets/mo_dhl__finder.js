@@ -187,6 +187,15 @@ DHLFinder = function ($, tailorer) {
         }).fail(function () {
             $("#moDHLErrors").show().text($("#moDHLUnknownError").text());
             self.tailorer.busyFinder = false;
+        }).always(function() {
+            var address = locality + ' ' + street;
+            var geocoder;
+            geocoder = new google.maps.Geocoder();
+            geocoder.geocode( { 'address': address}, function(results, status) {
+                if (status === 'OK' && results.length >= 1) {
+                    self.markers.push(self.markAddress(results[0]));
+                }
+            });
         });
     };
     this.mark = function (provider) {
@@ -206,4 +215,38 @@ DHLFinder = function ($, tailorer) {
         mo_dhl__finder.addInfoBox(provider, marker);
         return marker;
     };
+    this.markAddress = function (location) {
+        console.log(location)
+        var title = 'regularAddress';
+        var pos = {
+            lat: location.geometry.location.lat(),
+            lng: location.geometry.location.lng()
+        }
+        var marker = new google.maps.Marker({
+            position: pos,
+            map: this.map,
+            title: title
+        });
+        var provider = {
+            id: 'regular',
+            type: 'regular',
+            address: location.formatted_address,
+            addressParts: {}
+        }
+        location.address_components.forEach(function (element) {
+            if (element.types.includes('street_number')) {
+                provider.addressParts.streetNr = element.long_name;
+            } else if (element.types.includes('route')) {
+                provider.addressParts.street = element.long_name;
+            } else if (element.types.includes('locality')) {
+                provider.addressParts.city = element.long_name;
+            } else if (element.types.includes('country')) {
+                provider.addressParts.country = element.shot_name;
+            } else if (element.types.includes('postal_code')) {
+                provider.addressParts.postalCode = element.long_name;
+            }
+        });
+        mo_dhl__finder.addInfoBox(provider, marker);
+        return marker;
+    }
 };
