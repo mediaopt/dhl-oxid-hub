@@ -3,6 +3,8 @@
 namespace MoptWorldline\Adapter;
 
 use Monolog\Logger;
+use MoptWorldline\Service\PaymentMethod;
+use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\BrowserData;
 use OnlinePayments\Sdk\Domain\CancelPaymentResponse;
@@ -169,6 +171,7 @@ class WorldlineSDKAdapter
      */
     public function createPayment(float $amountTotal, string $currencyISO, int $worldlinePaymentMethodId): CreateHostedCheckoutResponse
     {
+        $fullRedirectTemplateName = $this->getPluginConfig(Form::FULL_REDIRECT_TEMPLATE_NAME);
         $merchantClient = $this->getMerchantClient();
 
         $amountOfMoney = new AmountOfMoney();
@@ -181,6 +184,7 @@ class WorldlineSDKAdapter
         $hostedCheckoutSpecificInput = new HostedCheckoutSpecificInput();
         $returnUrl = $this->getPluginConfig(Form::RETURN_URL_FIELD);
         $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
+        $hostedCheckoutSpecificInput->setVariant($fullRedirectTemplateName);
         $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
 
         if ($worldlinePaymentMethodId != 0) {
@@ -219,7 +223,7 @@ class WorldlineSDKAdapter
     )
     {
         switch ($worldlinePaymentMethodId) {
-            case '5700': {
+            case PaymentMethod::PAYMENT_METHOD_INTERSOLVE: {
                 $cardPaymentMethodSpecificInput->setAuthorizationMode('SALE');
                 $hostedCheckoutSpecificInput->setIsRecurring(false);
                 break;
@@ -288,7 +292,7 @@ class WorldlineSDKAdapter
 
         $customerDevice = new CustomerDevice();
         $customerDevice->setLocale($iframeData[Form::WORLDLINE_CART_FORM_LOCALE]);
-        $customerDevice->setTimezoneOffsetUtcMinutes($iframeData[Form::WORLDLINE_CART_FORM_TIMZONE_OFFSET_MINUTES]);
+        $customerDevice->setTimezoneOffsetUtcMinutes($iframeData[Form::WORLDLINE_CART_FORM_TIMEZONE_OFFSET_MINUTES]);
         $customerDevice->setAcceptHeader("*\/*");
         $customerDevice->setUserAgent($iframeData[Form::WORLDLINE_CART_FORM_USER_AGENT]);
         $customerDevice->setBrowserData($browserData);
@@ -410,6 +414,17 @@ class WorldlineSDKAdapter
     }
 
     /**
+     * @param string $token
+     * @return DataObject|null
+     * @throws \Exception
+     */
+    public function deleteToken(string $token): ?DataObject
+    {
+        $merchantClient = $this->getMerchantClient();
+        return $merchantClient->tokens()->deleteToken($token);
+    }
+
+    /**
      * @param PaymentDetailsResponse $paymentDetails
      * @return int
      */
@@ -423,6 +438,23 @@ class WorldlineSDKAdapter
         }
         return $paymentDetails->getStatusOutput()->getStatusCode();
     }
+
+    /**
+     * @param PaymentDetailsResponse $paymentDetails
+     * @return string
+     */
+    public function getRedirectToken(PaymentDetailsResponse $paymentDetails): string
+    {
+        if (!is_object($paymentDetails)
+            || !is_object($paymentDetails->getPaymentOutput())
+            || !is_object($paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput())
+            || is_null($paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getToken())
+        ) {
+            return '';
+        }
+        return $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getToken();
+    }
+
 
     /**
      * @param CancelPaymentResponse $cancelPaymentResponse

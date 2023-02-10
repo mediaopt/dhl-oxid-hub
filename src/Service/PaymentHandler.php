@@ -7,6 +7,7 @@ use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
 use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
 use OnlinePayments\Sdk\Domain\GetHostedTokenizationResponse;
+use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
@@ -265,6 +266,16 @@ class PaymentHandler
     {
         $this->log('gettingPaymentDetails', 0, ['hostedCheckoutId' => $hostedCheckoutId]);
         $paymentDetails = $this->adapter->getPaymentDetails($hostedCheckoutId);
+
+        if ($token = $this->adapter->getRedirectToken($paymentDetails)) {
+            $card =$this->createRedirectPaymentProduct($token, $paymentDetails);
+            $this->saveCustomerCustomFields(
+                null,
+                $token,
+                $card
+            );
+        }
+
         $status = $this->adapter->getStatus($paymentDetails);
         $this->saveOrderCustomFields($status, $hostedCheckoutId);
         return $status;
@@ -517,36 +528,29 @@ class PaymentHandler
     }
 
     /**
-     * @param GetHostedTokenizationResponse $hostedTokenization
+     * @param GetHostedTokenizationResponse|null $hostedTokenization
+     * @param string $token
+     * @param array $paymentProduct
      * @return void
-     * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws \Doctrine\DBAL\Exception
      */
-    private function saveCustomerCustomFields(GetHostedTokenizationResponse $hostedTokenization)
+    private function saveCustomerCustomFields(
+        ?GetHostedTokenizationResponse $hostedTokenization,
+        string                         $token = '',
+        array                          $paymentProduct = []
+    )
     {
-        if ($hostedTokenization->getToken()->getIsTemporary()) {
+        if (!is_null($hostedTokenization) && $hostedTokenization->getToken()->getIsTemporary()) {
             return;
         }
 
-        $customerId = $this->getCustomerId();
+        if (empty($token)) {
+            [$token, $paymentProduct] = $this->createPaymentProduct($hostedTokenization);
+        }
 
+        $customerId = $this->getCustomerId();
         $customer = $this->customerRepository->search(new Criteria([$customerId]), $this->context);
         $customFields = $customer->first()->getCustomFields();
-
-        //todo remove default from all other cards
-        $key = Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN;
-        $paymentProductId = $hostedTokenization->getToken()->getPaymentProductId();
-        $token = $hostedTokenization->getToken()->getId();
-        $paymentProduct = array_merge(
-            [
-                'paymentProductId' => $paymentProductId,
-                'token' => $token,
-                'paymentCard' => $hostedTokenization->getToken()->getCard()->getData()->getCardWithoutCvv()->getCardNumber(),
-                'default' => true,
-            ],
-            PaymentMethod::getPaymentProductDetails($paymentProductId)
-        );
-        $customFields[$key][$token] = $paymentProduct;
+        $customFields[Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN][$token] = $paymentProduct;
 
         $this->customerRepository->update([
             [
@@ -554,5 +558,51 @@ class PaymentHandler
                 'customFields' => $customFields
             ]
         ], $this->context);
+    }
+
+    /**
+     * @param GetHostedTokenizationResponse $hostedTokenization
+     * @return array
+     */
+    private function createPaymentProduct(GetHostedTokenizationResponse $hostedTokenization): array
+    {
+        $paymentProductId = $hostedTokenization->getToken()->getPaymentProductId();
+        $token = $hostedTokenization->getToken()->getId();
+        return [
+            $token,
+            array_merge(
+                [
+                    'paymentProductId' => $paymentProductId,
+                    'token' => $token,
+                    'paymentCard' => $hostedTokenization->getToken()->getCard()->getData()->getCardWithoutCvv()->getCardNumber(),
+                    'default' => false
+                ],
+                PaymentMethod::getPaymentProductDetails($paymentProductId)
+            )
+        ];
+    }
+
+    /**
+     * @param $token
+     * @param PaymentDetailsResponse $paymentDetailsResponse
+     * @return array
+     */
+    private function createRedirectPaymentProduct($token, PaymentDetailsResponse $paymentDetailsResponse): array
+    {
+        $paymentProductId = $paymentDetailsResponse->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getPaymentProductId();
+
+        // Make masked card number from bin (123456) and last 4 digs (************1234) - 123456******1234
+        $bin = $paymentDetailsResponse->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getCard()->getBin();
+        $card = $paymentDetailsResponse->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getCard()->getCardNumber();
+        $paymentCard = substr_replace($card, $bin, 0, 6);
+        return array_merge(
+            [
+                'paymentProductId' => $paymentProductId,
+                'token' => $token,
+                'paymentCard' => $paymentCard,
+                'default' => false
+            ],
+            PaymentMethod::getPaymentProductDetails($paymentProductId)
+        );
     }
 }

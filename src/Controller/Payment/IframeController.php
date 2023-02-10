@@ -6,6 +6,7 @@ use _PHPStan_b8e553790\Nette\Neon\Exception;
 use Monolog\Logger;
 use MoptWorldline\Adapter\WorldlineSDKAdapter;
 use MoptWorldline\Bootstrap\Form;
+use Psr\Log\LogLevel;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
@@ -52,7 +53,7 @@ class IframeController extends AbstractController
     public function showIframe(Request $request): JsonResponse
     {
         $salesChannelId = $request->get('salesChannelId');
-        $token = $this->session->get(Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN);
+        $token = $request->get('token');
         $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         $tokenizationUrl = $adapter->createHostedTokenizationUrl($token);
 
@@ -67,11 +68,24 @@ class IframeController extends AbstractController
      * @return JsonResponse
      * @throws \Exception
      */
-    public function saveCardToken(Request $request)
+    public function saveCardToken(Request $request): JsonResponse
     {
         $token = $request->get('worldline_cardToken') ?: null;
         $this->session->set(Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN, $token);
         return new JsonResponse([]);
+    }
+
+    /**
+     * @Route("/worldline_accountCardToken", name="worldline.accountCardToken", defaults={"XmlHttpRequest"=true}, methods={"GET"})
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function saveAccountCardToken(Request $request): JsonResponse
+    {
+        $token = $request->get('worldline_accountCardToken') ?: null;
+        $this->session->set(Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_ACCOUNT_PAYMENT_CARD_TOKEN, $token);
+        return new JsonResponse(['success'=>true]);
     }
 
     /**
@@ -100,9 +114,11 @@ class IframeController extends AbstractController
                     'customFields' => $fields
                 ]
             ], $context->getContext());
-
+            $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $context->getSalesChannelId());
+            $adapter->deleteToken($tokenId);
         } catch (\Exception $exception) {
             $success = false;
+            $this->logger->log(LogLevel::ERROR, $exception->getMessage());
         }
 
         return new RedirectResponse(
@@ -134,13 +150,12 @@ class IframeController extends AbstractController
             throw new Exception("Can not find saved card with token $tokenId");
         }
 
+        //If customer remove default card - set random card as default
         $wasDefault = $savedCards[$tokenId]['default'];
         unset($savedCards[$tokenId]);
-
         if ($wasDefault && !empty($savedCards)) {
             $savedCards[key($savedCards)]['default'] = true;
         }
-        $this->session->set(Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN, null);
         $customerCustomFields[$key] = $savedCards;
         return $customerCustomFields;
     }

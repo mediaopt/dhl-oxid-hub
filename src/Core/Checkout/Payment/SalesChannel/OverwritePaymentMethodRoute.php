@@ -2,10 +2,13 @@
 
 namespace MoptWorldline\Core\Checkout\Payment\SalesChannel;
 
+use _HumbugBoxa991b62ce91e\Nette\Schema\Context;
 use MoptWorldline\Bootstrap\Form;
 use MoptWorldline\MoptWorldline;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -26,16 +29,19 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
 {
     private SalesChannelRepositoryInterface $paymentMethodsRepository;
     private Session $session;
+    private EntityRepositoryInterface $customerRepository;
 
     /**
      * @param SalesChannelRepositoryInterface $paymentMethodsRepository
      * @param Session $session
+     * @param EntityRepositoryInterface $customerRepository
      */
-    public function __construct(SalesChannelRepositoryInterface $paymentMethodsRepository, Session $session)
+    public function __construct(SalesChannelRepositoryInterface $paymentMethodsRepository, Session $session, EntityRepositoryInterface $customerRepository)
     {
         parent::__construct($paymentMethodsRepository);
         $this->paymentMethodsRepository = $paymentMethodsRepository;
         $this->session = $session;
+        $this->customerRepository = $customerRepository;
     }
 
     /**
@@ -54,8 +60,11 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
      */
     public function load(Request $request, SalesChannelContext $context, Criteria $criteria): PaymentMethodRouteResponse
     {
-        $selectedPaymentMethodId = $context->getPaymentMethod()->getId();
-        $defaultPaymentMethodId = $context->getCustomer()->getDefaultPaymentMethodId();
+        $defaultPaymentMethodId = null;
+        $customer = $context->getCustomer();
+        if (!is_null($customer)) {
+            $defaultPaymentMethodId = $context->getCustomer()->getDefaultPaymentMethodId();
+        }
         $criteria
             ->addFilter(new EqualsFilter('active', true))
             ->addSorting(new FieldSorting('position'))
@@ -70,6 +79,7 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
             $paymentMethods = $paymentMethods->filterByActiveRules($context);
         }
 
+        $isDefaultSet = false;
         /** @var PaymentMethodEntity $method */
         foreach ($paymentMethods as $key => $method) {
             if ($method->getName() === MoptWorldline::SAVED_CARD_PAYMENT_METHOD_NAME) {
@@ -77,17 +87,15 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
                 $paymentMethods->remove($key);
                 continue;
             }
-            if ($method->getId() == $selectedPaymentMethodId) {
-                $this->session->set(Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN, null);
-                $method->setCustomFields(['selected' => true]);
-            }
+
             if ($method->getId() == $defaultPaymentMethodId) {
+                $isDefaultSet = true;
                 $method->setCustomFields(['default' => true]);
             }
         }
 
         if (isset($savedCardMethod)) {
-            if ($savedCardsMethods = $this->getSavedPaymentMethods($context, $savedCardMethod)) {
+            if ($savedCardsMethods = $this->getSavedPaymentMethods($context, $savedCardMethod, $isDefaultSet)) {
                 $savedCardsMethods->merge($paymentMethods);
                 $paymentMethods = $savedCardsMethods;
             }
@@ -110,9 +118,10 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
     /**
      * @param SalesChannelContext $context
      * @param PaymentMethodEntity $savedCardMethod
+     * @param bool $isDefaultSet
      * @return PaymentMethodCollection|null
      */
-    private function getSavedPaymentMethods(SalesChannelContext $context, PaymentMethodEntity $savedCardMethod): ?PaymentMethodCollection
+    private function getSavedPaymentMethods(SalesChannelContext $context, PaymentMethodEntity $savedCardMethod, bool $isDefaultSet): ?PaymentMethodCollection
     {
         $customer = $context->getCustomer();
         if (is_null($customer) || !$customerCustomFields = $customer->getCustomFields()) {
@@ -122,10 +131,14 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
         if (!array_key_exists($tokenKey, $customerCustomFields)) {
             return null;
         }
+        $defaultAccountToken = $this->session->get(Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_ACCOUNT_PAYMENT_CARD_TOKEN);
+        if (!empty($defaultAccountToken)) {
+            $savedCards = $this->processDefaultSavedCard($defaultAccountToken, $context);
+        } else {
+            $savedCards = $customerCustomFields[$tokenKey];
+        }
 
-        $savedCards = $customerCustomFields[$tokenKey];
         $sessionToken = $this->session->get($tokenKey);
-
         $savedCardsMethods = new PaymentMethodCollection();
         $uniqueId = false;
         foreach ($savedCards as $savedCard) {
@@ -139,8 +152,8 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
             if ($sessionToken === $savedCard['token']) {
                 $customFields['selected'] = true;
             }
-            if ($savedCard['default']) {
-                $customFields['default'] = true;
+            if (($savedCard['default'] && !$isDefaultSet) || $savedCard['token'] == $defaultAccountToken) {
+                $customFields['default'] = 1;
             }
             $newMethod->setCustomFields($customFields);
 
@@ -154,5 +167,29 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
         }
 
         return $savedCardsMethods;
+    }
+
+    /**
+     * @param string $token
+     * @param SalesChannelContext $context
+     * @return array
+     */
+    private function processDefaultSavedCard(string $token, SalesChannelContext $context): array
+    {
+        $customer = $context->getCustomer();
+        $customFields = $customer->getCustomFields();
+        $tokenKey = Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN;
+        foreach ($customFields[$tokenKey] as $cardKey => $savedCard) {
+            $customFields[$tokenKey][$cardKey]['default'] = $savedCard['token'] == $token ? 1 : 0;
+        }
+
+        $this->customerRepository->update([
+            [
+                'id' => $customer->getId(),
+                'customFields' => $customFields
+            ]
+        ], $context->getContext());
+
+        return $customFields[$tokenKey];
     }
 }

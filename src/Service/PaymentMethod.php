@@ -19,6 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class PaymentMethod
 {
 
+    const PAYMENT_METHOD_INTERSOLVE = 5700;
     private const PAYMENT_METHOD_MEDIA_DIR = 'bundles/moptworldline/static/img';
     private const PAYMENT_METHOD_MEDIA_PREFIX = 'pp_logo_';
     private const PAYMENT_METHOD_MEDIA_DEFAULT = 'base';
@@ -34,7 +35,7 @@ class PaymentMethod
         320 => 'Google Pay',
         809 => 'iDEAL',
         3112 => 'Illicado',
-        5700 => 'Intersolve',
+        self::PAYMENT_METHOD_INTERSOLVE => 'Intersolve',
         125 => 'JCB',
         3301 => 'Klarna',
         117 => 'Maestro',

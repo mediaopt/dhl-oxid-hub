@@ -27,10 +27,10 @@
                rel="{{ payment.customFields.token }}"
            {% endif %}
            {% if (payment.customFields.selected and moptPageId == 'cartConfirm')
-                or (payment.customFields.default and moptPageId == 'account')
-                or ((payment.id == selectedPaymentMethodId) and payment.customFields.token == null and moptPageId == 'cartConfirm')
+               or (payment.customFields.default and moptPageId == 'account')
+               or (payment.id == selectedPaymentMethodId and payment.customFields.token == null and moptPageId == 'cartConfirm')
+               or (payment.id == selectedPaymentMethodId and payment.customFields.token == null and moptPageId == 'account')
            %}
-               {% set wasChecked = 1 %}
                checked="checked"
            {% endif %}
            {% if page.isPaymentChangeable is defined and not page.isPaymentChangeable %}
