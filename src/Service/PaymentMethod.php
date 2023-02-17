@@ -18,12 +18,29 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PaymentMethod
 {
-
     const PAYMENT_METHOD_INTERSOLVE = 5700;
+    const PAYMENT_METHOD_ONEY_3X_4X = 5110;
+    const PAYMENT_METHOD_ONEY_FINANCEMENT_LONG = 5125;
+    const PAYMENT_METHOD_ONEY_BRANDED_GIFT_CARD = 5600;
+    const PAYMENT_METHOD_KLARNA_PAY_NOW = 3301;
+    const PAYMENT_METHOD_KLARNA_PAY_LATER = 3302;
+    const PAYMENT_METHOD_NEED_DETAILS = [
+          self::PAYMENT_METHOD_ONEY_3X_4X,
+          self::PAYMENT_METHOD_ONEY_FINANCEMENT_LONG,
+          self::PAYMENT_METHOD_ONEY_BRANDED_GIFT_CARD,
+          self::PAYMENT_METHOD_KLARNA_PAY_NOW,
+          self::PAYMENT_METHOD_KLARNA_PAY_LATER,
+    ];
     private const PAYMENT_METHOD_MEDIA_DIR = 'bundles/moptworldline/static/img';
     private const PAYMENT_METHOD_MEDIA_PREFIX = 'pp_logo_';
     private const PAYMENT_METHOD_MEDIA_DEFAULT = 'base';
     private const PAYMENT_METHOD_NAMES = [
+        self::PAYMENT_METHOD_INTERSOLVE => 'Intersolve',
+        self::PAYMENT_METHOD_KLARNA_PAY_NOW => 'Klarna',
+        self::PAYMENT_METHOD_KLARNA_PAY_LATER => 'Klarna',
+        self::PAYMENT_METHOD_ONEY_3X_4X => 'Oney 3x-4x',
+        self::PAYMENT_METHOD_ONEY_FINANCEMENT_LONG => 'Oney Financement Long',
+        self::PAYMENT_METHOD_ONEY_BRANDED_GIFT_CARD => 'OneyBrandedGiftCard',
         861 => 'Alipay',
         2 => 'American Express',
         302 => 'Apple Pay',
@@ -35,16 +52,11 @@ class PaymentMethod
         320 => 'Google Pay',
         809 => 'iDEAL',
         3112 => 'Illicado',
-        self::PAYMENT_METHOD_INTERSOLVE => 'Intersolve',
         125 => 'JCB',
-        3301 => 'Klarna',
         117 => 'Maestro',
         3 => 'Mastercard',
         5402 => 'Mealvouchers',
         5500 => 'Multibanco',
-        5110 => 'Oney 3x-4x',
-        5125 => 'Oney Financement Long',
-        5600 => 'OneyBrandedGiftCard',
         840 => 'Paypal',
         771 => 'SEPA Direct Debit',
         56 => 'UPI - UnionPay International', //no logo!

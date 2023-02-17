@@ -2,15 +2,18 @@
 
 namespace MoptWorldline\Adapter;
 
+use Aws\Sdk;
 use Monolog\Logger;
 use MoptWorldline\Service\PaymentMethod;
 use OnlinePayments\Sdk\DataObject;
+use OnlinePayments\Sdk\Domain\AddressPersonal;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\BrowserData;
 use OnlinePayments\Sdk\Domain\CancelPaymentResponse;
 use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
 use OnlinePayments\Sdk\Domain\CaptureResponse;
 use OnlinePayments\Sdk\Domain\CardPaymentMethodSpecificInput;
+use OnlinePayments\Sdk\Domain\ContactDetails;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutRequest;
 use OnlinePayments\Sdk\Domain\CreateHostedTokenizationRequest;
 use OnlinePayments\Sdk\Domain\CreatePaymentRequest;
@@ -19,20 +22,38 @@ use OnlinePayments\Sdk\Domain\Customer;
 use OnlinePayments\Sdk\Domain\CustomerDevice;
 use OnlinePayments\Sdk\Domain\GetHostedTokenizationResponse;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
+use OnlinePayments\Sdk\Domain\LineItem;
+use OnlinePayments\Sdk\Domain\LineItemInvoiceData;
 use OnlinePayments\Sdk\Domain\MerchantAction;
 use OnlinePayments\Sdk\Domain\Order;
+use OnlinePayments\Sdk\Domain\OrderLineDetails;
+use OnlinePayments\Sdk\Domain\Address;
+use OnlinePayments\Sdk\Domain\OrderReferences;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use OnlinePayments\Sdk\Domain\PaymentProduct;
 use OnlinePayments\Sdk\Domain\PaymentProductFilter;
 use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
 use OnlinePayments\Sdk\Domain\PaymentReferences;
+use OnlinePayments\Sdk\Domain\PersonalInformation;
+use OnlinePayments\Sdk\Domain\PersonalName;
 use OnlinePayments\Sdk\Domain\RedirectData;
 use OnlinePayments\Sdk\Domain\RedirectionData;
+use OnlinePayments\Sdk\Domain\RedirectPaymentMethodSpecificInput;
 use OnlinePayments\Sdk\Domain\RefundRequest;
 use OnlinePayments\Sdk\Domain\RefundResponse;
+use OnlinePayments\Sdk\Domain\Shipping;
+use OnlinePayments\Sdk\Domain\ShoppingCart;
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
 use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductParams;
+use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
+use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\DefaultConnection;
@@ -55,6 +76,7 @@ class WorldlineSDKAdapter
 
     /** @var string */
     const INTEGRATOR_NAME = 'Mediaopt';
+    const SHIPPING_LABEL = 'Shipping';
 
     /** @var MerchantClient */
     protected $merchantClient;
@@ -165,11 +187,17 @@ class WorldlineSDKAdapter
     /**
      * @param float $amountTotal
      * @param string $currencyISO
-     * @param int $worldlinePaymentMethodId
+     * @param int $worldlinePaymentProductId
+     * @param OrderEntity|null $orderEntity
      * @return CreateHostedCheckoutResponse
      * @throws \Exception
      */
-    public function createPayment(float $amountTotal, string $currencyISO, int $worldlinePaymentMethodId): CreateHostedCheckoutResponse
+    public function createPayment(
+        float        $amountTotal,
+        string       $currencyISO,
+        int          $worldlinePaymentProductId,
+        ?OrderEntity $orderEntity
+    ): CreateHostedCheckoutResponse
     {
         $fullRedirectTemplateName = $this->getPluginConfig(Form::FULL_REDIRECT_TEMPLATE_NAME);
         $merchantClient = $this->getMerchantClient();
@@ -187,45 +215,82 @@ class WorldlineSDKAdapter
         $hostedCheckoutSpecificInput->setVariant($fullRedirectTemplateName);
         $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
 
-        if ($worldlinePaymentMethodId != 0) {
+        $hostedCheckoutRequest = new CreateHostedCheckoutRequest();
+        if ($worldlinePaymentProductId != 0) {
             $paymentProductFilter = new PaymentProductFilter();
-            $paymentProductFilter->setProducts([$worldlinePaymentMethodId]);
+            $paymentProductFilter->setProducts([$worldlinePaymentProductId]);
 
             $paymentProductFiltersHostedCheckout = new PaymentProductFiltersHostedCheckout();
             $paymentProductFiltersHostedCheckout->setRestrictTo($paymentProductFilter);
             $hostedCheckoutSpecificInput->setPaymentProductFilters($paymentProductFiltersHostedCheckout);
             $this->setCustomProperties(
-                $worldlinePaymentMethodId,
+                $worldlinePaymentProductId,
+                $currencyISO,
+                $orderEntity,
                 $cardPaymentMethodSpecificInput,
-                $hostedCheckoutSpecificInput
+                $hostedCheckoutSpecificInput,
+                $order,
+                $hostedCheckoutRequest
             );
         }
 
-        $hostedCheckoutRequest = new CreateHostedCheckoutRequest();
         $hostedCheckoutRequest->setOrder($order);
         $hostedCheckoutRequest->setHostedCheckoutSpecificInput($hostedCheckoutSpecificInput);
         $hostedCheckoutRequest->setCardPaymentMethodSpecificInput($cardPaymentMethodSpecificInput);
-
         $hostedCheckoutClient = $merchantClient->hostedCheckout();
         return $hostedCheckoutClient->createHostedCheckout($hostedCheckoutRequest);
     }
 
     /**
-     * @param string $worldlinePaymentMethodId
+     * @param string $worldlinePaymentProductId
+     * @param string $currencyISO
+     * @param OrderLineItemCollection $lineItems
      * @param CardPaymentMethodSpecificInput $cardPaymentMethodSpecificInput
      * @param HostedCheckoutSpecificInput $hostedCheckoutSpecificInput
+     * @param Order $order
+     * @param CreateHostedCheckoutRequest $hostedCheckoutRequest
      * @return void
      */
     private function setCustomProperties(
-        string $worldlinePaymentMethodId,
+        string                         $worldlinePaymentProductId,
+        string                         $currencyISO,
+        ?OrderEntity                   $orderEntity,
         CardPaymentMethodSpecificInput &$cardPaymentMethodSpecificInput,
-        HostedCheckoutSpecificInput &$hostedCheckoutSpecificInput
+        HostedCheckoutSpecificInput    &$hostedCheckoutSpecificInput,
+        Order                          &$order,
+        CreateHostedCheckoutRequest    &$hostedCheckoutRequest
     )
     {
-        switch ($worldlinePaymentMethodId) {
-            case PaymentMethod::PAYMENT_METHOD_INTERSOLVE: {
+        switch ($worldlinePaymentProductId) {
+            case PaymentMethod::PAYMENT_METHOD_INTERSOLVE:
+            {
                 $cardPaymentMethodSpecificInput->setAuthorizationMode('SALE');
                 $hostedCheckoutSpecificInput->setIsRecurring(false);
+                break;
+            }
+            case PaymentMethod::PAYMENT_METHOD_KLARNA_PAY_NOW:
+            case PaymentMethod::PAYMENT_METHOD_KLARNA_PAY_LATER:
+            {
+                $this->addCartToRequest(
+                    $currencyISO, $orderEntity, $cardPaymentMethodSpecificInput, $hostedCheckoutSpecificInput, $order
+                );
+                $redirectPaymentMethodSpecificInput = new RedirectPaymentMethodSpecificInput();
+                $redirectPaymentMethodSpecificInput->setPaymentProductId($worldlinePaymentProductId);
+                $hostedCheckoutRequest->setRedirectPaymentMethodSpecificInput($redirectPaymentMethodSpecificInput);
+                break;
+            }
+            case PaymentMethod::PAYMENT_METHOD_ONEY_3X_4X:
+            case PaymentMethod::PAYMENT_METHOD_ONEY_FINANCEMENT_LONG:
+            case PaymentMethod::PAYMENT_METHOD_ONEY_BRANDED_GIFT_CARD:
+            {
+                $this->addCartToRequest(
+                    $currencyISO, $orderEntity, $cardPaymentMethodSpecificInput, $hostedCheckoutSpecificInput, $order
+                );
+                $redirectPaymentMethodSpecificInput = new RedirectPaymentMethodSpecificInput();
+                $redirectPaymentMethodSpecificInput->setPaymentProductId($worldlinePaymentProductId);
+                $redirectPaymentMethodSpecificInput->setRequiresApproval(true);
+                $redirectPaymentMethodSpecificInput->setPaymentOption('W3999'); //todo
+                $hostedCheckoutRequest->setRedirectPaymentMethodSpecificInput($redirectPaymentMethodSpecificInput);
                 break;
             }
         }
@@ -274,9 +339,9 @@ class WorldlineSDKAdapter
      * @throws \Exception
      */
     public function createHostedTokenizationPayment(
-        float $amountTotal,
-        string $currencyISO,
-        array $iframeData,
+        float                         $amountTotal,
+        string                        $currencyISO,
+        array                         $iframeData,
         GetHostedTokenizationResponse $hostedTokenization
     ): CreatePaymentResponse
     {
@@ -551,5 +616,154 @@ class WorldlineSDKAdapter
             default:
                 return Logger::DEBUG;
         }
+    }
+
+    /**
+     * @param string $worldlinePaymentProductId
+     * @param string $currencyISO
+     * @param OrderEntity $orderEntity
+     * @param CardPaymentMethodSpecificInput $cardPaymentMethodSpecificInput
+     * @param HostedCheckoutSpecificInput $hostedCheckoutSpecificInput
+     * @param Order $order
+     * @param CreateHostedCheckoutRequest $hostedCheckoutRequest
+     * @return void
+     */
+    private function addCartToRequest(
+        string                         $currencyISO,
+        OrderEntity                    $orderEntity,
+        CardPaymentMethodSpecificInput &$cardPaymentMethodSpecificInput,
+        HostedCheckoutSpecificInput    &$hostedCheckoutSpecificInput,
+        Order                          &$order
+    )
+    {
+        $shipping = new Shipping();
+        $shipping->setAddress($this->createAddress($orderEntity->getDeliveries()->getShippingAddress()->first()));
+
+        $shoppingCart = new ShoppingCart();
+        $shoppingCart->setItems(
+            $this->crateRequestLineItems(
+                $orderEntity->getLineItems(),
+                $orderEntity->getShippingCosts(),
+                $currencyISO
+            )
+        );
+
+        $order->setShoppingCart($shoppingCart);
+        $order->setShipping($shipping);
+        $order->setCustomer(
+            $this->createCustomer(
+                $orderEntity->getOrderCustomer(),
+                $orderEntity->getBillingAddress()
+            )
+        );
+
+        $hostedCheckoutSpecificInput->setPaymentProductFilters(null);
+        $hostedCheckoutSpecificInput->setLocale('en_GB'); //todo
+        $hostedCheckoutSpecificInput->setVariant(null);
+
+        $cardPaymentMethodSpecificInput = null;
+    }
+
+    /**
+     * @param OrderLineItemCollection $lineItemCollection
+     * @param CalculatedPrice $shippingPrice
+     * @param string $currencyISO
+     * @return array
+     */
+    private function crateRequestLineItems(OrderLineItemCollection $lineItemCollection, CalculatedPrice $shippingPrice, string $currencyISO): array
+    {
+        $requestLineItems = [];
+        /** @var OrderLineItemEntity $lineItem */
+        foreach ($lineItemCollection as $lineItem) {
+            $totalPrice = $lineItem->getPrice()->getTotalPrice() * 100;
+            $tax = $lineItem->getPrice()->getCalculatedTaxes()->getAmount() * 100;
+            $quantity = $lineItem->getPrice()->getQuantity();
+            $TaxedTotalPrice = $totalPrice + $tax;
+            $TaxedUnitPrice = $TaxedTotalPrice / $quantity;
+
+            $requestLineItems[] = $this->createLineItem($lineItem->getLabel(), $currencyISO, $TaxedTotalPrice, $TaxedUnitPrice, $quantity);
+        }
+
+        $shippingTax = 0;
+        foreach ($shippingPrice->getCalculatedTaxes()->getElements() as $tax) {
+            $shippingTax += $tax->getTax();
+        }
+        $shippingPrice = ($shippingPrice->getTotalPrice() + $shippingTax) * 100;
+        $requestLineItems[] = $this->createLineItem(self::SHIPPING_LABEL, $currencyISO, $shippingPrice, $shippingPrice, 1);
+
+        return $requestLineItems;
+    }
+
+    /**
+     * @param string $label
+     * @param string $currencyISO
+     * @param int $totalPrice
+     * @param int $unitPrice
+     * @param int $quantity
+     * @return LineItem
+     */
+    private function createLineItem(string $label, string $currencyISO, int $totalPrice, int $unitPrice, int $quantity): LineItem
+    {
+        $amountOfMoney = new AmountOfMoney();
+        $amountOfMoney->setCurrencyCode($currencyISO);
+        $amountOfMoney->setAmount($totalPrice);
+
+        $lineDetails = new OrderLineDetails();
+        $lineDetails->setProductName($label);
+        $lineDetails->setProductPrice($unitPrice);
+        $lineDetails->setQuantity($quantity);
+        $lineDetails->setDiscountAmount(0);
+        $lineDetails->setTaxAmount(0);
+
+        $lineItem = new LineItem();
+        $lineItem->setAmountOfMoney($amountOfMoney);
+        $lineItem->setOrderLineDetails($lineDetails);
+        return $lineItem;
+    }
+
+    /**
+     * @param OrderAddressEntity $addressEntity
+     * @return AddressPersonal
+     */
+    private function createAddress(OrderAddressEntity $addressEntity): AddressPersonal
+    {
+        $name = new PersonalName();
+        $name->setFirstName($addressEntity->getFirstName());
+        $name->setSurname($addressEntity->getLastName());
+        $name->setTitle($addressEntity->getTitle());
+
+        $address = new AddressPersonal();
+        $address->setStreet($addressEntity->getStreet());
+        $address->setZip($addressEntity->getZipcode());
+        $address->setCity($addressEntity->getCity());
+        $address->setCountryCode($addressEntity->getCountry()->getIso());
+        $address->setName($name);
+
+        return $address;
+    }
+
+    /**
+     * @param OrderCustomerEntity $orderCustomer
+     * @param OrderAddressEntity $billingAddress
+     * @return Customer
+     */
+    private function createCustomer(OrderCustomerEntity $orderCustomer, OrderAddressEntity $billingAddress): Customer
+    {
+        $personalName = new PersonalName();
+        $personalName->setFirstName($orderCustomer->getCustomer()->getFirstName());
+        $personalName->setSurname($orderCustomer->getCustomer()->getLastName());
+        $personalName->setTitle($orderCustomer->getCustomer()->getTitle());
+
+        $contactDetails = new ContactDetails();
+        $contactDetails->setEmailAddress($orderCustomer->getEmail());
+
+        $personalInformation = new PersonalInformation();
+        $personalInformation->setName($personalName);
+
+        $customer = new Customer();
+        $customer->setContactDetails($contactDetails);
+        $customer->setPersonalInformation($personalInformation);
+        $customer->setBillingAddress($this->createAddress($billingAddress));
+        return $customer;
     }
 }
