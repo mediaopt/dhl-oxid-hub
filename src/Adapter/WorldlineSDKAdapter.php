@@ -289,7 +289,7 @@ class WorldlineSDKAdapter
                 $redirectPaymentMethodSpecificInput = new RedirectPaymentMethodSpecificInput();
                 $redirectPaymentMethodSpecificInput->setPaymentProductId($worldlinePaymentProductId);
                 $redirectPaymentMethodSpecificInput->setRequiresApproval(true);
-                $redirectPaymentMethodSpecificInput->setPaymentOption('W3999'); //todo
+                $redirectPaymentMethodSpecificInput->setPaymentOption($this->getPluginConfig(Form::ONEY_PAYMENT_OPTION_FIELD));
                 $hostedCheckoutRequest->setRedirectPaymentMethodSpecificInput($redirectPaymentMethodSpecificInput);
                 break;
             }

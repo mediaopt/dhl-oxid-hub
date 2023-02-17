@@ -103,7 +103,7 @@ class ApiTestController extends AbstractController
         $message = '';
         try {
             $paymentMethodController = $this->getPaymentMethodController();
-            $paymentMethods = $paymentMethodController->getPaymentMentodsList(
+            $paymentMethods = $paymentMethodController->getPaymentMethodsList(
                 $credentials,
                 $salesChannelId,
                 $countryIso3,

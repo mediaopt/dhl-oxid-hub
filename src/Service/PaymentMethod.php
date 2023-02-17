@@ -90,7 +90,7 @@ class PaymentMethod
 
         /** @var PluginIdProvider $pluginIdProvider */
         $pluginIdProvider = $this->container->get(PluginIdProvider::class);
-        $pluginId = $pluginIdProvider->getPluginIdByBaseClass(MoptWorldline::class, $context);
+        $pluginId = $pluginIdProvider->getPluginIdByBaseClass(Payment::class, $context);
 
         $methodId = Uuid::randomHex();
         $paymentData = [

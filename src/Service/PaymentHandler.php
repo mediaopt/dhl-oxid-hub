@@ -123,8 +123,6 @@ class PaymentHandler
                 ->addAssociation('billingAddress.country')
                 ->addAssociation('deliveries.shippingOrderAddress')
                 ->addAssociation('deliveries.shippingOrderAddress.country');
-            //->addAssociation('billingAddress.countryState')/**/
-            //->addAssociation('deliveries.shippingOrderAddress.countryState');;
             $orderObject = $this->orderRepository->search($criteria, $this->context)->first();
         }
 
