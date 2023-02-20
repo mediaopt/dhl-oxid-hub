@@ -28,6 +28,13 @@
     margin-left: 5px;
 }
 
+#moDHLFinderForm {
+    display: grid;
+    grid-template-columns: minmax(250px, 2fr) minmax(120px, 1fr) minmax(120px, 1fr);
+    grid-gap: 10px;
+    padding-right: 15px;
+}
+
 .form-group.has-error.custom-error .moShowOnError,
 .text-warning .moShowOnError, .text-danger .moShowOnError,
 .oxInValid .moShowOnError{
@@ -68,49 +75,6 @@
 
 #moDHLCheckoutBox {
     border: 1px solid #FFCC00;
-}
-
-#moDHLLocality {
-    width: 150px;
-    margin: 15px 10px 10px 0;
-}
-
-#moDHLStreet {
-    width: 220px;
-    margin-top: 0;
-}
-
-#moDHLCountry {
-    width: 150px;
-    margin: 5px 0 0 0;
-}
-
-#moDHLStreet.is--azure {
-    width: 230px;
-    margin-top: 15px;
-}
-
-#moDHLAddressInputs {
-    display: inline-block;
-    max-width: 250px;
-}
-
-#moDHLProviders {
-    display: block;
-    align-items: center;
-    height: 100%;
-    top: 0;
-    position: relative;
-}
-
-#moDHLProviders.is--azure {
-    display: inline-flex;
-    position: absolute;
-    right: 20px;
-}
-
-#moDHLFinderForm {
-    position: relative;
 }
 
 .mo-thumbnail {
@@ -173,9 +137,6 @@ div#moDHLInfo a {
     text-decoration: underline;
 }
 
-div#moDHLProviders label:first-of-type {
-    margin-right: 20px;
-}
 
 div#moDHLWunschpaket dt {
     margin-top: 20px;
@@ -482,6 +443,7 @@ a.privacy-policy:hover {
     right: -10px;
     text-align: left;
     font-size: 16px;
+    z-index: 2;
 }
 
 .moDhlAddressCardActions div {
@@ -540,11 +502,6 @@ a.privacy-policy:hover {
 @media screen and (min-width: 48em) {
     .moDhlAvailableAddresses {
         margin-left: -7px;
-    }
-    #moDHLProviders {
-        display: inline-flex;
-        position: absolute;
-        right: 20px;
     }
 
     #moDHLWunschpaket .moDhlWunschpaketServiceOption:first-of-type {

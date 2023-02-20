@@ -83,14 +83,12 @@ Empfaengerservices = function ($, tailorer) {
         return postnummer.length >= 6 && postnummer.match(/^\d+$/);
     };
 
-    this.findCall = function (locality, street, countryIso2Code, packstation, filiale) {
+    this.findCall = function (locality, street, countryIso2Code) {
         var url = $('#moDHLFind').attr('href') + "&locality=" + locality + "&street=" + street + "&countryIso2Code=" + countryIso2Code;
-        if (packstation) {
-            url += "&packstation=1";
-        }
-        if (filiale) {
-            url += "&filiale=1&paketshop=1";
-        }
+
+        url += "&packstation=1";
+        url += "&filiale=1&paketshop=1";
+
         return url;
     };
 

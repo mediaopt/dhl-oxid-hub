@@ -153,19 +153,12 @@ DHLFinder = function ($, tailorer) {
         street = addressObject.street;
         countryIso2Code = addressObject.countryIso2Code;
 
-        var packstationInput = $("#moDHLPackstation");
-        var packstation = packstationInput.length !== 0 && packstationInput.attr('type') === 'hidden'
-            || packstationInput.prop('checked');
-        var filialeInput = $("#moDHLFiliale");
-        var filiale = filialeInput.length !== 0 && filialeInput.attr('type') === 'hidden'
-            || filialeInput.prop('checked');
-
         if (self.tailorer.busyFinder) {
             return;
         }
 
         self.tailorer.busyFinder = true;
-        $.ajax(self.tailorer.dhl.findCall(locality, street, countryIso2Code, packstation, filiale)).done(function (response) {
+        $.ajax(self.tailorer.dhl.findCall(locality, street, countryIso2Code)).done(function (response) {
             if (response.status === 'success') {
                 $("#moDHLErrors").hide();
                 self.clearMarkers(self.markers);

@@ -62,53 +62,24 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <form id="moDHLFinderForm" class="col-12">
-                    <div id="moDHLAddressInputs">
-                        <input type="text" placeholder="[{oxmultilang ident="MO_DHL__STREET"}]"
-                               id="moDHLStreet" name="street"/>
-                        <input type="text" placeholder="[{oxmultilang ident="MO_DHL__POSTCODE"}]"
-                               id="moDHLLocality" name="locality"/>
-                        [{assign var="countries_list" value=$oViewConf->moGetDHLCountriesList()}]
-                        <select id="moDHLCountry" name="country"
-                                [{if count($countries_list) === 1}]style="display: none;" [{/if}]
-                        >
-                            <option value="">-</option>
-                            [{foreach from=$countries_list item=country key=country_id}]
-                            <option value="[{$country_id}]" isoalpha2="[{$country.isoalpha2}]">
-                                [{$country.title}]
-                            </option>
-                            [{/foreach}]
-                        </select>
-                    </div>
-                    <div id="moDHLProviders">
-                    [{if $oViewConf->moCanPackstationBeSelected()}]
-                        [{if $oViewConf->moCanFilialeBeSelected()}]
-                            <label for="moDHLPackstation">
-                                <input type="checkbox" id="moDHLPackstation" name="packstation" checked/>
-                                Packstation
-                                <img class="icon packstation"
-                                     src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/icon-packstation.png")}]"/>
-                            </label>
-                        [{else}]
-                            <input type="hidden" id="moDHLPackstation" name="packstation" value="on"/>
-                        [{/if}]
-                    [{/if}]
-                    [{if $oViewConf->moCanFilialeBeSelected()}]
-                        [{if $oViewConf->moCanPackstationBeSelected()}]
-                            <label for="moDHLFiliale">
-                                <input type="checkbox" id="moDHLFiliale" name="filiale" checked/>
-                                Filiale
-                                <img class="icon packstation postfiliale"
-                                     src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/icon-postfiliale.png")}]"/>
-                                <img class="icon packstation paketshop"
-                                     src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/icon-paketshop.png")}]"/>
-                            </label>
-                        [{else}]
-                            <input type="hidden" id="moDHLFiliale" name="filiale" value="1"/>
-                        [{/if}]
-                    [{/if}]
+                <form id="moDHLFinderForm">
+                    <input type="text" placeholder="[{oxmultilang ident="MO_DHL__STREET"}]"
+                           id="moDHLStreet" class="form-control" name="street"/>
+                    <input type="text" placeholder="[{oxmultilang ident="MO_DHL__POSTCODE"}]"
+                           id="moDHLLocality" class="form-control" name="locality"/>
+                    [{assign var="countries_list" value=$oViewConf->moGetDHLCountriesList()}]
+                    <select id="moDHLCountry" name="country"
+                            [{if count($countries_list) === 1}]style="display: none;" [{/if}]
+                    >
+                        <option value="">-</option>
+                        [{foreach from=$countries_list item=country key=country_id}]
+                        <option value="[{$country_id}]" isoalpha2="[{$country.isoalpha2}]">
+                            [{$country.title}]
+                        </option>
+                        [{/foreach}]
+                    </select>
                     <button class="btn btn-outline-dark submitButton">[{oxmultilang ident="MO_DHL__SEARCH"}]</button>
-                    </div>
+
                 </form>
             </div>
 
