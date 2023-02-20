@@ -119,6 +119,7 @@ class PaymentHandler
             $criteria->addAssociation('lineItems')
                 ->addAssociation('deliveries.positions.orderLineItem')
                 ->addAssociation('orderCustomer.customer')
+                ->addAssociation('language.locale')
                 ->addAssociation('billingAddress')
                 ->addAssociation('billingAddress.country')
                 ->addAssociation('deliveries.shippingOrderAddress')

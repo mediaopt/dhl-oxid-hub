@@ -657,8 +657,12 @@ class WorldlineSDKAdapter
             )
         );
 
+        $locale = $orderEntity->getLanguage()->getLocale()->getCode();
+        if (!is_null($locale)) {
+            $locale = str_replace('-', '_', $locale);
+        }
         $hostedCheckoutSpecificInput->setPaymentProductFilters(null);
-        $hostedCheckoutSpecificInput->setLocale('en_GB'); //todo
+        $hostedCheckoutSpecificInput->setLocale($locale);
         $hostedCheckoutSpecificInput->setVariant(null);
 
         $cardPaymentMethodSpecificInput = null;
