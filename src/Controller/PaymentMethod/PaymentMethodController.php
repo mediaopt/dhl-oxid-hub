@@ -95,6 +95,7 @@ class PaymentMethodController
         $adapter->getMerchantClient();
         $paymentProducts = $adapter->getPaymentProducts($countryIso3, $currencyIsoCode);
         foreach ($paymentProducts->getPaymentProducts() as $product) {
+            debug($product->toJson());
             $name = 'Worldline ' . $product->getDisplayHints()->getLabel();
             if (in_array($product->getId(), $toCreate)) {
                 $method = [
@@ -160,7 +161,7 @@ class PaymentMethodController
             $toFrontend[] = [
                 'id' => $product->getId(),
                 'logo' => $product->getDisplayHints()->getLogo(),
-                'label' => $createdPaymentMethod['label'],
+                'label' => $createdPaymentMethod['label'] ? : $product->getDisplayHints()->getLabel(),
                 'isActive' => $createdPaymentMethod['isActive'],
                 'internalId' => $createdPaymentMethod['internalId']
             ];
