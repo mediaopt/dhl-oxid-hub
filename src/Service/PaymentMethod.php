@@ -18,6 +18,40 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PaymentMethod
 {
+
+    const PAYMENT_METHOD_INTERSOLVE = 5700;
+    private const PAYMENT_METHOD_MEDIA_DIR = 'bundles/moptworldline/static/img';
+    private const PAYMENT_METHOD_MEDIA_PREFIX = 'pp_logo_';
+    private const PAYMENT_METHOD_MEDIA_DEFAULT = 'base';
+    private const PAYMENT_METHOD_NAMES = [
+        861 => 'Alipay',
+        2 => 'American Express',
+        302 => 'Apple Pay',
+        3012 => 'Bancontact',
+        5001 => 'Bizum',
+        130 => 'Carte Bancaire',
+        5100 => 'Cpay',
+        132 => 'Diners Club',
+        320 => 'Google Pay',
+        809 => 'iDEAL',
+        3112 => 'Illicado',
+        self::PAYMENT_METHOD_INTERSOLVE => 'Intersolve',
+        125 => 'JCB',
+        3301 => 'Klarna',
+        117 => 'Maestro',
+        3 => 'Mastercard',
+        5402 => 'Mealvouchers',
+        5500 => 'Multibanco',
+        5110 => 'Oney 3x-4x',
+        5125 => 'Oney Financement Long',
+        5600 => 'OneyBrandedGiftCard',
+        840 => 'Paypal',
+        771 => 'SEPA Direct Debit',
+        56 => 'UPI - UnionPay International', //no logo!
+        1 => 'Visa',
+        863 => 'WeChat Pay',
+    ];
+
     private ContainerInterface $container;
 
     /**
@@ -120,5 +154,24 @@ class PaymentMethod
         }
 
         return $paymentIds->getIds()[0];
+    }
+
+    /**
+     * @param string $paymentProductId
+     * @return array
+     */
+    public static function getPaymentProductDetails(string $paymentProductId): array
+    {
+        $title = 'Unknown';
+        $logoName = self::PAYMENT_METHOD_MEDIA_DEFAULT;
+        if (array_key_exists($paymentProductId, self::PAYMENT_METHOD_NAMES)) {
+            $title = self::PAYMENT_METHOD_NAMES[$paymentProductId];
+            $logoName = self::PAYMENT_METHOD_MEDIA_PREFIX . $paymentProductId;
+        }
+
+        return [
+            'title' => $title,
+            'logo' => \sprintf('%s/%s.svg', self::PAYMENT_METHOD_MEDIA_DIR, $logoName),
+        ];
     }
 }

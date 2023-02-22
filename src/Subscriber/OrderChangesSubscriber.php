@@ -4,6 +4,7 @@ namespace MoptWorldline\Subscriber;
 
 use Monolog\Logger;
 use MoptWorldline\Bootstrap\Form;
+use MoptWorldline\Service\Helper;
 use MoptWorldline\Service\Payment;
 use MoptWorldline\Service\PaymentHandler;
 use Psr\Log\LogLevel;
@@ -17,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
+use Shopware\Storefront\Event\StorefrontRenderEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -28,6 +30,7 @@ class OrderChangesSubscriber implements EventSubscriberInterface
     private SystemConfigService $systemConfigService;
     private EntityRepositoryInterface $orderRepository;
     private EntityRepositoryInterface $orderTransactionRepository;
+    private EntityRepositoryInterface $customerRepository;
     private Logger $logger;
     private RequestStack $requestStack;
     private TranslatorInterface $translator;
@@ -38,6 +41,7 @@ class OrderChangesSubscriber implements EventSubscriberInterface
      * @param SystemConfigService $systemConfigService
      * @param EntityRepositoryInterface $orderRepository
      * @param EntityRepositoryInterface $orderTransactionRepository
+     * @param EntityRepositoryInterface $customerRepository
      * @param Logger $logger
      * @param RequestStack $requestStack
      * @param TranslatorInterface $translator
@@ -48,6 +52,7 @@ class OrderChangesSubscriber implements EventSubscriberInterface
         SystemConfigService          $systemConfigService,
         EntityRepositoryInterface    $orderRepository,
         EntityRepositoryInterface    $orderTransactionRepository,
+        EntityRepositoryInterface    $customerRepository,
         Logger                       $logger,
         RequestStack                 $requestStack,
         TranslatorInterface          $translator,
@@ -58,6 +63,7 @@ class OrderChangesSubscriber implements EventSubscriberInterface
         $this->systemConfigService = $systemConfigService;
         $this->orderRepository = $orderRepository;
         $this->orderTransactionRepository = $orderTransactionRepository;
+        $this->customerRepository = $customerRepository;
         $this->logger = $logger;
         $this->requestStack = $requestStack;
         $this->translator = $translator;
@@ -163,6 +169,7 @@ class OrderChangesSubscriber implements EventSubscriberInterface
             $this->translator,
             $this->orderRepository,
             $this->orderTransactionRepository,
+            $this->customerRepository,
             $context,
             $this->transactionStateHandler
         );

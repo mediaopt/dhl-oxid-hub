@@ -33,6 +33,7 @@ class TransactionsControlController extends AbstractController
     private SystemConfigService $systemConfigService;
     private EntityRepositoryInterface $orderTransactionRepository;
     private EntityRepositoryInterface $orderRepository;
+    private EntityRepositoryInterface $customerRepository;
     private OrderTransactionStateHandler $transactionStateHandler;
     private Logger $logger;
     private TranslatorInterface $translator;
@@ -51,6 +52,7 @@ class TransactionsControlController extends AbstractController
         SystemConfigService          $systemConfigService,
         EntityRepositoryInterface    $orderTransactionRepository,
         EntityRepositoryInterface    $orderRepository,
+        EntityRepositoryInterface    $customerRepository,
         OrderTransactionStateHandler $transactionStateHandler,
         Logger                       $logger,
         TranslatorInterface          $translator,
@@ -60,6 +62,7 @@ class TransactionsControlController extends AbstractController
         $this->systemConfigService = $systemConfigService;
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->orderRepository = $orderRepository;
+        $this->customerRepository = $customerRepository;
         $this->transactionStateHandler = $transactionStateHandler;
         $this->logger = $logger;
         $this->translator = $translator;
@@ -228,6 +231,7 @@ class TransactionsControlController extends AbstractController
             $this->translator,
             $this->orderRepository,
             $this->orderTransactionRepository,
+            $this->customerRepository,
             $context,
             $this->transactionStateHandler
         );

@@ -37,25 +37,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class PaymentFinalizeController extends AbstractController
 {
     private RouterInterface $router;
-
     private EntityRepositoryInterface $orderTransactionRepository;
-
     private EntityRepositoryInterface $orderRepository;
-
+    private EntityRepositoryInterface $customerRepository;
     private AsynchronousPaymentHandlerInterface $paymentHandler;
-
     private OrderTransactionStateHandler $transactionStateHandler;
-
     private SystemConfigService $systemConfigService;
-
     private Logger $logger;
-
     private TranslatorInterface $translator;
 
     public function __construct(
         SystemConfigService                 $systemConfigService,
         EntityRepositoryInterface           $orderTransactionRepository,
         EntityRepositoryInterface           $orderRepository,
+        EntityRepositoryInterface           $customerRepository,
         AsynchronousPaymentHandlerInterface $paymentHandler,
         OrderTransactionStateHandler        $transactionStateHandler,
         RouterInterface                     $router,
@@ -66,6 +61,7 @@ class PaymentFinalizeController extends AbstractController
         $this->systemConfigService = $systemConfigService;
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->orderRepository = $orderRepository;
+        $this->customerRepository = $customerRepository;
         $this->paymentHandler = $paymentHandler;
         $this->transactionStateHandler = $transactionStateHandler;
         $this->router = $router;
@@ -100,6 +96,7 @@ class PaymentFinalizeController extends AbstractController
             $this->translator,
             $this->orderRepository,
             $this->orderTransactionRepository,
+            $this->customerRepository,
             $salesChannelContext->getContext(),
             $this->transactionStateHandler
         );
@@ -117,7 +114,7 @@ class PaymentFinalizeController extends AbstractController
      */
     private function getHostedCheckoutId(InputBag $query): ?string
     {
-        if ($hostedCheckoutId = $query->get('hostedCheckoutid')) {
+        if ($hostedCheckoutId = $query->get('hostedCheckoutId')) {
             return $hostedCheckoutId;
         } elseif ($hostedCheckoutId = $query->get('paymentId')) {
             $id = explode('_', $hostedCheckoutId);

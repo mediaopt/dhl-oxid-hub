@@ -6,6 +6,9 @@ use Monolog\Logger;
 use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
 use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
+use OnlinePayments\Sdk\Domain\GetHostedTokenizationResponse;
+use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
@@ -13,6 +16,7 @@ use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
@@ -30,6 +34,7 @@ class PaymentHandler
     private EntityRepositoryInterface $orderTransactionRepository;
     private Context $context;
     private OrderTransactionStateHandler $transactionStateHandler;
+    private EntityRepositoryInterface $customerRepository;
 
     /**
      * @param SystemConfigService $systemConfigService
@@ -38,6 +43,7 @@ class PaymentHandler
      * @param TranslatorInterface $translator
      * @param EntityRepositoryInterface $orderRepository
      * @param EntityRepositoryInterface $orderTransactionRepository
+     * @param EntityRepositoryInterface $customerRepository
      * @param Context $context
      * @param OrderTransactionStateHandler $transactionStateHandler
      */
@@ -48,6 +54,7 @@ class PaymentHandler
         TranslatorInterface          $translator,
         EntityRepositoryInterface    $orderRepository,
         EntityRepositoryInterface    $orderTransactionRepository,
+        EntityRepositoryInterface    $customerRepository,
         Context                      $context,
         OrderTransactionStateHandler $transactionStateHandler
     )
@@ -58,6 +65,7 @@ class PaymentHandler
         $this->translator = $translator;
         $this->orderRepository = $orderRepository;
         $this->orderTransactionRepository = $orderTransactionRepository;
+        $this->customerRepository = $customerRepository;
         $this->context = $context;
         $this->transactionStateHandler = $transactionStateHandler;
     }
@@ -68,6 +76,14 @@ class PaymentHandler
     public function getOrderId(): string
     {
         return $this->orderTransaction->getOrder()->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerId(): string
+    {
+        return $this->orderTransaction->getOrder()->getOrderCustomer()->getCustomerId();
     }
 
     /**
@@ -122,7 +138,14 @@ class PaymentHandler
         $currencyISO = $this->getCurrencyISO();
 
         $this->log(AdminTranslate::trans($this->translator->getLocale(), 'buildingHostdTokenizationOrder'));
-        $hostedTokenizationPaymentResponse = $this->adapter->createHostedTokenizationPayment($amountTotal, $currencyISO, $iframeData);
+        $hostedTokenization = $this->adapter->createHostedTokenization($iframeData);
+        $hostedTokenizationPaymentResponse = $this->adapter->createHostedTokenizationPayment(
+            $amountTotal,
+            $currencyISO,
+            $iframeData,
+            $hostedTokenization
+        );
+        $this->saveCustomerCustomFields($hostedTokenization);
 
         $id = explode('_', $hostedTokenizationPaymentResponse->getPayment()->getId());
         $this->saveOrderCustomFields(
@@ -243,6 +266,16 @@ class PaymentHandler
     {
         $this->log('gettingPaymentDetails', 0, ['hostedCheckoutId' => $hostedCheckoutId]);
         $paymentDetails = $this->adapter->getPaymentDetails($hostedCheckoutId);
+
+        if ($token = $this->adapter->getRedirectToken($paymentDetails)) {
+            $card =$this->createRedirectPaymentProduct($token, $paymentDetails);
+            $this->saveCustomerCustomFields(
+                null,
+                $token,
+                $card
+            );
+        }
+
         $status = $this->adapter->getStatus($paymentDetails);
         $this->saveOrderCustomFields($status, $hostedCheckoutId);
         return $status;
@@ -492,5 +525,84 @@ class PaymentHandler
     public function translate($id)
     {
         return AdminTranslate::trans($this->translator->getLocale(), $id);
+    }
+
+    /**
+     * @param GetHostedTokenizationResponse|null $hostedTokenization
+     * @param string $token
+     * @param array $paymentProduct
+     * @return void
+     */
+    private function saveCustomerCustomFields(
+        ?GetHostedTokenizationResponse $hostedTokenization,
+        string                         $token = '',
+        array                          $paymentProduct = []
+    )
+    {
+        if (!is_null($hostedTokenization) && $hostedTokenization->getToken()->getIsTemporary()) {
+            return;
+        }
+
+        if (empty($token)) {
+            [$token, $paymentProduct] = $this->createPaymentProduct($hostedTokenization);
+        }
+
+        $customerId = $this->getCustomerId();
+        $customer = $this->customerRepository->search(new Criteria([$customerId]), $this->context);
+        $customFields = $customer->first()->getCustomFields();
+        $customFields[Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN][$token] = $paymentProduct;
+
+        $this->customerRepository->update([
+            [
+                'id' => $customerId,
+                'customFields' => $customFields
+            ]
+        ], $this->context);
+    }
+
+    /**
+     * @param GetHostedTokenizationResponse $hostedTokenization
+     * @return array
+     */
+    private function createPaymentProduct(GetHostedTokenizationResponse $hostedTokenization): array
+    {
+        $paymentProductId = $hostedTokenization->getToken()->getPaymentProductId();
+        $token = $hostedTokenization->getToken()->getId();
+        return [
+            $token,
+            array_merge(
+                [
+                    'paymentProductId' => $paymentProductId,
+                    'token' => $token,
+                    'paymentCard' => $hostedTokenization->getToken()->getCard()->getData()->getCardWithoutCvv()->getCardNumber(),
+                    'default' => false
+                ],
+                PaymentMethod::getPaymentProductDetails($paymentProductId)
+            )
+        ];
+    }
+
+    /**
+     * @param $token
+     * @param PaymentDetailsResponse $paymentDetailsResponse
+     * @return array
+     */
+    private function createRedirectPaymentProduct($token, PaymentDetailsResponse $paymentDetailsResponse): array
+    {
+        $paymentProductId = $paymentDetailsResponse->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getPaymentProductId();
+
+        // Make masked card number from bin (123456) and last 4 digs (************1234) - 123456******1234
+        $bin = $paymentDetailsResponse->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getCard()->getBin();
+        $card = $paymentDetailsResponse->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getCard()->getCardNumber();
+        $paymentCard = substr_replace($card, $bin, 0, 6);
+        return array_merge(
+            [
+                'paymentProductId' => $paymentProductId,
+                'token' => $token,
+                'paymentCard' => $paymentCard,
+                'default' => false
+            ],
+            PaymentMethod::getPaymentProductDetails($paymentProductId)
+        );
     }
 }

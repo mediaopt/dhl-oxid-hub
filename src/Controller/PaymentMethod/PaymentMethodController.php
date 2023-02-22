@@ -87,10 +87,10 @@ class PaymentMethodController
         }
         $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         $adapter->getMerchantClient();
-        $paymentMethods = $adapter->getPaymentMethods($countryIso3, $currencyIsoCode);
-        foreach ($paymentMethods->getPaymentProducts() as $method) {
-            if (in_array($method->getId(), $toCreate)) {
-                $this->createPaymentMethod($method, $context, $salesChannelId);
+        $paymentProducts = $adapter->getPaymentProducts($countryIso3, $currencyIsoCode);
+        foreach ($paymentProducts->getPaymentProducts() as $product) {
+            if (in_array($product->getId(), $toCreate)) {
+                $this->createPaymentMethod($product, $context, $salesChannelId);
             }
         }
 
@@ -137,16 +137,16 @@ class PaymentMethodController
             return $toFrontend;
         }
 
-        $paymentMethods = $adapter->getPaymentMethods($countryIso3, $currencyIsoCode);
+        $paymentProducts = $adapter->getPaymentProducts($countryIso3, $currencyIsoCode);
 
-        foreach ($paymentMethods->getPaymentProducts() as $method) {
-            $name = $this->getPaymentMethodName($method->getDisplayHints()->getLabel());
+        foreach ($paymentProducts->getPaymentProducts() as $product) {
+            $name = $this->getPaymentMethodName($product->getDisplayHints()->getLabel());
             $createdPaymentMethod = $this->getPaymentMethod($name);
 
             $toFrontend[] = [
-                'id' => $method->getId(),
-                'logo' => $method->getDisplayHints()->getLogo(),
-                'label' => $method->getDisplayHints()->getLabel(),
+                'id' => $product->getId(),
+                'logo' => $product->getDisplayHints()->getLogo(),
+                'label' => $product->getDisplayHints()->getLabel(),
                 'isActive' => $createdPaymentMethod['isActive'],
                 'internalId' => $createdPaymentMethod['internalId']
             ];
@@ -155,16 +155,16 @@ class PaymentMethodController
     }
 
     /**
-     * @param PaymentProduct $method
+     * @param PaymentProduct $product
      * @param Context $context
      * @param string $salesChannelId
      * @return void
      */
-    private function createPaymentMethod(PaymentProduct $method, Context $context, string $salesChannelId)
+    private function createPaymentMethod(PaymentProduct $product, Context $context, string $salesChannelId)
     {
         $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(MoptWorldline::class, $context);
 
-        $name = $this->getPaymentMethodName($method->getDisplayHints()->getLabel());
+        $name = $this->getPaymentMethodName($product->getDisplayHints()->getLabel());
         $paymentMethodId = Uuid::randomHex();
         $paymentData = [
             'id' => $paymentMethodId,
@@ -174,7 +174,7 @@ class PaymentMethodController
             'active' => true,
             'afterOrderEnabled' => true,
             'customFields' => [
-                Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID => $method->getId()
+                Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID => $product->getId()
             ]
         ];
 

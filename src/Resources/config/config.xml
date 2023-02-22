@@ -36,6 +36,10 @@
             <label>Return URL</label>
         </input-field>
         <input-field>
+            <name>fullRedirectTemplateName</name>
+            <label>Full Redirect template name</label>
+        </input-field>
+        <input-field>
             <name>iframeTemplateName</name>
             <label>Iframe template name</label>
         </input-field>

@@ -3,6 +3,8 @@
 namespace MoptWorldline\Adapter;
 
 use Monolog\Logger;
+use MoptWorldline\Service\PaymentMethod;
+use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\BrowserData;
 use OnlinePayments\Sdk\Domain\CancelPaymentResponse;
@@ -15,10 +17,12 @@ use OnlinePayments\Sdk\Domain\CreatePaymentRequest;
 use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
 use OnlinePayments\Sdk\Domain\Customer;
 use OnlinePayments\Sdk\Domain\CustomerDevice;
+use OnlinePayments\Sdk\Domain\GetHostedTokenizationResponse;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
 use OnlinePayments\Sdk\Domain\MerchantAction;
 use OnlinePayments\Sdk\Domain\Order;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
+use OnlinePayments\Sdk\Domain\PaymentProduct;
 use OnlinePayments\Sdk\Domain\PaymentProductFilter;
 use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
 use OnlinePayments\Sdk\Domain\PaymentReferences;
@@ -28,6 +32,7 @@ use OnlinePayments\Sdk\Domain\RefundRequest;
 use OnlinePayments\Sdk\Domain\RefundResponse;
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
+use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductParams;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\DefaultConnection;
@@ -118,7 +123,7 @@ class WorldlineSDKAdapter
      * @return GetPaymentProductsResponse
      * @throws \Exception
      */
-    public function getPaymentMethods(string $countryIso3, string $currencyIsoCode): GetPaymentProductsResponse
+    public function getPaymentProducts(string $countryIso3, string $currencyIsoCode): GetPaymentProductsResponse
     {
         $queryParams = new GetPaymentProductsParams();
 
@@ -166,6 +171,7 @@ class WorldlineSDKAdapter
      */
     public function createPayment(float $amountTotal, string $currencyISO, int $worldlinePaymentMethodId): CreateHostedCheckoutResponse
     {
+        $fullRedirectTemplateName = $this->getPluginConfig(Form::FULL_REDIRECT_TEMPLATE_NAME);
         $merchantClient = $this->getMerchantClient();
 
         $amountOfMoney = new AmountOfMoney();
@@ -178,6 +184,8 @@ class WorldlineSDKAdapter
         $hostedCheckoutSpecificInput = new HostedCheckoutSpecificInput();
         $returnUrl = $this->getPluginConfig(Form::RETURN_URL_FIELD);
         $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
+        $hostedCheckoutSpecificInput->setVariant($fullRedirectTemplateName);
+        $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
 
         if ($worldlinePaymentMethodId != 0) {
             $paymentProductFilter = new PaymentProductFilter();
@@ -186,21 +194,49 @@ class WorldlineSDKAdapter
             $paymentProductFiltersHostedCheckout = new PaymentProductFiltersHostedCheckout();
             $paymentProductFiltersHostedCheckout->setRestrictTo($paymentProductFilter);
             $hostedCheckoutSpecificInput->setPaymentProductFilters($paymentProductFiltersHostedCheckout);
+            $this->setCustomProperties(
+                $worldlinePaymentMethodId,
+                $cardPaymentMethodSpecificInput,
+                $hostedCheckoutSpecificInput
+            );
         }
 
         $hostedCheckoutRequest = new CreateHostedCheckoutRequest();
         $hostedCheckoutRequest->setOrder($order);
         $hostedCheckoutRequest->setHostedCheckoutSpecificInput($hostedCheckoutSpecificInput);
+        $hostedCheckoutRequest->setCardPaymentMethodSpecificInput($cardPaymentMethodSpecificInput);
 
         $hostedCheckoutClient = $merchantClient->hostedCheckout();
         return $hostedCheckoutClient->createHostedCheckout($hostedCheckoutRequest);
     }
 
     /**
+     * @param string $worldlinePaymentMethodId
+     * @param CardPaymentMethodSpecificInput $cardPaymentMethodSpecificInput
+     * @param HostedCheckoutSpecificInput $hostedCheckoutSpecificInput
+     * @return void
+     */
+    private function setCustomProperties(
+        string $worldlinePaymentMethodId,
+        CardPaymentMethodSpecificInput &$cardPaymentMethodSpecificInput,
+        HostedCheckoutSpecificInput &$hostedCheckoutSpecificInput
+    )
+    {
+        switch ($worldlinePaymentMethodId) {
+            case PaymentMethod::PAYMENT_METHOD_INTERSOLVE: {
+                $cardPaymentMethodSpecificInput->setAuthorizationMode('SALE');
+                $hostedCheckoutSpecificInput->setIsRecurring(false);
+                break;
+            }
+        }
+    }
+
+    /**
+     * @param string|null $token
      * @return string
      * @throws \Exception
      */
-    public function createHostedTokenizationUrl(): string
+    public function createHostedTokenizationUrl(?string $token = null): string
     {
         $iframeTemplateName = $this->getPluginConfig(Form::IFRAME_TEMPLATE_NAME);
 
@@ -208,6 +244,9 @@ class WorldlineSDKAdapter
         $hostedTokenizationClient = $merchantClient->hostedTokenization();
         $createHostedTokenizationRequest = new CreateHostedTokenizationRequest();
         $createHostedTokenizationRequest->setVariant($iframeTemplateName);
+        if ($token) {
+            $createHostedTokenizationRequest->setTokens($token);
+        }
 
         $createHostedTokenizationResponse = $hostedTokenizationClient
             ->createHostedTokenization($createHostedTokenizationRequest);
@@ -216,16 +255,31 @@ class WorldlineSDKAdapter
     }
 
     /**
+     * @param array $iframeData
+     * @return GetHostedTokenizationResponse
+     * @throws \Exception
+     */
+    public function createHostedTokenization(array $iframeData): GetHostedTokenizationResponse
+    {
+        $merchantClient = $this->getMerchantClient();
+        return $merchantClient->hostedTokenization()->getHostedTokenization($iframeData[Form::WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID]);
+    }
+
+    /**
      * @param float $amountTotal
      * @param string $currencyISO
      * @param array $iframeData
+     * @param GetHostedTokenizationResponse $hostedTokenization
      * @return CreatePaymentResponse
      * @throws \Exception
      */
-    public function createHostedTokenizationPayment(float $amountTotal, string $currencyISO, array $iframeData): CreatePaymentResponse
+    public function createHostedTokenizationPayment(
+        float $amountTotal,
+        string $currencyISO,
+        array $iframeData,
+        GetHostedTokenizationResponse $hostedTokenization
+    ): CreatePaymentResponse
     {
-        $merchantClient = $this->getMerchantClient();
-        $hostedTokenization = $merchantClient->hostedTokenization()->getHostedTokenization($iframeData[Form::WORLDLINE_CART_FORM_HOSTED_TOKENIZATION_ID]);
         $token = $hostedTokenization->getToken()->getId();
         $paymentProductId = $hostedTokenization->getToken()->getPaymentProductId();
         $merchantClient = $this->getMerchantClient();
@@ -238,7 +292,7 @@ class WorldlineSDKAdapter
 
         $customerDevice = new CustomerDevice();
         $customerDevice->setLocale($iframeData[Form::WORLDLINE_CART_FORM_LOCALE]);
-        $customerDevice->setTimezoneOffsetUtcMinutes($iframeData[Form::WORLDLINE_CART_FORM_TIMZONE_OFFSET_MINUTES]);
+        $customerDevice->setTimezoneOffsetUtcMinutes($iframeData[Form::WORLDLINE_CART_FORM_TIMEZONE_OFFSET_MINUTES]);
         $customerDevice->setAcceptHeader("*\/*");
         $customerDevice->setUserAgent($iframeData[Form::WORLDLINE_CART_FORM_USER_AGENT]);
         $customerDevice->setBrowserData($browserData);
@@ -360,6 +414,17 @@ class WorldlineSDKAdapter
     }
 
     /**
+     * @param string $token
+     * @return DataObject|null
+     * @throws \Exception
+     */
+    public function deleteToken(string $token): ?DataObject
+    {
+        $merchantClient = $this->getMerchantClient();
+        return $merchantClient->tokens()->deleteToken($token);
+    }
+
+    /**
      * @param PaymentDetailsResponse $paymentDetails
      * @return int
      */
@@ -373,6 +438,23 @@ class WorldlineSDKAdapter
         }
         return $paymentDetails->getStatusOutput()->getStatusCode();
     }
+
+    /**
+     * @param PaymentDetailsResponse $paymentDetails
+     * @return string
+     */
+    public function getRedirectToken(PaymentDetailsResponse $paymentDetails): string
+    {
+        if (!is_object($paymentDetails)
+            || !is_object($paymentDetails->getPaymentOutput())
+            || !is_object($paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput())
+            || is_null($paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getToken())
+        ) {
+            return '';
+        }
+        return $paymentDetails->getPaymentOutput()->getCardPaymentMethodSpecificOutput()->getToken();
+    }
+
 
     /**
      * @param CancelPaymentResponse $cancelPaymentResponse

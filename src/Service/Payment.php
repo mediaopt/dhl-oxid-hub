@@ -33,6 +33,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
     private SystemConfigService $systemConfigService;
     private EntityRepositoryInterface $orderTransactionRepository;
     private EntityRepositoryInterface $orderRepository;
+    private EntityRepositoryInterface $customerRepository;
     private TranslatorInterface $translator;
     private Logger $logger;
     private OrderTransactionStateHandler $transactionStateHandler;
@@ -100,6 +101,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
      * @param SystemConfigService $systemConfigService
      * @param EntityRepositoryInterface $orderTransactionRepository
      * @param EntityRepositoryInterface $orderRepository
+     * @param EntityRepositoryInterface $customerRepository
      * @param TranslatorInterface $translator
      * @param Logger $logger
      * @param OrderTransactionStateHandler $transactionStateHandler
@@ -109,6 +111,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
         SystemConfigService          $systemConfigService,
         EntityRepositoryInterface    $orderTransactionRepository,
         EntityRepositoryInterface    $orderRepository,
+        EntityRepositoryInterface    $customerRepository,
         TranslatorInterface          $translator,
         Logger                       $logger,
         OrderTransactionStateHandler $transactionStateHandler,
@@ -118,6 +121,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
         $this->systemConfigService = $systemConfigService;
         $this->orderTransactionRepository = $orderTransactionRepository;
         $this->orderRepository = $orderRepository;
+        $this->customerRepository = $customerRepository;
         $this->translator = $translator;
         $this->logger = $logger;
         $this->transactionStateHandler = $transactionStateHandler;
@@ -134,17 +138,24 @@ class Payment implements AsynchronousPaymentHandlerInterface
     {
         // Method that sends the return URL to the external gateway and gets a redirect URL back
         try {
-            if ($this->isHostedTokenizationMethod($transaction)) {
-                $redirectUrl = $this->getHostedTokenizationRedirectUrl(
-                    $transaction,
-                    $salesChannelContext->getContext(),
-                    $this->getIframeData($dataBag)
-                );
-            } else {
-                $redirectUrl = $this->getHostedCheckoutRedirectUrl(
-                    $transaction,
-                    $salesChannelContext->getContext()
-                );
+            $paymentMethodName = $transaction->getOrderTransaction()->getPaymentMethod()->getName();
+            switch ($paymentMethodName) {
+                case MoptWorldline::IFRAME_PAYMENT_METHOD_NAME:
+                case MoptWorldline::SAVED_CARD_PAYMENT_METHOD_NAME:
+                {
+                    $redirectUrl = $this->getHostedTokenizationRedirectUrl(
+                        $transaction,
+                        $salesChannelContext->getContext(),
+                        $this->getIframeData($dataBag)
+                    );
+                    break;
+                }
+                default: {
+                    $redirectUrl = $this->getHostedCheckoutRedirectUrl(
+                        $transaction,
+                        $salesChannelContext->getContext()
+                    );
+                }
             }
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(
@@ -153,16 +164,6 @@ class Payment implements AsynchronousPaymentHandlerInterface
             );
         }
         return new RedirectResponse($redirectUrl);
-    }
-
-    /**
-     * @param AsyncPaymentTransactionStruct $transaction
-     * @return bool
-     */
-    private function isHostedTokenizationMethod(AsyncPaymentTransactionStruct $transaction): bool
-    {
-        $paymentMethodName = $transaction->getOrderTransaction()->getPaymentMethod()->getName();
-        return $paymentMethodName == MoptWorldline::IFRAME_PAYMENT_METHOD_NAME;
     }
 
     /**
@@ -332,6 +333,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
             $this->translator,
             $this->orderRepository,
             $this->orderTransactionRepository,
+            $this->customerRepository,
             $context,
             $this->transactionStateHandler
         );
