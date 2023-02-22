@@ -95,7 +95,6 @@ class PaymentMethodController
         $adapter->getMerchantClient();
         $paymentProducts = $adapter->getPaymentProducts($countryIso3, $currencyIsoCode);
         foreach ($paymentProducts->getPaymentProducts() as $product) {
-            debug($product->toJson());
             $name = 'Worldline ' . $product->getDisplayHints()->getLabel();
             if (in_array($product->getId(), $toCreate)) {
                 $method = [

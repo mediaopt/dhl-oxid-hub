@@ -173,7 +173,6 @@ class Payment implements AsynchronousPaymentHandlerInterface
         // Method that sends the return URL to the external gateway and gets a redirect URL back
         try {
             $customFields = $transaction->getOrderTransaction()->getPaymentMethod()->getCustomFields();
-            debug($customFields);
             $paymentMethodId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID];
             switch ($paymentMethodId) {
                 case self::IFRAME_PAYMENT_METHOD_ID:
