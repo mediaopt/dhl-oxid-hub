@@ -2,9 +2,8 @@
 
 namespace MoptWorldline\Adapter;
 
-use Aws\Sdk;
 use Monolog\Logger;
-use MoptWorldline\Service\PaymentMethod;
+use MoptWorldline\Service\PaymentProducts;
 use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\AddressPersonal;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
@@ -23,14 +22,10 @@ use OnlinePayments\Sdk\Domain\CustomerDevice;
 use OnlinePayments\Sdk\Domain\GetHostedTokenizationResponse;
 use OnlinePayments\Sdk\Domain\HostedCheckoutSpecificInput;
 use OnlinePayments\Sdk\Domain\LineItem;
-use OnlinePayments\Sdk\Domain\LineItemInvoiceData;
 use OnlinePayments\Sdk\Domain\MerchantAction;
 use OnlinePayments\Sdk\Domain\Order;
 use OnlinePayments\Sdk\Domain\OrderLineDetails;
-use OnlinePayments\Sdk\Domain\Address;
-use OnlinePayments\Sdk\Domain\OrderReferences;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
-use OnlinePayments\Sdk\Domain\PaymentProduct;
 use OnlinePayments\Sdk\Domain\PaymentProductFilter;
 use OnlinePayments\Sdk\Domain\PaymentProductFiltersHostedCheckout;
 use OnlinePayments\Sdk\Domain\PaymentReferences;
@@ -45,15 +40,12 @@ use OnlinePayments\Sdk\Domain\Shipping;
 use OnlinePayments\Sdk\Domain\ShoppingCart;
 use OnlinePayments\Sdk\Domain\ThreeDSecure;
 use OnlinePayments\Sdk\Merchant\MerchantClient;
-use OnlinePayments\Sdk\Merchant\Products\GetPaymentProductParams;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
-use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use MoptWorldline\Bootstrap\Form;
 use OnlinePayments\Sdk\DefaultConnection;
@@ -204,7 +196,7 @@ class WorldlineSDKAdapter
 
         $amountOfMoney = new AmountOfMoney();
         $amountOfMoney->setCurrencyCode($currencyISO);
-        $amountOfMoney->setAmount($amountTotal * 100);
+        $amountOfMoney->setAmount((int)($amountTotal * 100));
 
         $order = new Order();
         $order->setAmountOfMoney($amountOfMoney);
@@ -244,7 +236,7 @@ class WorldlineSDKAdapter
     /**
      * @param string $worldlinePaymentProductId
      * @param string $currencyISO
-     * @param OrderLineItemCollection $lineItems
+     * @param OrderEntity|null $orderEntity
      * @param CardPaymentMethodSpecificInput $cardPaymentMethodSpecificInput
      * @param HostedCheckoutSpecificInput $hostedCheckoutSpecificInput
      * @param Order $order
@@ -259,17 +251,17 @@ class WorldlineSDKAdapter
         HostedCheckoutSpecificInput    &$hostedCheckoutSpecificInput,
         Order                          &$order,
         CreateHostedCheckoutRequest    &$hostedCheckoutRequest
-    )
+    ): void
     {
         switch ($worldlinePaymentProductId) {
-            case PaymentMethod::PAYMENT_METHOD_INTERSOLVE:
+            case PaymentProducts::PAYMENT_PRODUCT_INTERSOLVE:
             {
                 $cardPaymentMethodSpecificInput->setAuthorizationMode('SALE');
                 $hostedCheckoutSpecificInput->setIsRecurring(false);
                 break;
             }
-            case PaymentMethod::PAYMENT_METHOD_KLARNA_PAY_NOW:
-            case PaymentMethod::PAYMENT_METHOD_KLARNA_PAY_LATER:
+            case PaymentProducts::PAYMENT_PRODUCT_KLARNA_PAY_NOW:
+            case PaymentProducts::PAYMENT_PRODUCT_KLARNA_PAY_LATER:
             {
                 $this->addCartToRequest(
                     $currencyISO, $orderEntity, $cardPaymentMethodSpecificInput, $hostedCheckoutSpecificInput, $order
@@ -279,9 +271,9 @@ class WorldlineSDKAdapter
                 $hostedCheckoutRequest->setRedirectPaymentMethodSpecificInput($redirectPaymentMethodSpecificInput);
                 break;
             }
-            case PaymentMethod::PAYMENT_METHOD_ONEY_3X_4X:
-            case PaymentMethod::PAYMENT_METHOD_ONEY_FINANCEMENT_LONG:
-            case PaymentMethod::PAYMENT_METHOD_ONEY_BRANDED_GIFT_CARD:
+            case PaymentProducts::PAYMENT_PRODUCT_ONEY_3X_4X:
+            case PaymentProducts::PAYMENT_PRODUCT_ONEY_FINANCEMENT_LONG:
+            case PaymentProducts::PAYMENT_PRODUCT_ONEY_BRANDED_GIFT_CARD:
             {
                 $this->addCartToRequest(
                     $currencyISO, $orderEntity, $cardPaymentMethodSpecificInput, $hostedCheckoutSpecificInput, $order
@@ -405,7 +397,7 @@ class WorldlineSDKAdapter
      * @param string $returnUrl
      * @return void
      */
-    private function setRedirectUrl(CreatePaymentResponse &$createPaymentResponse, string $returnUrl)
+    private function setRedirectUrl(CreatePaymentResponse &$createPaymentResponse, string $returnUrl): void
     {
         if ($createPaymentResponse->getMerchantAction()) {
             return;
@@ -554,9 +546,9 @@ class WorldlineSDKAdapter
 
     /**
      * @param bool $isLiveMode
-     * @return string
+     * @return ?string
      */
-    private function getEndpoint(bool $isLiveMode): string
+    private function getEndpoint(bool $isLiveMode): ?string
     {
         return $isLiveMode
             ? $this->getPluginConfig(Form::LIVE_ENDPOINT_FIELD)
@@ -619,32 +611,33 @@ class WorldlineSDKAdapter
     }
 
     /**
-     * @param string $worldlinePaymentProductId
      * @param string $currencyISO
      * @param OrderEntity $orderEntity
      * @param CardPaymentMethodSpecificInput $cardPaymentMethodSpecificInput
      * @param HostedCheckoutSpecificInput $hostedCheckoutSpecificInput
      * @param Order $order
-     * @param CreateHostedCheckoutRequest $hostedCheckoutRequest
      * @return void
      */
     private function addCartToRequest(
         string                         $currencyISO,
         OrderEntity                    $orderEntity,
         CardPaymentMethodSpecificInput &$cardPaymentMethodSpecificInput,
-        HostedCheckoutSpecificInput    &$hostedCheckoutSpecificInput,
-        Order                          &$order
-    )
+        HostedCheckoutSpecificInput    $hostedCheckoutSpecificInput,
+        Order                          $order
+    ): void
     {
         $shipping = new Shipping();
         $shipping->setAddress($this->createAddress($orderEntity->getDeliveries()->getShippingAddress()->first()));
 
         $shoppingCart = new ShoppingCart();
+        $isNetPrice = !$orderEntity->getOrderCustomer()->getCustomer()->getGroup()->getDisplayGross();
+
         $shoppingCart->setItems(
             $this->crateRequestLineItems(
                 $orderEntity->getLineItems(),
                 $orderEntity->getShippingCosts(),
-                $currencyISO
+                $currencyISO,
+                $isNetPrice
             )
         );
 
@@ -657,9 +650,9 @@ class WorldlineSDKAdapter
             )
         );
 
-        $locale = $orderEntity->getLanguage()->getLocale()->getCode();
+        $locale = $orderEntity->getLanguage()->getLocale();
         if (!is_null($locale)) {
-            $locale = str_replace('-', '_', $locale);
+            $locale = str_replace('-', '_', $locale->getCode());
         }
         $hostedCheckoutSpecificInput->setPaymentProductFilters(null);
         $hostedCheckoutSpecificInput->setLocale($locale);
@@ -672,27 +665,36 @@ class WorldlineSDKAdapter
      * @param OrderLineItemCollection $lineItemCollection
      * @param CalculatedPrice $shippingPrice
      * @param string $currencyISO
+     * @param bool $isNetPrice
      * @return array
      */
-    private function crateRequestLineItems(OrderLineItemCollection $lineItemCollection, CalculatedPrice $shippingPrice, string $currencyISO): array
+    private function crateRequestLineItems(
+        OrderLineItemCollection $lineItemCollection,
+        CalculatedPrice $shippingPrice,
+        string $currencyISO,
+        bool $isNetPrice
+    ): array
     {
         $requestLineItems = [];
         /** @var OrderLineItemEntity $lineItem */
         foreach ($lineItemCollection as $lineItem) {
-            $totalPrice = $lineItem->getPrice()->getTotalPrice() * 100;
-            $tax = $lineItem->getPrice()->getCalculatedTaxes()->getAmount() * 100;
+            $tax = 0;
+            if ($isNetPrice) {
+                $tax += $lineItem->getPrice()->getCalculatedTaxes()->getAmount();
+            }
+            $totalPrice = ($lineItem->getPrice()->getTotalPrice() + $tax) * 100;
             $quantity = $lineItem->getPrice()->getQuantity();
-            $TaxedTotalPrice = $totalPrice + $tax;
-            $TaxedUnitPrice = $TaxedTotalPrice / $quantity;
-
-            $requestLineItems[] = $this->createLineItem($lineItem->getLabel(), $currencyISO, $TaxedTotalPrice, $TaxedUnitPrice, $quantity);
+            $unitPrice = $totalPrice / $quantity;
+            $requestLineItems[] = $this->createLineItem($lineItem->getLabel(), $currencyISO, $totalPrice, $unitPrice, $quantity);
         }
 
-        $shippingTax = 0;
-        foreach ($shippingPrice->getCalculatedTaxes()->getElements() as $tax) {
-            $shippingTax += $tax->getTax();
+        $shippingTaxTotal = 0;
+        if ($isNetPrice) {
+            foreach ($shippingPrice->getCalculatedTaxes()->getElements() as $shippingTax) {
+                $shippingTaxTotal += $shippingTax->getTax();
+            }
         }
-        $shippingPrice = ($shippingPrice->getTotalPrice() + $shippingTax) * 100;
+        $shippingPrice = ($shippingPrice->getTotalPrice() + $shippingTaxTotal) * 100;
         $requestLineItems[] = $this->createLineItem(self::SHIPPING_LABEL, $currencyISO, $shippingPrice, $shippingPrice, 1);
 
         return $requestLineItems;

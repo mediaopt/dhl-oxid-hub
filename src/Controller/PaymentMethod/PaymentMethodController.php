@@ -9,20 +9,11 @@ namespace MoptWorldline\Controller\PaymentMethod;
 
 use Monolog\Logger;
 use MoptWorldline\Adapter\WorldlineSDKAdapter;
-use MoptWorldline\Bootstrap\Form;
-use MoptWorldline\MoptWorldline;
 use MoptWorldline\Service\Payment;
 use MoptWorldline\Service\PaymentMethodHelper;
-use OnlinePayments\Sdk\Domain\GetPaymentProductsResponse;
-use OnlinePayments\Sdk\Domain\PaymentProduct;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
-use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -95,7 +86,6 @@ class PaymentMethodController
         $adapter->getMerchantClient();
         $paymentProducts = $adapter->getPaymentProducts($countryIso3, $currencyIsoCode);
         foreach ($paymentProducts->getPaymentProducts() as $product) {
-            debug($product->toJson());
             $name = 'Worldline ' . $product->getDisplayHints()->getLabel();
             if (in_array($product->getId(), $toCreate)) {
                 $method = [
@@ -136,7 +126,7 @@ class PaymentMethodController
     {
         $toFrontend = [];
         foreach (Payment::METHODS_LIST as $method) {
-            $dbMethod = PaymentMethodHelper::getPaymentMethod($this->paymentMethodRepository, $method['id']);
+            $dbMethod = PaymentMethodHelper::getPaymentMethod($this->paymentMethodRepository, (string)$method['id'], $salesChannelId);
             $toFrontend[] = [
                 'id' => $method['id'],
                 'logo' => '',
@@ -156,7 +146,7 @@ class PaymentMethodController
 
         $paymentProducts = $adapter->getPaymentProducts($countryIso3, $currencyIsoCode);
         foreach ($paymentProducts->getPaymentProducts() as $product) {
-            $createdPaymentMethod = PaymentMethodHelper::getPaymentMethod($this->paymentMethodRepository, $product->getId());
+            $createdPaymentMethod = PaymentMethodHelper::getPaymentMethod($this->paymentMethodRepository, (string)$product->getId(), $salesChannelId);
 
             $toFrontend[] = [
                 'id' => $product->getId(),

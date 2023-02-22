@@ -8,7 +8,6 @@ use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
 use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
 use OnlinePayments\Sdk\Domain\GetHostedTokenizationResponse;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
-use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
@@ -17,7 +16,6 @@ use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
@@ -114,11 +112,12 @@ class PaymentHandler
     {
         $order = $this->orderTransaction->getOrder();
         $orderObject = null;
-        if (in_array($worldlinePaymentMethodId, PaymentMethod::PAYMENT_METHOD_NEED_DETAILS)) {
+        if (in_array($worldlinePaymentMethodId, PaymentProducts::PAYMENT_PRODUCT_NEED_DETAILS)) {
             $criteria = new Criteria([$order->getId()]);
             $criteria->addAssociation('lineItems')
                 ->addAssociation('deliveries.positions.orderLineItem')
                 ->addAssociation('orderCustomer.customer')
+                ->addAssociation('orderCustomer.customer.group')
                 ->addAssociation('language.locale')
                 ->addAssociation('billingAddress')
                 ->addAssociation('billingAddress.country')
@@ -597,7 +596,7 @@ class PaymentHandler
                     'paymentCard' => $hostedTokenization->getToken()->getCard()->getData()->getCardWithoutCvv()->getCardNumber(),
                     'default' => false
                 ],
-                PaymentMethod::getPaymentProductDetails($paymentProductId)
+                PaymentProducts::getPaymentProductDetails($paymentProductId)
             )
         ];
     }
@@ -622,7 +621,7 @@ class PaymentHandler
                 'paymentCard' => $paymentCard,
                 'default' => false
             ],
-            PaymentMethod::getPaymentProductDetails($paymentProductId)
+            PaymentProducts::getPaymentProductDetails($paymentProductId)
         );
     }
 }

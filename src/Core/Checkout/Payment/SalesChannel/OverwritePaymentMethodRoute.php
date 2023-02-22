@@ -2,11 +2,8 @@
 
 namespace MoptWorldline\Core\Checkout\Payment\SalesChannel;
 
-use _HumbugBoxa991b62ce91e\Nette\Schema\Context;
 use MoptWorldline\Bootstrap\Form;
-use MoptWorldline\MoptWorldline;
 use MoptWorldline\Service\Payment;
-use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;

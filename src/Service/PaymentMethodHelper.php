@@ -44,7 +44,7 @@ class PaymentMethodHelper
         ?EntityRepositoryInterface $salesChannelRepository
     )
     {
-        $paymentMethodExists = self::getPaymentMethodId($paymentRepository, $method['id']);
+        $paymentMethodExists = self::getPaymentMethodId($paymentRepository, (string)$method['id']);
         if ($paymentMethodExists) {
             return;
         }
