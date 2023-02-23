@@ -310,6 +310,9 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     public function save()
     {
         try {
+            if (!$this->validateEkp() || !$this->validateProcessIdentifier() || !$this->validateParticipationNumber()) {
+                return;
+            }
             $db = DatabaseProvider::getDb(DatabaseProvider::FETCH_MODE_ASSOC);
             $information = [
                 'MO_DHL_EKP'                    => $this->validateEkp(),
