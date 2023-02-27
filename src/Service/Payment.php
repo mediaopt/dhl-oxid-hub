@@ -30,6 +30,40 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Payment implements AsynchronousPaymentHandlerInterface
 {
+
+    const FULL_REDIRECT_PAYMENT_METHOD_ID = "moptWorldlineFullRedirect";
+    const FULL_REDIRECT_PAYMENT_METHOD_NAME = "Worldline";
+    const IFRAME_PAYMENT_METHOD_ID = "moptWorldlineIframe";
+    const IFRAME_PAYMENT_METHOD_NAME = "Worldline Iframe";
+    const SAVED_CARD_PAYMENT_METHOD_ID = "moptWorldlineSavedCard";
+    const SAVED_CARD_PAYMENT_METHOD_NAME = "Worldline saved card";
+    const METHODS_LIST = [
+        [
+            'id' => self::FULL_REDIRECT_PAYMENT_METHOD_ID,
+            'name' => self::FULL_REDIRECT_PAYMENT_METHOD_NAME,
+            'description' => 'Worldline full redirect payment method',
+            'active' => true
+        ],
+        [
+            'id' => self::IFRAME_PAYMENT_METHOD_ID,
+            'name' => self::IFRAME_PAYMENT_METHOD_NAME,
+            'description' => 'Worldline Iframe payment method',
+            'active' => false
+        ],
+        [
+            'id' => self::SAVED_CARD_PAYMENT_METHOD_ID,
+            'name' => self::SAVED_CARD_PAYMENT_METHOD_NAME,
+            'description' => 'Worldline saved card payment method',
+            'active' => false
+        ]
+    ];
+
+    const FAKE_METHODS_LIST = [
+        self::FULL_REDIRECT_PAYMENT_METHOD_ID,
+        self::IFRAME_PAYMENT_METHOD_ID,
+        self::SAVED_CARD_PAYMENT_METHOD_ID
+    ];
+
     private SystemConfigService $systemConfigService;
     private EntityRepositoryInterface $orderTransactionRepository;
     private EntityRepositoryInterface $orderRepository;
@@ -138,10 +172,11 @@ class Payment implements AsynchronousPaymentHandlerInterface
     {
         // Method that sends the return URL to the external gateway and gets a redirect URL back
         try {
-            $paymentMethodName = $transaction->getOrderTransaction()->getPaymentMethod()->getName();
-            switch ($paymentMethodName) {
-                case MoptWorldline::IFRAME_PAYMENT_METHOD_NAME:
-                case MoptWorldline::SAVED_CARD_PAYMENT_METHOD_NAME:
+            $customFields = $transaction->getOrderTransaction()->getPaymentMethod()->getCustomFields();
+            $paymentMethodId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID];
+            switch ($paymentMethodId) {
+                case self::IFRAME_PAYMENT_METHOD_ID:
+                case self::SAVED_CARD_PAYMENT_METHOD_ID:
                 {
                     $redirectUrl = $this->getHostedTokenizationRedirectUrl(
                         $transaction,
@@ -271,7 +306,11 @@ class Payment implements AsynchronousPaymentHandlerInterface
                 $worldlinePaymentMethodId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID];
             }
 
-            $hostedCheckoutResponse = $handler->createPayment($worldlinePaymentMethodId);
+            if (in_array($worldlinePaymentMethodId, self::FAKE_METHODS_LIST)) {
+                $worldlinePaymentMethodId = 0;
+            }
+
+            $hostedCheckoutResponse = $handler->createPayment((int)$worldlinePaymentMethodId);
         } catch (\Exception $e) {
             throw new AsyncPaymentProcessException(
                 $transactionId,

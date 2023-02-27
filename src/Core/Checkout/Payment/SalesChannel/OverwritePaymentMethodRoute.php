@@ -2,10 +2,8 @@
 
 namespace MoptWorldline\Core\Checkout\Payment\SalesChannel;
 
-use _HumbugBoxa991b62ce91e\Nette\Schema\Context;
 use MoptWorldline\Bootstrap\Form;
-use MoptWorldline\MoptWorldline;
-use Shopware\Core\Checkout\Customer\CustomerEntity;
+use MoptWorldline\Service\Payment;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -82,7 +80,11 @@ class OverwritePaymentMethodRoute extends PaymentMethodRoute
         $isDefaultSet = false;
         /** @var PaymentMethodEntity $method */
         foreach ($paymentMethods as $key => $method) {
-            if ($method->getName() === MoptWorldline::SAVED_CARD_PAYMENT_METHOD_NAME) {
+            $customFields = $method->getCustomFields();
+            if (!empty($customFields)
+                && array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID, $customFields)
+                && $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID] == Payment::SAVED_CARD_PAYMENT_METHOD_ID
+            ) {
                 $savedCardMethod = clone $method;
                 $paymentMethods->remove($key);
                 continue;

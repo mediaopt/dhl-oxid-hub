@@ -27,6 +27,7 @@ class Form
     const WEBHOOK_SECRET_FIELD = 'MoptWorldline.config.webhookSecret';
     const LOG_LEVEL = 'MoptWorldline.config.logLevel';
     const IFRAME_TEMPLATE_NAME = 'MoptWorldline.config.iframeTemplateName';
+    const ONEY_PAYMENT_OPTION_FIELD = 'MoptWorldline.config.oneyPaymentOption';
     const FULL_REDIRECT_TEMPLATE_NAME = 'MoptWorldline.config.fullRedirectTemplateName';
     const AUTO_CAPTURE = 'MoptWorldline.config.autoCapture';
     const AUTO_CAPTURE_DISABLED = 'disabled';

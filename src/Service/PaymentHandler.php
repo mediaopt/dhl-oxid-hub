@@ -8,15 +8,14 @@ use OnlinePayments\Sdk\Domain\CreateHostedCheckoutResponse;
 use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
 use OnlinePayments\Sdk\Domain\GetHostedTokenizationResponse;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
-use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Exception\InvalidTransactionException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
@@ -112,11 +111,31 @@ class PaymentHandler
     public function createPayment(int $worldlinePaymentMethodId): CreateHostedCheckoutResponse
     {
         $order = $this->orderTransaction->getOrder();
+        $orderObject = null;
+        if (in_array($worldlinePaymentMethodId, PaymentProducts::PAYMENT_PRODUCT_NEED_DETAILS)) {
+            $criteria = new Criteria([$order->getId()]);
+            $criteria->addAssociation('lineItems')
+                ->addAssociation('deliveries.positions.orderLineItem')
+                ->addAssociation('orderCustomer.customer')
+                ->addAssociation('orderCustomer.customer.group')
+                ->addAssociation('language.locale')
+                ->addAssociation('billingAddress')
+                ->addAssociation('billingAddress.country')
+                ->addAssociation('deliveries.shippingOrderAddress')
+                ->addAssociation('deliveries.shippingOrderAddress.country');
+            $orderObject = $this->orderRepository->search($criteria, $this->context)->first();
+        }
+
         $amountTotal = $order->getAmountTotal();
         $currencyISO = $this->getCurrencyISO();
 
         $this->log(AdminTranslate::trans($this->translator->getLocale(), 'buildingOrder'));
-        $hostedCheckoutResponse = $this->adapter->createPayment($amountTotal, $currencyISO, $worldlinePaymentMethodId);
+        $hostedCheckoutResponse = $this->adapter->createPayment(
+            $amountTotal,
+            $currencyISO,
+            $worldlinePaymentMethodId,
+            $orderObject
+        );
 
         $this->saveOrderCustomFields(
             Payment::STATUS_PAYMENT_CREATED[0],
@@ -268,7 +287,7 @@ class PaymentHandler
         $paymentDetails = $this->adapter->getPaymentDetails($hostedCheckoutId);
 
         if ($token = $this->adapter->getRedirectToken($paymentDetails)) {
-            $card =$this->createRedirectPaymentProduct($token, $paymentDetails);
+            $card = $this->createRedirectPaymentProduct($token, $paymentDetails);
             $this->saveCustomerCustomFields(
                 null,
                 $token,
@@ -577,7 +596,7 @@ class PaymentHandler
                     'paymentCard' => $hostedTokenization->getToken()->getCard()->getData()->getCardWithoutCvv()->getCardNumber(),
                     'default' => false
                 ],
-                PaymentMethod::getPaymentProductDetails($paymentProductId)
+                PaymentProducts::getPaymentProductDetails($paymentProductId)
             )
         ];
     }
@@ -602,7 +621,7 @@ class PaymentHandler
                 'paymentCard' => $paymentCard,
                 'default' => false
             ],
-            PaymentMethod::getPaymentProductDetails($paymentProductId)
+            PaymentProducts::getPaymentProductDetails($paymentProductId)
         );
     }
 }

@@ -12,12 +12,8 @@ use MoptWorldline\Bootstrap\Form;
 use MoptWorldline\Service\Helper;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
-use Shopware\Core\System\Country\CountryEntity;
-use Shopware\Core\System\Currency\CurrencyEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -103,7 +99,7 @@ class ApiTestController extends AbstractController
         $message = '';
         try {
             $paymentMethodController = $this->getPaymentMethodController();
-            $paymentMethods = $paymentMethodController->getPaymentMentodsList(
+            $paymentMethods = $paymentMethodController->getPaymentMethodsList(
                 $credentials,
                 $salesChannelId,
                 $countryIso3,

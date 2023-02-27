@@ -8,40 +8,22 @@ declare(strict_types=1);
 
 namespace MoptWorldline;
 
+use MoptWorldline\Service\Payment;
+use MoptWorldline\Service\PaymentMethodHelper;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use MoptWorldline\Service\CustomField;
-use MoptWorldline\Service\PaymentMethod;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
 
 class MoptWorldline extends Plugin
 {
     const PLUGIN_NAME = 'MoptWorldline';
-
-    const PLUGIN_VERSION = '1.1.0';
-    const FULL_REDIRECT_PAYMENT_METHOD_NAME = "Worldline";
-    const IFRAME_PAYMENT_METHOD_NAME = "Worldline Iframe";
-    const SAVED_CARD_PAYMENT_METHOD_NAME = "Worldline saved card";
-    const METHODS_LIST = [
-        [
-            'name' => self::FULL_REDIRECT_PAYMENT_METHOD_NAME,
-            'description' => 'Worldline full redirect payment method',
-            'activeOnInstall' => true
-        ],
-        [
-            'name' => self::IFRAME_PAYMENT_METHOD_NAME,
-            'description' => 'Worldline Iframe payment method',
-            'activeOnInstall' => false
-        ],
-        [
-            'name' => self::SAVED_CARD_PAYMENT_METHOD_NAME,
-            'description' => 'Worldline saved card payment method',
-            'activeOnInstall' => false
-        ]
-    ];
+    const PLUGIN_VERSION = '1.2.0';
 
     /**
      * @param InstallContext $installContext
@@ -53,13 +35,24 @@ class MoptWorldline extends Plugin
         $customField = new CustomField($this->container);
         $customField->addCustomFields($installContext);
 
-        $paymentMethod = new PaymentMethod($this->container);
-        foreach (self::METHODS_LIST as $method) {
-            $paymentMethod->addPaymentMethod(
+        /** @var EntityRepositoryInterface $paymentMethodRep */
+        $paymentMethodRep =$this->container->get('payment_method.repository');
+        /** @var EntityRepositoryInterface $salesChannelPaymentMethodRep */
+        $salesChannelPaymentMethodRep = $this->container->get('sales_channel_payment_method.repository');
+        /** @var PluginIdProvider $pluginIdProvider */
+        $pluginIdProvider = $this->container->get(PluginIdProvider::class);
+        /** @var EntityRepositoryInterface $salesChannelRep */
+        $salesChannelRep = $this->container->get('sales_channel.repository');
+
+        foreach (Payment::METHODS_LIST as $method) {
+            PaymentMethodHelper::addPaymentMethod(
+                $paymentMethodRep,
+                $salesChannelPaymentMethodRep,
+                $pluginIdProvider,
                 $installContext->getContext(),
-                $method['name'],
-                $method['description'],
-                $method['activeOnInstall']
+                $method,
+                null,
+                $salesChannelRep
             );
         }
     }
@@ -93,9 +86,10 @@ class MoptWorldline extends Plugin
 
     private function setPaymentMethodsStatus(bool $status, Context $context)
     {
-        $paymentMethod = new PaymentMethod($this->container);
-        foreach (self::METHODS_LIST as $method) {
-            $paymentMethod->setPaymentMethodStatus($status, $context, $method['name']);
+        /** @var EntityRepositoryInterface $paymentMethodRepository */
+        $paymentMethodRepository = $this->container->get('payment_method.repository');
+        foreach (Payment::METHODS_LIST as $method) {
+            PaymentMethodHelper::setPaymentMethodStatus($paymentMethodRepository, $status, $context, $method['id']);
         }
     }
 }
