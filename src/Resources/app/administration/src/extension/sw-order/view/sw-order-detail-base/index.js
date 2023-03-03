@@ -12,17 +12,25 @@ Component.override('sw-order-detail-base', {
             isSaveSuccessful: false,
         };
     },
-     computed: {
-            pluginConfig() {
-                return {
-                    'url': window.location.href
-                }
+    computed: {
+        pluginConfig() {
+            return {
+                'url': window.location.href
+            }
+        }
+    },
+    methods: {
+        getData(element) {
+            return {
+                'transactionId': document.getElementById('payment_transaction_id').value,
+                'amount': document.getElementById(element).value
             }
         },
-    methods: {
         statusCheck() {
             this.isLoading = true;
-            this.transactionsControl.statusCheck(this.pluginConfig).then((res) => {
+            this.transactionsControl.statusCheck(
+                {'transactionId': document.getElementById('payment_transaction_id').value}
+            ).then((res) => {
                 if (res.success) {
                     this.isSaveSuccessful = true;
                     this.createNotificationSuccess({
@@ -40,10 +48,9 @@ Component.override('sw-order-detail-base', {
                 this.isLoading = false;
             });
         },
-
         capture() {
             this.isLoading = true;
-            this.transactionsControl.capture(this.pluginConfig).then((res) => {
+            this.transactionsControl.capture(this.getData('WorldlineCaptureAmount')).then((res) => {
                 if (res.success) {
                     this.isSaveSuccessful = true;
                     this.createNotificationSuccess({
@@ -63,7 +70,7 @@ Component.override('sw-order-detail-base', {
         },
         cancel() {
             this.isLoading = true;
-            this.transactionsControl.cancel(this.pluginConfig).then((res) => {
+            this.transactionsControl.cancel(this.getData('WorldlineCancelAmount')).then((res) => {
                 if (res.success) {
                     this.isSaveSuccessful = true;
                     this.createNotificationSuccess({
@@ -83,7 +90,7 @@ Component.override('sw-order-detail-base', {
         },
         refund() {
             this.isLoading = true;
-            this.transactionsControl.refund(this.pluginConfig).then((res) => {
+            this.transactionsControl.refund(this.getData('WorldlineRefundAmount')).then((res) => {
                 if (res.success) {
                     this.isSaveSuccessful = true;
                     this.createNotificationSuccess({
@@ -106,8 +113,18 @@ Component.override('sw-order-detail-base', {
                 if (res.message.length > 0) {
                     for (const element of res.message) {
                         document.getElementById(element).disabled = false;
-
                     }
+                }
+                if (Object.entries(res.allowedAmounts).length > 0) {
+                    for (const [element, value] of Object.entries(res.allowedAmounts)) {
+                        document.getElementById(element).value = value;
+                        if (value > 0) {
+                            document.getElementById(element).disabled = false;
+                        }
+                    }
+                }
+                if (Object.entries(res.log).length > 0) {
+                    document.getElementById('WorldlineTransactionsLog').innerHTML = res.log.join('<br/>');
                 }
             });
         }
@@ -117,6 +134,10 @@ Component.override('sw-order-detail-base', {
         document.getElementById("WorldlineBtnCapture").disabled = true;
         document.getElementById("WorldlineBtnCancel").disabled = true;
         document.getElementById("WorldlineBtnRefund").disabled = true;
+        document.getElementById("WorldlineCaptureAmount").disabled = true;
+        document.getElementById("WorldlineCancelAmount").disabled = true;
+        document.getElementById("WorldlineRefundAmount").disabled = true;
+
         this.enableButtons();
     }
 });

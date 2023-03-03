@@ -85,9 +85,15 @@ class Payment implements AsynchronousPaymentHandlerInterface
     public const STATUS_REFUND_REQUESTED = [81, 82];            //in progress
     public const STATUS_REFUNDED = [7, 8, 85];                  //refunded
 
-    public const CANCEL_ALLOWED = 'WorldlineBtnCancel';
-    public const REFUND_ALLOWED = 'WorldlineBtnRefund';
-    public const CAPTURE_ALLOWED = 'WorldlineBtnCapture';
+    public const CAPTURE_AMOUNT = 'WorldlineCaptureAmount';
+    public const CANCEL_AMOUNT = 'WorldlineCancelAmount';
+    public const REFUND_AMOUNT = 'WorldlineRefundAmount';
+
+    public const PAYMENT_ACTIONS = [
+        self::CANCEL_AMOUNT => 'WorldlineBtnCapture',
+        self::CAPTURE_AMOUNT => 'WorldlineBtnCancel',
+        self::REFUND_AMOUNT => 'WorldlineBtnRefund',
+    ];
 
     public const STATUS_LABELS = [
         0 => 'created',
@@ -185,7 +191,8 @@ class Payment implements AsynchronousPaymentHandlerInterface
                     );
                     break;
                 }
-                default: {
+                default:
+                {
                     $redirectUrl = $this->getHostedCheckoutRedirectUrl(
                         $transaction,
                         $salesChannelContext->getContext()
@@ -409,21 +416,22 @@ class Payment implements AsynchronousPaymentHandlerInterface
     }
 
     /**
-     * @param int $status
+     * @param array $customFields
      * @return array
      */
-    public static function getAllowedActions(int $status): array
+    public static function getAllowed(array $customFields): array
     {
-        switch ($status) {
-            case in_array($status, self::STATUS_PENDING_CAPTURE):{
-                return [self::CANCEL_ALLOWED, self::CAPTURE_ALLOWED];
-            }
-            case in_array($status, self::STATUS_CAPTURED): {
-                return [self::REFUND_ALLOWED];
-            }
-            default: {
-                return [];
+        $allowedAmounts = [
+            Payment::CAPTURE_AMOUNT => $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_CAPTURE_AMOUNT] / 100,
+            Payment::CANCEL_AMOUNT => $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_CAPTURE_AMOUNT] / 100,
+            Payment::REFUND_AMOUNT => $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_REFUND_AMOUNT] / 100,
+        ];
+        $allowedActions = [];
+        foreach ($allowedAmounts as $key => $amount ) {
+            if ($amount > 0) {
+                $allowedActions[] = Payment::PAYMENT_ACTIONS[$key];
             }
         }
+        return [$allowedActions, $allowedAmounts];
     }
 }

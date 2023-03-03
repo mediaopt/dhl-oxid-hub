@@ -7,7 +7,8 @@
             :processSuccess="isSaveSuccessful"
             @click="statusCheck"
         >{{ $tc('worldline.check-status-button.button') }}</sw-button-process>
-
+        <br/>
+        <input id="WorldlineCaptureAmount" type="text" value="">
         <sw-button-process
             id="WorldlineBtnCapture"
             :isLoading="isLoading"
@@ -15,18 +16,23 @@
             @click="capture"
         >{{ $tc('worldline.capture-payment-button.button') }}</sw-button-process>
 
+        <br/>
+        <input id="WorldlineCancelAmount" type="text" value="">
         <sw-button-process
             id="WorldlineBtnCancel"
             :isLoading="isLoading"
             :processSuccess="isSaveSuccessful"
             @click="cancel"
         >{{ $tc('worldline.cancel-payment-button.button') }}</sw-button-process>
-
+        <br/>
+        <input id="WorldlineRefundAmount" type="text" value="">
         <sw-button-process
             id="WorldlineBtnRefund"
             :isLoading="isLoading"
             :processSuccess="isSaveSuccessful"
             @click="refund"
         >{{ $tc('worldline.refund-payment-button.button') }}</sw-button-process>
+        <br/>
+        <div id="WorldlineTransactionsLog"></div>
     </sw-card>
 {% endblock %}

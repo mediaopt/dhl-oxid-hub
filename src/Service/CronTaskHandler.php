@@ -151,6 +151,6 @@ class CronTaskHandler extends ScheduledTaskHandler
             $this->transactionStateHandler
         );
 
-        $paymentHandler->capturePayment($hostedCheckoutId);
+        $paymentHandler->capturePayment($hostedCheckoutId, $orderTransaction->getAmount()->getTotalPrice());
     }
 }

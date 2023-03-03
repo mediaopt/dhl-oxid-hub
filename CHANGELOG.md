@@ -1,3 +1,7 @@
+# 1.3.0
+- Partial capture, cancel, refund
+- Transaction log
+
 # 1.2.0
 - Klarna and Oney payment methods
 

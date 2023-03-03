@@ -8,6 +8,7 @@ use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\AddressPersonal;
 use OnlinePayments\Sdk\Domain\AmountOfMoney;
 use OnlinePayments\Sdk\Domain\BrowserData;
+use OnlinePayments\Sdk\Domain\CancelPaymentRequest;
 use OnlinePayments\Sdk\Domain\CancelPaymentResponse;
 use OnlinePayments\Sdk\Domain\CapturePaymentRequest;
 use OnlinePayments\Sdk\Domain\CaptureResponse;
@@ -415,49 +416,61 @@ class WorldlineSDKAdapter
 
     /**
      * @param string $hostedCheckoutId
-     * @param float $amount
-     * @return void
+     * @param int $amount
+     * @param bool $isFinal
+     * @return CaptureResponse
      * @throws \Exception
      */
-    public function capturePayment(string $hostedCheckoutId, float $amount): CaptureResponse
+    public function capturePayment(string $hostedCheckoutId, int $amount, bool $isFinal): CaptureResponse
     {
         $merchantClient = $this->getMerchantClient();
         $hostedCheckoutId = $hostedCheckoutId . '_0';
 
         $capturePaymentRequest = new CapturePaymentRequest();
-        $capturePaymentRequest->setAmount($amount * 100);
-        $capturePaymentRequest->setIsFinal(true);
+        $capturePaymentRequest->setAmount($amount);
+        $capturePaymentRequest->setIsFinal($isFinal);
 
         return $merchantClient->payments()->capturePayment($hostedCheckoutId, $capturePaymentRequest);
     }
 
     /**
      * @param string $hostedCheckoutId
+     * @param int $amount
+     * @param string $currency
+     * @param bool $isFinal
      * @return CancelPaymentResponse
      * @throws \Exception
      */
-    public function cancelPayment(string $hostedCheckoutId): CancelPaymentResponse
+    public function cancelPayment(string $hostedCheckoutId, int $amount, string $currency, bool $isFinal): CancelPaymentResponse
     {
+        $amountOfMoney = new AmountOfMoney();
+        $amountOfMoney->setAmount($amount);
+        $amountOfMoney->setCurrencyCode($currency);
+
+        $cancelRequest = new CancelPaymentRequest();
+        $cancelRequest->setAmountOfMoney($amountOfMoney);
+        $cancelRequest->setIsFinal($isFinal);
+
         $merchantClient = $this->getMerchantClient();
         $hostedCheckoutId = $hostedCheckoutId . '_1';
-        return $merchantClient->payments()->cancelPayment($hostedCheckoutId);
+        return $merchantClient->payments()->cancelPayment($hostedCheckoutId, $cancelRequest);
     }
 
     /**
      * @param string $hostedCheckoutId
-     * @param float $amount
+     * @param int $amount
      * @param string $currency
      * @param string $orderNumber
      * @return RefundResponse
      * @throws \Exception
      */
-    public function refundPayment(string $hostedCheckoutId, float $amount, string $currency, string $orderNumber): RefundResponse
+    public function refundPayment(string $hostedCheckoutId, int $amount, string $currency, string $orderNumber): RefundResponse
     {
         $merchantClient = $this->getMerchantClient();
         $hostedCheckoutId = $hostedCheckoutId . '_1';
 
         $amountOfMoney = new AmountOfMoney();
-        $amountOfMoney->setAmount($amount * 100);
+        $amountOfMoney->setAmount($amount);
         $amountOfMoney->setCurrencyCode($currency);
 
         $paymentReferences = new PaymentReferences();

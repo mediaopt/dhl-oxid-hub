@@ -12,6 +12,7 @@ use MoptWorldline\Bootstrap\Form;
 use MoptWorldline\Service\AdminTranslate;
 use MoptWorldline\Service\Payment;
 use MoptWorldline\Service\PaymentHandler;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -80,7 +81,8 @@ class TransactionsControlController extends AbstractController
     {
         $success = false;
         $message = AdminTranslate::trans($this->translator->getLocale(), "statusUpdateError");
-        if (!$hostedCheckoutId = $this->getTransactionId($request)) {
+        $hostedCheckoutId = $request->request->get('transactionId');
+        if (!$hostedCheckoutId) {
             $message = AdminTranslate::trans($this->translator->getLocale(), "noTransactionForThisOrder");
             return $this->response($success, $message);
         }
@@ -140,16 +142,22 @@ class TransactionsControlController extends AbstractController
         try {
             $hostedCheckoutId = $this->getTransactionId($request);
             $orderTransaction = PaymentHandler::getOrderTransaction($context, $this->orderTransactionRepository, $hostedCheckoutId);
-            $fields = $orderTransaction->getCustomFields();
-            $status =  $fields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_STATUS];
-            $allowedActions = Payment::getAllowedActions($status);
+
+            $customFields = $orderTransaction->getCustomFields();
+            $log = [];
+            if (array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_LOG, $customFields)) {
+                $log = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_LOG];
+            }
+            [$allowedActions, $allowedAmounts] = Payment::getAllowed($customFields);
         } catch (\Exception $e) {
             return $this->response(false,'');
         }
         return
             new JsonResponse([
                 'success' => true,
-                'message' => $allowedActions
+                'message' => $allowedActions,
+                'allowedAmounts' => $allowedAmounts,
+                'log' => $log
             ]);
     }
 
@@ -163,8 +171,15 @@ class TransactionsControlController extends AbstractController
      */
     private function processPayment(Request $request, Context $context, string $action): JsonResponse
     {
-        if (!$hostedCheckoutId = $this->getTransactionId($request)) {
+        $hostedCheckoutId = $request->request->get('transactionId');
+        $rawAmount = $request->request->get('amount') * 100;
+        $amount = (int)$rawAmount;
+        if (!$hostedCheckoutId) {
             $message = AdminTranslate::trans($this->translator->getLocale(), "noTransactionForThisOrder");
+            return $this->response(false, $message);
+        }
+        if (!$amount || $amount < 0) {
+            $message = AdminTranslate::trans($this->translator->getLocale(), "wrongAmountInRequest");//todo
             return $this->response(false, $message);
         }
 
@@ -172,7 +187,7 @@ class TransactionsControlController extends AbstractController
 
         Payment::lockOrder($this->requestStack->getSession(), $handler->getOrderId());
         $message = AdminTranslate::trans($this->translator->getLocale(), "failed");
-        if ($result = $handler->$action($hostedCheckoutId)) {
+        if ($result = $handler->$action($hostedCheckoutId, $amount)) {
             $message = AdminTranslate::trans($this->translator->getLocale(), "success");
         }
         Payment::unlockOrder($this->requestStack->getSession(), $handler->getOrderId());
