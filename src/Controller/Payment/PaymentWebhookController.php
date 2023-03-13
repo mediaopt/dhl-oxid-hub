@@ -75,8 +75,10 @@ class PaymentWebhookController extends AbstractController
      *     defaults={"csrf_protected"=false},
      *     methods={"POST"}
      * )
-     * @throws InvalidTransactionException
-     * @throws CustomerCanceledAsyncPaymentException
+     * @param Request $request
+     * @param SalesChannelContext $salesChannelContext
+     * @return Response
+     * @throws \Exception
      */
     public function webhook(Request $request, SalesChannelContext $salesChannelContext): Response
     {
@@ -110,7 +112,7 @@ class PaymentWebhookController extends AbstractController
         );
         $paymentHandler->logWebhook($request->request->all());
 
-        $paymentHandler->updatePaymentStatus($data['hostedCheckoutId'], $data['statusCode']);
+        $paymentHandler->updatePaymentStatus($data['hostedCheckoutId']);
 
         return new Response();
     }

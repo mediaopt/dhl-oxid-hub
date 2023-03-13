@@ -12,12 +12,10 @@ use MoptWorldline\Bootstrap\Form;
 use MoptWorldline\Service\AdminTranslate;
 use MoptWorldline\Service\Payment;
 use MoptWorldline\Service\PaymentHandler;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
-use Shopware\Core\Kernel;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,6 +42,7 @@ class TransactionsControlController extends AbstractController
      * @param SystemConfigService $systemConfigService
      * @param EntityRepositoryInterface $orderTransactionRepository
      * @param EntityRepositoryInterface $orderRepository
+     * @param EntityRepositoryInterface $customerRepository
      * @param OrderTransactionStateHandler $transactionStateHandler
      * @param Logger $logger
      * @param TranslatorInterface $translator
@@ -140,16 +139,21 @@ class TransactionsControlController extends AbstractController
     public function enableButtons(Request $request, Context $context): JsonResponse
     {
         try {
-            $hostedCheckoutId = $this->getTransactionId($request);
+            $hostedCheckoutId = $request->request->get('transactionId');
             $orderTransaction = PaymentHandler::getOrderTransaction($context, $this->orderTransactionRepository, $hostedCheckoutId);
 
             $customFields = $orderTransaction->getCustomFields();
             $log = [];
             if (array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_LOG, $customFields)) {
-                $log = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_LOG];
+                foreach ($customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_LOG] as $logId => $logEntity) {
+                    $date = date('d-m-Y H:i:s', $logEntity['date']);
+                    $amount = $logEntity['amount'] / 100;
+                    $log[] = "$logId $date $amount {$logEntity['readableStatus']}";
+                }
             }
             [$allowedActions, $allowedAmounts] = Payment::getAllowed($customFields);
         } catch (\Exception $e) {
+            debug($e->getMessage());
             return $this->response(false,'');
         }
         return
@@ -172,8 +176,7 @@ class TransactionsControlController extends AbstractController
     private function processPayment(Request $request, Context $context, string $action): JsonResponse
     {
         $hostedCheckoutId = $request->request->get('transactionId');
-        $rawAmount = $request->request->get('amount') * 100;
-        $amount = (int)$rawAmount;
+        $amount = (int)round($request->request->get('amount') * 100);
         if (!$hostedCheckoutId) {
             $message = AdminTranslate::trans($this->translator->getLocale(), "noTransactionForThisOrder");
             return $this->response(false, $message);
@@ -193,28 +196,6 @@ class TransactionsControlController extends AbstractController
         Payment::unlockOrder($this->requestStack->getSession(), $handler->getOrderId());
 
         return $this->response($result, $message);
-    }
-
-    /**
-     * @param Request $request
-     * @return false|string
-     * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws \Doctrine\DBAL\Exception
-     */
-    private function getTransactionId(Request $request): ?string
-    {
-        $url = explode('/', $request->request->get('url'));
-        $orderId = $url[count($url) - 2];
-
-        $connection = Kernel::getConnection();
-        $sql = "SELECT custom_fields  FROM `order_transaction` WHERE order_id = UNHEX('$orderId')";
-        $orderTransactionCustomFields = $connection->executeQuery($sql)->fetchAssociative();
-        $customFields = json_decode($orderTransactionCustomFields['custom_fields'], true);
-        if (!is_array($customFields) || !array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID, $customFields)) {
-            return false;
-        }
-
-        return $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID];
     }
 
     /**

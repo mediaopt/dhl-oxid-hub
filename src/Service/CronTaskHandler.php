@@ -98,7 +98,7 @@ class CronTaskHandler extends ScheduledTaskHandler
                     $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"56%'")
                 )
             )
-            ->orderBy('ot.updated_at','DESC')
+            ->orderBy('ot.updated_at', 'DESC')
             ->setParameter('salesChannelId', $salesChannelId);
 
         if ($daysInterval > 0) {
@@ -151,6 +151,7 @@ class CronTaskHandler extends ScheduledTaskHandler
             $this->transactionStateHandler
         );
 
-        $paymentHandler->capturePayment($hostedCheckoutId, $orderTransaction->getAmount()->getTotalPrice());
+        $amount = (int)round($orderTransaction->getAmount()->getTotalPrice() * 100);
+        $paymentHandler->capturePayment($hostedCheckoutId, $amount);
     }
 }

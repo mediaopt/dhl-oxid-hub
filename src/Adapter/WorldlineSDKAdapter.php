@@ -186,7 +186,7 @@ class WorldlineSDKAdapter
      * @throws \Exception
      */
     public function createPayment(
-        float        $amountTotal,
+        int          $amountTotal,
         string       $currencyISO,
         int          $worldlinePaymentProductId,
         ?OrderEntity $orderEntity
@@ -197,7 +197,7 @@ class WorldlineSDKAdapter
 
         $amountOfMoney = new AmountOfMoney();
         $amountOfMoney->setCurrencyCode($currencyISO);
-        $amountOfMoney->setAmount((int)($amountTotal * 100));
+        $amountOfMoney->setAmount($amountTotal);
 
         $order = new Order();
         $order->setAmountOfMoney($amountOfMoney);
@@ -332,7 +332,7 @@ class WorldlineSDKAdapter
      * @throws \Exception
      */
     public function createHostedTokenizationPayment(
-        float                         $amountTotal,
+        int                           $amountTotal,
         string                        $currencyISO,
         array                         $iframeData,
         GetHostedTokenizationResponse $hostedTokenization
@@ -360,7 +360,7 @@ class WorldlineSDKAdapter
 
         $amountOfMoney = new AmountOfMoney();
         $amountOfMoney->setCurrencyCode($currencyISO);
-        $amountOfMoney->setAmount($amountTotal * 100);
+        $amountOfMoney->setAmount($amountTotal);
 
         $order = new Order();
         $order->setAmountOfMoney($amountOfMoney);
@@ -695,7 +695,7 @@ class WorldlineSDKAdapter
             if ($isNetPrice) {
                 $tax += $lineItem->getPrice()->getCalculatedTaxes()->getAmount();
             }
-            $totalPrice = ($lineItem->getPrice()->getTotalPrice() + $tax) * 100;
+            $totalPrice = (int)round(($lineItem->getPrice()->getTotalPrice() + $tax) * 100);
             $quantity = $lineItem->getPrice()->getQuantity();
             $unitPrice = $totalPrice / $quantity;
             $requestLineItems[] = $this->createLineItem($lineItem->getLabel(), $currencyISO, $totalPrice, $unitPrice, $quantity);
@@ -707,7 +707,7 @@ class WorldlineSDKAdapter
                 $shippingTaxTotal += $shippingTax->getTax();
             }
         }
-        $shippingPrice = ($shippingPrice->getTotalPrice() + $shippingTaxTotal) * 100;
+        $shippingPrice = (int)(round($shippingPrice->getTotalPrice() + $shippingTaxTotal) * 100);
         $requestLineItems[] = $this->createLineItem(self::SHIPPING_LABEL, $currencyISO, $shippingPrice, $shippingPrice, 1);
 
         return $requestLineItems;

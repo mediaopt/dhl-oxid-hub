@@ -1,6 +1,7 @@
 {% block sw_order_detail_base_custom_fields %}
     {% parent() %}
-    <sw-card :title="$t('worldline.worldline-order.detail.cardLabel')"
+    <sw-card id='WorldlineTransactionControl'
+             :title="$t('worldline.worldline-order.detail.cardLabel')"
              :isLoading="isLoading">
         <sw-button-process
             :isLoading="isLoading"
@@ -15,7 +16,6 @@
             :processSuccess="isSaveSuccessful"
             @click="capture"
         >{{ $tc('worldline.capture-payment-button.button') }}</sw-button-process>
-
         <br/>
         <input id="WorldlineCancelAmount" type="text" value="">
         <sw-button-process

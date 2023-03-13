@@ -13,16 +13,23 @@ Component.override('sw-order-detail-base', {
         };
     },
     computed: {
-        pluginConfig() {
-            return {
-                'url': window.location.href
+        transactionId() {
+            for (let i = 0; i < this.order.transactions.length; i += 1) {
+                if (!['cancelled', 'failed'].includes(this.order.transactions[i].stateMachineState.technicalName)) {
+                    var transaction = this.order.transactions[i].customFields;
+                    if (transaction === null) {
+                        return null;
+                    }
+                    return transaction.payment_transaction_id;
+                }
             }
+            return this.order.transactions.last().customFields.payment_transaction_id;
         }
     },
     methods: {
         getData(element) {
             return {
-                'transactionId': document.getElementById('payment_transaction_id').value,
+                'transactionId': this.transactionId,
                 'amount': document.getElementById(element).value
             }
         },
@@ -109,7 +116,24 @@ Component.override('sw-order-detail-base', {
             });
         },
         enableButtons() {
-            this.transactionsControl.enableButtons(this.pluginConfig).then((res) => {
+            var transactionId = this.transactionId;
+            if (this.transactionId === null) {
+                var control = document.getElementById('WorldlineTransactionControl');
+                if (control !== null) {
+                    control.remove();
+                }
+                return;
+            }
+
+            //Disabling buttons via twig add some classes and make enabling much more complicated
+            document.getElementById("WorldlineBtnCapture").disabled = true;
+            document.getElementById("WorldlineBtnCancel").disabled = true;
+            document.getElementById("WorldlineBtnRefund").disabled = true;
+            document.getElementById("WorldlineCaptureAmount").disabled = true;
+            document.getElementById("WorldlineCancelAmount").disabled = true;
+            document.getElementById("WorldlineRefundAmount").disabled = true;
+
+            this.transactionsControl.enableButtons({'transactionId': transactionId}).then((res) => {
                 if (res.message.length > 0) {
                     for (const element of res.message) {
                         document.getElementById(element).disabled = false;
@@ -130,14 +154,6 @@ Component.override('sw-order-detail-base', {
         }
     },
     updated() {
-        //Disabling buttons via twig add some classes and make enabling much more complicated
-        document.getElementById("WorldlineBtnCapture").disabled = true;
-        document.getElementById("WorldlineBtnCancel").disabled = true;
-        document.getElementById("WorldlineBtnRefund").disabled = true;
-        document.getElementById("WorldlineCaptureAmount").disabled = true;
-        document.getElementById("WorldlineCancelAmount").disabled = true;
-        document.getElementById("WorldlineRefundAmount").disabled = true;
-
         this.enableButtons();
     }
 });

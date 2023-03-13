@@ -1,3 +1,6 @@
+# 1.4.0
+- Update statuses of changed log data
+ 
 # 1.3.0
 - Partial capture, cancel, refund
 - Transaction log
