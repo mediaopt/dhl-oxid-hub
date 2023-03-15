@@ -119,6 +119,18 @@
             "label": "Worldline Online Payments.",
             "description": "Worldline Online Payments.",
             "extraDescription": "Certified Worldline online payments extension for Shopware 6"
+        },
+        "transaction-control": {
+            "logs": {
+                "label": "Payment log",
+                "placeholder": "nothing here..."
+            },
+            "tabs": {
+                "unprocessed": "Unprocessed",
+                "paid": "Paid",
+                "refunded": "Refunded",
+                "cancel": "Canceled"
+            }
         }
     }
 }

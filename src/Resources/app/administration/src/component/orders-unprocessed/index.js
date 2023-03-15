@@ -1,26 +1,27 @@
-import template from './sw-order-detail-base.html.twig';
-import './my-styles.scss'
-
+import template from './orders-unprocessed.html.twig';
 
 const { Component, Utils } = Shopware;
 const { get, format } = Utils;
 
 
-Component.override('sw-order-detail-base', {
+Component.register('mo-orders-unprocessed', {
     template,
 
     inject: ['transactionsControl'],
 
+    props: {
+        order: {
+            type: Object,
+            required: true,
+        },
+        transactionId: {
+            type: String,
+            required: true,
+        }
+    },
+
     data() {
         return {
-            activeTab: 'unprocessed',
-            tabs: [
-                {name: 'unprocessed'},
-                {name: 'paid'},
-                {name: 'refunded'},
-                {name: 'cancel'},
-            ],
-            transactionStatus: false,
             transactionSuccess: {
                 capture: false,
                 refund: false,
@@ -38,12 +39,11 @@ Component.override('sw-order-detail-base', {
         };
     },
 
-    created() {
-        this.unwatchOrder = this.$watch('order', (newOrder) => {
-            if (newOrder?.lineItems?.length) {
-                this.initializePanel();
-            }
-        });
+    mounted() {
+        for (let i = 0; i < this.orderLineItems.length; i++) {
+            this.itemPrices.push(0);
+            this.Selection.push(0);
+        }
     },
 
     computed: {
@@ -123,65 +123,6 @@ Component.override('sw-order-detail-base', {
     },
 
     methods: {
-        setActiveTab(tab) {
-            this.activeTab = tab.name;
-        },
-
-        initializePanel() {
-            this.unwatchOrder();
-            for (let i = 0; i < this.orderLineItems.length; i++) {
-                this.itemPrices.push(0);
-                this.Selection.push(0);
-            }
-            this.statusCheck();
-        },
-
-        getValues() {
-            if (this.transactionId === null) {
-                this.isLoading = false
-                return;
-            }
-            this.transactionsControl.enableButtons({'transactionId': this.transactionId}).then((res) => { //@ todo new endpoint with response we actually need
-                if (res.success) {
-                    this.transactionStatus = true;
-                    this.amountCancelable = res.allowedAmounts.WorldlineCancelAmount;
-                    this.amountRefundable = res.allowedAmounts.WorldlineRefundAmount;
-                    this.maxAmountCaptureable = res.allowedAmounts.WorldlineCaptureAmount
-                    if (Object.entries(res.log).length > 0) {
-                        this.transactionLogs = res.log.join('\r\n');
-                    }
-                } else {
-                    /*this.createNotificationError({
-                        title: this.$tc('worldline.check-status-button.title'),
-                        message: this.$tc('worldline.check-status-button.error') + res.message
-                    });*/
-                }
-            }).finally(() => this.isLoading = false);
-        },
-
-        statusCheck() {
-            this.isLoading = true;
-            this.transactionsControl.statusCheck(
-                {'transactionId': this.transactionId}
-            ).then((res) => {
-                if (res.success) {
-                    // this.transactionStatus = true;
-                    /*this.createNotificationSuccess({
-                         title: this.$tc('worldline.check-status-button.title'),
-                         message: this.$tc('worldline.check-status-button.success')
-                     });*/
-                    this.getValues();
-                } else {
-                    this.transactionStatus = false;
-                    /*this.createNotificationError({
-                        title: this.$tc('worldline.check-status-button.title'),
-                        message: this.$tc('worldline.check-status-button.error') + res.message
-                    });*/
-                    this.isLoading = false;
-                }
-            });
-        },
-
         capture() {
             const payload = {
                 transactionId: this.transactionId,

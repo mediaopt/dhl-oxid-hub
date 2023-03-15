@@ -7,77 +7,31 @@
                 class="sw-order-line-items-grid"
                 gap="15px"
         >
-            <sw-data-grid
-                    v-if="transactionStatus"
-                    ref="dataGrid"
-                    class="sw-order-line-items-grid__data-grid"
-                    identifier="mo-order-line-item-grid"
-                    :data-source="orderLineItems"
-                    :columns="getLineItemColumns"
-                    :show-settings="false"
-                    :show-selection="false"
-                    :showActions="false"
-                    :is-loading="isLoading"
-                    :compactMode="false"
-            >
-                <template #column-quantity="{ item, itemIndex }">
-                    <sw-select-field v-model="Selection[itemIndex]" @change="setLinePrice(itemIndex, $event, item.unitPrice)">
-                        <option :value="0">0</option>
-                        <option v-for="n in item.quantity" :value="n">{{ n }}</option>
-                    </sw-select-field>
+            <sw-tabs @new-item-active="setActiveTab" :small="false">
+                <template v-for="tab in tabs">
+                    <sw-tabs-item :key="tab.name" :name="tab.name" :active="tab.name === activeTab">
+                        {{ $tc('worldline.transaction-control.tabs.' + tab.name) }}
+                    </sw-tabs-item>
                 </template>
+            </sw-tabs>
 
-                <template #column-unitPrice="{ item }">
-                    <span>{{ item.unitPrice | currency(order.currency.shortName, order.itemRounding.decimals) }}</span>
-                </template>
+            <template v-if="transactionStatus">
+                <mo-orders-unprocessed v-if="activeTab === 'unprocessed'" :order="order" :transactionId="transactionId" />
+                <mo-orders-paid v-if="activeTab === 'paid'" :order="order" :transactionId="transactionId" />
+                <mo-orders-refunded v-if="activeTab === 'refunded'" :order="order" :transactionId="transactionId" />
+                <mo-orders-canceled v-if="activeTab === 'cancel'" :order="order" :transactionId="transactionId" />
+            </template>
 
-                <template #column-totalPrice="{ item, itemIndex }">
-                    <span>{{ itemPrices[itemIndex] | currency(order.currency.shortName, order.itemRounding.decimals) }}</span>
-                </template>
-            </sw-data-grid>
-
-            <sw-container v-if="transactionStatus" columns="1fr 1fr" gap="15px" justify="stretch" align="stretch">
-
-                <sw-container v-if="transactionStatus" gap="15px">
-                    <sw-textarea-field :value="transactionLogs" type="textarea" label="Payment log" placeholder="nothing here..." disabled />
-                </sw-container>
-
-                <sw-container v-if="transactionStatus" columns="1fr 120px min-content" gap="15px" justify="stretch" align="stretch">
-                    <div></div>
-                    <sw-text-field :value="amountToCapture | currency(order.currency.shortName, order.itemRounding.decimals)" disabled />
-                    <sw-button-process
-                            :isLoading="isLoading"
-                            :disabled="amountToCapture === 0"
-                            :processSuccess="transactionSuccess.capture"
-                            variant="ghost"
-                            @click="capture"
-                    >{{ $tc('worldline.capture-payment-button.button') }}</sw-button-process>
-
-                    <div></div>
-                    <sw-text-field :value="amountCancelable | currency(order.currency.shortName, order.itemRounding.decimals)" disabled />
-                    <sw-button-process
-                            :isLoading="isLoading"
-                            :disabled="amountCancelable === 0"
-                            :processSuccess="transactionSuccess.cancel"
-                            variant="ghost-danger"
-                            @click="cancel"
-                    >{{ $tc('worldline.cancel-payment-button.button') }}</sw-button-process>
-
-                    <div></div>
-                    <sw-text-field :value="amountRefundable | currency(order.currency.shortName, order.itemRounding.decimals)" disabled />
-                    <sw-button-process
-                            :isLoading="isLoading"
-                            :disabled="amountRefundable === 0"
-                            :processSuccess="transactionSuccess.refund"
-                            variant="ghost-danger"
-                            @click="refund"
-                    >{{ $tc('worldline.refund-payment-button.button') }}</sw-button-process>
-
-                    <div></div>
-                    <div></div>
-                    <sw-button :isLoading="isLoading" @click="statusCheck">{{ $tc('worldline.check-status-button.button') }}</sw-button>
-                </sw-container>
+            <sw-container v-if="transactionStatus" gap="15px">
+                <sw-textarea-field :value="transactionLogs"
+                                   type="textarea"
+                                   :label="$t('worldline.transaction-control.logs.label')"
+                                   :placeholder="$t('worldline.transaction-control.logs.placeholder')"
+                                   disabled
+                />
+                <sw-button :isLoading="isLoading" @click="statusCheck">{{ $tc('worldline.check-status-button.button') }}</sw-button>
             </sw-container>
+
         </sw-container>
     </sw-card>
 {% endblock %}
