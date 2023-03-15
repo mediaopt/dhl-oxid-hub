@@ -27,18 +27,16 @@ Component.override('sw-order-detail-base', {
             isLoading: false,
             itemPrices: [],
             amountToCapture: 0,
+            unwatchOrder: null,
         };
     },
 
     created() {
-        this.order.lineItems.forEach(item => {
-            this.itemPrices.push(0);
-            this.Selection.push(0);
+        this.unwatchOrder = this.$watch('order', (newOrder) => {
+            if (newOrder?.lineItems?.length) {
+                this.initializePanel();
+            }
         });
-    },
-
-    mounted() {
-        this.statusCheck();
     },
 
     computed: {
@@ -118,6 +116,15 @@ Component.override('sw-order-detail-base', {
     },
 
     methods: {
+        initializePanel() {
+            this.unwatchOrder();
+            for (let i = 0; i < this.orderLineItems.length; i++) {
+                this.itemPrices.push(0);
+                this.Selection.push(0);
+            }
+            this.statusCheck();
+        },
+
         getValues() {
             if (this.transactionId === null) {
                 this.isLoading = false
