@@ -14,9 +14,88 @@ Component.register('mo-orders-canceled', {
             type: Object,
             required: true,
         },
-        transactionId: {
-            type: String,
+        paymentStatus: {
+            type: Array,
             required: true,
         }
+    },
+
+    data() {
+        return {
+            isLoading: false,
+            itemPrices: [],
+            totalAmount: 0,
+        };
+    },
+
+    mounted() {
+        this.orderLineItems.forEach(item => {
+            const price = item.unitPrice * item.canceled;
+            this.itemPrices.push(price);
+            this.totalAmount += price;
+        });
+    },
+
+    computed: {
+        orderLineItems() {
+            return this.paymentStatus.filter(entry => entry.canceled > 0);
+        },
+
+        taxStatus() {
+            return get(this.order, 'taxStatus', '');
+        },
+
+        unitPriceLabel() {
+            return 'Unit Price';
+            if (this.taxStatus === 'net') {
+                return this.$tc('sw-order.detailBase.columnPriceNet');
+            }
+
+            if (this.taxStatus === 'tax-free') {
+                return this.$tc('sw-order.detailBase.columnPriceTaxFree');
+            }
+
+            return this.$tc('sw-order.detailBase.columnPriceGross');
+        },
+
+        linePriceLabel() {
+            return this.taxStatus === 'gross' ?
+                'sw-order.detailBase.columnTotalPriceGross' :
+                'sw-order.detailBase.columnTotalPriceNet';
+        },
+
+        getLineItemColumns() {
+            const columnDefinitions = [{
+                property: 'quantity',
+                dataIndex: 'paid',
+                label: 'sw-order.detailBase.columnQuantity',
+                allowResize: false,
+                align: 'right',
+                width: '100px',
+            },{
+                property: 'label',
+                dataIndex: 'label',
+                label: 'sw-order.detailBase.columnProductName',
+                allowResize: false,
+                primary: true,
+                multiLine: true,
+            }, {
+                property: 'unitPrice',
+                dataIndex: 'unitPrice',
+                label: this.unitPriceLabel,
+                allowResize: false,
+                align: 'right',
+                width: '120px',
+            }];
+
+            return [...columnDefinitions, {
+                property: 'totalPrice',
+                dataIndex: 'totalPrice',
+                label: this.linePriceLabel,
+                allowResize: false,
+                align: 'right',
+                width: '120px',
+            }];
+        },
     },
 });

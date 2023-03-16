@@ -14,12 +14,11 @@
                     </sw-tabs-item>
                 </template>
             </sw-tabs>
-
             <template v-if="transactionStatus">
-                <mo-orders-unprocessed v-if="activeTab === 'unprocessed'" :order="order" :transactionId="transactionId" />
-                <mo-orders-paid v-if="activeTab === 'paid'" :order="order" :transactionId="transactionId" />
-                <mo-orders-refunded v-if="activeTab === 'refunded'" :order="order" :transactionId="transactionId" />
-                <mo-orders-canceled v-if="activeTab === 'cancel'" :order="order" :transactionId="transactionId" />
+                <mo-orders-unprocessed v-if="activeTab === 'unprocessed'" :order="order" :transactionId="transactionId" :paymentStatus="worldlinePaymentStatus" />
+                <mo-orders-paid v-if="activeTab === 'paid'" :order="order" :transactionId="transactionId" :paymentStatus="worldlinePaymentStatus" />
+                <mo-orders-refunded v-if="activeTab === 'refunded'" :order="order" :paymentStatus="worldlinePaymentStatus" />
+                <mo-orders-canceled v-if="activeTab === 'cancel'" :order="order" :paymentStatus="worldlinePaymentStatus" />
             </template>
 
             <sw-container v-if="transactionStatus" gap="15px">

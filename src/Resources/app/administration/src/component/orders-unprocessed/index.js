@@ -17,6 +17,10 @@ Component.register('mo-orders-unprocessed', {
         transactionId: {
             type: String,
             required: true,
+        },
+        paymentStatus: {
+            type: Array,
+            required: true,
         }
     },
 
@@ -24,18 +28,12 @@ Component.register('mo-orders-unprocessed', {
         return {
             transactionSuccess: {
                 capture: false,
-                refund: false,
                 cancel: false,
             },
-            transactionLogs: '',
-            amountCancelable: 0,
-            amountRefundable: 0,
-            maxAmountCaptureable: 0,
             Selection: [],
             isLoading: false,
             itemPrices: [],
-            amountToCapture: 0,
-            unwatchOrder: null,
+            amountToProcess: 0,
         };
     },
 
@@ -47,21 +45,12 @@ Component.register('mo-orders-unprocessed', {
     },
 
     computed: {
-        transactionId() {
-            for (let i = 0; i < this.order.transactions.length; i += 1) {
-                if (!['cancelled', 'failed'].includes(this.order.transactions[i].stateMachineState.technicalName)) {
-                    var transaction = this.order.transactions[i].customFields;
-                    if (transaction === null) {
-                        return null;
-                    }
-                    return transaction.payment_transaction_id;
-                }
-            }
-            return this.order.transactions.last().customFields.payment_transaction_id;
+        maxAmountToProcess() {
+            return this.paymentStatus.reduce((accumulator, currentValue) => accumulator + (currentValue.unprocessed * currentValue.unitPrice), 0);
         },
 
         orderLineItems() {
-            return this.order.lineItems;
+            return this.paymentStatus.filter(entry => entry.unprocessed > 0);
         },
 
         taxStatus() {
@@ -90,8 +79,15 @@ Component.register('mo-orders-unprocessed', {
         getLineItemColumns() {
             const columnDefinitions = [{
                 property: 'quantity',
-                dataIndex: 'quantity',
+                dataIndex: 'unprocessed',
                 label: 'sw-order.detailBase.columnQuantity',
+                allowResize: false,
+                align: 'right',
+                width: '100px',
+            },{
+                property: 'unprocessed',
+                dataIndex: 'unprocessed',
+                label: 'worldline.transaction-control.table.selected',
                 allowResize: false,
                 align: 'right',
                 width: '150px',
@@ -126,7 +122,7 @@ Component.register('mo-orders-unprocessed', {
         capture() {
             const payload = {
                 transactionId: this.transactionId,
-                amount: this.amountToCapture,
+                amount: this.amountToProcess,
             }
             this.transactionsControl.capture(payload)
                 .then((res) => {
@@ -150,40 +146,11 @@ Component.register('mo-orders-unprocessed', {
                 });
         },
 
-        refund() {
-            this.isLoading = true;
-            const payload = {
-                transactionId: this.transactionId,
-                amount: this.amountRefundable,
-            }
-            this.transactionsControl.refund(payload)
-                .then((res) => {
-                    if (res.success) {
-                        this.transactionSuccess.refund = true;
-                        /*this.createNotificationSuccess({
-                            title: this.$tc('worldline.refund-payment-button.title'),
-                            message: this.$tc('worldline.refund-payment-button.success')
-                        });*/
-                        setTimeout(() => {
-                            location.reload(); // @todo why the reload? Is there a better way?
-                        }, 1000);
-                    } else {
-                        /*this.createNotificationError({
-                            title: this.$tc('worldline.refund-payment-button.title'),
-                            message: this.$tc('worldline.refund-payment-button.error') + res.message
-                        });*/
-                    }
-                })
-                .finally(() => {
-                    this.isLoading = false;
-                });
-        },
-
         cancel() {
             this.isLoading = true;
             const payload = {
                 transactionId: this.transactionId,
-                amount: this.amountCancelable,
+                amount: this.amountToProcess,
             }
             this.transactionsControl.cancel(payload)
                 .then((res) => {
@@ -209,7 +176,7 @@ Component.register('mo-orders-unprocessed', {
         },
 
         setPriceSum() {
-            this.amountToCapture = Math.min(this.itemPrices.reduce((accumulator, currentValue) => accumulator + currentValue), this.maxAmountCaptureable); // @todo only for now until proper value handling
+            this.amountToProcess = Math.min(this.itemPrices.reduce((accumulator, currentValue) => accumulator + currentValue), this.maxAmountToProcess);
         },
 
         setLinePrice(index, amount, price) {

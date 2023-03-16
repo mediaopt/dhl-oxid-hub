@@ -130,6 +130,9 @@
                 "paid": "Paid",
                 "refunded": "Refunded",
                 "cancel": "Canceled"
+            },
+            "table": {
+                "selected": "Selected"
             }
         }
     }

@@ -1,4 +1,4 @@
-<div>
+<sw-container type="row" gap="15px">
     <sw-data-grid
             ref="dataGrid"
             class="sw-order-line-items-grid__data-grid"
@@ -11,11 +11,15 @@
             :is-loading="isLoading"
             :compactMode="false"
     >
-        <template #column-quantity="{ item, itemIndex }">
+        <template #column-unprocessed="{ item, itemIndex }">
             <sw-select-field v-model="Selection[itemIndex]" @change="setLinePrice(itemIndex, $event, item.unitPrice)">
                 <option :value="0">0</option>
-                <option v-for="n in item.quantity" :value="n">{{ n }}</option>
+                <option v-for="n in item.unprocessed" :value="n">{{ n }}</option>
             </sw-select-field>
+        </template>
+
+        <template #column-quantity="{ item }">
+            <span>{{ item.unprocessed }}x</span>
         </template>
 
         <template #column-unitPrice="{ item }">
@@ -27,28 +31,26 @@
         </template>
     </sw-data-grid>
 
-    <sw-container columns="1fr 120px min-content" gap="15px" justify="stretch" align="stretch">
+    <sw-container columns="1fr 120px min-content min-content" gap="15px" justify="stretch" align="stretch">
         <div></div>
-        <sw-text-field :value="amountToCapture | currency(order.currency.shortName, order.itemRounding.decimals)" disabled />
+        <sw-text-field :value="amountToProcess | currency(order.currency.shortName, order.itemRounding.decimals)" disabled />
         <sw-button-process
                 :isLoading="isLoading"
-                :disabled="amountToCapture === 0"
+                :disabled="amountToProcess === 0"
                 :processSuccess="transactionSuccess.capture"
                 variant="ghost"
                 @click="capture"
         >{{ $tc('worldline.capture-payment-button.button') }}</sw-button-process>
 
-        <div></div>
-        <sw-text-field :value="amountCancelable | currency(order.currency.shortName, order.itemRounding.decimals)" disabled />
         <sw-button-process
                 :isLoading="isLoading"
-                :disabled="amountCancelable === 0"
+                :disabled="amountToProcess === 0"
                 :processSuccess="transactionSuccess.cancel"
                 variant="ghost-danger"
                 @click="cancel"
         >{{ $tc('worldline.cancel-payment-button.button') }}</sw-button-process>
 
-        <div></div>
+        {#<div></div>
         <sw-text-field :value="amountRefundable | currency(order.currency.shortName, order.itemRounding.decimals)" disabled />
         <sw-button-process
                 :isLoading="isLoading"
@@ -56,7 +58,7 @@
                 :processSuccess="transactionSuccess.refund"
                 variant="ghost-danger"
                 @click="refund"
-        >{{ $tc('worldline.refund-payment-button.button') }}</sw-button-process>
+        >{{ $tc('worldline.refund-payment-button.button') }}</sw-button-process>#}
 
     </sw-container>
-</div>
+</sw-container>
