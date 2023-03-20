@@ -133,6 +133,9 @@
             },
             "table": {
                 "selected": "Selected"
+            },
+            "buttons": {
+                "adminPay": "Pay for order"
             }
         }
     }

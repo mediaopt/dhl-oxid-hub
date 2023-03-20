@@ -7,7 +7,7 @@
                 class="sw-order-line-items-grid"
                 gap="15px"
         >
-            <sw-tabs @new-item-active="setActiveTab" :small="false">
+            <sw-tabs v-if="transactionStatus" @new-item-active="setActiveTab" :small="false">
                 <template v-for="tab in tabs">
                     <sw-tabs-item :key="tab.name" :name="tab.name" :active="tab.name === activeTab">
                         {{ $tc('worldline.transaction-control.tabs.' + tab.name) }}
@@ -31,6 +31,14 @@
                 <sw-button :isLoading="isLoading" @click="statusCheck">{{ $tc('worldline.check-status-button.button') }}</sw-button>
             </sw-container>
 
+            <sw-button
+                    v-if="isUnpaidAdminOrder"
+                    @click="payByAdmin"
+                    variant="ghost"
+                    :isLoading="isLoading"
+            >
+                {{ $tc('worldline.transaction-control.buttons.adminPay') }}
+            </sw-button>
         </sw-container>
     </sw-card>
 {% endblock %}

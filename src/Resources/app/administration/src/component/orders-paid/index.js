@@ -113,6 +113,17 @@ Component.register('mo-orders-paid', {
                 width: '120px',
             }];
         },
+
+        payloadItems() {
+            const payload = [];
+            this.orderLineItems.forEach((item, index) => {
+                payload.push({
+                    id: item.id,
+                    quantity: this.Selection[index],
+                });
+            });
+            return payload;
+        },
     },
 
     methods: {
@@ -120,6 +131,7 @@ Component.register('mo-orders-paid', {
             const payload = {
                 transactionId: this.transactionId,
                 amount: this.amountToProcess,
+                items: this.payloadItems,
             }
             this.transactionsControl.capture(payload)
                 .then((res) => {
