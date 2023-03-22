@@ -178,7 +178,7 @@ class WorldlineSDKAdapter
     }
 
     /**
-     * @param float $amountTotal
+     * @param int $amountTotal
      * @param string $currencyISO
      * @param int $worldlinePaymentProductId
      * @param OrderEntity|null $orderEntity
@@ -691,23 +691,11 @@ class WorldlineSDKAdapter
         $requestLineItems = [];
         /** @var OrderLineItemEntity $lineItem */
         foreach ($lineItemCollection as $lineItem) {
-            $tax = 0;
-            if ($isNetPrice) {
-                $tax += $lineItem->getPrice()->getCalculatedTaxes()->getAmount();
-            }
-            $totalPrice = (int)round(($lineItem->getPrice()->getTotalPrice() + $tax) * 100);
-            $quantity = $lineItem->getPrice()->getQuantity();
-            $unitPrice = $totalPrice / $quantity;
+            [$totalPrice, $quantity, $unitPrice] = self::getUnitPrice($lineItem, $isNetPrice);
             $requestLineItems[] = $this->createLineItem($lineItem->getLabel(), $currencyISO, $totalPrice, $unitPrice, $quantity);
         }
 
-        $shippingTaxTotal = 0;
-        if ($isNetPrice) {
-            foreach ($shippingPrice->getCalculatedTaxes()->getElements() as $shippingTax) {
-                $shippingTaxTotal += $shippingTax->getTax();
-            }
-        }
-        $shippingPrice = (int)(round($shippingPrice->getTotalPrice() + $shippingTaxTotal) * 100);
+        $shippingPrice = self::getShippingPrice($shippingPrice, $isNetPrice);
         $requestLineItems[] = $this->createLineItem(self::SHIPPING_LABEL, $currencyISO, $shippingPrice, $shippingPrice, 1);
 
         return $requestLineItems;
@@ -784,5 +772,43 @@ class WorldlineSDKAdapter
         $customer->setPersonalInformation($personalInformation);
         $customer->setBillingAddress($this->createAddress($billingAddress));
         return $customer;
+    }
+
+    /**
+     * @param OrderLineItemEntity $lineItem
+     * @param bool $isNetPrice
+     * @return array
+     */
+    public static function getUnitPrice(OrderLineItemEntity $lineItem, bool $isNetPrice): array
+    {
+        $tax = 0;
+        if ($isNetPrice) {
+            $tax += $lineItem->getPrice()->getCalculatedTaxes()->getAmount();
+        }
+        $totalPrice = (int)round(($lineItem->getPrice()->getTotalPrice() + $tax) * 100);
+        $quantity = $lineItem->getPrice()->getQuantity();
+
+        return [
+            $totalPrice,
+            $quantity,
+            $totalPrice / $quantity
+        ];
+    }
+
+    /**
+     * @param CalculatedPrice $shippingPrice
+     * @param bool $isNetPrice
+     * @return int
+     */
+    public static function getShippingPrice(CalculatedPrice $shippingPrice, bool $isNetPrice): int
+    {
+        $shippingTaxTotal = 0;
+        if ($isNetPrice) {
+            foreach ($shippingPrice->getCalculatedTaxes()->getElements() as $shippingTax) {
+                $shippingTaxTotal += $shippingTax->getTax();
+            }
+        }
+
+        return (int)(round($shippingPrice->getTotalPrice() + $shippingTaxTotal) * 100);
     }
 }

@@ -8,6 +8,7 @@
 namespace MoptWorldline\Controller\TransactionsControl;
 
 use Monolog\Logger;
+use MoptWorldline\Adapter\WorldlineSDKAdapter;
 use MoptWorldline\Bootstrap\Form;
 use MoptWorldline\Service\AdminTranslate;
 use MoptWorldline\Service\Payment;
@@ -16,6 +17,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStat
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\Kernel;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -131,6 +133,36 @@ class TransactionsControlController extends AbstractController
 
     /**
      * @Route(
+     *     "/api/_action/transactions-control/getConfig",
+     *     name="api.action.transactions.control.getConfig",
+     *     methods={"POST"}
+     * )
+     */
+    public function getConfig(Request $request, Context $context): JsonResponse
+    {
+        $salesChannelId = $request->request->get('salesChannelId');
+        $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
+        $returnUrl = $adapter->getPluginConfig(Form::RETURN_URL_FIELD);
+
+        $connection = Kernel::getConnection();
+        $qb = $connection->createQueryBuilder();
+        $qb->select('s.access_key')
+            ->from('`sales_channel`', 's')
+            ->where("s.id = UNHEX(:salesChannelId)")
+            ->setParameter('salesChannelId', $salesChannelId);
+        $apiKey = $qb->execute()->fetchAssociative();
+
+        return
+            new JsonResponse([
+                'worldlineOnlinePaymentId' => Payment::FULL_REDIRECT_PAYMENT_METHOD_ID,
+                'adminPayFinishUrl' => $returnUrl,
+                'adminPayErrorUrl' => $returnUrl,
+                'swAccessKey' => $apiKey
+            ]);
+    }
+
+    /**
+     * @Route(
      *     "/api/_action/transactions-control/enableButtons",
      *     name="api.action.transactions.control.enableButtons",
      *     methods={"POST"}
@@ -151,17 +183,27 @@ class TransactionsControlController extends AbstractController
                     $log[] = "$logId $date $amount {$logEntity['readableStatus']}";
                 }
             }
+            $log = implode('\r\n', $log);
+
+            $itemsStatus = [];
+            if (array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_ITEMS_STATUS, $customFields)) {
+                foreach ($customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_ITEMS_STATUS] as $itemEntity) {
+                    $itemEntity['unitPrice'] = $itemEntity['unitPrice'] / 100;
+                    $itemsStatus[] = $itemEntity;
+                }
+            }
+
             [$allowedActions, $allowedAmounts] = Payment::getAllowed($customFields);
         } catch (\Exception $e) {
-            debug($e->getMessage());
-            return $this->response(false,'');
+            return $this->response(false, $e->getMessage());
         }
         return
             new JsonResponse([
                 'success' => true,
                 'message' => $allowedActions,
                 'allowedAmounts' => $allowedAmounts,
-                'log' => $log
+                'log' => $log,
+                'worldlinePaymentStatus' => $itemsStatus
             ]);
     }
 
@@ -176,6 +218,8 @@ class TransactionsControlController extends AbstractController
     private function processPayment(Request $request, Context $context, string $action): JsonResponse
     {
         $hostedCheckoutId = $request->request->get('transactionId');
+        $itemsChanges = $request->request->get('items');
+
         $amount = (int)round($request->request->get('amount') * 100);
         if (!$hostedCheckoutId) {
             $message = AdminTranslate::trans($this->translator->getLocale(), "noTransactionForThisOrder");
@@ -190,7 +234,7 @@ class TransactionsControlController extends AbstractController
 
         Payment::lockOrder($this->requestStack->getSession(), $handler->getOrderId());
         $message = AdminTranslate::trans($this->translator->getLocale(), "failed");
-        if ($result = $handler->$action($hostedCheckoutId, $amount)) {
+        if ($result = $handler->$action($hostedCheckoutId, $amount, $itemsChanges)) {
             $message = AdminTranslate::trans($this->translator->getLocale(), "success");
         }
         Payment::unlockOrder($this->requestStack->getSession(), $handler->getOrderId());

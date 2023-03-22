@@ -75,7 +75,8 @@ class OrderChangesSubscriber implements EventSubscriberInterface
     {
         return [
             HandlePaymentMethodRouteRequestEvent::class => 'setIframeFields',
-            OrderEvents::ORDER_WRITTEN_EVENT => 'onOrderWritten',
+            // 22.03.2023 - should be disabled before Worldline will fix status notifications.
+            //OrderEvents::ORDER_WRITTEN_EVENT => 'onOrderWritten',
         ];
     }
 
@@ -173,17 +174,24 @@ class OrderChangesSubscriber implements EventSubscriberInterface
             $context,
             $this->transactionStateHandler
         );
+        $customFields = $orderTransaction->getCustomFields();
         switch ($state) {
             case StateMachineTransitionActions::ACTION_CANCEL:
             {
                 Payment::lockOrder($this->requestStack->getSession(), $orderId);
-                $paymentHandler->cancelPayment($hostedCheckoutId);
+                $amount = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_CAPTURE_AMOUNT];
+                if ($amount > 0) {
+                    $paymentHandler->cancelPayment($hostedCheckoutId, $amount);
+                }
                 break;
             }
             case StateMachineTransitionActions::ACTION_REFUND:
             {
                 Payment::lockOrder($this->requestStack->getSession(), $orderId);
-                $paymentHandler->refundPayment($hostedCheckoutId);
+                $amount = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_REFUND_AMOUNT];
+                if ($amount > 0) {
+                    $paymentHandler->refundPayment($hostedCheckoutId, $amount);
+                }
                 break;
             }
             default :
