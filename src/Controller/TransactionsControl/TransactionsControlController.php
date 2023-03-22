@@ -183,7 +183,7 @@ class TransactionsControlController extends AbstractController
                     $log[] = "$logId $date $amount {$logEntity['readableStatus']}";
                 }
             }
-            $log = implode('\r\n', $log);
+            $log = implode("\r\n", $log);
 
             $itemsStatus = [];
             if (array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_ITEMS_STATUS, $customFields)) {
