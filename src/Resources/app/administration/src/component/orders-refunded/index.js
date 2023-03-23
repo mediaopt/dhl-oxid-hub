@@ -41,6 +41,10 @@ Component.register('mo-orders-refunded', {
             return this.paymentStatus.filter(entry => entry.refunded > 0);
         },
 
+        hasContent() {
+            return this.orderLineItems.length > 0;
+        },
+
         taxStatus() {
             return get(this.order, 'taxStatus', '');
         },

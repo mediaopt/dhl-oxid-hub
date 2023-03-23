@@ -29,6 +29,8 @@ Component.override('sw-order-detail-base', {
             adminPayErrorUrl: '',
             swAccessKey: '',
             worldlineOnlinePaymentId: '',
+            lockedButtons: false,
+            allowedAmounts: null,
         };
     },
 
@@ -92,6 +94,18 @@ Component.override('sw-order-detail-base', {
             });
         },
 
+        setInitialTab() {
+            if (this.worldlinePaymentStatus.filter(entry => entry.unprocessed > 0).length === 0 ) {
+                if (this.worldlinePaymentStatus.filter(entry => entry.paid > 0).length > 0 ) {
+                    this.activeTab = 'paid';
+                } else if (this.worldlinePaymentStatus.filter(entry => entry.refunded > 0).length > 0 ) {
+                    this.activeTab = 'refunded';
+                } else if (this.worldlinePaymentStatus.filter(entry => entry.canceled > 0).length > 0 ) {
+                    this.activeTab = 'canceled';
+                }
+            }
+        },
+
         initializePanel() {
             this.unwatchOrder();
             this.getPanelConfig();
@@ -104,10 +118,12 @@ Component.override('sw-order-detail-base', {
             }
             this.transactionsControl.enableButtons({'transactionId': this.transactionId}).then((res) => {
                 if (res.success) {
-                    this.transactionStatus = true;
                     this.worldlinePaymentStatus = res.worldlinePaymentStatus;
                     this.transactionLogs = res.log;
-
+                    this.allowedAmounts = res.allowedAmounts;
+                    this.lockedButtons = res.worldlineLockButtons;
+                    this.setInitialTab();
+                    this.transactionStatus = true;
                 } else {
                     this.createNotificationError({
                         title: this.$tc('worldline.check-status-button.title'),

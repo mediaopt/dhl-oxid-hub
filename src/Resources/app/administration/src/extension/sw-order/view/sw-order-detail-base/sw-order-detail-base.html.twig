@@ -15,8 +15,8 @@
                 </template>
             </sw-tabs>
             <template v-if="transactionStatus">
-                <mo-orders-unprocessed v-if="activeTab === 'unprocessed'" :order="order" :transactionId="transactionId" :paymentStatus="worldlinePaymentStatus" />
-                <mo-orders-paid v-if="activeTab === 'paid'" :order="order" :transactionId="transactionId" :paymentStatus="worldlinePaymentStatus" />
+                <mo-orders-unprocessed v-if="activeTab === 'unprocessed'" :order="order" :transactionId="transactionId" :paymentStatus="worldlinePaymentStatus" :maxCapture="allowedAmounts.WorldlineCaptureAmount" :lockedButton="lockedButtons" />
+                <mo-orders-paid v-if="activeTab === 'paid'" :order="order" :transactionId="transactionId" :paymentStatus="worldlinePaymentStatus" :maxRefund="allowedAmounts.WorldlineRefundAmount" />
                 <mo-orders-refunded v-if="activeTab === 'refunded'" :order="order" :paymentStatus="worldlinePaymentStatus" />
                 <mo-orders-canceled v-if="activeTab === 'cancel'" :order="order" :paymentStatus="worldlinePaymentStatus" />
             </template>

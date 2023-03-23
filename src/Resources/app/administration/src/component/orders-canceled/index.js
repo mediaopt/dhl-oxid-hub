@@ -41,6 +41,10 @@ Component.register('mo-orders-canceled', {
             return this.paymentStatus.filter(entry => entry.canceled > 0);
         },
 
+        hasContent() {
+            return this.orderLineItems.length > 0;
+        },
+
         taxStatus() {
             return get(this.order, 'taxStatus', '');
         },

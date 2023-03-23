@@ -21,6 +21,9 @@ Component.register('mo-orders-paid', {
         paymentStatus: {
             type: Array,
             required: true,
+        },
+        maxRefund: {
+            type: Number
         }
     },
 
@@ -43,11 +46,17 @@ Component.register('mo-orders-paid', {
 
     computed: {
         maxAmountToProcess() {
-            return this.paymentStatus.reduce((accumulator, currentValue) => accumulator + (currentValue.paid * currentValue.unitPrice), 0);
+            return !isNaN(this.maxRefund) ?
+                this.maxRefund :
+                this.paymentStatus.reduce((accumulator, currentValue) => accumulator + (currentValue.paid * currentValue.unitPrice), 0);
         },
 
         orderLineItems() {
             return this.paymentStatus.filter(entry => entry.paid > 0);
+        },
+
+        hasContent() {
+            return this.orderLineItems.length > 0;
         },
 
         taxStatus() {
@@ -124,14 +133,10 @@ Component.register('mo-orders-paid', {
                 amount: this.amountToProcess,
                 items: this.payloadItems,
             }
-            this.transactionsControl.capture(payload)
+            this.transactionsControl.refund(payload)
                 .then((res) => {
                     if (res.success) {
                         this.transactionSuccess = true;
-                        this.createNotificationSuccess({
-                            title: this.$tc('worldline.capture-payment-button.title'),
-                            message: this.$tc('worldline.capture-payment-button.success')
-                        });
                         setTimeout(() => {
                             location.reload();
                         }, 1000);

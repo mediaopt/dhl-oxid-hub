@@ -21,6 +21,14 @@ Component.register('mo-orders-unprocessed', {
         paymentStatus: {
             type: Array,
             required: true,
+        },
+        maxCapture: {
+            type: Number,
+            required: true,
+        },
+        lockedButton: {
+            type: Boolean,
+            required: true,
         }
     },
 
@@ -55,6 +63,10 @@ Component.register('mo-orders-unprocessed', {
 
         orderLineItems() {
             return this.paymentStatus.filter(entry => entry.unprocessed > 0);
+        },
+
+        hasContent() {
+            return this.orderLineItems.length > 0;
         },
 
         taxStatus() {
@@ -135,10 +147,6 @@ Component.register('mo-orders-unprocessed', {
                 .then((res) => {
                     if (res.success) {
                         this.transactionSuccess.capture = true;
-                        this.createNotificationSuccess({
-                            title: this.$tc('worldline.capture-payment-button.title'),
-                            message: this.$tc('worldline.capture-payment-button.success')
-                        });
                         setTimeout(() => {
                             location.reload(); // @todo why the reload? Is there a better way?
                         }, 1000);
@@ -164,10 +172,6 @@ Component.register('mo-orders-unprocessed', {
                 .then((res) => {
                     if (res.success) {
                         this.transactionSuccess.refund = true;
-                        this.createNotificationSuccess({
-                            title: this.$tc('worldline.refund-payment-button.title'),
-                            message: this.$tc('worldline.refund-payment-button.success')
-                        });
                         setTimeout(() => {
                             location.reload();
                         }, 1000);

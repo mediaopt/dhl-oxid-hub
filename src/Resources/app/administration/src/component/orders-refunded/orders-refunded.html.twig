@@ -1,5 +1,6 @@
 <sw-container type="row" gap="15px">
     <sw-data-grid
+            v-if="hasContent"
             ref="dataGrid"
             class="sw-order-line-items-grid__data-grid"
             identifier="mo-order-line-item-grid"
@@ -24,8 +25,10 @@
         </template>
     </sw-data-grid>
 
-    <sw-container columns="1fr 120px" gap="15px" justify="stretch" align="stretch">
+    <sw-container v-if="hasContent" columns="1fr 120px" gap="15px" justify="stretch" align="stretch">
         <div></div>
         <sw-text-field :value="totalAmount | currency(order.currency.shortName, order.itemRounding.decimals)" disabled />
     </sw-container>
+
+    <div class="table--no-content" v-if="!hasContent">{{ $tc('worldline.transaction-control.table.empty') }}</div>
 </sw-container>
