@@ -19,7 +19,6 @@ class CronTaskHandler extends ScheduledTaskHandler
     private EntityRepositoryInterface $salesChannelRepository;
     private SystemConfigService $systemConfigService;
     private Logger $logger;
-    private EntityRepositoryInterface $orderTransactionRepository;
     private EntityRepositoryInterface $orderRepository;
     private EntityRepositoryInterface $customerRepository;
     private OrderTransactionStateHandler $transactionStateHandler;
@@ -30,7 +29,6 @@ class CronTaskHandler extends ScheduledTaskHandler
         EntityRepositoryInterface    $salesChannelRepository,
         SystemConfigService          $systemConfigService,
         Logger                       $logger,
-        EntityRepositoryInterface    $orderTransactionRepository,
         EntityRepositoryInterface    $orderRepository,
         EntityRepositoryInterface    $customerRepository,
         OrderTransactionStateHandler $transactionStateHandler,
@@ -40,7 +38,6 @@ class CronTaskHandler extends ScheduledTaskHandler
         $this->salesChannelRepository = $salesChannelRepository;
         $this->systemConfigService = $systemConfigService;
         $this->logger = $logger;
-        $this->orderTransactionRepository = $orderTransactionRepository;
         $this->orderRepository = $orderRepository;
         $this->customerRepository = $customerRepository;
         $this->transactionStateHandler = $transactionStateHandler;
@@ -133,25 +130,24 @@ class CronTaskHandler extends ScheduledTaskHandler
         }
         $hostedCheckoutId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID];
 
-        $orderTransaction = PaymentHandler::getOrderTransaction(
+        $order = PaymentHandler::getOrder(
             Context::createDefaultContext(),
-            $this->orderTransactionRepository,
+            $this->orderRepository,
             $hostedCheckoutId
         );
 
         $paymentHandler = new PaymentHandler(
             $this->systemConfigService,
             $this->logger,
-            $orderTransaction,
+            $order,
             $this->translator,
             $this->orderRepository,
-            $this->orderTransactionRepository,
             $this->customerRepository,
             Context::createDefaultContext(),
             $this->transactionStateHandler
         );
 
-        $amount = (int)round($orderTransaction->getAmount()->getTotalPrice() * 100);
-        $paymentHandler->capturePayment($hostedCheckoutId, $amount);
+        $amount = (int)round($order->getAmountTotal() * 100);
+        $paymentHandler->capturePayment($hostedCheckoutId, $amount, []);
     }
 }

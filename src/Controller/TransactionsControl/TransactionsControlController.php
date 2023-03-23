@@ -32,7 +32,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class TransactionsControlController extends AbstractController
 {
     private SystemConfigService $systemConfigService;
-    private EntityRepositoryInterface $orderTransactionRepository;
     private EntityRepositoryInterface $orderRepository;
     private EntityRepositoryInterface $customerRepository;
     private OrderTransactionStateHandler $transactionStateHandler;
@@ -42,7 +41,6 @@ class TransactionsControlController extends AbstractController
 
     /**
      * @param SystemConfigService $systemConfigService
-     * @param EntityRepositoryInterface $orderTransactionRepository
      * @param EntityRepositoryInterface $orderRepository
      * @param EntityRepositoryInterface $customerRepository
      * @param OrderTransactionStateHandler $transactionStateHandler
@@ -52,7 +50,6 @@ class TransactionsControlController extends AbstractController
      */
     public function __construct(
         SystemConfigService          $systemConfigService,
-        EntityRepositoryInterface    $orderTransactionRepository,
         EntityRepositoryInterface    $orderRepository,
         EntityRepositoryInterface    $customerRepository,
         OrderTransactionStateHandler $transactionStateHandler,
@@ -62,7 +59,6 @@ class TransactionsControlController extends AbstractController
     )
     {
         $this->systemConfigService = $systemConfigService;
-        $this->orderTransactionRepository = $orderTransactionRepository;
         $this->orderRepository = $orderRepository;
         $this->customerRepository = $customerRepository;
         $this->transactionStateHandler = $transactionStateHandler;
@@ -172,9 +168,8 @@ class TransactionsControlController extends AbstractController
     {
         try {
             $hostedCheckoutId = $request->request->get('transactionId');
-            $orderTransaction = PaymentHandler::getOrderTransaction($context, $this->orderTransactionRepository, $hostedCheckoutId);
-
-            $customFields = $orderTransaction->getCustomFields();
+            $order = PaymentHandler::getOrder($context, $this->orderRepository, $hostedCheckoutId);
+            $customFields = $order->getCustomFields();
             $log = [];
             if (array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_LOG, $customFields)) {
                 foreach ($customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_LOG] as $logId => $logEntity) {
@@ -263,15 +258,14 @@ class TransactionsControlController extends AbstractController
      */
     private function getHandler(string $hostedCheckoutId, Context $context): ?PaymentHandler
     {
-        $orderTransaction = PaymentHandler::getOrderTransaction($context, $this->orderTransactionRepository, $hostedCheckoutId);
+        $order = PaymentHandler::getOrder($context, $this->orderRepository, $hostedCheckoutId);
 
         return new PaymentHandler(
             $this->systemConfigService,
             $this->logger,
-            $orderTransaction,
+            $order,
             $this->translator,
             $this->orderRepository,
-            $this->orderTransactionRepository,
             $this->customerRepository,
             $context,
             $this->transactionStateHandler
