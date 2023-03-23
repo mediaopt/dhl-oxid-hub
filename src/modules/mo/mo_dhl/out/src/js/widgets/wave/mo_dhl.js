@@ -246,7 +246,7 @@
             if (!this.isWunschboxAvailable) return;
             var $street = $('input[name="invadr[oxuser__oxstreet]"]');
             var $city = $('input[name="invadr[oxuser__oxcity]"]');
-            var $translationHelper = $('#moDHLWunschpaket');
+            var $translationHelper = $('#moDHLTranslations');
             var translationError = $translationHelper.data('translatefailedblacklist');
 
             [$street, $city].map(function (value) {
@@ -350,8 +350,7 @@
             var validator = new DHLValidator();
             callback({
                 value: value,
-                valid: validator.validateAgainstBlacklist(value),
-                message: $input.next().text()
+                valid: validator.validateAgainstBlacklist(value)
             });
         },
         integrateAddressDropdown: function () {

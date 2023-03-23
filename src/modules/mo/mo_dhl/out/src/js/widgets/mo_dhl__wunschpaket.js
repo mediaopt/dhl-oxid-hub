@@ -159,7 +159,7 @@
             return "<li>" +
                 "<input type='radio' name='moDHLWunschtag' id='wunschtag:" + day + "' value='" + inputValue + "' >" +
                 "<label class='" + labelClass + "' for='wunschtag:" + day + "'>" +
-                (isNone ? $("#moDHLWunschpaket").data("translatenowunschtag") : label) +
+                (isNone ? $("#moDHLTranslations").data("translatenowunschtag") : label) +
                 "</label>" +
                 "</li>";
         },

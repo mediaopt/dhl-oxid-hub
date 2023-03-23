@@ -216,7 +216,7 @@
             var $street = $('input[name="invadr[oxuser__oxstreet]"]');
             var $city = $('input[name="invadr[oxuser__oxcity]"]');
 
-            var $translationHelper = $('#moDHLWunschpaket');
+            var $translationHelper = $('#moDHLTranslations');
             var translationError = $translationHelper.data('translatefailedblacklist');
 
             [$street, $city].map(function (value) {
