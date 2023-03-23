@@ -203,7 +203,8 @@ class TransactionsControlController extends AbstractController
                 'message' => $allowedActions,
                 'allowedAmounts' => $allowedAmounts,
                 'log' => $log,
-                'worldlinePaymentStatus' => $itemsStatus
+                'worldlinePaymentStatus' => $itemsStatus,
+                'worldlineLockButtons' => false,
             ]);
     }
 
