@@ -31,7 +31,11 @@
 
     <span id="moPostnummerErrorMessage">[{oxmultilang ident="MO_DHL__ERROR_POSTNUMMER_MALFORMED"}]</span>
 
-    <div id="moDHLWindow">
+    <div id="moDHLWindow" class="col-xs-12 col-md-6">
+        [{if !$moDHLGoogleMapsKey}]
+        <div class="panel panel-default">
+            <div class="panel-body">
+        [{/if}]
         <h4></h4>
         <address></address>
 
@@ -69,8 +73,16 @@
             </li>
         </div>
 
-        <button class="btn btn-primary submitButton btn-sm pull-left" id="provider_' + provider.id + '"
+        [{if !$moDHLGoogleMapsKey}]
+            </div>
+            <div class="panel-footer">
+        [{/if}]
+        <button class="btn btn-default btn-block submitButton" id="provider_' + provider.id + '"
                 data-dismiss="modal">[{oxmultilang ident="MO_DHL__SELECT"}]</button>
+        [{if !$moDHLGoogleMapsKey}]
+            </div>
+        </div>
+        [{/if}]
 
     </div>
 
@@ -136,7 +148,11 @@
 
             <div class="modal-body">
                 <div id="moDHLErrors" class="status error corners" style="display:none;"></div>
-                <div id="moDHLMap"></div>
+                [{if $moDHLGoogleMapsKey}]
+                    <div id="moDHLMap"></div>
+                [{else}]
+                    <div id="moDHLList"></div>
+                [{/if}]
             </div>
         </div>
     </div>

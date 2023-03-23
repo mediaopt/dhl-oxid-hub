@@ -22,6 +22,21 @@
     display: none !important;
 }
 
+#moDHLList {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#moDHLList .panel {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 20px);
+}
+
+#moDHLList .panel-body {
+    flex: 1 1 auto;
+}
+
 .moShowOnError {
     display: none;
     color: #a94442;
