@@ -10,7 +10,6 @@ use OnlinePayments\Sdk\Domain\CreatePaymentResponse;
 use OnlinePayments\Sdk\Domain\GetHostedTokenizationResponse;
 use OnlinePayments\Sdk\Domain\PaymentDetailsResponse;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -29,10 +28,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class PaymentHandler
 {
     private WorldlineSDKAdapter $adapter;
-    private OrderTransactionEntity $orderTransaction;
+    private OrderEntity $order;
     private TranslatorInterface $translator;
     private EntityRepositoryInterface $orderRepository;
-    private EntityRepositoryInterface $orderTransactionRepository;
     private Context $context;
     private OrderTransactionStateHandler $transactionStateHandler;
     private EntityRepositoryInterface $customerRepository;
@@ -40,10 +38,9 @@ class PaymentHandler
     /**
      * @param SystemConfigService $systemConfigService
      * @param Logger $logger
-     * @param OrderTransactionEntity $orderTransaction
+     * @param OrderEntity $order
      * @param TranslatorInterface $translator
      * @param EntityRepositoryInterface $orderRepository
-     * @param EntityRepositoryInterface $orderTransactionRepository
      * @param EntityRepositoryInterface $customerRepository
      * @param Context $context
      * @param OrderTransactionStateHandler $transactionStateHandler
@@ -51,21 +48,19 @@ class PaymentHandler
     public function __construct(
         SystemConfigService          $systemConfigService,
         Logger                       $logger,
-        OrderTransactionEntity       $orderTransaction,
+        OrderEntity                  $order,
         TranslatorInterface          $translator,
         EntityRepositoryInterface    $orderRepository,
-        EntityRepositoryInterface    $orderTransactionRepository,
         EntityRepositoryInterface    $customerRepository,
         Context                      $context,
         OrderTransactionStateHandler $transactionStateHandler
     )
     {
-        $salesChannelId = $orderTransaction->getOrder()->getSalesChannelId();
+        $salesChannelId = $order->getSalesChannelId();
         $this->adapter = new WorldlineSDKAdapter($systemConfigService, $logger, $salesChannelId);
-        $this->orderTransaction = $orderTransaction;
+        $this->order = $order;
         $this->translator = $translator;
         $this->orderRepository = $orderRepository;
-        $this->orderTransactionRepository = $orderTransactionRepository;
         $this->customerRepository = $customerRepository;
         $this->context = $context;
         $this->transactionStateHandler = $transactionStateHandler;
@@ -76,7 +71,7 @@ class PaymentHandler
      */
     public function getOrderId(): string
     {
-        return $this->orderTransaction->getOrder()->getId();
+        return $this->order->getId();
     }
 
     /**
@@ -100,7 +95,7 @@ class PaymentHandler
      */
     public function createPayment(int $worldlinePaymentMethodId): CreateHostedCheckoutResponse
     {
-        $order = $this->orderTransaction->getOrder();
+        $order = $this->order;
         $orderObject = null;
         if (in_array($worldlinePaymentMethodId, PaymentProducts::PAYMENT_PRODUCT_NEED_DETAILS)) {
             $criteria = new Criteria([$order->getId()]);
@@ -151,7 +146,7 @@ class PaymentHandler
      */
     public function createHostedTokenizationPayment(array $iframeData): CreatePaymentResponse
     {
-        $order = $this->orderTransaction->getOrder();
+        $order = $this->order;
         $amountTotal = (int)round($order->getAmountTotal() * 100);
         $currencyISO = $this->getCurrencyISO();
 
@@ -194,7 +189,7 @@ class PaymentHandler
     public function capturePayment(string $hostedCheckoutId, int $amount, array $itemsChanges): bool
     {
         $status = $this->updatePaymentTransactionStatus($hostedCheckoutId);
-        $customFields = $this->orderTransaction->getCustomFields();
+        $customFields = $this->order->getCustomFields();
 
         if (!in_array($status, Payment::STATUS_PENDING_CAPTURE)) {
             $this->log('operationIsNotPossibleDueToCurrentStatus' . $status, Logger::ERROR);
@@ -245,7 +240,7 @@ class PaymentHandler
             return false;
         }
 
-        $customFields = $this->orderTransaction->getCustomFields();
+        $customFields = $this->order->getCustomFields();
         if ($amount > $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_CAPTURE_AMOUNT]) {
             $this->log('operationIsNotPossibleDueToCurrentStatus' . $status, Logger::ERROR); //todo
             return false;
@@ -305,7 +300,7 @@ class PaymentHandler
             return false;
         }
 
-        $customFields = $this->orderTransaction->getCustomFields();
+        $customFields = $this->order->getCustomFields();
         if ($amount > $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_REFUND_AMOUNT]) {
             $this->log('operationIsNotPossibleDueToCurrentStatus' . $status, Logger::ERROR); //todo
             return false;
@@ -316,7 +311,7 @@ class PaymentHandler
             return false;
         }
 
-        $orderNumber = $this->orderTransaction->getOrder()->getOrderNumber();
+        $orderNumber = $this->order->getOrderNumber();
 
         $refundResponse = $this->adapter->refundPayment(
             $hostedCheckoutId,
@@ -394,7 +389,7 @@ class PaymentHandler
      */
     public function buildOrderItemStatus(): array
     {
-        $orderId = $this->orderTransaction->getOrderId();
+        $orderId = $this->order->getId();
         $criteria = new Criteria([$orderId]);
         $criteria->addAssociation('lineItems')
             ->addAssociation('deliveries.positions.orderLineItem')
@@ -484,7 +479,7 @@ class PaymentHandler
     )
     {
 
-        $currentCustomField = $this->orderTransaction->getCustomFields();
+        $currentCustomField = $this->order->getCustomFields();
         if (!empty($currentCustomField)) {
             $customFields = $currentCustomField;
         }
@@ -529,7 +524,7 @@ class PaymentHandler
      */
     private function compareLog(PaymentDetailsResponse $paymentDetailsResponse): void
     {
-        $customFields = $this->orderTransaction->getCustomFields();
+        $customFields = $this->order->getCustomFields();
         $innerLog = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_LOG];
         $outerLog = $paymentDetailsResponse->getOperations();
 
@@ -563,7 +558,7 @@ class PaymentHandler
             $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_LOG] = $innerLog;
             $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_TRANSACTION_IS_LOCKED] = $needToLock;
             $this->updateDatabase($customFields);
-            $this->orderTransaction->setCustomFields($customFields);
+            $this->order->setCustomFields($customFields);
         }
     }
 
@@ -573,15 +568,7 @@ class PaymentHandler
      */
     private function updateDatabase(array $customFields): void
     {
-        $orderId = $this->getOrderId();
-        $transactionId = $this->orderTransaction->getId();
-        $this->orderTransactionRepository->update([
-            [
-                'id' => $transactionId,
-                'customFields' => $customFields
-            ]
-        ], $this->context);
-
+        $orderId = $this->order->getId();
         $this->orderRepository->update([
             [
                 'id' => $orderId,
@@ -599,7 +586,7 @@ class PaymentHandler
     {
         // 22.03.2023 - should be disabled before Worldline will fix status notifications.
         return;
-        $orderTransactionId = $this->orderTransaction->getId();
+        /*$orderTransactionId = $this->order->getTransactions()->last()->getId();
         $orderTransactionState = $this->orderTransaction->getStateMachineState()->getTechnicalName();
 
         switch ($statusCode) {
@@ -688,23 +675,23 @@ class PaymentHandler
             {
                 break;
             }
-        }
+        }*/
     }
 
     /**
      * @param Context $context
-     * @param EntityRepositoryInterface $orderTransactionRepository
+     * @param EntityRepositoryInterface $orderRepository
      * @param string $hostedCheckoutId
-     * @return OrderTransactionEntity|null
+     * @return OrderEntity|null
      */
-    public static function getOrderTransaction(
+    public static function getOrder(
         Context                   $context,
-        EntityRepositoryInterface $orderTransactionRepository,
+        EntityRepositoryInterface $orderRepository,
         string                    $hostedCheckoutId
-    ): ?OrderTransactionEntity
+    ): ?OrderEntity
     {
         $criteria = new Criteria();
-        $criteria->addAssociation('order');
+        $criteria->addAssociation('transactions');
         $criteria->addFilter(
             new MultiFilter(
                 MultiFilter::CONNECTION_AND,
@@ -726,14 +713,14 @@ class PaymentHandler
             )
         );
 
-        /** @var OrderTransactionEntity|null $orderTransaction */
-        $orderTransaction = $orderTransactionRepository->search($criteria, $context)->getEntities()->first();
+        /** @var OrderEntity|null $order */
+        $order = $orderRepository->search($criteria, $context)->getEntities()->first();
 
-        if ($orderTransaction === null) {
+        if ($order === null) {
             throw new InvalidTransactionException('');
         }
 
-        return $orderTransaction;
+        return $order;
     }
 
     /**
@@ -755,7 +742,7 @@ class PaymentHandler
     {
         $additionalData = array_merge(
             [$additionalData],
-            ['orderNumber' => $this->orderTransaction->getOrder()->getOrderNumber()]
+            ['orderNumber' => $this->order->getOrderNumber()]
         );
 
         $this->adapter->log(
@@ -772,7 +759,7 @@ class PaymentHandler
      */
     private function getCurrencyISO()
     {
-        $currencyId = $this->orderTransaction->getOrder()->getCurrencyId();
+        $currencyId = $this->order->getCurrencyId();
 
         $connection = Kernel::getConnection();
         $sql = "SELECT iso_code  FROM `currency` WHERE id = UNHEX('$currencyId')";
@@ -825,7 +812,7 @@ class PaymentHandler
             [$token, $paymentProduct] = $this->createPaymentProduct($hostedTokenization);
         }
 
-        $customerId = $this->orderTransaction->getOrder()->getOrderCustomer()->getCustomerId();
+        $customerId = $this->order->getOrderCustomer()->getCustomerId();
         $customer = $this->customerRepository->search(new Criteria([$customerId]), $this->context);
         $customFields = $customer->first()->getCustomFields();
         $customFields[Form::CUSTOM_FIELD_WORLDLINE_CUSTOMER_SAVED_PAYMENT_CARD_TOKEN][$token] = $paymentProduct;
