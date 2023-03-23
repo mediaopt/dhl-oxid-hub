@@ -222,7 +222,7 @@ class TransactionsControlController extends AbstractController
             return $this->response(false, $message);
         }
         if (!$amount || $amount < 0) {
-            $message = AdminTranslate::trans($this->translator->getLocale(), "wrongAmountInRequest");//todo
+            $message = AdminTranslate::trans($this->translator->getLocale(), "wrongAmountRequested");
             return $this->response(false, $message);
         }
 
