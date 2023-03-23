@@ -146,6 +146,7 @@
                         self.dhl.toRegularAddress();
                         break;
                 }
+                self.handleDeliveryAddresses();
                 if (self.isWunschboxAvailable) {
                     mo_dhl__wunschpaket.showOrHideWunschbox();
                 }
@@ -255,6 +256,23 @@
                 value.jqBootstrapValidation();
             });
         },
+        handleDeliveryAddresses: function() {
+            if (!this.isWunschboxAvailable) return;
+            var $street = $('input[name="deladr[oxaddress__oxstreet]"]');
+            var $city = $('input[name="deladr[oxaddress__oxcity]"]');
+            var $translationHelper = $('#moDHLTranslations');
+            var translationError = $translationHelper.data('translatefailedblacklist');
+
+            [$street, $city].map(function (value) {
+                value.data('validation-callback-callback', 'mo_dhl.validatePreferredAddress');
+                value.data('validation-callback-message', translationError);
+                if (mo_dhl.dhl.getState() === 'regular') {
+                    value.jqBootstrapValidation();
+                } else {
+                    value.jqBootstrapValidation("destroy");
+                }
+            });
+        },
         initialize: function (isWunschboxAvailable) {
             var self = this;
             self.isWunschboxAvailable = isWunschboxAvailable;
@@ -267,6 +285,7 @@
             this.addShippingAddressListener();
             this.setInitialState();
             this.handleInvoiceAddresses();
+            this.handleDeliveryAddresses();
 
             this.rearrangeAddresses();
             this.integrateAddressDropdown();
