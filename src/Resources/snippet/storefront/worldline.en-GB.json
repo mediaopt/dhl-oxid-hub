@@ -132,10 +132,12 @@
                 "cancel": "Canceled"
             },
             "table": {
-                "selected": "Selected"
+                "selected": "Selected",
+                "unitPrice": "Unit Price"
             },
             "buttons": {
-                "adminPay": "Pay for order"
+                "adminPay": "Pay for order",
+                "error": "Something went wrong"
             }
         }
     }

@@ -46,16 +46,7 @@ Component.register('mo-orders-refunded', {
         },
 
         unitPriceLabel() {
-            return 'Unit Price';
-            if (this.taxStatus === 'net') {
-                return this.$tc('sw-order.detailBase.columnPriceNet');
-            }
-
-            if (this.taxStatus === 'tax-free') {
-                return this.$tc('sw-order.detailBase.columnPriceTaxFree');
-            }
-
-            return this.$tc('sw-order.detailBase.columnPriceGross');
+            return this.$tc('worldline.transaction-control.table.unitPrice');
         },
 
         linePriceLabel() {

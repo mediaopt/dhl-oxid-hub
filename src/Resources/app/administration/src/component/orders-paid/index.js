@@ -55,16 +55,7 @@ Component.register('mo-orders-paid', {
         },
 
         unitPriceLabel() {
-            return 'Unit Price';
-            if (this.taxStatus === 'net') {
-                return this.$tc('sw-order.detailBase.columnPriceNet');
-            }
-
-            if (this.taxStatus === 'tax-free') {
-                return this.$tc('sw-order.detailBase.columnPriceTaxFree');
-            }
-
-            return this.$tc('sw-order.detailBase.columnPriceGross');
+            return this.$tc('worldline.transaction-control.table.unitPrice');
         },
 
         linePriceLabel() {
@@ -137,18 +128,18 @@ Component.register('mo-orders-paid', {
                 .then((res) => {
                     if (res.success) {
                         this.transactionSuccess = true;
-                        /*this.createNotificationSuccess({
+                        this.createNotificationSuccess({
                             title: this.$tc('worldline.capture-payment-button.title'),
                             message: this.$tc('worldline.capture-payment-button.success')
-                        });*/
+                        });
                         setTimeout(() => {
-                            location.reload(); // @todo why the reload? Is there a better way?
+                            location.reload();
                         }, 1000);
                     } else {
-                        /*this.createNotificationError({
+                        this.createNotificationError({
                             title: this.$tc('worldline.capture-payment-button.title'),
                             message: this.$tc('worldline.capture-payment-button.error') + res.message
-                        });*/
+                        });
                     }
                 })
                 .finally(() => {

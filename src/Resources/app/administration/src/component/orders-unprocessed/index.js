@@ -45,6 +45,10 @@ Component.register('mo-orders-unprocessed', {
     },
 
     computed: {
+        totalSelections() {
+            return this.Selection.reduce((prev, current) => prev + current, 0);
+        },
+
         maxAmountToProcess() {
             return this.paymentStatus.reduce((accumulator, currentValue) => accumulator + (currentValue.unprocessed * currentValue.unitPrice), 0);
         },
@@ -58,16 +62,7 @@ Component.register('mo-orders-unprocessed', {
         },
 
         unitPriceLabel() {
-            return 'Unit Price';
-            if (this.taxStatus === 'net') {
-                return this.$tc('sw-order.detailBase.columnPriceNet');
-            }
-
-            if (this.taxStatus === 'tax-free') {
-                return this.$tc('sw-order.detailBase.columnPriceTaxFree');
-            }
-
-            return this.$tc('sw-order.detailBase.columnPriceGross');
+            return this.$tc('worldline.transaction-control.table.unitPrice');
         },
 
         linePriceLabel() {
@@ -136,24 +131,22 @@ Component.register('mo-orders-unprocessed', {
                 amount: this.amountToProcess,
                 items: this.payloadItems,
             }
-            console.log(payload)
-            return;
             this.transactionsControl.capture(payload)
                 .then((res) => {
                     if (res.success) {
                         this.transactionSuccess.capture = true;
-                        /*this.createNotificationSuccess({
+                        this.createNotificationSuccess({
                             title: this.$tc('worldline.capture-payment-button.title'),
                             message: this.$tc('worldline.capture-payment-button.success')
-                        });*/
+                        });
                         setTimeout(() => {
                             location.reload(); // @todo why the reload? Is there a better way?
                         }, 1000);
                     } else {
-                        /*this.createNotificationError({
+                        this.createNotificationError({
                             title: this.$tc('worldline.capture-payment-button.title'),
                             message: this.$tc('worldline.capture-payment-button.error') + res.message
-                        });*/
+                        });
                     }
                 })
                 .finally(() => {
@@ -171,18 +164,18 @@ Component.register('mo-orders-unprocessed', {
                 .then((res) => {
                     if (res.success) {
                         this.transactionSuccess.refund = true;
-                        /*this.createNotificationSuccess({
+                        this.createNotificationSuccess({
                             title: this.$tc('worldline.refund-payment-button.title'),
                             message: this.$tc('worldline.refund-payment-button.success')
-                        });*/
+                        });
                         setTimeout(() => {
-                            location.reload(); // @todo why the reload? Is there a better way?
+                            location.reload();
                         }, 1000);
                     } else {
-                        /*this.createNotificationError({
+                        this.createNotificationError({
                             title: this.$tc('worldline.refund-payment-button.title'),
                             message: this.$tc('worldline.refund-payment-button.error') + res.message
-                        });*/
+                        });
                     }
                 })
                 .finally(() => {
@@ -197,6 +190,10 @@ Component.register('mo-orders-unprocessed', {
         setLinePrice(index, amount, price) {
             this.itemPrices[index] = price * amount;
             this.setPriceSum();
+        },
+
+        setCustomAmount(value) {
+            this.amountToProcess = value;
         },
     },
 

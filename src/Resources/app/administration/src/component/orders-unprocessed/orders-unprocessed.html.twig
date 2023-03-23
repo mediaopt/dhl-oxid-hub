@@ -33,10 +33,10 @@
 
     <sw-container columns="1fr 120px min-content min-content" gap="15px" justify="stretch" align="stretch">
         <div></div>
-        <sw-text-field :value="amountToProcess | currency(order.currency.shortName, order.itemRounding.decimals)" disabled />
+        <sw-number-field @change="setCustomAmount" :value="amountToProcess" :min="0" :max="maxAmountToProcess" :fillDigits="true" />
         <sw-button-process
                 :isLoading="isLoading"
-                :disabled="amountToProcess === 0"
+                :disabled="totalSelections === 0"
                 :processSuccess="transactionSuccess.capture"
                 variant="ghost"
                 @click="capture"
@@ -44,21 +44,11 @@
 
         <sw-button-process
                 :isLoading="isLoading"
-                :disabled="amountToProcess === 0"
+                :disabled="totalSelections === 0"
                 :processSuccess="transactionSuccess.cancel"
                 variant="ghost-danger"
                 @click="cancel"
         >{{ $tc('worldline.cancel-payment-button.button') }}</sw-button-process>
-
-        {#<div></div>
-        <sw-text-field :value="amountRefundable | currency(order.currency.shortName, order.itemRounding.decimals)" disabled />
-        <sw-button-process
-                :isLoading="isLoading"
-                :disabled="amountRefundable === 0"
-                :processSuccess="transactionSuccess.refund"
-                variant="ghost-danger"
-                @click="refund"
-        >{{ $tc('worldline.refund-payment-button.button') }}</sw-button-process>#}
 
     </sw-container>
 </sw-container>
