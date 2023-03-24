@@ -3,6 +3,7 @@
 namespace MoptWorldline\Adapter;
 
 use Monolog\Logger;
+use MoptWorldline\Service\Payment;
 use MoptWorldline\Service\PaymentProducts;
 use OnlinePayments\Sdk\DataObject;
 use OnlinePayments\Sdk\Domain\AddressPersonal;
@@ -207,6 +208,10 @@ class WorldlineSDKAdapter
         $hostedCheckoutSpecificInput->setReturnUrl($returnUrl);
         $hostedCheckoutSpecificInput->setVariant($fullRedirectTemplateName);
         $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
+        $captureConfig = $this->getPluginConfig(Form::AUTO_CAPTURE);
+        if ($captureConfig === Form::AUTO_CAPTURE_IMMEDIATELY) {
+            $cardPaymentMethodSpecificInput->setAuthorizationMode(Payment::DIRECT_SALE);
+        }
 
         $hostedCheckoutRequest = new CreateHostedCheckoutRequest();
         if ($worldlinePaymentProductId != 0) {
@@ -257,7 +262,7 @@ class WorldlineSDKAdapter
         switch ($worldlinePaymentProductId) {
             case PaymentProducts::PAYMENT_PRODUCT_INTERSOLVE:
             {
-                $cardPaymentMethodSpecificInput->setAuthorizationMode('SALE');
+                $cardPaymentMethodSpecificInput->setAuthorizationMode(Payment::DIRECT_SALE);
                 $hostedCheckoutSpecificInput->setIsRecurring(false);
                 break;
             }
@@ -375,7 +380,11 @@ class WorldlineSDKAdapter
         $threeDSecure->setChallengeIndicator('challenge-required');
 
         $cardPaymentMethodSpecificInput = new CardPaymentMethodSpecificInput();
-        $cardPaymentMethodSpecificInput->setAuthorizationMode("FINAL_AUTHORIZATION");
+        $cardPaymentMethodSpecificInput->setAuthorizationMode(Payment::FINAL_AUTHORIZATION);
+        $captureConfig = $this->getPluginConfig(Form::AUTO_CAPTURE);
+        if ($captureConfig === Form::AUTO_CAPTURE_IMMEDIATELY) {
+            $cardPaymentMethodSpecificInput->setAuthorizationMode(Payment::DIRECT_SALE);
+        }
         $cardPaymentMethodSpecificInput->setToken($token);
         $cardPaymentMethodSpecificInput->setPaymentProductId($paymentProductId);
         $cardPaymentMethodSpecificInput->setTokenize(false);

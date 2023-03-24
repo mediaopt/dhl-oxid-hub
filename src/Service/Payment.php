@@ -64,6 +64,9 @@ class Payment implements AsynchronousPaymentHandlerInterface
         self::SAVED_CARD_PAYMENT_METHOD_ID
     ];
 
+    const DIRECT_SALE = 'SALE';
+    const FINAL_AUTHORIZATION = 'FINAL_AUTHORIZATION';
+
     private SystemConfigService $systemConfigService;
     private EntityRepositoryInterface $orderRepository;
     private EntityRepositoryInterface $customerRepository;
@@ -169,6 +172,7 @@ class Payment implements AsynchronousPaymentHandlerInterface
      * @param RequestDataBag $dataBag
      * @param SalesChannelContext $salesChannelContext
      * @return RedirectResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function pay(AsyncPaymentTransactionStruct $transaction, RequestDataBag $dataBag, SalesChannelContext $salesChannelContext): RedirectResponse
     {
