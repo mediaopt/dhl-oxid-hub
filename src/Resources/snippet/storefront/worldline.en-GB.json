@@ -131,7 +131,7 @@
                 "unprocessed": "Unprocessed",
                 "paid": "Paid",
                 "refunded": "Refunded",
-                "cancel": "Canceled"
+                "canceled": "Canceled"
             },
             "table": {
                 "selected": "Selected",

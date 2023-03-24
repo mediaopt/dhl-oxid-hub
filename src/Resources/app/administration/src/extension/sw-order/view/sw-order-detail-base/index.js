@@ -17,7 +17,7 @@ Component.override('sw-order-detail-base', {
                 {name: 'unprocessed'},
                 {name: 'paid'},
                 {name: 'refunded'},
-                {name: 'cancel'},
+                {name: 'canceled'},
             ],
             transactionStatus: false,
             transactionLogs: '',
