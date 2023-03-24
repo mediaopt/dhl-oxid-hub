@@ -497,7 +497,7 @@ class PaymentHandler
             {
                 foreach ($changes as $itemChange) {
                     $original[$itemChange['id']][$process] += $itemChange['quantity'];
-                    $original[$itemChange['id']]['canceled'] -= $itemChange['quantity'];
+                    $original[$itemChange['id']]['paid'] -= $itemChange['quantity'];
                 }
                 break;
             }
