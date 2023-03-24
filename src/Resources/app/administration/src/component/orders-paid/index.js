@@ -141,10 +141,10 @@ Component.register('mo-orders-paid', {
                             location.reload();
                         }, 1000);
                     } else {
-                        this.createNotificationError({
+                        /*this.createNotificationError({
                             title: this.$tc('worldline.capture-payment-button.title'),
                             message: this.$tc('worldline.capture-payment-button.error') + res.message
-                        });
+                        });*/
                     }
                 })
                 .finally(() => {

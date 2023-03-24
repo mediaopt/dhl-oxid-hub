@@ -151,10 +151,10 @@ Component.register('mo-orders-unprocessed', {
                             location.reload(); // @todo why the reload? Is there a better way?
                         }, 1000);
                     } else {
-                        this.createNotificationError({
+                        /*this.createNotificationError({
                             title: this.$tc('worldline.capture-payment-button.title'),
                             message: this.$tc('worldline.capture-payment-button.error') + res.message
-                        });
+                        });*/
                     }
                 })
                 .finally(() => {
@@ -176,10 +176,10 @@ Component.register('mo-orders-unprocessed', {
                             location.reload();
                         }, 1000);
                     } else {
-                        this.createNotificationError({
+                        /*this.createNotificationError({
                             title: this.$tc('worldline.refund-payment-button.title'),
                             message: this.$tc('worldline.refund-payment-button.error') + res.message
-                        });
+                        });*/
                     }
                 })
                 .finally(() => {
