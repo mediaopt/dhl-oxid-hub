@@ -13,9 +13,12 @@ use MoptWorldline\Bootstrap\Form;
 use MoptWorldline\Service\AdminTranslate;
 use MoptWorldline\Service\Payment;
 use MoptWorldline\Service\PaymentHandler;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStateHandler;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Kernel;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -136,21 +139,30 @@ class TransactionsControlController extends AbstractController
      */
     public function getConfig(Request $request, Context $context): JsonResponse
     {
-        $salesChannelId = $request->request->get('salesChannelId');
+        $orderId = $request->request->get('orderId');
+
+        $criteria = new Criteria([$orderId]);
+        $criteria->addAssociation('transactions.paymentMethod')
+            ->addAssociation('salesChannel');
+        /** @var OrderEntity $orderEntity */
+        $orderEntity = $this->orderRepository->search($criteria, $context)->first();
+        /** @var OrderTransactionEntity $transaction */
+        $transaction = $orderEntity->getTransactions()->last();
+        $customFields = $transaction->getPaymentMethod()->getCustomFields();
+        $isFullRedirectMethod = false;
+        if (array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID, $customFields)) {
+            $isFullRedirectMethod = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID] == Payment::FULL_REDIRECT_PAYMENT_METHOD_ID;
+        }
+
+        $salesChannelId = $orderEntity->getSalesChannelId();
+
         $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         $returnUrl = $adapter->getPluginConfig(Form::RETURN_URL_FIELD);
-
-        $connection = Kernel::getConnection();
-        $qb = $connection->createQueryBuilder();
-        $qb->select('s.access_key')
-            ->from('`sales_channel`', 's')
-            ->where("s.id = UNHEX(:salesChannelId)")
-            ->setParameter('salesChannelId', $salesChannelId);
-        $apiKey = $qb->execute()->fetchAssociative();
+        $apiKey = $orderEntity->getSalesChannel()->getAccessKey();
 
         return
             new JsonResponse([
-                'worldlineOnlinePaymentId' => Payment::FULL_REDIRECT_PAYMENT_METHOD_ID,
+                'isFullRedirectMethod' => $isFullRedirectMethod,
                 'adminPayFinishUrl' => $returnUrl,
                 'adminPayErrorUrl' => $returnUrl,
                 'swAccessKey' => $apiKey
