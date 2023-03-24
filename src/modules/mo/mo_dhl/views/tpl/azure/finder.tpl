@@ -30,7 +30,7 @@
     <a id="moDHLFind"
        href="[{$oViewConf->getSslSelfLink()}]cl=MoDHLFinder"></a>
 
-    <div id="moDHLWindow">
+    <div id="moDHLWindow" class="moDHLWindowAzure">
         <h4></h4>
         <address></address>
 
@@ -123,7 +123,11 @@
         </div>
     </form>
     <div id="moDHLErrors" class="status error corners" style="display:none;"></div>
-    <div id="moDHLMap">
+    [{if $moDHLGoogleMapsKey}]
+    <div id="moDHLMap"></div>
+    [{else}]
+    <div id="moDHLList"></div>
+    [{/if}]
     </div>
 </div>
 

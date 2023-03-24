@@ -27,6 +27,14 @@
     flex-wrap: wrap;
 }
 
+#moDHLList  .moDHLWindowAzure {
+    width: calc(50% - 42px);
+    border: solid 1px;
+    padding: 10px;
+    margin: 10px;
+}
+
+
 #moDHLList .panel {
     display: flex;
     flex-direction: column;

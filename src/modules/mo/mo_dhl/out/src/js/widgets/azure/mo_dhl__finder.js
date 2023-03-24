@@ -79,6 +79,14 @@
                     informationWindow.find('ul').append(newTemplate.html());
                 }
             }
+            if (!self.tailorer.dhlfinder.usesGoogleMaps) {
+                $('#moDHLList').append(informationWindow);
+                $('#provider_' + provider.id).click(function () {
+                    mo_dhl.apply(provider);
+                    $("#moDHLFinder").dialog("close");
+                });
+                return;
+            }
 
             var info = new google.maps.InfoWindow({
                 content: informationWindow.html()
