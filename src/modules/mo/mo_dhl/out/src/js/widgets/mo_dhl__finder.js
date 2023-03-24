@@ -1,5 +1,6 @@
-DHLFinder = function ($, tailorer) {
+DHLFinder = function ($, tailorer, googleMapsAPIKey) {
     this.tailorer = tailorer;
+    this.googleMapsAPIKey = googleMapsAPIKey;
     this.usesGoogleMaps = false;
 
     this.addressObject = function (locality, street, countryIso2Code) {
@@ -12,15 +13,6 @@ DHLFinder = function ($, tailorer) {
             return (self.locality && self.street && self.countryIso2Code) === null
         }
     };
-
-    this.resizeMap = function () {
-        var self = this;
-        if (!self.usesGoogleMaps) {
-            return;
-        }
-        google.maps.event.trigger(self.map, 'resize');
-    };
-
     this.findByLatLng = function () {
         var self = this;
         if (self.tailorer.busyFinder) {
@@ -55,11 +47,20 @@ DHLFinder = function ($, tailorer) {
 
     this.initializePopup = function () {
         var self = this;
-        var mapDiv = document.getElementById('moDHLMap');
-        self.usesGoogleMaps = !!mapDiv;
-        if (!self.usesGoogleMaps) {
-            return;
+        self.usesGoogleMaps = !!self.googleMapsAPIKey;
+        if (self.googleMapsAPIKey) {
+            var script = document.createElement('script');
+            script.src = 'https://maps.googleapis.com/maps/api/js?libraries=geometry&key=' + self.googleMapsAPIKey + '&callback=initMap';
+            script.async = true;
+            window.initMap = self.initMap;
+            document.head.appendChild(script);
+        } else {
+            self.preFillInputs();
         }
+    },
+    this.initMap = function () {
+        var self = mo_dhl.dhlfinder;
+        var mapDiv = document.getElementById('moDHLMap');
         var mapZoomThreshold = 14;
         self.map = new google.maps.Map(mapDiv, {
             center: {lat: 51.16591, lng: 10.451526},
@@ -79,6 +80,7 @@ DHLFinder = function ($, tailorer) {
                 self.findByLatLng();
             }
         });
+        self.preFillInputs();
     };
 
     this.preFillInputs = function () {

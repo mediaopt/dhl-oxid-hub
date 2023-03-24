@@ -12,14 +12,10 @@
             finderButton
                 .click(function () {
                     self.tailorer.dhlfinder.initializePopup();
-                    self.tailorer.dhlfinder.preFillInputs();
                 });
             $("#showShipAddress")
                 .parent()
                 .after(finderButton.parent());
-            $('#moDHLFinder').on('shown.bs.modal', function () {
-                self.tailorer.dhlfinder.resizeMap();
-            });
         },
         initialize: function (tailorer) {
             var self = this;
