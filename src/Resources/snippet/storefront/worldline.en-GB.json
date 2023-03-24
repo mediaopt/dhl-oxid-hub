@@ -135,7 +135,8 @@
             },
             "table": {
                 "selected": "Selected",
-                "unitPrice": "Unit Price"
+                "unitPrice": "Unit Price",
+                "empty": "No items with current status in order"
             },
             "buttons": {
                 "adminPay": "Pay for order",

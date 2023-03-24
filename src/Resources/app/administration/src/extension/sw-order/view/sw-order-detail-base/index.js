@@ -28,7 +28,9 @@ Component.override('sw-order-detail-base', {
             adminPayFinishUrl: '',
             adminPayErrorUrl: '',
             swAccessKey: '',
-            worldlineOnlinePaymentId: '',
+            isWorldlineOnlinePayment: false,
+            lockedButtons: false,
+            allowedAmounts: null,
         };
     },
 
@@ -46,10 +48,10 @@ Component.override('sw-order-detail-base', {
         },
 
         paymentMethod() {
-            return this.order.customFields?.worldline_payment_method_id;
+            return this.order.transactions.last().paymentMethod.customFields.worldline_payment_method_id;
         },
 
-        transactionStatus() {
+        transactionStatusId() {
             return this.order.customFields?.payment_transaction_status;
         },
 
@@ -57,21 +59,17 @@ Component.override('sw-order-detail-base', {
             return this.order.id;
         },
 
-        isWorldlineOnlinePayment() {
-            return this.paymentMethod === this.worldlineOnlinePaymentId;
-        },
-
         isAdminOrder() {
             return this.order.createdBy !== null;
         },
 
         isNoTransactionPresent() {
-            return this.transactionId === null;
+            return !this.transactionId;
         },
 
         isNoCompleteTransactionPresent() {
             if (this.isNoTransactionPresent) return true;
-            return this.transactionStatus === '0';
+            return this.transactionStatusId == 0;
         },
     },
 
@@ -81,15 +79,27 @@ Component.override('sw-order-detail-base', {
         },
 
         getPanelConfig() {
-            this.transactionsControl.getConfig({'salesChannelId': this.order.salesChannelId}).then((res) => {
+            this.transactionsControl.getConfig({'orderId': this.order.id}).then((res) => {
                 this.adminPayFinishUrl = res.adminPayFinishUrl;
                 this.adminPayErrorUrl = res.adminPayErrorUrl;
-                this.worldlineOnlinePaymentId = res.worldlineOnlinePaymentId;
+                this.isWorldlineOnlinePayment = res.isFullRedirectMethod;
                 this.swAccessKey = res.swAccessKey;
             }).finally(() => {
                 this.isUnpaidAdminOrder = (this.isAdminOrder && this.isWorldlineOnlinePayment && this.isNoCompleteTransactionPresent);
                 this.statusCheck();
             });
+        },
+
+        setInitialTab() {
+            if (this.worldlinePaymentStatus.filter(entry => entry.unprocessed > 0).length === 0 ) {
+                if (this.worldlinePaymentStatus.filter(entry => entry.paid > 0).length > 0 ) {
+                    this.activeTab = 'paid';
+                } else if (this.worldlinePaymentStatus.filter(entry => entry.refunded > 0).length > 0 ) {
+                    this.activeTab = 'refunded';
+                } else if (this.worldlinePaymentStatus.filter(entry => entry.canceled > 0).length > 0 ) {
+                    this.activeTab = 'canceled';
+                }
+            }
         },
 
         initializePanel() {
@@ -104,10 +114,12 @@ Component.override('sw-order-detail-base', {
             }
             this.transactionsControl.enableButtons({'transactionId': this.transactionId}).then((res) => {
                 if (res.success) {
-                    this.transactionStatus = true;
                     this.worldlinePaymentStatus = res.worldlinePaymentStatus;
                     this.transactionLogs = res.log;
-
+                    this.allowedAmounts = res.allowedAmounts;
+                    this.lockedButtons = res.worldlineLockButtons;
+                    this.setInitialTab();
+                    this.transactionStatus = true;
                 } else {
                     this.createNotificationError({
                         title: this.$tc('worldline.check-status-button.title'),
