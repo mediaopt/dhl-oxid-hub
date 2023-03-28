@@ -196,14 +196,14 @@
             var availableAddresses = $(".dd-available-addresses");
             if (!availableAddresses.is(":visible")) {
                 $("#showShipAddress").change();
-                return;
+                var shippingAddressText = $("[name='deladr[oxaddress__oxstreet]']").val()
+            } else {
+                var shippingAddressText = availableAddresses
+                  .find("input:checked").first()
+                  .parents(".panel-footer")
+                  .siblings()
+                  .text();
             }
-
-            var shippingAddressText = availableAddresses
-                .find("input:checked").first()
-                .parents(".panel-footer")
-                .siblings()
-                .text();
 
             if (shippingAddressText.includes("Postfiliale") || shippingAddressText.includes("Filiale")) {
                 this.dhl.state = "postfiliale";
