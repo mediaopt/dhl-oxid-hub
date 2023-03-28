@@ -9,7 +9,6 @@
                 .oxModalPopup({target: '#moDHLFinder'})
                 .click(function () {
                     self.tailorer.dhlfinder.initializePopup();
-                    self.tailorer.dhlfinder.preFillInputs();
                 });
             $("#showShipAddress").parent().after(finderButton.parent());
         },
