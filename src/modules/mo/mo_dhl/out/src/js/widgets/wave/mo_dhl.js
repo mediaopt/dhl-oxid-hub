@@ -361,8 +361,8 @@
             });
 
         },
-        initializeFinder: function () {
-            this.dhlfinder = new DHLFinder($, this);
+        initializeFinder: function (googleMapsAPIKey) {
+            this.dhlfinder = new DHLFinder($, this, googleMapsAPIKey);
             mo_dhl__finder.initialize(this);
         },
         validatePreferredAddress: function ($input, value, callback) {

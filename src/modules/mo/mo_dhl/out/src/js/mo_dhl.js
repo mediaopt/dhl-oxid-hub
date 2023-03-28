@@ -18,7 +18,6 @@ Empfaengerservices = function ($, tailorer) {
     this.openModal = function () {
         $('#moDHLFinder').modal();
         this.tailorer.dhlfinder.initializePopup();
-        this.tailorer.dhlfinder.preFillInputs();
     };
 
     this.toRegularAddress = function () {

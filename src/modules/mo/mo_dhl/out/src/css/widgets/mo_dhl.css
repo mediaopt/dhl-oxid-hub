@@ -22,6 +22,29 @@
     display: none !important;
 }
 
+#moDHLList {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#moDHLList  .moDHLWindowAzure {
+    width: calc(50% - 42px);
+    border: solid 1px;
+    padding: 10px;
+    margin: 10px;
+}
+
+
+#moDHLList .panel {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 20px);
+}
+
+#moDHLList .panel-body {
+    flex: 1 1 auto;
+}
+
 .moShowOnError {
     display: none;
     color: #a94442;
