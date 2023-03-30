@@ -1,4 +1,7 @@
-# 1.4.0
+# 1.5.0
+- Order item statuses
+
+ # 1.4.0
 - Update statuses of changed log data
  
 # 1.3.0
