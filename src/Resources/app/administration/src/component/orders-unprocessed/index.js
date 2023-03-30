@@ -1,6 +1,6 @@
 import template from './orders-unprocessed.html.twig';
 
-const { Component, Utils } = Shopware;
+const { Component, Utils, Mixin } = Shopware;
 const { get, format } = Utils;
 
 
@@ -8,6 +8,10 @@ Component.register('mo-orders-unprocessed', {
     template,
 
     inject: ['transactionsControl'],
+
+    mixins: [
+        Mixin.getByName('notification'),
+    ],
 
     props: {
         order: {
@@ -148,13 +152,13 @@ Component.register('mo-orders-unprocessed', {
                     if (res.success) {
                         this.transactionSuccess.capture = true;
                         setTimeout(() => {
-                            location.reload(); // @todo why the reload? Is there a better way?
+                            location.reload();
                         }, 1000);
                     } else {
-                        /*this.createNotificationError({
+                        this.createNotificationError({
                             title: this.$tc('worldline.capture-payment-button.title'),
                             message: this.$tc('worldline.capture-payment-button.error') + res.message
-                        });*/
+                        });
                     }
                 })
                 .finally(() => {
@@ -176,10 +180,10 @@ Component.register('mo-orders-unprocessed', {
                             location.reload();
                         }, 1000);
                     } else {
-                        /*this.createNotificationError({
+                        this.createNotificationError({
                             title: this.$tc('worldline.refund-payment-button.title'),
                             message: this.$tc('worldline.refund-payment-button.error') + res.message
-                        });*/
+                        });
                     }
                 })
                 .finally(() => {
