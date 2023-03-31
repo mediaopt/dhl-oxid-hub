@@ -12,14 +12,10 @@
             finderButton
                 .click(function () {
                     self.tailorer.dhlfinder.initializePopup();
-                    self.tailorer.dhlfinder.preFillInputs();
                 });
             $("#showShipAddress")
                 .parent()
                 .after(finderButton.parent());
-            $('#moDHLFinder').on('shown.bs.modal', function () {
-                self.tailorer.dhlfinder.resizeMap();
-            });
         },
         initialize: function (tailorer) {
             var self = this;
@@ -84,6 +80,14 @@
                     }
                     window.find('ul').append(newTemplate.html());
                 }
+            }
+            if (!self.tailorer.dhlfinder.usesGoogleMaps) {
+                $('#moDHLList').append(window);
+                $('#provider_' + provider.id).click(function () {
+                    mo_dhl.apply(provider);
+                    $('#moDHLFinder').modal('hide');
+                });
+                return;
             }
 
             var info = new google.maps.InfoWindow({

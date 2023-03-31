@@ -9,7 +9,6 @@
                 .oxModalPopup({target: '#moDHLFinder'})
                 .click(function () {
                     self.tailorer.dhlfinder.initializePopup();
-                    self.tailorer.dhlfinder.preFillInputs();
                 });
             $("#showShipAddress").parent().after(finderButton.parent());
         },
@@ -78,6 +77,14 @@
                     }
                     informationWindow.find('ul').append(newTemplate.html());
                 }
+            }
+            if (!self.tailorer.dhlfinder.usesGoogleMaps) {
+                $('#moDHLList').append(informationWindow);
+                $('#provider_' + provider.id).click(function () {
+                    mo_dhl.apply(provider);
+                    $("#moDHLFinder").dialog("close");
+                });
+                return;
             }
 
             var info = new google.maps.InfoWindow({
