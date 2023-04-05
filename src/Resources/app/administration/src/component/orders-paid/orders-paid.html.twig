@@ -34,7 +34,8 @@
 
     <sw-container v-if="hasContent" columns="1fr 120px min-content" gap="15px" justify="stretch" align="stretch">
         <div></div>
-        <sw-text-field :value="amountToProcess | currency(order.currency.shortName, order.itemRounding.decimals)" disabled />
+        <sw-number-field v-if="!lockedButton" @change="setCustomAmount" :value="amountToProcess" :min="0" :max="maxAmountToProcess" :fillDigits="true" />
+        <div v-else ></div>
         <sw-button-process
                 :isLoading="isLoading"
                 :disabled="amountToProcess === 0"

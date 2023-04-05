@@ -28,6 +28,10 @@ Component.register('mo-orders-paid', {
         },
         maxRefund: {
             type: Number
+        },
+        lockedButton: {
+            type: Boolean,
+            required: true,
         }
     },
 
@@ -162,6 +166,10 @@ Component.register('mo-orders-paid', {
         setLinePrice(index, amount, price) {
             this.itemPrices[index] = price * amount;
             this.setPriceSum();
+        },
+
+        setCustomAmount(value) {
+            this.amountToProcess = value;
         },
     },
 });
