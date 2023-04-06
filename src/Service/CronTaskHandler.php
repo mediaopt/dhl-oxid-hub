@@ -10,6 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
 use Shopware\Core\Kernel;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -72,32 +73,25 @@ class CronTaskHandler extends ScheduledTaskHandler
     /**
      * @param string $salesChannelId
      * @param string $mode
-     * @return array|\mixed[][]|void
+     * @return array
      * @throws \Doctrine\DBAL\Driver\Exception
      * @throws \Doctrine\DBAL\Exception
      */
-    private function getOrderList(string $salesChannelId, string $mode)
+    private function getOrderList(string $salesChannelId, string $mode): array
     {
         $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         $connection = Kernel::getConnection();
 
         $qb = $connection->createQueryBuilder();
 
-        $qb->select('ot.custom_fields, ot.updated_at')
+        $qb->select('HEX(o.id) as id, o.custom_fields, o.updated_at')
             ->from('`order`', 'o')
-            ->leftJoin('o', 'order_transaction', 'ot', "ot.order_id = o.id")
             ->where("o.sales_channel_id = UNHEX(:salesChannelId)")
-            ->andWhere(
-                $qb->expr()->or(
-                    $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"5%'"),
-                    $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"56%'")
-                )
-            )
-            ->orderBy('ot.updated_at','DESC')
+            ->orderBy('o.updated_at', 'DESC')
             ->setParameter('salesChannelId', $salesChannelId);
 
         switch ($mode) {
-            case self::CAPTURE_MODE:
+            case "capture":
             {
                 $captureConfig = $adapter->getPluginConfig(Form::AUTO_CAPTURE);
                 if ($captureConfig === Form::AUTO_PROCESSING_DISABLED) {
@@ -106,27 +100,33 @@ class CronTaskHandler extends ScheduledTaskHandler
 
                 $qb->andWhere(
                     $qb->expr()->or(
-                        $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"5%'"),
-                        $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"56%'")
+                        $qb->expr()->like('o.custom_fields', "'%payment_transaction_status\": \"5%'"),
+                        $qb->expr()->like('o.custom_fields', "'%payment_transaction_status\": \"56%'")
                     )
                 );
 
                 $timeInterval = $this->getTimeInterval($captureConfig) * 60 * 60 * 24;
                 break;
             }
-            case self::CANCELLATION_MODE:
+            case "cancellation":
             {
                 $cancellationConfig = $adapter->getPluginConfig(Form::AUTO_CANCEL);
                 if ($cancellationConfig === Form::AUTO_PROCESSING_DISABLED) {
                     return [];
                 }
 
-                $qb->andWhere(
-                    $qb->expr()->or(
-                        $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"0%'"),
-                        $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"46%'")
+                $qb->select('o.custom_fields, hex(ot.id) as trans_id, sms.technical_name')
+                    ->leftJoin('o', 'order_transaction', 'ot', "ot.order_id = o.id")
+                    ->leftJoin('ot', 'state_machine_state', 'sms', "sms.id = ot.state_id")
+                    ->andWhere(
+                        $qb->expr()->or(
+                            $qb->expr()->like('o.custom_fields', "'%payment_transaction_status\": \"0%'"),
+                            $qb->expr()->like('o.custom_fields', "'%payment_transaction_status\": \"46%'")
+                        )
                     )
-                );
+                    ->andWhere("sms.technical_name != :technicalName")
+                    ->setParameter('technicalName', StateMachineTransitionActions::ACTION_CANCEL)
+                ;
 
                 $timeInterval = $this->getTimeInterval($cancellationConfig) * 60 * 60;
                 break;
@@ -136,66 +136,63 @@ class CronTaskHandler extends ScheduledTaskHandler
         }
 
         if ($timeInterval > 0) {
-            $qb->andWhere("UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(ot.updated_at) > :timeInterval")
+            $qb->andWhere("UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(o.updated_at) > :timeInterval")
                 ->setParameter('timeInterval', $timeInterval);
         }
 
-        return $qb->execute()->fetchAllAssociative() ?: [];
+        return $qb->execute()->fetchAllAssociative() ? : [];
     }
 
     /**
      * @return int
      */
-    private function getTimeInterval($captureConfig)
+    private function getTimeInterval($config)
     {
-        return (int)filter_var($captureConfig, FILTER_SANITIZE_NUMBER_INT);
+        return (int)filter_var($config, FILTER_SANITIZE_NUMBER_INT);
     }
 
     /**
-     * @param $order
-     * @param $mode
+     * @param array $order
+     * @param string $mode
      * @return void
      * @throws \Exception
      */
-    private function processOrder($order, $mode)
+    private function processOrder(array $order, string $mode)
     {
-        if (!array_key_exists('custom_fields', $order)) {
-            return;
-        }
-        $customFields = json_decode($order['custom_fields'], true);
-        if (!array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID, $customFields)) {
-            return;
-        }
-        $hostedCheckoutId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID];
-
-        $order = PaymentHandler::getOrder(
-            Context::createDefaultContext(),
-            $this->orderRepository,
-            $hostedCheckoutId
-        );
-
-        $paymentHandler = new PaymentHandler(
-            $this->systemConfigService,
-            $this->logger,
-            $order,
-            $this->translator,
-            $this->orderRepository,
-            $this->customerRepository,
-            Context::createDefaultContext(),
-            $this->transactionStateHandler
-        );
-
         switch ($mode) {
-            case self::CANCELLATION_MODE:
+            case CronTaskHandler::CANCELLATION_MODE:
             {
-                debug('try to cancel ' . $hostedCheckoutId);
-
-                $paymentHandler->cancelPayment($hostedCheckoutId);
+                $transactionId = strtolower($order['trans_id']);
+                $this->transactionStateHandler->cancel($transactionId, Context::createDefaultContext());
                 break;
             }
-            case self::CAPTURE_MODE :
+            case CronTaskHandler::CAPTURE_MODE :
             {
-                debug('try to capture ' . $hostedCheckoutId);
+                if (!array_key_exists('custom_fields', $order)) {
+                    return;
+                }
+                $customFields = json_decode($order['custom_fields'], true);
+                if (!array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID, $customFields)) {
+                    return;
+                }
+                $hostedCheckoutId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID];
+
+                $order = PaymentHandler::getOrder(
+                    Context::createDefaultContext(),
+                    $this->orderRepository,
+                    $hostedCheckoutId
+                );
+
+                $paymentHandler = new PaymentHandler(
+                    $this->systemConfigService,
+                    $this->logger,
+                    $order,
+                    $this->translator,
+                    $this->orderRepository,
+                    $this->customerRepository,
+                    Context::createDefaultContext(),
+                    $this->transactionStateHandler
+                );
 
                 $amount = (int)round($order->getAmountTotal() * 100);
                 $paymentHandler->capturePayment($hostedCheckoutId, $amount, []);
