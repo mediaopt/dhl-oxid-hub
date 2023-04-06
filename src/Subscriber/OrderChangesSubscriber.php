@@ -3,7 +3,6 @@
 namespace MoptWorldline\Subscriber;
 
 use Monolog\Logger;
-use MoptWorldline\Adapter\WorldlineSDKAdapter;
 use MoptWorldline\Bootstrap\Form;
 use MoptWorldline\Service\Helper;
 use MoptWorldline\Service\Payment;
@@ -15,7 +14,6 @@ use Shopware\Core\Checkout\Order\OrderEvents;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Kernel;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
@@ -72,7 +70,6 @@ class OrderChangesSubscriber implements EventSubscriberInterface
     {
         return [
             HandlePaymentMethodRouteRequestEvent::class => 'setIframeFields',
-
             // 22.03.2023 - should be disabled before Worldline will fix status notifications.
             //OrderEvents::ORDER_WRITTEN_EVENT => 'onOrderWritten',
         ];
@@ -129,8 +126,8 @@ class OrderChangesSubscriber implements EventSubscriberInterface
             //For order transaction changes payload is empty
             if (empty($result->getPayload())) {
                 $this->processOrder($orderId, $newState, $event->getContext());
-                //Order cancel should lead to payment transaction refund.
-                //For order changes payload is NOT empty.
+            //Order cancel should lead to payment transaction refund.
+            //For order changes payload is NOT empty.
             } else {
                 $this->processOrder($orderId, StateMachineTransitionActions::ACTION_REFUND, $event->getContext());
             }

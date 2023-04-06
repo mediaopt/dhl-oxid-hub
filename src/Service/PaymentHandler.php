@@ -298,14 +298,6 @@ class PaymentHandler
         );
         $this->updateOrderTransactionState($newStatus, $hostedCheckoutId);
 
-        //todo new method for this
-        // For the next statuses we should cancel order transaction only, no API CALL
-        //    case in_array($status, Payment::STATUS_PAYMENT_CREATED):
-        //    case in_array($status, Payment::STATUS_REDIRECTED):
-        //    case in_array($status, Payment::STATUS_AUTHORIZATION_REQUESTED):
-
-
-
         if (!in_array($newStatus, Payment::STATUS_PAYMENT_CANCELLED) && $amount > 0) {
             return false;
         }
