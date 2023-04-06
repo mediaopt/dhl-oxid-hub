@@ -157,7 +157,7 @@ class CronTaskHandler extends ScheduledTaskHandler
      * @return void
      * @throws \Exception
      */
-    public function processOrder(array $order)
+    private function processOrder(array $order)
     {
         if (!array_key_exists('custom_fields', $order)) {
             return;
@@ -166,7 +166,6 @@ class CronTaskHandler extends ScheduledTaskHandler
         if (!array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID, $customFields)) {
             return;
         }
-
         $hostedCheckoutId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID];
 
         $order = PaymentHandler::getOrder(
