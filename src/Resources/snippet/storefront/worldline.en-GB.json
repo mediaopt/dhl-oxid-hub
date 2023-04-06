@@ -30,6 +30,11 @@
             "error": "Connection could not be established. Please check the access data.",
             "button": "Refund payment"
         },
+        "save-payment-card": {
+            "label": "Save payment card",
+            "deleteButton": "Delete",
+            "deleted": "Card has been deleted."
+        },
         "forwardToPaymentHandler": "Forwarding to payment handler.",
         "errorWithConfirmRedirect": "Error. Redirecting to confirm page.",
         "buildingOrder": "Building order",
@@ -39,6 +44,8 @@
         "tryingToCapture": "Trying to capture",
         "unsupportedStatus": "Unsupported status",
         "operationIsNotPossibleDueToCurrentStatus": "Operation is not possible due to current status",
+        "maxAmountExceeded": "Maximum amount exceeded.",
+        "wrongAmountRequested": "Wrong amount requested.",
         "gettingPaymentDetails": "Getting payment details",
         "paymentOpen": "Payment is open",
         "paymentInProgress": "Payment is in progress",
@@ -114,6 +121,27 @@
             "label": "Worldline Online Payments.",
             "description": "Worldline Online Payments.",
             "extraDescription": "Certified Worldline online payments extension for Shopware 6"
+        },
+        "transaction-control": {
+            "logs": {
+                "label": "Payment log",
+                "placeholder": "nothing here..."
+            },
+            "tabs": {
+                "unprocessed": "Unprocessed",
+                "paid": "Paid",
+                "refunded": "Refunded",
+                "canceled": "Canceled"
+            },
+            "table": {
+                "selected": "Selected",
+                "unitPrice": "Unit Price",
+                "empty": "No items with current status in order"
+            },
+            "buttons": {
+                "adminPay": "Pay for order",
+                "error": "Something went wrong"
+            }
         }
     }
 }

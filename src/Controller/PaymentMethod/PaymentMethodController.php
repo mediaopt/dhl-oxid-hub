@@ -9,19 +9,11 @@ namespace MoptWorldline\Controller\PaymentMethod;
 
 use Monolog\Logger;
 use MoptWorldline\Adapter\WorldlineSDKAdapter;
-use MoptWorldline\Bootstrap\Form;
-use MoptWorldline\MoptWorldline;
 use MoptWorldline\Service\Payment;
-use OnlinePayments\Sdk\Domain\GetPaymentProductsResponse;
-use OnlinePayments\Sdk\Domain\PaymentProduct;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use MoptWorldline\Service\PaymentMethodHelper;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
-use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -73,7 +65,12 @@ class PaymentMethodController
         foreach ($data as $paymentMethod) {
             if (!empty($paymentMethod['internalId'])) {
                 //Activate/deactivate method, that already exist
-                $this->processPaymentMethod($paymentMethod);
+                PaymentMethodHelper::setDBPaymentMethodStatus(
+                    $this->paymentMethodRepository,
+                    $paymentMethod['status'],
+                    $context,
+                    $paymentMethod['internalId']
+                );
                 continue;
             }
 
@@ -83,18 +80,33 @@ class PaymentMethodController
         }
 
         if (empty($toCreate)) {
-            return $this->response(true, '', []);
+            return $this->response();
         }
         $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         $adapter->getMerchantClient();
-        $paymentMethods = $adapter->getPaymentMethods($countryIso3, $currencyIsoCode);
-        foreach ($paymentMethods->getPaymentProducts() as $method) {
-            if (in_array($method->getId(), $toCreate)) {
-                $this->createPaymentMethod($method, $context, $salesChannelId);
+        $paymentProducts = $adapter->getPaymentProducts($countryIso3, $currencyIsoCode);
+        foreach ($paymentProducts->getPaymentProducts() as $product) {
+            $name = 'Worldline ' . $product->getDisplayHints()->getLabel();
+            if (in_array($product->getId(), $toCreate)) {
+                $method = [
+                    'id' => $product->getId(),
+                    'name' => $name,
+                    'description' => '',
+                    'active' => true,
+                ];
+                PaymentMethodHelper::addPaymentMethod(
+                    $this->paymentMethodRepository,
+                    $this->salesChannelPaymentRepository,
+                    $this->pluginIdProvider,
+                    $context,
+                    $method,
+                    $salesChannelId,
+                    null
+                );
             }
         }
 
-        return $this->response(true, '', []);
+        return $this->response();
     }
 
     /**
@@ -105,21 +117,24 @@ class PaymentMethodController
      * @return array
      * @throws \Exception
      */
-    public function getPaymentMentodsList(
+    public function getPaymentMethodsList(
         array $credentials,
         ?string $salesChannelId,
         ?string $countryIso3,
         ?string $currencyIsoCode
-    )
+    ): array
     {
-        $fullRedirectMethod = $this->getPaymentMethod('Worldline');
-        $toFrontend[] = [
-            'id' => 0,
-            'logo' => '',
-            'label' => 'Worldline full redirect',
-            'isActive' => $fullRedirectMethod['isActive'],
-            'internalId' => $fullRedirectMethod['internalId']
-        ];
+        $toFrontend = [];
+        foreach (Payment::METHODS_LIST as $method) {
+            $dbMethod = PaymentMethodHelper::getPaymentMethod($this->paymentMethodRepository, (string)$method['id'], $salesChannelId);
+            $toFrontend[] = [
+                'id' => $method['id'],
+                'logo' => '',
+                'label' => $dbMethod['label'],
+                'isActive' => $dbMethod['isActive'],
+                'internalId' => $dbMethod['internalId']
+            ];
+        }
 
         $adapter = new WorldlineSDKAdapter($this->systemConfigService, $this->logger, $salesChannelId);
         $adapter->getMerchantClient($credentials);
@@ -129,16 +144,14 @@ class PaymentMethodController
             return $toFrontend;
         }
 
-        $paymentMethods = $adapter->getPaymentMethods($countryIso3, $currencyIsoCode);
-
-        foreach ($paymentMethods->getPaymentProducts() as $method) {
-            $name = $this->getPaymentMethodName($method->getDisplayHints()->getLabel());
-            $createdPaymentMethod = $this->getPaymentMethod($name);
+        $paymentProducts = $adapter->getPaymentProducts($countryIso3, $currencyIsoCode);
+        foreach ($paymentProducts->getPaymentProducts() as $product) {
+            $createdPaymentMethod = PaymentMethodHelper::getPaymentMethod($this->paymentMethodRepository, (string)$product->getId(), $salesChannelId);
 
             $toFrontend[] = [
-                'id' => $method->getId(),
-                'logo' => $method->getDisplayHints()->getLogo(),
-                'label' => $method->getDisplayHints()->getLabel(),
+                'id' => $product->getId(),
+                'logo' => $product->getDisplayHints()->getLogo(),
+                'label' => $createdPaymentMethod['label'] ? : $product->getDisplayHints()->getLabel(),
                 'isActive' => $createdPaymentMethod['isActive'],
                 'internalId' => $createdPaymentMethod['internalId']
             ];
@@ -147,96 +160,12 @@ class PaymentMethodController
     }
 
     /**
-     * @param PaymentProduct $method
-     * @param Context $context
-     * @param string $salesChannelId
-     * @return void
-     */
-    private function createPaymentMethod(PaymentProduct $method, Context $context, string $salesChannelId)
-    {
-        $pluginId = $this->pluginIdProvider->getPluginIdByBaseClass(MoptWorldline::class, $context);
-
-        $name = $this->getPaymentMethodName($method->getDisplayHints()->getLabel());
-        $paymentMethodId = Uuid::randomHex();
-        $paymentData = [
-            'id' => $paymentMethodId,
-            'handlerIdentifier' => Payment::class,
-            'name' => $name,
-            'pluginId' => $pluginId,
-            'active' => true,
-            'afterOrderEnabled' => true,
-            'customFields' => [
-                Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_METHOD_ID => $method->getId()
-            ]
-        ];
-
-        $salesChannelPaymentData = [
-            'salesChannelId' => $salesChannelId,
-            'paymentMethodId' => $paymentMethodId
-        ];
-
-        $dbPaymentMethod =$this->getPaymentMethod($name);
-
-        if (empty($dbPaymentMethod['internalId'])) {
-            $this->paymentMethodRepository->create([$paymentData], $context);
-            $this->salesChannelPaymentRepository->create([$salesChannelPaymentData], $context);
-        }
-    }
-
-    /**
-     * @param $paymentMethod
-     * @return void
-     */
-    private function processPaymentMethod($paymentMethod)
-    {
-        $data = [
-            'id' => $paymentMethod['internalId'],
-            'active' => $paymentMethod['status']
-        ];
-        $this->paymentMethodRepository->update([$data], Context::createDefaultContext());
-    }
-
-    /**
-     * @param $name
-     * @return array
-     */
-    private function getPaymentMethod($name): array
-    {
-        $paymentCriteria = (
-        new Criteria())
-            ->addFilter(new EqualsFilter('handlerIdentifier', Payment::class))
-            ->addFilter(new EqualsFilter('name', $name));
-        $payments = $this->paymentMethodRepository->search($paymentCriteria, Context::createDefaultContext());
-
-        /** @var PaymentMethodEntity $payment */
-        foreach ($payments as $payment) {
-            return [
-                'internalId' => $payment->getId(),
-                'isActive' => $payment->getActive()
-            ];
-        }
-
-        return [
-            'internalId' => '',
-            'isActive' => false
-        ];
-    }
-
-    /**
-     * @param $label
-     * @return string
-     */
-    private function getPaymentMethodName($label)
-    {
-        return "Worldline $label";
-    }
-
-    /**
      * @param bool $success
      * @param string $message
+     * @param $paymentMethods
      * @return JsonResponse
      */
-    private function response(bool $success, string $message, $paymentMethods = []): JsonResponse
+    private function response(bool $success = true, string $message = '', $paymentMethods = []): JsonResponse
     {
         return new JsonResponse([
             'success' => $success,

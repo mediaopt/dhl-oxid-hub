@@ -1,3 +1,22 @@
+# 1.5.0
+- Order item statuses
+
+ # 1.4.0
+- Update statuses of changed log data
+ 
+# 1.3.0
+- Partial capture, cancel, refund
+- Transaction log
+
+# 1.2.0
+- Klarna and Oney payment methods
+
+# 1.1.0
+- Tokenization
+
+# 1.0.1
+- Iframe basic flow
+
 # 1.0.0
 - Shopware store release updates
 

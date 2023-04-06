@@ -19,8 +19,8 @@ class CronTaskHandler extends ScheduledTaskHandler
     private EntityRepositoryInterface $salesChannelRepository;
     private SystemConfigService $systemConfigService;
     private Logger $logger;
-    private EntityRepositoryInterface $orderTransactionRepository;
     private EntityRepositoryInterface $orderRepository;
+    private EntityRepositoryInterface $customerRepository;
     private OrderTransactionStateHandler $transactionStateHandler;
     private TranslatorInterface $translator;
 
@@ -32,8 +32,8 @@ class CronTaskHandler extends ScheduledTaskHandler
         EntityRepositoryInterface    $salesChannelRepository,
         SystemConfigService          $systemConfigService,
         Logger                       $logger,
-        EntityRepositoryInterface    $orderTransactionRepository,
         EntityRepositoryInterface    $orderRepository,
+        EntityRepositoryInterface    $customerRepository,
         OrderTransactionStateHandler $transactionStateHandler,
         TranslatorInterface          $translator
     )
@@ -41,8 +41,8 @@ class CronTaskHandler extends ScheduledTaskHandler
         $this->salesChannelRepository = $salesChannelRepository;
         $this->systemConfigService = $systemConfigService;
         $this->logger = $logger;
-        $this->orderTransactionRepository = $orderTransactionRepository;
         $this->orderRepository = $orderRepository;
+        $this->customerRepository = $customerRepository;
         $this->transactionStateHandler = $transactionStateHandler;
         $this->translator = $translator;
         parent::__construct($scheduledTaskRepository);
@@ -87,7 +87,13 @@ class CronTaskHandler extends ScheduledTaskHandler
             ->from('`order`', 'o')
             ->leftJoin('o', 'order_transaction', 'ot', "ot.order_id = o.id")
             ->where("o.sales_channel_id = UNHEX(:salesChannelId)")
-            ->orderBy('ot.updated_at', 'DESC')
+            ->andWhere(
+                $qb->expr()->or(
+                    $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"5%'"),
+                    $qb->expr()->like('ot.custom_fields', "'%payment_transaction_status\": \"56%'")
+                )
+            )
+            ->orderBy('ot.updated_at','DESC')
             ->setParameter('salesChannelId', $salesChannelId);
 
         switch ($mode) {
@@ -162,19 +168,19 @@ class CronTaskHandler extends ScheduledTaskHandler
         }
         $hostedCheckoutId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID];
 
-        $orderTransaction = PaymentHandler::getOrderTransaction(
+        $order = PaymentHandler::getOrder(
             Context::createDefaultContext(),
-            $this->orderTransactionRepository,
+            $this->orderRepository,
             $hostedCheckoutId
         );
 
         $paymentHandler = new PaymentHandler(
             $this->systemConfigService,
             $this->logger,
-            $orderTransaction,
+            $order,
             $this->translator,
             $this->orderRepository,
-            $this->orderTransactionRepository,
+            $this->customerRepository,
             Context::createDefaultContext(),
             $this->transactionStateHandler
         );
@@ -190,7 +196,9 @@ class CronTaskHandler extends ScheduledTaskHandler
             case self::CAPTURE_MODE :
             {
                 debug('try to capture ' . $hostedCheckoutId);
-                $paymentHandler->capturePayment($hostedCheckoutId);
+
+                $amount = (int)round($order->getAmountTotal() * 100);
+                $paymentHandler->capturePayment($hostedCheckoutId, $amount, []);
                 break;
             }
             default :
