@@ -61,11 +61,12 @@ class CronTaskHandler extends ScheduledTaskHandler
 
             $captureOrdersList = $this->getOrderList($salesChannel->getId(), self::CAPTURE_MODE);
             foreach ($captureOrdersList as $order) {
-                $this->processOrder($order, self::CAPTURE_MODE);
+                $this->processOrder($order);
             }
             $cancellationOrdersList = $this->getOrderList($salesChannel->getId(), self::CANCELLATION_MODE);
             foreach ($cancellationOrdersList as $order) {
-                $this->processOrder($order, self::CANCELLATION_MODE);
+                $transactionId = strtolower($order['trans_id']);
+                $this->transactionStateHandler->cancel($transactionId, Context::createDefaultContext());
             }
         }
     }
@@ -153,55 +154,39 @@ class CronTaskHandler extends ScheduledTaskHandler
 
     /**
      * @param array $order
-     * @param string $mode
      * @return void
      * @throws \Exception
      */
-    private function processOrder(array $order, string $mode)
+    public function processOrder(array $order)
     {
-        switch ($mode) {
-            case CronTaskHandler::CANCELLATION_MODE:
-            {
-                $transactionId = strtolower($order['trans_id']);
-                $this->transactionStateHandler->cancel($transactionId, Context::createDefaultContext());
-                break;
-            }
-            case CronTaskHandler::CAPTURE_MODE :
-            {
-                if (!array_key_exists('custom_fields', $order)) {
-                    return;
-                }
-                $customFields = json_decode($order['custom_fields'], true);
-                if (!array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID, $customFields)) {
-                    return;
-                }
-                $hostedCheckoutId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID];
-
-                $order = PaymentHandler::getOrder(
-                    Context::createDefaultContext(),
-                    $this->orderRepository,
-                    $hostedCheckoutId
-                );
-
-                $paymentHandler = new PaymentHandler(
-                    $this->systemConfigService,
-                    $this->logger,
-                    $order,
-                    $this->translator,
-                    $this->orderRepository,
-                    $this->customerRepository,
-                    Context::createDefaultContext(),
-                    $this->transactionStateHandler
-                );
-
-                $amount = (int)round($order->getAmountTotal() * 100);
-                $paymentHandler->capturePayment($hostedCheckoutId, $amount, []);
-                break;
-            }
-            default :
-            {
-                break;
-            }
+        if (!array_key_exists('custom_fields', $order)) {
+            return;
         }
+        $customFields = json_decode($order['custom_fields'], true);
+        if (!array_key_exists(Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID, $customFields)) {
+            return;
+        }
+
+        $hostedCheckoutId = $customFields[Form::CUSTOM_FIELD_WORLDLINE_PAYMENT_HOSTED_CHECKOUT_ID];
+
+        $order = PaymentHandler::getOrder(
+            Context::createDefaultContext(),
+            $this->orderRepository,
+            $hostedCheckoutId
+        );
+
+        $paymentHandler = new PaymentHandler(
+            $this->systemConfigService,
+            $this->logger,
+            $order,
+            $this->translator,
+            $this->orderRepository,
+            $this->customerRepository,
+            Context::createDefaultContext(),
+            $this->transactionStateHandler
+        );
+
+        $amount = (int)round($order->getAmountTotal() * 100);
+        $paymentHandler->capturePayment($hostedCheckoutId, $amount, []);
     }
 }
