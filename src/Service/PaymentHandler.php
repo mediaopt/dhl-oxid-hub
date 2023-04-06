@@ -234,7 +234,7 @@ class PaymentHandler
         );
         $this->updateOrderTransactionState($newStatus, $hostedCheckoutId);
 
-        if (!in_array($newStatus, Payment::STATUS_CAPTURE_REQUESTED)) {
+        if (!in_array($newStatus, Payment::STATUS_CAPTURE_REQUESTED) && $amount > 0) {
             return false;
         }
         return true;
@@ -298,7 +298,7 @@ class PaymentHandler
         );
         $this->updateOrderTransactionState($newStatus, $hostedCheckoutId);
 
-        if (!in_array($newStatus, Payment::STATUS_PAYMENT_CANCELLED)) {
+        if (!in_array($newStatus, Payment::STATUS_PAYMENT_CANCELLED) && $amount > 0) {
             return false;
         }
         return true;
@@ -317,10 +317,6 @@ class PaymentHandler
         $status = $this->updatePaymentTransactionStatus($hostedCheckoutId);
 
         if (in_array($status, Payment::STATUS_REFUNDED)) {
-            return false;
-        }
-        if (!in_array($status, Payment::STATUS_CAPTURED)) {
-            $this->log('operationIsNotPossibleDueToCurrentStatus' . $status, Logger::ERROR);
             return false;
         }
 

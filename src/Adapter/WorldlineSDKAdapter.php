@@ -794,7 +794,7 @@ class WorldlineSDKAdapter
         if ($isNetPrice) {
             $tax += $lineItem->getPrice()->getCalculatedTaxes()->getAmount();
         }
-        $totalPrice = (int)round(($lineItem->getPrice()->getTotalPrice() + $tax) * 100);
+        $totalPrice = (int)round((($lineItem->getPrice()->getTotalPrice() + $tax) * 100));
         $quantity = $lineItem->getPrice()->getQuantity();
 
         return [
@@ -818,6 +818,6 @@ class WorldlineSDKAdapter
             }
         }
 
-        return (int)(round($shippingPrice->getTotalPrice() + $shippingTaxTotal) * 100);
+        return (int)(round(($shippingPrice->getTotalPrice() + $shippingTaxTotal) * 100));
     }
 }
