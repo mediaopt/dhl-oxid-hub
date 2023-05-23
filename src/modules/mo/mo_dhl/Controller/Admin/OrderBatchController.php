@@ -356,6 +356,9 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
                     $process = $orderData['MO_DHL_PROCESS'];
                     break;
                 }
+                case null:
+                case '':
+                    continue 2;
                 default: {
                     $process = 'default';
                 }

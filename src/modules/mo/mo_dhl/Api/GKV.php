@@ -84,7 +84,6 @@ class GKV extends \SoapClient
         'ShipperType'                                   => 'Mediaopt\\DHL\\Api\\GKV\\ShipperType',
         'ReceiverTypeType'                              => 'Mediaopt\\DHL\\Api\\GKV\\ReceiverTypeType',
         'ReceiverType'                                  => 'Mediaopt\\DHL\\Api\\GKV\\ReceiverType',
-        'Ident'                                         => 'Mediaopt\\DHL\\Api\\GKV\\Ident',
         'ShipmentDetailsType'                           => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentDetailsType',
         'ShipmentDetailsTypeType'                       => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentDetailsTypeType',
         'ShipmentItemType'                              => 'Mediaopt\\DHL\\Api\\GKV\\ShipmentItemType',

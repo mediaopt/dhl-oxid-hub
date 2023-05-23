@@ -21,14 +21,8 @@ class CsvExporterTest extends PHPUnit_Framework_TestCase
 {
     const PROCESS_IDENTIFIERS = [
         Process::PAKET,
-        Process::PAKET_PRIO,
-        Process::PAKET_TAGGLEICH,
         Process::PAKET_INTERNATIONAL,
         Process::EUROPAKET,
-        Process::PAKET_CONNECT,
-        Process::PAKET_INTERNATIONAL_AT,
-        Process::PAKET_AT,
-        Process::PAKET_CONNECT_AT,
     ];
 
     const EXPECTED_ROW = [

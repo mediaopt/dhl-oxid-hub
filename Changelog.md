@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.7.0
+* dont allow Packstation and Postfiliale as delivery address street names for regular addresses
+* show a list of branches when google maps api key is not provided
+* async google maps js load
+* bugfix:validate fields before saving in order dhl tab
+* bugfix: show correct error messages if wunschpaket is not enabled
+* bugfix: use del address inputs if no address is selected
+* bugfix: prevent label generation in batch mode if order has no dhl product assigned
+
+## 1.6.9
+* removed unused DHL products
+* bugfix for Ident in GKV API
+* split name of sender and return receiver in name1, name2 and name3 for custom labels
+
 ## 1.6.8
 * bugfix: improved PHP 8.1 compatibility
 * fixed country value not being sent in form

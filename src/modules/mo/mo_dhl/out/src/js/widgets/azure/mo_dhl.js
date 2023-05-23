@@ -216,7 +216,7 @@
             var $street = $('input[name="invadr[oxuser__oxstreet]"]');
             var $city = $('input[name="invadr[oxuser__oxcity]"]');
 
-            var $translationHelper = $('#moDHLWunschpaket');
+            var $translationHelper = $('#moDHLTranslations');
             var translationError = $translationHelper.data('translatefailedblacklist');
 
             [$street, $city].map(function (value) {
@@ -273,8 +273,8 @@
             mo_dhl__wunschpaket.showOrHideWunschbox();
 
         },
-        initializeFinder: function () {
-            this.dhlfinder = new DHLFinder($, this);
+        initializeFinder: function (googleMapsAPIKey) {
+            this.dhlfinder = new DHLFinder($, this, googleMapsAPIKey);
             mo_dhl__finder.initialize(this);
         },
         validatePostnummer: function () {

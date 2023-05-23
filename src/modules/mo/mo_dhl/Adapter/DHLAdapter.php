@@ -82,10 +82,6 @@ class DHLAdapter
         if (!$this->canServiceProviderBeSelected()) {
             return false;
         }
-        if (!$this->getGoogleMapsApiKey()) {
-            $this->getLogger()->info('DHL Lieferadressen needs a Google Maps API key.');
-            return false;
-        }
 
         $germany = \oxNew(\OxidEsales\Eshop\Application\Model\Country::class);
         $germany->load($germany->getIdByCode('de'));

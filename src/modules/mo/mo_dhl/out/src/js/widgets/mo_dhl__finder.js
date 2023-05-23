@@ -1,5 +1,7 @@
-DHLFinder = function ($, tailorer) {
+DHLFinder = function ($, tailorer, googleMapsAPIKey) {
     this.tailorer = tailorer;
+    this.googleMapsAPIKey = googleMapsAPIKey;
+    this.usesGoogleMaps = false;
 
     this.addressObject = function (locality, street, countryIso2Code) {
         this.locality = locality !== undefined ? locality : null;
@@ -11,15 +13,6 @@ DHLFinder = function ($, tailorer) {
             return (self.locality && self.street && self.countryIso2Code) === null
         }
     };
-
-    this.resizeMap = function () {
-        var self = this;
-        google.maps.event.trigger(self.map, 'resize');
-        self.map.setCenter({
-            lat: 51.16591, lng: 10.451526
-        });
-    };
-
     this.findByLatLng = function () {
         var self = this;
         if (self.tailorer.busyFinder) {
@@ -54,6 +47,19 @@ DHLFinder = function ($, tailorer) {
 
     this.initializePopup = function () {
         var self = this;
+        self.usesGoogleMaps = !!self.googleMapsAPIKey;
+        if (self.googleMapsAPIKey) {
+            var script = document.createElement('script');
+            script.src = 'https://maps.googleapis.com/maps/api/js?libraries=geometry&key=' + self.googleMapsAPIKey + '&callback=initMap';
+            script.async = true;
+            window.initMap = self.initMap;
+            document.head.appendChild(script);
+        } else {
+            self.preFillInputs();
+        }
+    },
+    this.initMap = function () {
+        var self = mo_dhl.dhlfinder;
         var mapDiv = document.getElementById('moDHLMap');
         var mapZoomThreshold = 14;
         self.map = new google.maps.Map(mapDiv, {
@@ -74,6 +80,7 @@ DHLFinder = function ($, tailorer) {
                 self.findByLatLng();
             }
         });
+        self.preFillInputs();
     };
 
     this.preFillInputs = function () {
@@ -102,8 +109,9 @@ DHLFinder = function ($, tailorer) {
     };
 
     this.clearMarkers = function (markers) {
+        $('#moDHLList').empty();
         markers.forEach(function (marker) {
-            marker.setMap(null);
+            marker?.setMap(null);
         });
     };
     this.markers = [];
@@ -136,13 +144,15 @@ DHLFinder = function ($, tailorer) {
                 self.clearMarkers(self.markers);
 
                 var providers = response.payload;
-                var bounds = new google.maps.LatLngBounds();
+                if (self.usesGoogleMaps) {
+                    var bounds = new google.maps.LatLngBounds();
+                }
                 self.markers = providers.map(function (provider) {
                     var marker = self.mark(provider);
-                    bounds.extend(marker.getPosition());
+                    bounds?.extend(marker.getPosition());
                     return marker;
                 });
-                if (recenterMap) {
+                if (recenterMap && self.usesGoogleMaps) {
                     self.map.fitBounds(bounds);
                 }
             } else if (response.status === 'error') {
@@ -155,6 +165,7 @@ DHLFinder = function ($, tailorer) {
         });
     };
     this.mark = function (provider) {
+        var self = this;
         var title = provider.type + ' ' + this.tailorer.getProviderId(provider);
         var icon = this.tailorer.dhl.thumbs.postfiliale;
         if (provider.type === 'Packstation') {
@@ -162,12 +173,12 @@ DHLFinder = function ($, tailorer) {
         } else if (provider.type === 'Paketshop') {
             icon = this.tailorer.dhl.thumbs.paketshop;
         }
-        var marker = new google.maps.Marker({
+        var marker = self.usesGoogleMaps ? new google.maps.Marker({
             position: {lat: provider.location.latitude, lng: provider.location.longitude},
             map: this.map,
             title: title,
             icon: icon
-        });
+        }) : null;
         mo_dhl__finder.addInfoBox(provider, marker);
         return marker;
     };

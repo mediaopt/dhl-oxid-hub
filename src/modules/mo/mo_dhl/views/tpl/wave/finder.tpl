@@ -31,7 +31,11 @@
 
     <span id="moPostnummerErrorMessage">[{oxmultilang ident="MO_DHL__ERROR_POSTNUMMER_MALFORMED"}]</span>
 
-    <div id="moDHLWindow">
+    <div id="moDHLWindow" class="col-xs-12 col-md-6">
+        [{if !$moDHLGoogleMapsKey}]
+        <div class="card">
+            <div class="card-body">
+        [{/if}]
         <h4></h4>
         <address></address>
 
@@ -52,33 +56,32 @@
 
         <h5 class="moDHLOpeningHours"
             style="display: none;">[{oxmultilang ident="MO_DHL__OPENING_HOURS"}]</h5>
-        <ul class="moDHLOpeningHours" style="display: none;">
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_1"}]: <span
-                        class="opening-hours-day-1">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
+        <ul class="moDHLOpeningHours" style="display: none;"></ul>
+        <div id = "mo_day_translations" style="display: none;"
+             data-day1="[{oxmultilang ident="MO_DHL__OPENING_HOURS_1"}]"
+             data-day2="[{oxmultilang ident="MO_DHL__OPENING_HOURS_2"}]"
+             data-day3="[{oxmultilang ident="MO_DHL__OPENING_HOURS_3"}]"
+             data-day4="[{oxmultilang ident="MO_DHL__OPENING_HOURS_4"}]"
+             data-day5="[{oxmultilang ident="MO_DHL__OPENING_HOURS_5"}]"
+             data-day6="[{oxmultilang ident="MO_DHL__OPENING_HOURS_6"}]"
+             data-day7="[{oxmultilang ident="MO_DHL__OPENING_HOURS_7"}]"
+        ></div>
+        <div id = "mo_grouped_timetable_template" style="display: none;">
+            <li>
+                <span class="dayname"></span>
+                <span class="opening-hours-day-grouped">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
             </li>
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_2"}]: <span
-                        class="opening-hours-day-2">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
-            </li>
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_3"}]: <span
-                        class="opening-hours-day-3">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
-            </li>
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_4"}]: <span
-                        class="opening-hours-day-4">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
-            </li>
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_5"}]: <span
-                        class="opening-hours-day-5">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
-            </li>
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_6"}]: <span
-                        class="opening-hours-day-6">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
-            </li>
-            <li>[{oxmultilang ident="MO_DHL__OPENING_HOURS_7"}]: <span
-                        class="opening-hours-day-7">[{oxmultilang ident="MO_DHL__OPENING_HOURS_CLOSED"}]</span>
-            </li>
-        </ul>
-
-        <button class="btn btn-outline-dark submitButton btn-sm pull-left" id="provider_' + provider.id + '"
+        </div>
+        [{if !$moDHLGoogleMapsKey}]
+            </div>
+            <div class="card-footer">
+        [{/if}]
+        <button class="btn btn-outline-dark submitButton btn-block active" id="provider_' + provider.id + '"
                 data-dismiss="modal">[{oxmultilang ident="MO_DHL__SELECT"}]</button>
-
+        [{if !$moDHLGoogleMapsKey}]
+            </div>
+        </div>
+        [{/if}]
     </div>
 
     <p id="moDHLUnknownError">[{oxmultilang ident="MO_DHL__ERROR_FINDER_UNKNOWN"}]</p>
@@ -143,7 +146,11 @@
 
             <div class="modal-body">
                 <div id="moDHLErrors" class="status error corners" style="display:none;"></div>
+                [{if $moDHLGoogleMapsKey}]
                 <div id="moDHLMap"></div>
+                [{else}]
+                <div id="moDHLList" style="gap: 30px 0px;"></div>
+                [{/if}]
             </div>
         </div>
     </div>

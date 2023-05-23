@@ -1,9 +1,10 @@
 <div style="display: none;">
+    <div id="moDHLTranslations"
+         data-translatenowunschtag="[{oxmultilang ident='MO_DHL__NO_WUNSCHTAG'}]"
+         data-translatefailedblacklist="[{oxmultilang ident='MO_DHL__FAILED_BLACKLIST'}]"/>
     [{if $oViewConf->moIsAnyWunschpaketFeatureActivated()}]
         <div id="moDHLWunschpaket"
              class="theme--is-azure"
-             data-translatenowunschtag="[{oxmultilang ident='MO_DHL__NO_WUNSCHTAG'}]"
-             data-translatefailedblacklist="[{oxmultilang ident='MO_DHL__FAILED_BLACKLIST'}]"
              data-theme="azure" data-dateajax="[{$oViewConf->getSslSelfLink()}]cl=MoDHLYellowBox&zip=">
             <img src="[{$oViewConf->getModuleUrl("mo_dhl", "out/src/img/DHL_rgb_265px.png")}]"/>
 
