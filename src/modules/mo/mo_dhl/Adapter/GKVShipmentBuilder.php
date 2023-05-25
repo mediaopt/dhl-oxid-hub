@@ -252,6 +252,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $isActive = (int) Registry::getConfig()->getShopConfVar('mo_dhl__no_neighbour_delivery_active');
             $service->setNoNeighbourDelivery(new Serviceconfiguration($isActive));
         }
+        if ($process->supportsNamedPersonOnly()) {
+            $isActive = $order->moDHLUsesService(MoDHLService::MO_DHL__NAMED_PERSON_ONLY);
+            $service->setNamedPersonOnly(new Serviceconfiguration($isActive));
+        }
         return $service;
     }
 

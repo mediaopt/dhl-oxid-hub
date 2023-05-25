@@ -61,6 +61,11 @@ class Process
     /**
      * @var string
      */
+    const SERVICE_NAMED_PERSON_ONLY = "SERVICE_NAMED_PERSON_ONLY";
+
+    /**
+     * @var string
+     */
     const SERVICE_PREFERRED_LOCATION = "SERVICE_PREFERRED_LOCATION";
 
     /**
@@ -151,6 +156,7 @@ class Process
             self::SERVICE_BULKY_GOOD,
             self::SERVICE_CASH_ON_DELIVERY,
             self::SERVICE_NO_NEIGHBOUR_DELIVERY,
+            self::SERVICE_NAMED_PERSON_ONLY,
         ],
         self::PAKET_INTERNATIONAL => [
             self::SERVICE_NOTIFICATION,
@@ -376,6 +382,14 @@ class Process
     public function supportsNoNeighbourDelivery() : bool
     {
         return in_array(self::SERVICE_NO_NEIGHBOUR_DELIVERY, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsNamedPersonOnly() : bool
+    {
+        return in_array(self::SERVICE_NAMED_PERSON_ONLY, self::SUPPORTED_SERVICES[$this->identifier]);
     }
 
     /**

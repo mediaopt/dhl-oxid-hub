@@ -558,6 +558,19 @@
                                     </td>
                                 </tr>
                                 [{/if}]
+                                [{if $process->supportsNamedPersonOnly()}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__NAMED_PERSON_ONLY'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][namedPersonOnly][active]"
+                                               value="false">
+                                        <input type="checkbox" name="data[services][namedPersonOnly][active]"
+                                               [{if $shipmentOrder.services.namedPersonOnly}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                [{/if}]
                                 [{if $process->supportsPDDP()}]
                                 [{assign var="service" value=$shipmentOrder.services.pddp}]
                                 <tr>
