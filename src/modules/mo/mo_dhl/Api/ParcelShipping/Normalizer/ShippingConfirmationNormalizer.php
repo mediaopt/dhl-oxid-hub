@@ -45,10 +45,6 @@ class ShippingConfirmationNormalizer implements DenormalizerInterface, Normalize
             $object->setEmail($data['email']);
             unset($data['email']);
         }
-        if (\array_key_exists('templateRef', $data)) {
-            $object->setTemplateRef($data['templateRef']);
-            unset($data['templateRef']);
-        }
         foreach ($data as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
                 $object[$key] = $value;
@@ -63,9 +59,6 @@ class ShippingConfirmationNormalizer implements DenormalizerInterface, Normalize
     {
         $data = array();
         $data['email'] = $object->getEmail();
-        if ($object->isInitialized('templateRef') && null !== $object->getTemplateRef()) {
-            $data['templateRef'] = $object->getTemplateRef();
-        }
         foreach ($object as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
                 $data[$key] = $value;

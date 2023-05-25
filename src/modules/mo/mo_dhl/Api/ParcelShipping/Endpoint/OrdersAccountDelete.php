@@ -6,10 +6,11 @@ class OrdersAccountDelete extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Clien
 {
     protected $accept;
     /**
-     * Delete one or more shipments created earlier. Deletion of shipments is only possible prior to them being manifested (closed out, 'Tagesabschluss')  The call will return HTTP 200 (single shipment) or 207 on success, with individual status elements for each shipment. Individual status elements are HTTP 200, 400. 400 will be returned when shipment does not exist (or was already deleted). 
+     * Delete one or more shipments created earlier. Deletion of shipments is only possible prior to them being manifested (closed out, 'Tagesabschluss'). The call will return HTTP 200 (single shipment) or 207 on success, with individual status elements for each shipment. Individual status elements are HTTP 200, 400. 400 will be returned when shipment does not exist (or was already deleted).
      *
      * @param array $queryParameters {
-     *     @var string $shipment This parameter provides an existing shipment ID. If multiple shipments need to be specified (for DELETE and GET calls) you need to provide the parameter multiple times.
+     *     @var string $profile Defines the user group profile. A user group is permitted to specific billing numbers. Shipments are only canceled if they belong to a billing number that the user group profile is entitled to use. This attribute is mandatory. Please use the standard user group profile 'STANDARD_GRUPPENPROFIL' if no dedicated user group profile is available.
+     *     @var string $shipment Shipment number that shall be canceled. If multiple shipments shall be canceled, the parameter must be added multiple times. Up to 30 shipments can be canceled at once.
      * }
      * @param array $headerParameters {
      *     @var string $Accept-Language Control the APIs response language via locale abbreviation. English (en-US) and german (de-DE) are supported. If not specified, the default is english.
@@ -29,7 +30,7 @@ class OrdersAccountDelete extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Clien
     }
     public function getUri() : string
     {
-        return '/v2/orders';
+        return '/orders';
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
@@ -45,9 +46,10 @@ class OrdersAccountDelete extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Clien
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('shipment'));
-        $optionsResolver->setRequired(array('shipment'));
+        $optionsResolver->setDefined(array('profile', 'shipment'));
+        $optionsResolver->setRequired(array('profile', 'shipment'));
         $optionsResolver->setDefaults(array());
+        $optionsResolver->addAllowedTypes('profile', array('string'));
         $optionsResolver->addAllowedTypes('shipment', array('string'));
         return $optionsResolver;
     }
@@ -72,6 +74,14 @@ class OrdersAccountDelete extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Clien
      */
     protected function transformResponseBody(string $body, int $status, \Symfony\Component\Serializer\SerializerInterface $serializer, ?string $contentType = null)
     {
+        if (200 === $status) {
+            if (mb_strpos($contentType, 'application/json') !== false) {
+                return $serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\LabelDataResponse', 'json');
+            }
+            if (mb_strpos($contentType, 'application/problem+json') !== false) {
+                return $serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\LabelDataResponse', 'json');
+            }
+        }
         if (207 === $status) {
             if (mb_strpos($contentType, 'application/json') !== false) {
                 return $serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\LabelDataResponse', 'json');
@@ -80,37 +90,17 @@ class OrdersAccountDelete extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Clien
                 return $serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\LabelDataResponse', 'json');
             }
         }
-        if (400 === $status) {
-            if (mb_strpos($contentType, 'application/json') !== false) {
-                throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\OrdersAccountDeleteBadRequestException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse', 'json'));
-            }
-            if (mb_strpos($contentType, 'application/problem+json') !== false) {
-                throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\OrdersAccountDeleteBadRequestException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse', 'json'));
-            }
+        if (is_null($contentType) === false && (400 === $status && mb_strpos($contentType, 'application/problem+json') !== false)) {
+            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\OrdersAccountDeleteBadRequestException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'));
         }
-        if (401 === $status) {
-            if (mb_strpos($contentType, 'application/json') !== false) {
-                throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\OrdersAccountDeleteUnauthorizedException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse', 'json'));
-            }
-            if (mb_strpos($contentType, 'application/problem+json') !== false) {
-                throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\OrdersAccountDeleteUnauthorizedException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse', 'json'));
-            }
+        if (is_null($contentType) === false && (401 === $status && mb_strpos($contentType, 'application/problem+json') !== false)) {
+            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\OrdersAccountDeleteUnauthorizedException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'));
         }
-        if (429 === $status) {
-            if (mb_strpos($contentType, 'application/json') !== false) {
-                throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\OrdersAccountDeleteTooManyRequestsException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse', 'json'));
-            }
-            if (mb_strpos($contentType, 'application/problem+json') !== false) {
-                throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\OrdersAccountDeleteTooManyRequestsException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse', 'json'));
-            }
+        if (is_null($contentType) === false && (429 === $status && mb_strpos($contentType, 'application/problem+json') !== false)) {
+            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\OrdersAccountDeleteTooManyRequestsException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'));
         }
-        if (500 === $status) {
-            if (mb_strpos($contentType, 'application/json') !== false) {
-                throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\OrdersAccountDeleteInternalServerErrorException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse', 'json'));
-            }
-            if (mb_strpos($contentType, 'application/problem+json') !== false) {
-                throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\OrdersAccountDeleteInternalServerErrorException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse', 'json'));
-            }
+        if (is_null($contentType) === false && (500 === $status && mb_strpos($contentType, 'application/problem+json') !== false)) {
+            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\OrdersAccountDeleteInternalServerErrorException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'));
         }
     }
     public function getAuthenticationScopes() : array

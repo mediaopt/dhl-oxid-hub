@@ -62,7 +62,7 @@ class ShipmentNormalizer implements DenormalizerInterface, NormalizerInterface, 
             unset($data['creationSoftware']);
         }
         if (\array_key_exists('shipDate', $data)) {
-            $object->setShipDate(\DateTime::createFromFormat('Y-m-d\\TH:i:sP', $data['shipDate']));
+            $object->setShipDate(\DateTime::createFromFormat('Y-m-d', $data['shipDate'])->setTime(0, 0, 0));
             unset($data['shipDate']);
         }
         if (\array_key_exists('shipper', $data)) {
@@ -118,7 +118,7 @@ class ShipmentNormalizer implements DenormalizerInterface, NormalizerInterface, 
             $data['creationSoftware'] = $object->getCreationSoftware();
         }
         if ($object->isInitialized('shipDate') && null !== $object->getShipDate()) {
-            $data['shipDate'] = $object->getShipDate()->format('Y-m-d\\TH:i:sP');
+            $data['shipDate'] = $object->getShipDate()->format('Y-m-d');
         }
         if ($object->isInitialized('shipper') && null !== $object->getShipper()) {
             $data['shipper'] = $this->normalizer->normalize($object->getShipper(), 'json', $context);

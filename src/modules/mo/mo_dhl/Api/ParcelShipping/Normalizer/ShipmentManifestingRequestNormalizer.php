@@ -53,6 +53,10 @@ class ShipmentManifestingRequestNormalizer implements DenormalizerInterface, Nor
             $object->setShipmentNumbers($values);
             unset($data['shipmentNumbers']);
         }
+        if (\array_key_exists('billingNumber', $data)) {
+            $object->setBillingNumber($data['billingNumber']);
+            unset($data['billingNumber']);
+        }
         foreach ($data as $key => $value_1) {
             if (preg_match('/.*/', (string) $key)) {
                 $object[$key] = $value_1;
@@ -66,14 +70,17 @@ class ShipmentManifestingRequestNormalizer implements DenormalizerInterface, Nor
     public function normalize($object, $format = null, array $context = array())
     {
         $data = array();
-        if ($object->isInitialized('profile') && null !== $object->getProfile()) {
-            $data['profile'] = $object->getProfile();
+        $data['profile'] = $object->getProfile();
+        if ($object->isInitialized('shipmentNumbers') && null !== $object->getShipmentNumbers()) {
+            $values = array();
+            foreach ($object->getShipmentNumbers() as $value) {
+                $values[] = $value;
+            }
+            $data['shipmentNumbers'] = $values;
         }
-        $values = array();
-        foreach ($object->getShipmentNumbers() as $value) {
-            $values[] = $value;
+        if ($object->isInitialized('billingNumber') && null !== $object->getBillingNumber()) {
+            $data['billingNumber'] = $object->getBillingNumber();
         }
-        $data['shipmentNumbers'] = $values;
         foreach ($object as $key => $value_1) {
             if (preg_match('/.*/', (string) $key)) {
                 $data[$key] = $value_1;

@@ -50,7 +50,7 @@ class ResponseItemNormalizer implements DenormalizerInterface, NormalizerInterfa
             unset($data['returnShipmentNo']);
         }
         if (\array_key_exists('sstatus', $data)) {
-            $object->setSstatus($this->denormalizer->denormalize($data['sstatus'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\JSONStatus', 'json', $context));
+            $object->setSstatus($this->denormalizer->denormalize($data['sstatus'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json', $context));
             unset($data['sstatus']);
         }
         if (\array_key_exists('shipmentRefNo', $data)) {

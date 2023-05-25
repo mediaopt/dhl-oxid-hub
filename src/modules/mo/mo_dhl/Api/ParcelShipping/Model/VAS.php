@@ -25,7 +25,7 @@ class VAS extends \ArrayObject
      */
     protected $preferredLocation;
     /**
-     * An email notification to the recipient that is sent at the time the sipment is closed. It can be send to multiple emails. A custom email template can be referenced, this must be set up first and managed via the business customer portal. This service is about to be deprecated. Please use DHL Parcel Notification instead. To use the DHL Parcel Notification you enter the e-mail address of the consignee in the section of the consignee. The notification will be sent automatically.
+     * An email notification to the recipient that is sent at the time the shipment is closed. It can be send to multiple emails. This service is about to be deprecated. Please use DHL Parcel Notification instead. To use the DHL Parcel Notification you enter the e-mail address of the consignee in the section of the consignee. The notification will be sent automatically.
      *
      * @var ShippingConfirmation
      */
@@ -43,11 +43,17 @@ class VAS extends \ArrayObject
      */
     protected $namedPersonOnly;
     /**
-     * Check the identity of the recipient. name (Firstname, lastname), dob or age. This uses firstName and lastName as separate attributes since for identity check an automatic split of a one-line name is not considered reliable enough.
+     * Check the identity of the recipient via name (firstname, lastname), date of birth or age. This uses firstName and lastName as separate attributes since for identity check an automatic split of a one-line name is not considered reliable enough.
      *
      * @var VASIdentCheck
      */
     protected $identCheck;
+    /**
+     * Delivery must be signed for by the recipient and not by DHL staff
+     *
+     * @var bool
+     */
+    protected $signedForByRecipient;
     /**
      * Instructions and endorsement how to treat international undeliverable shipment. By default, shipments are returned if undeliverable. There are country specific rules whether the shipment is returned immediately or after a grace period.
      *
@@ -91,17 +97,17 @@ class VAS extends \ArrayObject
      */
     protected $individualSenderRequirement;
     /**
-     * Choice of premium vs economy parcel. Availability is country dependent and may be manipulated by DHL if choice is not available. Please review the label. 
+     * Choice of premium vs economy parcel. Availability is country dependent and may be manipulated by DHL if choice is not available. Please review the label.
      *
      * @var bool
      */
     protected $premium;
     /**
-     * Requires also DHL Retoure to be set
+     * Closest Droppoint Delivery to the droppoint closest to the address of the recipient of the shipment. For this kind of delivery either the phone number and/or the e-mail address of the receiver is mandatory. For shipments using DHL Paket International it is recommended that you choose one of the three delivery types: Economy, Premium, CDP. Otherwise, the current default for the receiver country will be picked.
      *
      * @var bool
      */
-    protected $packagingReturn;
+    protected $closestDropPoint;
     /**
      * Undeliverable domestic shipment can be forwarded and held at retail. Notification to email (fallback: consignee email) will be used.
      *
@@ -115,7 +121,7 @@ class VAS extends \ArrayObject
      */
     protected $dhlRetoure;
     /**
-     * 
+     * All import duties are paid by the shipper.
      *
      * @var bool
      */
@@ -165,7 +171,7 @@ class VAS extends \ArrayObject
         return $this;
     }
     /**
-     * An email notification to the recipient that is sent at the time the sipment is closed. It can be send to multiple emails. A custom email template can be referenced, this must be set up first and managed via the business customer portal. This service is about to be deprecated. Please use DHL Parcel Notification instead. To use the DHL Parcel Notification you enter the e-mail address of the consignee in the section of the consignee. The notification will be sent automatically.
+     * An email notification to the recipient that is sent at the time the shipment is closed. It can be send to multiple emails. This service is about to be deprecated. Please use DHL Parcel Notification instead. To use the DHL Parcel Notification you enter the e-mail address of the consignee in the section of the consignee. The notification will be sent automatically.
      *
      * @return ShippingConfirmation
      */
@@ -174,7 +180,7 @@ class VAS extends \ArrayObject
         return $this->shippingConfirmation;
     }
     /**
-     * An email notification to the recipient that is sent at the time the sipment is closed. It can be send to multiple emails. A custom email template can be referenced, this must be set up first and managed via the business customer portal. This service is about to be deprecated. Please use DHL Parcel Notification instead. To use the DHL Parcel Notification you enter the e-mail address of the consignee in the section of the consignee. The notification will be sent automatically.
+     * An email notification to the recipient that is sent at the time the shipment is closed. It can be send to multiple emails. This service is about to be deprecated. Please use DHL Parcel Notification instead. To use the DHL Parcel Notification you enter the e-mail address of the consignee in the section of the consignee. The notification will be sent automatically.
      *
      * @param ShippingConfirmation $shippingConfirmation
      *
@@ -231,7 +237,7 @@ class VAS extends \ArrayObject
         return $this;
     }
     /**
-     * Check the identity of the recipient. name (Firstname, lastname), dob or age. This uses firstName and lastName as separate attributes since for identity check an automatic split of a one-line name is not considered reliable enough.
+     * Check the identity of the recipient via name (firstname, lastname), date of birth or age. This uses firstName and lastName as separate attributes since for identity check an automatic split of a one-line name is not considered reliable enough.
      *
      * @return VASIdentCheck
      */
@@ -240,7 +246,7 @@ class VAS extends \ArrayObject
         return $this->identCheck;
     }
     /**
-     * Check the identity of the recipient. name (Firstname, lastname), dob or age. This uses firstName and lastName as separate attributes since for identity check an automatic split of a one-line name is not considered reliable enough.
+     * Check the identity of the recipient via name (firstname, lastname), date of birth or age. This uses firstName and lastName as separate attributes since for identity check an automatic split of a one-line name is not considered reliable enough.
      *
      * @param VASIdentCheck $identCheck
      *
@@ -250,6 +256,28 @@ class VAS extends \ArrayObject
     {
         $this->initialized['identCheck'] = true;
         $this->identCheck = $identCheck;
+        return $this;
+    }
+    /**
+     * Delivery must be signed for by the recipient and not by DHL staff
+     *
+     * @return bool
+     */
+    public function getSignedForByRecipient() : bool
+    {
+        return $this->signedForByRecipient;
+    }
+    /**
+     * Delivery must be signed for by the recipient and not by DHL staff
+     *
+     * @param bool $signedForByRecipient
+     *
+     * @return self
+     */
+    public function setSignedForByRecipient(bool $signedForByRecipient) : self
+    {
+        $this->initialized['signedForByRecipient'] = true;
+        $this->signedForByRecipient = $signedForByRecipient;
         return $this;
     }
     /**
@@ -407,7 +435,7 @@ class VAS extends \ArrayObject
         return $this;
     }
     /**
-     * Choice of premium vs economy parcel. Availability is country dependent and may be manipulated by DHL if choice is not available. Please review the label. 
+     * Choice of premium vs economy parcel. Availability is country dependent and may be manipulated by DHL if choice is not available. Please review the label.
      *
      * @return bool
      */
@@ -416,7 +444,7 @@ class VAS extends \ArrayObject
         return $this->premium;
     }
     /**
-     * Choice of premium vs economy parcel. Availability is country dependent and may be manipulated by DHL if choice is not available. Please review the label. 
+     * Choice of premium vs economy parcel. Availability is country dependent and may be manipulated by DHL if choice is not available. Please review the label.
      *
      * @param bool $premium
      *
@@ -429,25 +457,25 @@ class VAS extends \ArrayObject
         return $this;
     }
     /**
-     * Requires also DHL Retoure to be set
+     * Closest Droppoint Delivery to the droppoint closest to the address of the recipient of the shipment. For this kind of delivery either the phone number and/or the e-mail address of the receiver is mandatory. For shipments using DHL Paket International it is recommended that you choose one of the three delivery types: Economy, Premium, CDP. Otherwise, the current default for the receiver country will be picked.
      *
      * @return bool
      */
-    public function getPackagingReturn() : bool
+    public function getClosestDropPoint() : bool
     {
-        return $this->packagingReturn;
+        return $this->closestDropPoint;
     }
     /**
-     * Requires also DHL Retoure to be set
+     * Closest Droppoint Delivery to the droppoint closest to the address of the recipient of the shipment. For this kind of delivery either the phone number and/or the e-mail address of the receiver is mandatory. For shipments using DHL Paket International it is recommended that you choose one of the three delivery types: Economy, Premium, CDP. Otherwise, the current default for the receiver country will be picked.
      *
-     * @param bool $packagingReturn
+     * @param bool $closestDropPoint
      *
      * @return self
      */
-    public function setPackagingReturn(bool $packagingReturn) : self
+    public function setClosestDropPoint(bool $closestDropPoint) : self
     {
-        $this->initialized['packagingReturn'] = true;
-        $this->packagingReturn = $packagingReturn;
+        $this->initialized['closestDropPoint'] = true;
+        $this->closestDropPoint = $closestDropPoint;
         return $this;
     }
     /**
@@ -495,7 +523,7 @@ class VAS extends \ArrayObject
         return $this;
     }
     /**
-     * 
+     * All import duties are paid by the shipper.
      *
      * @return bool
      */
@@ -504,7 +532,7 @@ class VAS extends \ArrayObject
         return $this->postalDeliveryDutyPaid;
     }
     /**
-     * 
+     * All import duties are paid by the shipper.
      *
      * @param bool $postalDeliveryDutyPaid
      *

@@ -50,7 +50,7 @@ class VASIdentCheckNormalizer implements DenormalizerInterface, NormalizerInterf
             unset($data['lastName']);
         }
         if (\array_key_exists('dateOfBirth', $data)) {
-            $object->setDateOfBirth(\DateTime::createFromFormat('Y-m-d\\TH:i:sP', $data['dateOfBirth']));
+            $object->setDateOfBirth(\DateTime::createFromFormat('Y-m-d', $data['dateOfBirth'])->setTime(0, 0, 0));
             unset($data['dateOfBirth']);
         }
         if (\array_key_exists('minimumAge', $data)) {
@@ -70,14 +70,10 @@ class VASIdentCheckNormalizer implements DenormalizerInterface, NormalizerInterf
     public function normalize($object, $format = null, array $context = array())
     {
         $data = array();
-        if ($object->isInitialized('firstName') && null !== $object->getFirstName()) {
-            $data['firstName'] = $object->getFirstName();
-        }
-        if ($object->isInitialized('lastName') && null !== $object->getLastName()) {
-            $data['lastName'] = $object->getLastName();
-        }
+        $data['firstName'] = $object->getFirstName();
+        $data['lastName'] = $object->getLastName();
         if ($object->isInitialized('dateOfBirth') && null !== $object->getDateOfBirth()) {
-            $data['dateOfBirth'] = $object->getDateOfBirth()->format('Y-m-d\\TH:i:sP');
+            $data['dateOfBirth'] = $object->getDateOfBirth()->format('Y-m-d');
         }
         if ($object->isInitialized('minimumAge') && null !== $object->getMinimumAge()) {
             $data['minimumAge'] = $object->getMinimumAge();

@@ -65,12 +65,16 @@ class VASNormalizer implements DenormalizerInterface, NormalizerInterface, Denor
             $object->setIdentCheck($this->denormalizer->denormalize($data['identCheck'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASIdentCheck', 'json', $context));
             unset($data['identCheck']);
         }
+        if (\array_key_exists('signedForByRecipient', $data)) {
+            $object->setSignedForByRecipient($data['signedForByRecipient']);
+            unset($data['signedForByRecipient']);
+        }
         if (\array_key_exists('endorsement', $data)) {
             $object->setEndorsement($data['endorsement']);
             unset($data['endorsement']);
         }
         if (\array_key_exists('preferredDay', $data)) {
-            $object->setPreferredDay(\DateTime::createFromFormat('Y-m-d\\TH:i:sP', $data['preferredDay']));
+            $object->setPreferredDay(\DateTime::createFromFormat('Y-m-d', $data['preferredDay'])->setTime(0, 0, 0));
             unset($data['preferredDay']);
         }
         if (\array_key_exists('noNeighbourDelivery', $data)) {
@@ -97,9 +101,9 @@ class VASNormalizer implements DenormalizerInterface, NormalizerInterface, Denor
             $object->setPremium($data['premium']);
             unset($data['premium']);
         }
-        if (\array_key_exists('packagingReturn', $data)) {
-            $object->setPackagingReturn($data['packagingReturn']);
-            unset($data['packagingReturn']);
+        if (\array_key_exists('closestDropPoint', $data)) {
+            $object->setClosestDropPoint($data['closestDropPoint']);
+            unset($data['closestDropPoint']);
         }
         if (\array_key_exists('parcelOutletRouting', $data)) {
             $object->setParcelOutletRouting($data['parcelOutletRouting']);
@@ -144,11 +148,14 @@ class VASNormalizer implements DenormalizerInterface, NormalizerInterface, Denor
         if ($object->isInitialized('identCheck') && null !== $object->getIdentCheck()) {
             $data['identCheck'] = $this->normalizer->normalize($object->getIdentCheck(), 'json', $context);
         }
+        if ($object->isInitialized('signedForByRecipient') && null !== $object->getSignedForByRecipient()) {
+            $data['signedForByRecipient'] = $object->getSignedForByRecipient();
+        }
         if ($object->isInitialized('endorsement') && null !== $object->getEndorsement()) {
             $data['endorsement'] = $object->getEndorsement();
         }
         if ($object->isInitialized('preferredDay') && null !== $object->getPreferredDay()) {
-            $data['preferredDay'] = $object->getPreferredDay()->format('Y-m-d\\TH:i:sP');
+            $data['preferredDay'] = $object->getPreferredDay()->format('Y-m-d');
         }
         if ($object->isInitialized('noNeighbourDelivery') && null !== $object->getNoNeighbourDelivery()) {
             $data['noNeighbourDelivery'] = $object->getNoNeighbourDelivery();
@@ -168,8 +175,8 @@ class VASNormalizer implements DenormalizerInterface, NormalizerInterface, Denor
         if ($object->isInitialized('premium') && null !== $object->getPremium()) {
             $data['premium'] = $object->getPremium();
         }
-        if ($object->isInitialized('packagingReturn') && null !== $object->getPackagingReturn()) {
-            $data['packagingReturn'] = $object->getPackagingReturn();
+        if ($object->isInitialized('closestDropPoint') && null !== $object->getClosestDropPoint()) {
+            $data['closestDropPoint'] = $object->getClosestDropPoint();
         }
         if ($object->isInitialized('parcelOutletRouting') && null !== $object->getParcelOutletRouting()) {
             $data['parcelOutletRouting'] = $object->getParcelOutletRouting();

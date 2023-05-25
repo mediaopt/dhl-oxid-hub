@@ -61,7 +61,7 @@ class Shipment extends \ArrayObject
      */
     protected $shipper;
     /**
-     * Consignee address information. Either a doorstep address (contact address) including contact information or a droppoint address. One of packstation (parcel locker), or post office (postfiliale/retail shop). To use a German post office box (Postfach) please use contactAddress.
+     * Consignee address information. Either a doorstep address (contact address) including contact information or a droppoint address. One of packstation (parcel locker), or post office (postfiliale/retail shop).
      *
      * @var mixed[]
      */
@@ -251,7 +251,7 @@ class Shipment extends \ArrayObject
         return $this;
     }
     /**
-     * Consignee address information. Either a doorstep address (contact address) including contact information or a droppoint address. One of packstation (parcel locker), or post office (postfiliale/retail shop). To use a German post office box (Postfach) please use contactAddress.
+     * Consignee address information. Either a doorstep address (contact address) including contact information or a droppoint address. One of packstation (parcel locker), or post office (postfiliale/retail shop).
      *
      * @return mixed[]
      */
@@ -260,7 +260,7 @@ class Shipment extends \ArrayObject
         return $this->consignee;
     }
     /**
-     * Consignee address information. Either a doorstep address (contact address) including contact information or a droppoint address. One of packstation (parcel locker), or post office (postfiliale/retail shop). To use a German post office box (Postfach) please use contactAddress.
+     * Consignee address information. Either a doorstep address (contact address) including contact information or a droppoint address. One of packstation (parcel locker), or post office (postfiliale/retail shop).
      *
      * @param mixed[] $consignee
      *

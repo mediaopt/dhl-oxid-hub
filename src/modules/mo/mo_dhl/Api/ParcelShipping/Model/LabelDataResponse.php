@@ -15,7 +15,7 @@ class LabelDataResponse extends \ArrayObject
     /**
      * General status description for the attached response or response item.
      *
-     * @var JSONStatus
+     * @var RequestStatus
      */
     protected $status;
     /**
@@ -27,20 +27,20 @@ class LabelDataResponse extends \ArrayObject
     /**
      * General status description for the attached response or response item.
      *
-     * @return JSONStatus
+     * @return RequestStatus
      */
-    public function getStatus() : JSONStatus
+    public function getStatus() : RequestStatus
     {
         return $this->status;
     }
     /**
      * General status description for the attached response or response item.
      *
-     * @param JSONStatus $status
+     * @param RequestStatus $status
      *
      * @return self
      */
-    public function setStatus(JSONStatus $status) : self
+    public function setStatus(RequestStatus $status) : self
     {
         $this->initialized['status'] = true;
         $this->status = $status;

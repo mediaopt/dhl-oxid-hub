@@ -31,12 +31,6 @@ class Shipper extends \ArrayObject
      */
     protected $name3;
     /**
-     * An optional, additional line of address. It's only usable for a few countries, e.g. Belgium. It is positioned below name3 on the label.
-     *
-     * @var string
-     */
-    protected $dispatchingInformation;
-    /**
      * Line 1 of the street address. This is just the street name. Can also include house number.
      *
      * @var string
@@ -48,18 +42,6 @@ class Shipper extends \ArrayObject
      * @var string
      */
     protected $addressHouse;
-    /**
-     * Additional information that is positioned either behind or below addressStreet on the label. If it is printed and where exactly depends on the country.
-     *
-     * @var string
-     */
-    protected $additionalAddressInformation1;
-    /**
-     * Additional information that is positioned either behind or below addressStreet on the label. If it is printed and where exactly depends on the country.
-     *
-     * @var string
-     */
-    protected $additionalAddressInformation2;
     /**
      * Mandatory for all countries but Ireland that use a postal code system.
      *
@@ -73,12 +55,6 @@ class Shipper extends \ArrayObject
      */
     protected $city;
     /**
-     * State, province or territory. For the USA please use the official regional ISO-Codes, e.g. US-AL.
-     *
-     * @var string
-     */
-    protected $state;
-    /**
      * A valid country code consisting of three characters according to ISO 3166-1 alpha-3.
      *
      * @var string
@@ -91,19 +67,13 @@ class Shipper extends \ArrayObject
      */
     protected $contactName;
     /**
-     * Please note that, in accordance with Art. 4 No. 11 GDPR, you must obtain the recipient's consent to forward their phone number to Deutsche Post DHL Group. For shipments within Germany, the phone number cannot be transmitted. In some countries the provision of a telephone number and/or e-mail address is mandatory for a delivery to a droppoint. If your recipient has objected to the disclosure of their telephone number and/or e-mail address, the shipment can only be delivered in these countries using the service Premium.
-     *
-     * @var string
-     */
-    protected $phone;
-    /**
-     * Please note that, in accordance with Art. 4 No. 11 GDPR, you must obtain the recipient's consent to forward their e-mail address to Deutsche Post DHL Group. For shipments within Germany, the e-mail address is used to send a DHL Parcel Notification to the recipient. The e-mail address is not mandatory for shipments within Germany. In some countries the provision of a telephone number and/or e-mail address is mandatory for a delivery to a droppoint. If your recipient has objected to the disclosure of their telephone number and/or e-mail address, the shipment can only be delivered in these countries using the service Premium.
+     * Optional contact email address of the shipper
      *
      * @var string
      */
     protected $email;
     /**
-     * Contains a reference to the Shipper data configured in GKP(Geschäftskundenportal - Business Costumer Portal). Can be used instead of a detailed shipper address. The shipper reference can be used to print a company logo which is configured in GKP onto the label.
+     * Contains a reference to the Shipper data configured in GKP(GeschÃ¤ftskundenportal - Business Costumer Portal). Can be used instead of a detailed shipper address. The shipper reference can be used to print a company logo which is configured in GKP onto the label.
      *
      * @var string
      */
@@ -175,28 +145,6 @@ class Shipper extends \ArrayObject
         return $this;
     }
     /**
-     * An optional, additional line of address. It's only usable for a few countries, e.g. Belgium. It is positioned below name3 on the label.
-     *
-     * @return string
-     */
-    public function getDispatchingInformation() : string
-    {
-        return $this->dispatchingInformation;
-    }
-    /**
-     * An optional, additional line of address. It's only usable for a few countries, e.g. Belgium. It is positioned below name3 on the label.
-     *
-     * @param string $dispatchingInformation
-     *
-     * @return self
-     */
-    public function setDispatchingInformation(string $dispatchingInformation) : self
-    {
-        $this->initialized['dispatchingInformation'] = true;
-        $this->dispatchingInformation = $dispatchingInformation;
-        return $this;
-    }
-    /**
      * Line 1 of the street address. This is just the street name. Can also include house number.
      *
      * @return string
@@ -238,50 +186,6 @@ class Shipper extends \ArrayObject
     {
         $this->initialized['addressHouse'] = true;
         $this->addressHouse = $addressHouse;
-        return $this;
-    }
-    /**
-     * Additional information that is positioned either behind or below addressStreet on the label. If it is printed and where exactly depends on the country.
-     *
-     * @return string
-     */
-    public function getAdditionalAddressInformation1() : string
-    {
-        return $this->additionalAddressInformation1;
-    }
-    /**
-     * Additional information that is positioned either behind or below addressStreet on the label. If it is printed and where exactly depends on the country.
-     *
-     * @param string $additionalAddressInformation1
-     *
-     * @return self
-     */
-    public function setAdditionalAddressInformation1(string $additionalAddressInformation1) : self
-    {
-        $this->initialized['additionalAddressInformation1'] = true;
-        $this->additionalAddressInformation1 = $additionalAddressInformation1;
-        return $this;
-    }
-    /**
-     * Additional information that is positioned either behind or below addressStreet on the label. If it is printed and where exactly depends on the country.
-     *
-     * @return string
-     */
-    public function getAdditionalAddressInformation2() : string
-    {
-        return $this->additionalAddressInformation2;
-    }
-    /**
-     * Additional information that is positioned either behind or below addressStreet on the label. If it is printed and where exactly depends on the country.
-     *
-     * @param string $additionalAddressInformation2
-     *
-     * @return self
-     */
-    public function setAdditionalAddressInformation2(string $additionalAddressInformation2) : self
-    {
-        $this->initialized['additionalAddressInformation2'] = true;
-        $this->additionalAddressInformation2 = $additionalAddressInformation2;
         return $this;
     }
     /**
@@ -329,28 +233,6 @@ class Shipper extends \ArrayObject
         return $this;
     }
     /**
-     * State, province or territory. For the USA please use the official regional ISO-Codes, e.g. US-AL.
-     *
-     * @return string
-     */
-    public function getState() : string
-    {
-        return $this->state;
-    }
-    /**
-     * State, province or territory. For the USA please use the official regional ISO-Codes, e.g. US-AL.
-     *
-     * @param string $state
-     *
-     * @return self
-     */
-    public function setState(string $state) : self
-    {
-        $this->initialized['state'] = true;
-        $this->state = $state;
-        return $this;
-    }
-    /**
      * A valid country code consisting of three characters according to ISO 3166-1 alpha-3.
      *
      * @return string
@@ -395,29 +277,7 @@ class Shipper extends \ArrayObject
         return $this;
     }
     /**
-     * Please note that, in accordance with Art. 4 No. 11 GDPR, you must obtain the recipient's consent to forward their phone number to Deutsche Post DHL Group. For shipments within Germany, the phone number cannot be transmitted. In some countries the provision of a telephone number and/or e-mail address is mandatory for a delivery to a droppoint. If your recipient has objected to the disclosure of their telephone number and/or e-mail address, the shipment can only be delivered in these countries using the service Premium.
-     *
-     * @return string
-     */
-    public function getPhone() : string
-    {
-        return $this->phone;
-    }
-    /**
-     * Please note that, in accordance with Art. 4 No. 11 GDPR, you must obtain the recipient's consent to forward their phone number to Deutsche Post DHL Group. For shipments within Germany, the phone number cannot be transmitted. In some countries the provision of a telephone number and/or e-mail address is mandatory for a delivery to a droppoint. If your recipient has objected to the disclosure of their telephone number and/or e-mail address, the shipment can only be delivered in these countries using the service Premium.
-     *
-     * @param string $phone
-     *
-     * @return self
-     */
-    public function setPhone(string $phone) : self
-    {
-        $this->initialized['phone'] = true;
-        $this->phone = $phone;
-        return $this;
-    }
-    /**
-     * Please note that, in accordance with Art. 4 No. 11 GDPR, you must obtain the recipient's consent to forward their e-mail address to Deutsche Post DHL Group. For shipments within Germany, the e-mail address is used to send a DHL Parcel Notification to the recipient. The e-mail address is not mandatory for shipments within Germany. In some countries the provision of a telephone number and/or e-mail address is mandatory for a delivery to a droppoint. If your recipient has objected to the disclosure of their telephone number and/or e-mail address, the shipment can only be delivered in these countries using the service Premium.
+     * Optional contact email address of the shipper
      *
      * @return string
      */
@@ -426,7 +286,7 @@ class Shipper extends \ArrayObject
         return $this->email;
     }
     /**
-     * Please note that, in accordance with Art. 4 No. 11 GDPR, you must obtain the recipient's consent to forward their e-mail address to Deutsche Post DHL Group. For shipments within Germany, the e-mail address is used to send a DHL Parcel Notification to the recipient. The e-mail address is not mandatory for shipments within Germany. In some countries the provision of a telephone number and/or e-mail address is mandatory for a delivery to a droppoint. If your recipient has objected to the disclosure of their telephone number and/or e-mail address, the shipment can only be delivered in these countries using the service Premium.
+     * Optional contact email address of the shipper
      *
      * @param string $email
      *
@@ -439,7 +299,7 @@ class Shipper extends \ArrayObject
         return $this;
     }
     /**
-     * Contains a reference to the Shipper data configured in GKP(Geschäftskundenportal - Business Costumer Portal). Can be used instead of a detailed shipper address. The shipper reference can be used to print a company logo which is configured in GKP onto the label.
+     * Contains a reference to the Shipper data configured in GKP(GeschÃ¤ftskundenportal - Business Costumer Portal). Can be used instead of a detailed shipper address. The shipper reference can be used to print a company logo which is configured in GKP onto the label.
      *
      * @return string
      */
@@ -448,7 +308,7 @@ class Shipper extends \ArrayObject
         return $this->shipperRef;
     }
     /**
-     * Contains a reference to the Shipper data configured in GKP(Geschäftskundenportal - Business Costumer Portal). Can be used instead of a detailed shipper address. The shipper reference can be used to print a company logo which is configured in GKP onto the label.
+     * Contains a reference to the Shipper data configured in GKP(GeschÃ¤ftskundenportal - Business Costumer Portal). Can be used instead of a detailed shipper address. The shipper reference can be used to print a company logo which is configured in GKP onto the label.
      *
      * @param string $shipperRef
      *

@@ -25,7 +25,7 @@ class VASIdentCheck extends \ArrayObject
      */
     protected $lastName;
     /**
-     * date of birth, used in conjunction with minimumAge and shipping date
+     * date of birth, used in conjunction with minimumAge and shipping date. Format yyyy-mm-dd is used.
      *
      * @var \DateTime
      */
@@ -81,7 +81,7 @@ class VASIdentCheck extends \ArrayObject
         return $this;
     }
     /**
-     * date of birth, used in conjunction with minimumAge and shipping date
+     * date of birth, used in conjunction with minimumAge and shipping date. Format yyyy-mm-dd is used.
      *
      * @return \DateTime
      */
@@ -90,7 +90,7 @@ class VASIdentCheck extends \ArrayObject
         return $this->dateOfBirth;
     }
     /**
-     * date of birth, used in conjunction with minimumAge and shipping date
+     * date of birth, used in conjunction with minimumAge and shipping date. Format yyyy-mm-dd is used.
      *
      * @param \DateTime $dateOfBirth
      *

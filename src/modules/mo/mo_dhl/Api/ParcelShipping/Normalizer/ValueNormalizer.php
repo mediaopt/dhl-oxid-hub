@@ -65,12 +65,8 @@ class ValueNormalizer implements DenormalizerInterface, NormalizerInterface, Den
     public function normalize($object, $format = null, array $context = array())
     {
         $data = array();
-        if ($object->isInitialized('currency') && null !== $object->getCurrency()) {
-            $data['currency'] = $object->getCurrency();
-        }
-        if ($object->isInitialized('value') && null !== $object->getValue()) {
-            $data['value'] = $object->getValue();
-        }
+        $data['currency'] = $object->getCurrency();
+        $data['value'] = $object->getValue();
         foreach ($object as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
                 $data[$key] = $value;

@@ -9,6 +9,8 @@ use Http\Promise\Promise;
 use Mediaopt\DHL\Api\Credentials;
 use Mediaopt\DHL\Api\Internetmarke;
 use Mediaopt\DHL\Api\InternetmarkeRefund;
+use Mediaopt\DHL\Api\ParcelShipping\Authentication\ApiKeyAuthentication;
+use Mediaopt\DHL\Api\ParcelShipping\Authentication\BasicAuthAuthentication;
 use Mediaopt\DHL\Api\ProdWSService;
 use Mediaopt\DHL\Api\Retoure;
 use Mediaopt\DHL\Api\Standortsuche;
@@ -315,42 +317,9 @@ abstract class Configurator
 
         $httpClient = \Http\Discovery\Psr18ClientDiscovery::find();
         $uri = \Http\Discovery\Psr17FactoryDiscovery::findUriFactory()->createUri($credentials->getEndpoint());
-        $apiKeyAuthentication = new class($credentials) implements AuthenticationPlugin {
-            private $credentials;
 
-            public function __construct(Credentials $credentials)
-            {
-                $this->credentials = $credentials;
-            }
-
-            public function authentication(RequestInterface $request): RequestInterface
-            {
-                return $request->withHeader('dhl-api-key', $this->credentials->getAdditionalFields()['api-key']);
-            }
-
-            public function getScope(): string
-            {
-                return 'ApiKey';
-            }
-        };
-        $basicAuthentication = new class($credentials) implements AuthenticationPlugin {
-            protected $credentials;
-
-            public function __construct(Credentials $credentials)
-            {
-                $this->credentials = $credentials;
-            }
-
-            public function authentication(RequestInterface $request): RequestInterface
-            {
-                return $request->withHeader('Authorization', 'Basic ' . $this->credentials->getBasicAuth());
-            }
-
-            public function getScope(): string
-            {
-                return 'BasicAuth';
-            }
-        };
+        $apiKeyAuthentication = new ApiKeyAuthentication($credentials->getAdditionalFields()['api-key']);
+        $basicAuthentication = new BasicAuthAuthentication($credentials->getUsername(), $credentials->getPassword());
         $loggingPlugin = new class($logger) implements Plugin {
             private $logger;
 

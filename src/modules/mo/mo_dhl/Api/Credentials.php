@@ -174,7 +174,7 @@ class Credentials
      */
     public static function createSandboxParcelShippingCredentials($username, $password, $apiKey)
     {
-        return new static('https://api-sandbox.dhl.com/parcel/de/shipping', $username, $password, null, true, ['api-key' => $apiKey]);
+        return new static('https://api-sandbox.dhl.com/parcel/de/shipping/v2', $username, $password, null, true, ['api-key' => $apiKey]);
     }
 
     /**
@@ -185,7 +185,7 @@ class Credentials
      */
     public static function createProductionParcelShippingCredentials($username, $password, $apiKey)
     {
-        return new static('https://api.dhl.com/parcel/de/shipping', $username, $password, null, false, ['api-key' => $apiKey]);
+        return new static('https://api-eu.dhl.com/parcel/de/shipping/v2', $username, $password, null, false, ['api-key' => $apiKey]);
     }
 
     /**

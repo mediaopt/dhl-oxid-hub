@@ -21,7 +21,7 @@ class ShortResponseItem extends \ArrayObject
     /**
      * General status description for the attached response or response item.
      *
-     * @var JSONStatus
+     * @var RequestStatus
      */
     protected $sstatus;
     /**
@@ -49,20 +49,20 @@ class ShortResponseItem extends \ArrayObject
     /**
      * General status description for the attached response or response item.
      *
-     * @return JSONStatus
+     * @return RequestStatus
      */
-    public function getSstatus() : JSONStatus
+    public function getSstatus() : RequestStatus
     {
         return $this->sstatus;
     }
     /**
      * General status description for the attached response or response item.
      *
-     * @param JSONStatus $sstatus
+     * @param RequestStatus $sstatus
      *
      * @return self
      */
-    public function setSstatus(JSONStatus $sstatus) : self
+    public function setSstatus(RequestStatus $sstatus) : self
     {
         $this->initialized['sstatus'] = true;
         $this->sstatus = $sstatus;

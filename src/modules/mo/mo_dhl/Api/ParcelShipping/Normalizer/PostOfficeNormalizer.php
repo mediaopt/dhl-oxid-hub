@@ -53,6 +53,10 @@ class PostOfficeNormalizer implements DenormalizerInterface, NormalizerInterface
             $object->setPostNumber($data['postNumber']);
             unset($data['postNumber']);
         }
+        if (\array_key_exists('email', $data)) {
+            $object->setEmail($data['email']);
+            unset($data['email']);
+        }
         if (\array_key_exists('city', $data)) {
             $object->setCity($data['city']);
             unset($data['city']);
@@ -82,6 +86,9 @@ class PostOfficeNormalizer implements DenormalizerInterface, NormalizerInterface
         $data['retailID'] = $object->getRetailID();
         if ($object->isInitialized('postNumber') && null !== $object->getPostNumber()) {
             $data['postNumber'] = $object->getPostNumber();
+        }
+        if ($object->isInitialized('email') && null !== $object->getEmail()) {
+            $data['email'] = $object->getEmail();
         }
         $data['city'] = $object->getCity();
         if ($object->isInitialized('country') && null !== $object->getCountry()) {

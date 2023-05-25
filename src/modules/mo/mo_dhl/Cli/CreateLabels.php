@@ -83,7 +83,7 @@ class CreateLabels extends Command
     protected function createWithParcelShipping(CreateShipmentOrderRequest $request)
     {
         [$query, $request] = Registry::get(ParcelShippingConverter::class)->convertCreateShipmentOrderRequest($request);
-        $response = Registry::get(DHLAdapter::class)->buildParcelShipping()->ordersPost($request, $query, [], Client::FETCH_RESPONSE);
+        $response = Registry::get(DHLAdapter::class)->buildParcelShipping()->createOrders($request, $query, [], Client::FETCH_RESPONSE);
         $payload = \json_decode($response->getBody(), true);
         $createdLabels = 0;
         foreach ($payload['items'] as $item) {

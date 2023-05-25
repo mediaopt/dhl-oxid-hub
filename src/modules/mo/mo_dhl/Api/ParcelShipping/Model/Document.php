@@ -13,9 +13,9 @@ class Document extends \ArrayObject
         return array_key_exists($property, $this->initialized);
     }
     /**
-     * The encoded byte stream
+     * The Base64 encoded byte stream
      *
-     * @var string[]
+     * @var string
      */
     protected $b64;
     /**
@@ -43,22 +43,22 @@ class Document extends \ArrayObject
      */
     protected $printFormat;
     /**
-     * The encoded byte stream
+     * The Base64 encoded byte stream
      *
-     * @return string[]
+     * @return string
      */
-    public function getB64() : array
+    public function getB64() : string
     {
         return $this->b64;
     }
     /**
-     * The encoded byte stream
+     * The Base64 encoded byte stream
      *
-     * @param string[] $b64
+     * @param string $b64
      *
      * @return self
      */
-    public function setB64(array $b64) : self
+    public function setB64(string $b64) : self
     {
         $this->initialized['b64'] = true;
         $this->b64 = $b64;

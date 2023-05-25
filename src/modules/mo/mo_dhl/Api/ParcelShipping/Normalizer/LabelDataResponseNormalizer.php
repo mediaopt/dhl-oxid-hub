@@ -42,7 +42,7 @@ class LabelDataResponseNormalizer implements DenormalizerInterface, NormalizerIn
             return $object;
         }
         if (\array_key_exists('status', $data)) {
-            $object->setStatus($this->denormalizer->denormalize($data['status'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\JSONStatus', 'json', $context));
+            $object->setStatus($this->denormalizer->denormalize($data['status'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json', $context));
             unset($data['status']);
         }
         if (\array_key_exists('items', $data)) {

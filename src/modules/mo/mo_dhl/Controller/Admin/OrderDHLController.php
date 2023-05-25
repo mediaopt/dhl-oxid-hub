@@ -615,7 +615,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         [$query, $shipmentOrderRequest] = Registry::get(ParcelShippingConverter::class)->convertCreateShipmentOrderRequest($shipmentOrderRequest);
         $response = Registry::get(DHLAdapter::class)
             ->buildParcelShipping()
-            ->ordersPost($shipmentOrderRequest, $query, [], Client::FETCH_RESPONSE);
+            ->createOrders($shipmentOrderRequest, $query, [], Client::FETCH_RESPONSE);
         $this->handleParcelShippingPostResponse($response);
     }
 
@@ -627,7 +627,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $label->getFieldData('shipmentNumber');
         $response = Registry::get(DHLAdapter::class)
             ->buildParcelShipping()
-            ->ordersAccountDelete(['shipment' => $label->getFieldData('shipmentNumber')], [], Client::FETCH_RESPONSE);
+            ->ordersAccountDelete(['profile' => GKVCreateShipmentOrderRequestBuilder::STANDARD_GRUPPENPROFIL, 'shipment' => $label->getFieldData('shipmentNumber')], [], Client::FETCH_RESPONSE);
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             $label->delete();
             return;

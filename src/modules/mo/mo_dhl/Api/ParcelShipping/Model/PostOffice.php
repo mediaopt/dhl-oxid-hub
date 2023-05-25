@@ -31,6 +31,12 @@ class PostOffice extends \ArrayObject
      */
     protected $postNumber;
     /**
+     * Email address of the consignee. To address a post office or retail outlet directly, either the post number or e-mail address of the consignee is needed.
+     *
+     * @var string
+     */
+    protected $email;
+    /**
      * City where the retail location is
      *
      * @var string
@@ -112,6 +118,28 @@ class PostOffice extends \ArrayObject
     {
         $this->initialized['postNumber'] = true;
         $this->postNumber = $postNumber;
+        return $this;
+    }
+    /**
+     * Email address of the consignee. To address a post office or retail outlet directly, either the post number or e-mail address of the consignee is needed.
+     *
+     * @return string
+     */
+    public function getEmail() : string
+    {
+        return $this->email;
+    }
+    /**
+     * Email address of the consignee. To address a post office or retail outlet directly, either the post number or e-mail address of the consignee is needed.
+     *
+     * @param string $email
+     *
+     * @return self
+     */
+    public function setEmail(string $email) : self
+    {
+        $this->initialized['email'] = true;
+        $this->email = $email;
         return $this;
     }
     /**

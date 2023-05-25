@@ -25,6 +25,12 @@ class ShipmentManifestingRequest extends \ArrayObject
      */
     protected $shipmentNumbers;
     /**
+     * Customer billingNumber number.
+     *
+     * @var string
+     */
+    protected $billingNumber;
+    /**
      * 
      *
      * @return string
@@ -66,6 +72,28 @@ class ShipmentManifestingRequest extends \ArrayObject
     {
         $this->initialized['shipmentNumbers'] = true;
         $this->shipmentNumbers = $shipmentNumbers;
+        return $this;
+    }
+    /**
+     * Customer billingNumber number.
+     *
+     * @return string
+     */
+    public function getBillingNumber() : string
+    {
+        return $this->billingNumber;
+    }
+    /**
+     * Customer billingNumber number.
+     *
+     * @param string $billingNumber
+     *
+     * @return self
+     */
+    public function setBillingNumber(string $billingNumber) : self
+    {
+        $this->initialized['billingNumber'] = true;
+        $this->billingNumber = $billingNumber;
         return $this;
     }
 }

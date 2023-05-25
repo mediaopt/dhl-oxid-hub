@@ -66,16 +66,12 @@ class ShipmentOrderRequestNormalizer implements DenormalizerInterface, Normalize
     public function normalize($object, $format = null, array $context = array())
     {
         $data = array();
-        if ($object->isInitialized('profile') && null !== $object->getProfile()) {
-            $data['profile'] = $object->getProfile();
+        $data['profile'] = $object->getProfile();
+        $values = array();
+        foreach ($object->getShipments() as $value) {
+            $values[] = $this->normalizer->normalize($value, 'json', $context);
         }
-        if ($object->isInitialized('shipments') && null !== $object->getShipments()) {
-            $values = array();
-            foreach ($object->getShipments() as $value) {
-                $values[] = $this->normalizer->normalize($value, 'json', $context);
-            }
-            $data['shipments'] = $values;
-        }
+        $data['shipments'] = $values;
         foreach ($object as $key => $value_1) {
             if (preg_match('/.*/', (string) $key)) {
                 $data[$key] = $value_1;

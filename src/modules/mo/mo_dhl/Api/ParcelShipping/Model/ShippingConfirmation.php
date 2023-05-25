@@ -19,12 +19,6 @@ class ShippingConfirmation extends \ArrayObject
      */
     protected $email;
     /**
-     * A custom email template, this must be set up first and managed via business customer portal.
-     *
-     * @var string
-     */
-    protected $templateRef;
-    /**
      * Email address(es) of the recipient of the confirmation.
      *
      * @return string
@@ -44,28 +38,6 @@ class ShippingConfirmation extends \ArrayObject
     {
         $this->initialized['email'] = true;
         $this->email = $email;
-        return $this;
-    }
-    /**
-     * A custom email template, this must be set up first and managed via business customer portal.
-     *
-     * @return string
-     */
-    public function getTemplateRef() : string
-    {
-        return $this->templateRef;
-    }
-    /**
-     * A custom email template, this must be set up first and managed via business customer portal.
-     *
-     * @param string $templateRef
-     *
-     * @return self
-     */
-    public function setTemplateRef(string $templateRef) : self
-    {
-        $this->initialized['templateRef'] = true;
-        $this->templateRef = $templateRef;
         return $this;
     }
 }

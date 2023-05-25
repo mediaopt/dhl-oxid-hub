@@ -42,11 +42,7 @@ class DocumentNormalizer implements DenormalizerInterface, NormalizerInterface, 
             return $object;
         }
         if (\array_key_exists('b64', $data)) {
-            $values = array();
-            foreach ($data['b64'] as $value) {
-                $values[] = $value;
-            }
-            $object->setB64($values);
+            $object->setB64($data['b64']);
             unset($data['b64']);
         }
         if (\array_key_exists('zpl2', $data)) {
@@ -65,9 +61,9 @@ class DocumentNormalizer implements DenormalizerInterface, NormalizerInterface, 
             $object->setPrintFormat($data['printFormat']);
             unset($data['printFormat']);
         }
-        foreach ($data as $key => $value_1) {
+        foreach ($data as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
-                $object[$key] = $value_1;
+                $object[$key] = $value;
             }
         }
         return $object;
@@ -79,11 +75,7 @@ class DocumentNormalizer implements DenormalizerInterface, NormalizerInterface, 
     {
         $data = array();
         if ($object->isInitialized('b64') && null !== $object->getB64()) {
-            $values = array();
-            foreach ($object->getB64() as $value) {
-                $values[] = $value;
-            }
-            $data['b64'] = $values;
+            $data['b64'] = $object->getB64();
         }
         if ($object->isInitialized('zpl2') && null !== $object->getZpl2()) {
             $data['zpl2'] = $object->getZpl2();
@@ -97,9 +89,9 @@ class DocumentNormalizer implements DenormalizerInterface, NormalizerInterface, 
         if ($object->isInitialized('printFormat') && null !== $object->getPrintFormat()) {
             $data['printFormat'] = $object->getPrintFormat();
         }
-        foreach ($object as $key => $value_1) {
+        foreach ($object as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
-                $data[$key] = $value_1;
+                $data[$key] = $value;
             }
         }
         return $data;

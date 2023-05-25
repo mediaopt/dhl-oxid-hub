@@ -6,7 +6,7 @@ class RootGet extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Client\BaseEndpoi
 {
     protected $accept;
     /**
-     * Returns the current version of the API as major.minor.patch. This functions exists for historic reasons. Furthermore, it will also return more details (semantic version number, revision, environment) of the API layer.
+     * Returns the current version of the API as major.minor.patch. Furthermore, it will also return more details (semantic version number, revision, environment) of the API layer.
      *
      * @param array $accept Accept content header application/json|application/problem+json
      */
@@ -21,7 +21,7 @@ class RootGet extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Client\BaseEndpoi
     }
     public function getUri() : string
     {
-        return '/v2';
+        return '/';
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
@@ -39,38 +39,27 @@ class RootGet extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Client\BaseEndpoi
      *
      * @throws \Mediaopt\DHL\Api\ParcelShipping\Exception\RootGetUnauthorizedException
      * @throws \Mediaopt\DHL\Api\ParcelShipping\Exception\RootGetTooManyRequestsException
+     * @throws \Mediaopt\DHL\Api\ParcelShipping\Exception\RootGetInternalServerErrorException
      *
-     * @return null|\Mediaopt\DHL\Api\ParcelShipping\Model\ApiVersionResponse
+     * @return null|\Mediaopt\DHL\Api\ParcelShipping\Model\ServiceInformation
      */
     protected function transformResponseBody(string $body, int $status, \Symfony\Component\Serializer\SerializerInterface $serializer, ?string $contentType = null)
     {
-        if (200 === $status) {
-            if (mb_strpos($contentType, 'application/json') !== false) {
-                return $serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ApiVersionResponse', 'json');
-            }
-            if (mb_strpos($contentType, 'application/problem+json') !== false) {
-                return $serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ApiVersionResponse', 'json');
-            }
+        if (is_null($contentType) === false && (200 === $status && mb_strpos($contentType, 'application/json') !== false)) {
+            return $serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ServiceInformation', 'json');
         }
-        if (401 === $status) {
-            if (mb_strpos($contentType, 'application/json') !== false) {
-                throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\RootGetUnauthorizedException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse', 'json'));
-            }
-            if (mb_strpos($contentType, 'application/problem+json') !== false) {
-                throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\RootGetUnauthorizedException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse', 'json'));
-            }
+        if (is_null($contentType) === false && (401 === $status && mb_strpos($contentType, 'application/problem+json') !== false)) {
+            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\RootGetUnauthorizedException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'));
         }
-        if (429 === $status) {
-            if (mb_strpos($contentType, 'application/json') !== false) {
-                throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\RootGetTooManyRequestsException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse', 'json'));
-            }
-            if (mb_strpos($contentType, 'application/problem+json') !== false) {
-                throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\RootGetTooManyRequestsException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ErrorResponse', 'json'));
-            }
+        if (is_null($contentType) === false && (429 === $status && mb_strpos($contentType, 'application/problem+json') !== false)) {
+            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\RootGetTooManyRequestsException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'));
+        }
+        if (is_null($contentType) === false && (500 === $status && mb_strpos($contentType, 'application/problem+json') !== false)) {
+            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\RootGetInternalServerErrorException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'));
         }
     }
     public function getAuthenticationScopes() : array
     {
-        return array('ApiKey');
+        return array();
     }
 }

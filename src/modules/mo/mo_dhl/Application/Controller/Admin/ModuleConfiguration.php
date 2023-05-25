@@ -12,6 +12,7 @@ use Mediaopt\DHL\Adapter\ParcelShippingConverter;
 use Mediaopt\DHL\Api\GKV;
 use Mediaopt\DHL\Api\GKV\CountryType;
 use Mediaopt\DHL\Api\GKV\NameType;
+use Mediaopt\DHL\Api\GKV\CommunicationType;
 use Mediaopt\DHL\Api\GKV\NativeAddressTypeNew;
 use Mediaopt\DHL\Api\GKV\ReceiverNativeAddressType;
 use Mediaopt\DHL\Api\GKV\ReceiverType;
@@ -312,7 +313,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             if (Registry::getConfig()->getConfigParam('mo_dhl__account_rest_api')) {
                 $converter = Registry::get(ParcelShippingConverter::class);
                 [$query, $request] = $converter->convertValidateShipmentOrderRequest($request);
-                $response = $parcelShipping->ordersPost($request, $query, [], Client::FETCH_RESPONSE);
+                $response = $parcelShipping->createOrders($request, $query, [], Client::FETCH_RESPONSE);
                 if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
                     $payload = json_decode($response->getBody()->getContents(), true);
                     if ($payload['status'] == 401) {
@@ -361,10 +362,18 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     {
         $process = Process::build($deliveryset->oxdeliveryset__mo_dhl_process->value);
         $receiverCountryCode = $process->isInternational() ? 'FR' : 'DE';
-        $ShipmentDetails = new ShipmentDetailsTypeType($process->getServiceIdentifier(), new BillingNumber(Ekp::build($gkv->getSoapCredentials()->getEkp()), $process, Participation::build($deliveryset->oxdeliveryset__mo_dhl_participation->value)), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
-        $Receiver = (new ReceiverType('a b'))->setAddress(new ReceiverNativeAddressType(null, null, 'Elbestr.', '28/29', '12045', 'Berlin', null, new CountryType($receiverCountryCode)));
+        $ShipmentDetails = new ShipmentDetailsTypeType($process->getServiceIdentifier(), new BillingNumber(Ekp::build($gkv->getSoapCredentials()->getEkp()), $process, Participation::build($deliveryset->oxdeliveryset__mo_dhl_participation->value)), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(0.5));
+        $Receiver = (new ReceiverType('a b'))->setAddress(new ReceiverNativeAddressType(null, null, 'Elbestr.', '28/29', '12045', 'Berlin', null, new CountryType($receiverCountryCode)))->setCommunication($this->createTestCommunication());
         $Shipper = (new ShipperType(new NameType('a b', null, null), new NativeAddressTypeNew('Elbestr.', '28', '12045', 'Berlin', new CountryType('DE'))));
         $shipment = new Shipment($ShipmentDetails, $Shipper, $Receiver);
         return $shipment;
+    }
+
+    /**
+     * @return CommunicationType
+     */
+    protected function createTestCommunication()
+    {
+        return (new CommunicationType())->setContactPerson('a b');
     }
 }

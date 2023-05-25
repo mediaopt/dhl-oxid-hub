@@ -301,6 +301,7 @@ class ParcelShippingConverter
         $shipments = array_map([$this, 'convertShipmentOrder'], $legacyShipmentOrderRequest->getShipmentOrder());
         $shipmentOrderRequest = new ShipmentOrderRequest();
         $shipmentOrderRequest->setShipments($shipments);
+        $shipmentOrderRequest->setProfile($legacyShipmentOrderRequest->getGroupProfileName() ?: GKVCreateShipmentOrderRequestBuilder::STANDARD_GRUPPENPROFIL);
         return [$this->extractQueryParameters($legacyShipmentOrderRequest), $shipmentOrderRequest];
     }
 
@@ -313,6 +314,7 @@ class ParcelShippingConverter
     {
         $shipment = $this->convertShipmentOrder($legacyShipmentOrderRequest->getShipmentOrder());
         $shipmentOrderRequest = new ShipmentOrderRequest();
+        $shipmentOrderRequest->setProfile(GKVCreateShipmentOrderRequestBuilder::STANDARD_GRUPPENPROFIL);
         $shipmentOrderRequest->setShipments([$shipment]);
         return [['validate' => true], $shipmentOrderRequest];
     }
@@ -649,16 +651,16 @@ class ParcelShippingConverter
             $services->setNoNeighbourDelivery(true);
             $initialized = true;
         }
-        if ($legacyServices->getPackagingReturn() !== null && $legacyServices->getPackagingReturn()->getActive()) {
-            $services->setPackagingReturn(true);
-            $initialized = true;
-        }
         if ($legacyServices->getParcelOutletRouting() !== null && $legacyServices->getParcelOutletRouting()->getActive()) {
             $services->setParcelOutletRouting($legacyServices->getParcelOutletRouting()->getDetails());
             $initialized = true;
         }
         if ($legacyServices->getPDDP() !== null && $legacyServices->getPDDP()->getActive()) {
             $services->setPostalDeliveryDutyPaid(true);
+            $initialized = true;
+        }
+        if ($legacyServices->getCDP() !== null && $legacyServices->getCDP()->getActive()) {
+            $services->setClosestDropPoint(true);
             $initialized = true;
         }
         if ($legacyServices->getPremium() !== null && $legacyServices->getPremium()->getActive()) {
@@ -668,9 +670,6 @@ class ParcelShippingConverter
         if ($notification = $legacyShipmentOrder->getShipment()->getShipmentDetails()->getNotification()) {
             $confirmation = new ShippingConfirmation();
             $confirmation->setEmail($notification->getRecipientEmailAddress());
-            if ($notification->getTemplateId() !== null) {
-                $confirmation->setTemplateRef($notification->getTemplateId());
-            }
             $services->setShippingConfirmation($confirmation);
             $initialized = true;
         }

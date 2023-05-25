@@ -46,7 +46,7 @@ class ShortResponseItemNormalizer implements DenormalizerInterface, NormalizerIn
             unset($data['shipmentNo']);
         }
         if (\array_key_exists('sstatus', $data)) {
-            $object->setSstatus($this->denormalizer->denormalize($data['sstatus'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\JSONStatus', 'json', $context));
+            $object->setSstatus($this->denormalizer->denormalize($data['sstatus'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json', $context));
             unset($data['sstatus']);
         }
         foreach ($data as $key => $value) {

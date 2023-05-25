@@ -5,16 +5,16 @@ namespace Mediaopt\DHL\Api\ParcelShipping\Exception;
 class ManifestsPostUnauthorizedException extends UnauthorizedException
 {
     /**
-     * @var \Mediaopt\DHL\Api\ParcelShipping\Model\ErrorResponse
+     * @var \Mediaopt\DHL\Api\ParcelShipping\Model\RequestStatus
      */
-    private $errorResponse;
-    public function __construct(\Mediaopt\DHL\Api\ParcelShipping\Model\ErrorResponse $errorResponse)
+    private $requestStatus;
+    public function __construct(\Mediaopt\DHL\Api\ParcelShipping\Model\RequestStatus $requestStatus)
     {
-        parent::__construct('JSON error per RFC 7807 (https://tools.ietf.org/html/rfc7807).');
-        $this->errorResponse = $errorResponse;
+        parent::__construct('Unauthorized');
+        $this->requestStatus = $requestStatus;
     }
-    public function getErrorResponse() : \Mediaopt\DHL\Api\ParcelShipping\Model\ErrorResponse
+    public function getRequestStatus() : \Mediaopt\DHL\Api\ParcelShipping\Model\RequestStatus
     {
-        return $this->errorResponse;
+        return $this->requestStatus;
     }
 }
