@@ -66,6 +66,11 @@ class Process
     /**
      * @var string
      */
+    const SERVICE_SIGNED_FOR_BY_RECIPIENT = "SERVICE_SIGNED_FOR_BY_RECIPIENT";
+
+    /**
+     * @var string
+     */
     const SERVICE_PREFERRED_LOCATION = "SERVICE_PREFERRED_LOCATION";
 
     /**
@@ -157,6 +162,7 @@ class Process
             self::SERVICE_CASH_ON_DELIVERY,
             self::SERVICE_NO_NEIGHBOUR_DELIVERY,
             self::SERVICE_NAMED_PERSON_ONLY,
+            self::SERVICE_SIGNED_FOR_BY_RECIPIENT,
         ],
         self::PAKET_INTERNATIONAL => [
             self::SERVICE_NOTIFICATION,
@@ -390,6 +396,14 @@ class Process
     public function supportsNamedPersonOnly() : bool
     {
         return in_array(self::SERVICE_NAMED_PERSON_ONLY, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsSignedForByRecipient() : bool
+    {
+        return in_array(self::SERVICE_SIGNED_FOR_BY_RECIPIENT, self::SUPPORTED_SERVICES[$this->identifier]);
     }
 
     /**

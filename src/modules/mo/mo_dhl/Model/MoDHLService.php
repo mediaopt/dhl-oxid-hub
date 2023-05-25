@@ -80,4 +80,9 @@ class MoDHLService
      * @var string
      */
     const MO_DHL__NAMED_PERSON_ONLY = 'mo_dhl_named_person_only';
+
+    /**
+     * @var string
+     */
+    const MO_DHL__SIGNED_FOR_BY_RECIPIENT = 'mo_dhl_signed_for_by_recipient';
 }

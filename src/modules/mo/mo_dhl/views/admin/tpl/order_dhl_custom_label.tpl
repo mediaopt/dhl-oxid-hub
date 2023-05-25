@@ -571,6 +571,19 @@
                                     </td>
                                 </tr>
                                 [{/if}]
+                                [{if $process->supportsSignedForByRecipient()}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__SIGNED_FOR_BY_RECIPIENT'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][signedForByRecipient][active]"
+                                               value="false">
+                                        <input type="checkbox" name="data[services][signedForByRecipient][active]"
+                                               [{if $shipmentOrder.services.signedForByRecipient}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                [{/if}]
                                 [{if $process->supportsPDDP()}]
                                 [{assign var="service" value=$shipmentOrder.services.pddp}]
                                 <tr>

@@ -256,6 +256,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $isActive = $order->moDHLUsesService(MoDHLService::MO_DHL__NAMED_PERSON_ONLY);
             $service->setNamedPersonOnly(new Serviceconfiguration($isActive));
         }
+        if ($process->supportsSignedForByRecipient()) {
+            $isActive = $order->moDHLUsesService(MoDHLService::MO_DHL__SIGNED_FOR_BY_RECIPIENT);
+            $service->setSignedForByRecipient(new Serviceconfiguration($isActive));
+        }
         return $service;
     }
 
