@@ -248,6 +248,10 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $active = (bool) ($order->moDHLUsesService(MoDHLService::MO_DHL__PDDP));
             $service->setPDDP(new PDDP($active));
         }
+        if ($process->supportsNoNeighbourDelivery()) {
+            $isActive = (int) Registry::getConfig()->getShopConfVar('mo_dhl__no_neighbour_delivery_active');
+            $service->setNoNeighbourDelivery(new Serviceconfiguration($isActive));
+        }
         return $service;
     }
 

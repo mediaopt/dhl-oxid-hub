@@ -56,6 +56,11 @@ class Process
     /**
      * @var string
      */
+    const SERVICE_NO_NEIGHBOUR_DELIVERY = "SERVICE_NO_NEIGHBOUR_DELIVERY";
+
+    /**
+     * @var string
+     */
     const SERVICE_PREFERRED_LOCATION = "SERVICE_PREFERRED_LOCATION";
 
     /**
@@ -145,6 +150,7 @@ class Process
             self::SERVICE_ADDITIONAL_INSURANCE,
             self::SERVICE_BULKY_GOOD,
             self::SERVICE_CASH_ON_DELIVERY,
+            self::SERVICE_NO_NEIGHBOUR_DELIVERY,
         ],
         self::PAKET_INTERNATIONAL => [
             self::SERVICE_NOTIFICATION,
@@ -362,6 +368,14 @@ class Process
     public function supportsPremium() : bool
     {
         return in_array(self::SERVICE_PREMIUM, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsNoNeighbourDelivery() : bool
+    {
+        return in_array(self::SERVICE_NO_NEIGHBOUR_DELIVERY, self::SUPPORTED_SERVICES[$this->identifier]);
     }
 
     /**

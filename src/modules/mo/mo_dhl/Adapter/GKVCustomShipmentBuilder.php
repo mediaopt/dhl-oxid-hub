@@ -74,6 +74,7 @@ class GKVCustomShipmentBuilder
                 'economy'             => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getEconomy(),
                 'premium'             => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getPremium(),
                 'endorsement'         => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getEndorsement(),
+                'noNeighbourDelivery' => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getNoNeighbourDelivery(),
             ],
         ];
     }
@@ -227,6 +228,10 @@ class GKVCustomShipmentBuilder
         if ($process->supportsEndorsement()) {
             $endorsement = $servicesData['endorsement'] ?? MoDHLService::MO_DHL__ENDORSEMENT_IMMEDIATE;
             $services->setEndorsement(new ServiceconfigurationEndorsement(true, $endorsement));
+        }
+        if ($process->supportsNoNeighbourDelivery()) {
+            $isActive = filter_var($servicesData['noNeighbourDelivery']['active'], FILTER_VALIDATE_BOOLEAN);
+            $services->setNoNeighbourDelivery(new Serviceconfiguration($isActive));
         }
 
         $isActive = filter_var($servicesData['printOnlyIfCodeable']['active'], FILTER_VALIDATE_BOOLEAN);
