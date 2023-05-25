@@ -166,7 +166,7 @@
                 </td>
                 <td class="edittext">
                     <input type="hidden" name="editval[oxdeliveryset__mo_dhl_named_person_only]" value="0">
-                    <input class="edittext deliverySettings" type="checkbox" name="editval[oxdeliveryset__mo_dhl_named_person_only]"
+                    <input class="edittext" type="checkbox" name="editval[oxdeliveryset__mo_dhl_named_person_only]"
                            value='1'
                            [{if $edit->oxdeliveryset__mo_dhl_named_person_only->value == 1}]checked[{/if}] [{$readonly}]>
                 </td>
