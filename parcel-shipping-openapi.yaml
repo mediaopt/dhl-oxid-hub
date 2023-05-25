@@ -202,10 +202,9 @@ paths:
           description: This parameter identifies shipments. The parameter can be used multiple times in one request to get the labels and/or documents for up to 30 shipments maximum. Only documents and label for shipments that are not yet closed can be retrieved.
           required: true
           schema:
-            type: string
-            #type: array
-            #items:
-            #  type: string
+            type: array
+            items:
+              type: string
         - name: Accept-Language
           in: header
           description: Control the APIs response language via locale abbreviation. English (en-US) and german (de-DE) are supported. If not specified, the default is english.
