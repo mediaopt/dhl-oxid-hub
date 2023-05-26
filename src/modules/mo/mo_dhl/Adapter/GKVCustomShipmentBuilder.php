@@ -75,6 +75,7 @@ class GKVCustomShipmentBuilder
                 'premium'             => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getPremium(),
                 'endorsement'         => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getEndorsement(),
                 'noNeighbourDelivery' => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getNoNeighbourDelivery(),
+                'namedPersonOnly'     => $shipmentOrder->getShipment()->getShipmentDetails()->getService()->getNamedPersonOnly(),
             ],
         ];
     }
@@ -232,6 +233,10 @@ class GKVCustomShipmentBuilder
         if ($process->supportsNoNeighbourDelivery()) {
             $isActive = filter_var($servicesData['noNeighbourDelivery']['active'], FILTER_VALIDATE_BOOLEAN);
             $services->setNoNeighbourDelivery(new Serviceconfiguration($isActive));
+        }
+        if ($process->supportsNamedPersonOnly()) {
+            $isActive = filter_var($servicesData['namedPersonOnly']['active'], FILTER_VALIDATE_BOOLEAN);
+            $services->setNamedPersonOnly(new Serviceconfiguration($isActive));
         }
 
         $isActive = filter_var($servicesData['printOnlyIfCodeable']['active'], FILTER_VALIDATE_BOOLEAN);
