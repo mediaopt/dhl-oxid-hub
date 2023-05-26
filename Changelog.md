@@ -1,5 +1,8 @@
 # Changelog
 
+## next version
+* fixed js-validation not working in flow theme with packstation on creating new addresses
+
 ## 1.7.1
 * NoNeighbourDelivery service added
 * NamedPersonOnly service added
