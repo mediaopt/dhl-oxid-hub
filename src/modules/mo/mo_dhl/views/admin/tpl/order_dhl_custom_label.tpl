@@ -554,7 +554,7 @@
                                         <input type="hidden" name="data[services][noNeighbourDelivery][active]"
                                                value="false">
                                         <input type="checkbox" name="data[services][noNeighbourDelivery][active]"
-                                               [{if $shipmentOrder.services.noNeighbourDelivery}]checked[{/if}]>
+                                               [{if $shipmentOrder.services.noNeighbourDelivery->getActive()}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]
