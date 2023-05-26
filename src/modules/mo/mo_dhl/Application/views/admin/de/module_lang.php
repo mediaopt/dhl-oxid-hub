@@ -102,6 +102,7 @@ $aLang = [
     'HELP_MO_DHL__CDP'                  => 'Ein Paket mit Service CDP wird an die nächgelegene Abgabestellen des Empfängers geliefert.',
     'MO_DHL__PREMIUM'                   => 'Service Zustellart: Premium',
     'HELP_MO_DHL__PREMIUM'              => 'Ein Paket mit Service Premium wird bevorzugt und immer auf dem schnellsten Weg transportiert. Ihr Paket nimmt immer den nächstmöglichen Flug oder LKW in Richtung Zieldestination und wird auch im Zielland prioritär behandelt. So erreicht es deutlich schneller seinen Bestimmungsort.',
+    'MO_DHL__NAMED_PERSON_ONLY'         => 'Persönliche Übergabe',
     'MO_DHL__PDDP'                       => 'PDDP (Postal Delivery Duty Paid)',
     'HELP_MO_DHL__PDDP'                  => 'DHL führt mit  Postal Delivered Duty Paid (Postal DDP) einen Service ein, der es ermöglicht, dass der Versender alle Einfuhrabgaben für den Empfänger bezahlt.',
     'MO_DHL__ZOLLTARIF'                 => 'Zolltarifnummer',
