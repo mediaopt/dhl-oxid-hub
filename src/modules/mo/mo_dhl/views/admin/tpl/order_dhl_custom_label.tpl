@@ -567,7 +567,7 @@
                                         <input type="hidden" name="data[services][namedPersonOnly][active]"
                                                value="false">
                                         <input type="checkbox" name="data[services][namedPersonOnly][active]"
-                                               [{if $shipmentOrder.services.namedPersonOnly}]checked[{/if}]>
+                                               [{if $shipmentOrder.services.namedPersonOnly->getActive()}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]
