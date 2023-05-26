@@ -43,7 +43,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__go_green_active'                      => 'GoGreen',
     'HELP_SHOP_MODULE_mo_dhl__go_green_active'                 => 'Displays that GoGreen is used for the DHL deliveries. Activate this option only, if GoGreen is acitvated for the deliveries.',
     'SHOP_MODULE_mo_dhl__no_neighbour_delivery_active'         => 'No neighbour delivery',
-    'HELP_SHOP_MODULE_mo_dhl__no_neighbour_delivery_active'    => 'Not work with Return Shipment',
     'SHOP_MODULE_mo_dhl__filialrouting_active'                 => 'Parcel Outlet Routing',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_active'            => 'If checkbox is enabled, the Parcel Outlet Routing Service will be booked. In this case, your undeliverable packages will be held at the nearest parcel collection point for collection by the recipient rather than being returned immediately to you.',
     'SHOP_MODULE_mo_dhl__filialrouting_alternative_email'      => 'Alternative email address for the Parcel Outlet Routing Service (optional)',

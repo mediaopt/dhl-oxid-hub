@@ -554,7 +554,7 @@
                                         <input type="hidden" name="data[services][noNeighbourDelivery][active]"
                                                value="false">
                                         <input type="checkbox" name="data[services][noNeighbourDelivery][active]"
-                                               [{if $shipmentOrder.services.noNeighbourDelivery}]checked[{/if}]>
+                                               [{if $shipmentOrder.services.noNeighbourDelivery->getActive()}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]
@@ -567,7 +567,7 @@
                                         <input type="hidden" name="data[services][namedPersonOnly][active]"
                                                value="false">
                                         <input type="checkbox" name="data[services][namedPersonOnly][active]"
-                                               [{if $shipmentOrder.services.namedPersonOnly}]checked[{/if}]>
+                                               [{if $shipmentOrder.services.namedPersonOnly->getActive()}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]
