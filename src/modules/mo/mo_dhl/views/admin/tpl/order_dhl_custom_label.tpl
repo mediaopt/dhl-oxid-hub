@@ -580,7 +580,7 @@
                                         <input type="hidden" name="data[services][signedForByRecipient][active]"
                                                value="false">
                                         <input type="checkbox" name="data[services][signedForByRecipient][active]"
-                                               [{if $shipmentOrder.services.signedForByRecipient}]checked[{/if}]>
+                                               [{if $shipmentOrder.services.signedForByRecipient->getActive()}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]
