@@ -240,17 +240,21 @@
                 var station = results.payload.filter(payload => payload.type === 'Packstation');
                 if (branch.length) {
                     var branchElement = document.getElementById('moDhlBranchAddress');
-                    branchElement.classList.remove('hidden');
-                    var text = branchElement.querySelector('.moDhlPickupDistance').innerText.replace('PLACEHOLDER', branch[0].location.distance);
-                    branchElement.querySelector('.moDhlPickupDistance').innerText = text;
-                    self.initialResults.branch = branch[0];
+                    if (branchElement) {
+                        branchElement.classList.remove('hidden');
+                        var text = branchElement.querySelector('.moDhlPickupDistance').innerText.replace('PLACEHOLDER', branch[0].location.distance);
+                        branchElement.querySelector('.moDhlPickupDistance').innerText = text;
+                        self.initialResults.branch = branch[0];
+                    }
                 }
                 if (station.length) {
                     var stationElement = document.getElementById('moDhlPackstationAddress');
-                    stationElement.classList.remove('hidden');
-                    var text = stationElement.querySelector('.moDhlPickupDistance').innerText.replace('PLACEHOLDER', station[0].location.distance);
-                    stationElement.querySelector('.moDhlPickupDistance').innerText = text;
-                    self.initialResults.packstation = station[0];
+                    if (stationElement) {
+                        stationElement.classList.remove('hidden');
+                        var text = stationElement.querySelector('.moDhlPickupDistance').innerText.replace('PLACEHOLDER', station[0].location.distance);
+                        stationElement.querySelector('.moDhlPickupDistance').innerText = text;
+                        self.initialResults.packstation = station[0];
+                    }
                 }
             });
         },
@@ -343,18 +347,6 @@
                 return;
             }
 
-            if (!self.isWunschboxAvailable) {
-                return;
-            }
-            $('#delCountrySelect').on('change', function () {
-                mo_dhl__wunschpaket.showOrHideWunschbox();
-            });
-            $('#invCountrySelect').on('change', function () {
-                mo_dhl__wunschpaket.showOrHideWunschbox();
-            });
-            mo_dhl__wunschpaket.showOrHideWunschbox();
-
-
             $("#moDHLWunschnachbarName").focus(function () {
                 $(this).parent().removeClass('has-error custom-error');
             });
@@ -414,6 +406,17 @@
                 $("[name='deladr[oxaddress__oxlname]']").val($("[name='moDhlAddressChangeLName']").val());
                 $(this).parents('form').submit();
             });
+
+            if (!self.isWunschboxAvailable) {
+                return;
+            }
+            $('#delCountrySelect').on('change', function () {
+                mo_dhl__wunschpaket.showOrHideWunschbox();
+            });
+            $('#invCountrySelect').on('change', function () {
+                mo_dhl__wunschpaket.showOrHideWunschbox();
+            });
+            mo_dhl__wunschpaket.showOrHideWunschbox();
 
             $("form").submit(function (event) {
                 var wunschName = $("#moDHLWunschnachbarName");
