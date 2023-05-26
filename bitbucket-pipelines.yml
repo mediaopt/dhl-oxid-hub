@@ -3,7 +3,7 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: php:7.1.29
+image: php:7.4.33-cli
 
 pipelines:
   branches:
@@ -18,6 +18,9 @@ pipelines:
             - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
             - composer install
             - src/modules/mo/mo_dhl/vendor/bin/phpunit -c tests/phpunit.xml tests
+            - apt-get update && apt-get install -y unzip git
+            - git push https://$USERNAME:$PASSWORD@github.com/mediaopt/dhl-oxid-hub.git
+
     develop:
       - step:
           caches:

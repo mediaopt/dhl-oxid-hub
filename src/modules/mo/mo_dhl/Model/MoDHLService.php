@@ -75,4 +75,9 @@ class MoDHLService
      * @var string
      */
     const MO_DHL__ZOLLTARIF = 'mo_dhl_zolltarif';
+
+    /**
+     * @var string
+     */
+    const MO_DHL__NAMED_PERSON_ONLY = 'mo_dhl_named_person_only';
 }

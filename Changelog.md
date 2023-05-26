@@ -3,6 +3,10 @@
 ## next version
 * fixed js-validation not working in flow theme with packstation on creating new addresses
 
+## 1.7.1
+* NoNeighbourDelivery service added
+* NamedPersonOnly service added
+
 ## 1.7.0
 * dont allow Packstation and Postfiliale as delivery address street names for regular addresses
 * show a list of branches when google maps api key is not provided
