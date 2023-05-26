@@ -42,8 +42,16 @@
                             <div class="moDhlAddressCardOption">
                                 <i class="fa fa-ellipsis-v"></i>
                                 <div class="moDhlAddressCardActions">
-                                    <div class="moDhlAddressChangeName">name ändern</div>
-                                    <div>adresse ändern</div>
+                                    <div class="moDhlAddressChangeName moDhlAddressCardOptionSkip">[{oxmultilang ident="MO_DHL__ADDRESS_CHANGE_NAME"}]</div>
+                                    <div class="moDhlAddressChangeAddress moDhlAddressCardOptionSkip hidden">[{oxmultilang ident="MO_DHL__ADDRESS_CHANGE_ADDRESS"}]</div>
+                                    <div class="moDhlAddressChangeDelete moDhlAddressCardOptionSkip">
+                                        <span class="btn btn-danger"
+                                                title="[{oxmultilang ident="DD_DELETE"}]"
+                                                data-toggle="modal"
+                                                data-target="#delete_shipping_address_[{$smarty.foreach.shippingAdresses.iteration}]">
+                                            <i class="fa fa-trash"></i> [{oxmultilang ident="MO_DHL__ADDRESS_CHANGE_DELETE"}]
+                                        </span>
+                                    </div>
                                     [{block name="form_user_shipping_address_edit_action"}][{/block}]
                                     [{block name="form_user_shipping_address_delete_action"}][{/block}]
                                 </div>

@@ -423,6 +423,14 @@ a.privacy-policy:hover {
     display: none;
 }
 
+.moDhlNoAddressesNewAddresses {
+    display: none;
+}
+
+#moDhlDifferentAddressBtn:is(:checked) ~ .moDhlNoAddressesNewAddresses {
+    display: block;
+}
+
 .moDhlAddressCard label {
     cursor: pointer;
     margin: 0;
@@ -432,6 +440,11 @@ a.privacy-policy:hover {
 .moDhlAddressCardChangeName,
 .moDhlAddressChangeSpanSave {
     display: none;
+}
+
+.moDhlAddressCardChangeName .moDhlAddressSpanFName,
+.moDhlAddressCardChangeName .moDhlAddressSpanLName {
+    margin-bottom: 10px;
 }
 
 .moDhlAddressCardActions {

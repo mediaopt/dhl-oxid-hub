@@ -369,17 +369,36 @@
             });
 
             $('.moDhlNewAddressSaveButton').click(function () {
-                $("[name='deladr[oxaddress__oxfname]']").val($("[name='moDhlNewAddressFName']").val());
-                $("[name='deladr[oxaddress__oxlname]']").val($("[name='moDhlNewAddressLName']").val());
-                $("[name='deladr[oxaddress__oxaddinfo]']").val($("[name='moDhlNewAddressStreetAdditional']").val());
+                var newFName = $("[name='moDhlNewAddressFName']").val();
+                var newLName = $("[name='moDhlNewAddressLName']").val();
+                var newAdditional = $("[name='moDhlNewAddressStreetAdditional']").val()
+                if (newFName) {
+                    $("[name='deladr[oxaddress__oxfname]']").val(newFName);
+                }
+                if (newLName) {
+                    $("[name='deladr[oxaddress__oxlname]']").val(newLName);
+                }
+                if (newAdditional) {
+                    $("[name='deladr[oxaddress__oxaddinfo]']").val(newAdditional);
+                }
                 $(this).parents('form').submit();
             });
 
-            $('.moDhlAddressCardOption').click(function () {
+            var hideAddressMenu = function () {
+                $('.moDhlAddressCardActions').hide();
+                $('body').off('click', hideAddressMenu);
+            };
+
+            $('.moDhlAddressCardOption').click(function (e) {
+                if (e.target.closest('.moDhlAddressCardOptionSkip')) {
+                    return;
+                }
                 $('.moDhlAddressCardActions').show();
+                $('body').on('click', hideAddressMenu);
+                e.stopPropagation();
             });
 
-            $('.moDhlAddressChangeName').click(function () {
+            $('.moDhlAddressChangeName').click(function (e) {
                 $('.moDhlAddressCardActions').hide();
                 $('.moDhlAddressSpanName').hide();
                 $('.moDhlAddressCardChangeName').show();
@@ -388,6 +407,11 @@
                 $("[name='deladr[oxaddress__oxstreetnr]']").val($('.moDhlAddressSpanStreet').data('streetnr'));
                 $("[name='deladr[oxaddress__oxcity]']").val($('.moDhlAddressSpanZipCity').data('city'));
                 $("[name='deladr[oxaddress__oxzip]']").val($('.moDhlAddressSpanZipCity').data('zip'));
+                e.stopPropagation();
+            });
+
+            $('.moDhlAddressChangeAddress').click(function (e) {
+                e.stopPropagation();
             });
 
             $('.moDhlAddressChangeSpanSave').click(function () {

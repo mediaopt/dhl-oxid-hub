@@ -125,4 +125,7 @@ $aLang = [
     'MO_DHL__SHIPPING_TO_SHOP_FILIALE'            => 'Paketshops / Filialen (DHL)',
     'MO_DHL__SHIPPING_TO_PACKSTATION'             => 'Packstation (DHL)',
     'MO_DHL__SHIPPING_PICKUP_DISTANCE'            => '(Entfernung PLACEHOLDER m)',
+    'MO_DHL__ADDRESS_CHANGE_NAME'                 => 'Name ändern',
+    'MO_DHL__ADDRESS_CHANGE_ADDRESS'              => 'Adresse ändern',
+    'MO_DHL__ADDRESS_CHANGE_DELETE'               => 'Adresse löschen',
 ];
