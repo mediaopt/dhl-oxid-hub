@@ -355,10 +355,6 @@
                 $(this).parent().removeClass('has-error custom-error');
             });
 
-            $('.moDhlAddressCard label').click(function () {
-                $(this.nextElementSibling).click();
-            });
-
             $('.moDhlNewAddressSaveButton').click(function () {
                 var newFName = $("[name='moDhlNewAddressFName']").val();
                 var newLName = $("[name='moDhlNewAddressLName']").val();

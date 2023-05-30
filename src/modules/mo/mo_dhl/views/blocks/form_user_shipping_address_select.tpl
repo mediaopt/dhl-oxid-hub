@@ -20,18 +20,18 @@
     </select>
 [{*elseif ($oViewConf->moHasAncestorTheme('wave') || $oViewConf->moHasAncestorTheme('flow')) && $oViewConf->isDhlFinderAvailable()*}]
 [{elseif $oViewConf->moHasAncestorTheme('wave') || $oViewConf->moHasAncestorTheme('flow')}]
-    <div class="row dd-available-addresses moDhlAvailableAddresses" data-toggle="buttons">
+    <div class="row dd-available-addresses moDhlAvailableAddresses">
         [{foreach from=$aUserAddresses item=address name="shippingAdresses"}]
             <div class="col-12">
                 <div class="moDhlAddressCard [{if $address->isSelected()}]active[{/if}]">
                     [{if !$address->isSelected()}]
-                        <label>
-                            <div class="moDhlAddressCardAddress [{if $delivadr->oxaddress__oxstreet->value}][{/if}]">
+                        <label for="radio_[{$address->oxaddress__oxid->value}]">
+                            <span class="moDhlAddressCardAddress [{if $delivadr->oxaddress__oxstreet->value}][{/if}]">
                                 [{include file="mo_dhl__shipping_address.tpl" delivadr=$address}]
-                            </div>
+                            </span>
                         </label>
                         <input type="radio" name="oxaddressid" value="[{$address->oxaddress__oxid->value}]" class="hidden"
-                               autocomplete="off">
+                               autocomplete="off" id="radio_[{$address->oxaddress__oxid->value}]">
                     [{else}]
                         <div class="moDhlAddressCardAddress">
                             [{include file="mo_dhl__shipping_address.tpl" delivadr=$address selected=$address->isSelected()}]
