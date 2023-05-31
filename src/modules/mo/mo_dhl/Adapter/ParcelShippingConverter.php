@@ -652,7 +652,7 @@ class ParcelShippingConverter
             $initialized = true;
         }
         if ($legacyServices->getParcelOutletRouting() !== null && $legacyServices->getParcelOutletRouting()->getActive()) {
-            $services->setParcelOutletRouting($legacyServices->getParcelOutletRouting()->getDetails());
+            $services->setParcelOutletRouting($legacyServices->getParcelOutletRouting()->getDetails() ?: '');
             $initialized = true;
         }
         if ($legacyServices->getPDDP() !== null && $legacyServices->getPDDP()->getActive()) {
