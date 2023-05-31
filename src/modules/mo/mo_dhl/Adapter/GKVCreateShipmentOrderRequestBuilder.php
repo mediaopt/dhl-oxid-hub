@@ -19,6 +19,7 @@ use OxidEsales\Eshop\Core\Registry;
  */
 class GKVCreateShipmentOrderRequestBuilder
 {
+    const STANDARD_GRUPPENPROFIL = 'STANDARD_GRUPPENPROFIL';
 
     /**
      * @param string[] $orderIds
@@ -31,7 +32,7 @@ class GKVCreateShipmentOrderRequestBuilder
         $shipmentOrders = array_map([$this, 'buildShipmentOrder'], $orderIds);
         $gkvClient = Registry::get(DHLAdapter::class)->buildGKV();
         $request = new CreateShipmentOrderRequest($gkvClient->buildVersion(), $shipmentOrders);
-        return $request->setCombinedPrinting(0);
+        return $request->setCombinedPrinting(0)->setGroupProfileName(self::STANDARD_GRUPPENPROFIL);
     }
 
     /**
