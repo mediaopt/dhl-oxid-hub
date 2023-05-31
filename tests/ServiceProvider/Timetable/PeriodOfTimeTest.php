@@ -3,8 +3,9 @@
 use Mediaopt\DHL\ServiceProvider\Timetable\PeriodOfTime;
 use Mediaopt\DHL\ServiceProvider\Timetable\Time;
 use Mediaopt\DHL\ServiceProvider\Timetable\TimeInfo;
+use PhpUnit\Framework\TestCase;
 
-class PeriodOfTimeTest extends PHPUnit_Framework_TestCase
+class PeriodOfTimeTest extends TestCase
 {
 
     public function testConstruction()

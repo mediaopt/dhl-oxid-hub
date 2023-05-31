@@ -8,14 +8,14 @@
 use Mediaopt\DHL\Address\Address;
 use Mediaopt\DHL\Address\Receiver;
 use Mediaopt\DHL\Shipment\Contact;
-
+use PhpUnit\Framework\TestCase;
 
 /**
  *
  *
  * @author Mediaopt GmbH
  */
-class ReceiverTest extends \PHPUnit_Framework_TestCase
+class ReceiverTest extends TestCase
 {
     /**
      * @return Address

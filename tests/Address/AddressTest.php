@@ -8,8 +8,9 @@
 namespace sdk;
 
 use Mediaopt\DHL\Address\Address;
+use PHPUnit\Framework\TestCase;
 
-class AddressTest extends \PHPUnit_Framework_TestCase
+class AddressTest extends TestCase
 {
 
     const GERMANY_ID = 'germanyId';

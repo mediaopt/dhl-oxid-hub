@@ -12,8 +12,9 @@ use Mediaopt\DHL\ServiceProvider\ServiceType;
 use Mediaopt\DHL\ServiceProvider\Timetable\PointInTime;
 use Mediaopt\DHL\ServiceProvider\Timetable\Time;
 use Mediaopt\DHL\ServiceProvider\Timetable\Timetable;
+use PhpUnit\Framework\TestCase;
 
-class BasicServiceProviderTest extends PHPUnit_Framework_TestCase
+class BasicServiceProviderTest extends TestCase
 {
 
     use \sdk\AddressCreationTrait;

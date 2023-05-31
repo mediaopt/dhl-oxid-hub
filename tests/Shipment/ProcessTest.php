@@ -1,8 +1,9 @@
 <?php
 
 use Mediaopt\DHL\Shipment\Process;
+use PhpUnit\Framework\TestCase;
 
-class ProcessTest extends PHPUnit_Framework_TestCase
+class ProcessTest extends TestCase
 {
     const PROCESS_NUMBERS = ['01', '06', '53', '54', '55', '82', '86', '87', '62'];
 
