@@ -544,6 +544,33 @@
                                     </td>
                                 </tr>
                                 [{/if}]
+
+                                [{if $process->supportsNoNeighbourDelivery()}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__no_neighbour_delivery_active'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][noNeighbourDelivery][active]"
+                                               value="false">
+                                        <input type="checkbox" name="data[services][noNeighbourDelivery][active]"
+                                               [{if $shipmentOrder.services.noNeighbourDelivery->getActive()}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                [{/if}]
+                                [{if $process->supportsNamedPersonOnly()}]
+                                <tr>
+                                    <td>
+                                        [{oxmultilang ident='MO_DHL__NAMED_PERSON_ONLY'}]
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="data[services][namedPersonOnly][active]"
+                                               value="false">
+                                        <input type="checkbox" name="data[services][namedPersonOnly][active]"
+                                               [{if $shipmentOrder.services.namedPersonOnly->getActive()}]checked[{/if}]>
+                                    </td>
+                                </tr>
+                                [{/if}]
                                 [{if $process->supportsPDDP()}]
                                 [{assign var="service" value=$shipmentOrder.services.pddp}]
                                 <tr>

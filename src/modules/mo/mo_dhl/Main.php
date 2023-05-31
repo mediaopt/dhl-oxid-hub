@@ -6,9 +6,9 @@ use GuzzleHttp\ClientInterface;
 use Mediaopt\DHL\Api\GKV;
 use Mediaopt\DHL\Api\Internetmarke;
 use Mediaopt\DHL\Api\InternetmarkeRefund;
+use Mediaopt\DHL\Api\ParcelShipping\Client;
 use Mediaopt\DHL\Api\ProdWSService;
 use Mediaopt\DHL\Api\Standortsuche;
-use Mediaopt\DHL\Api\Warenpost;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Psr\Log\LoggerInterface;
 
@@ -155,5 +155,13 @@ class Main
     public function buildProdWS()
     {
         return $this->getConfigurator()->buildProdWS($this->getLogger());
+    }
+
+    /**
+     * @return Client
+     */
+    public function buildParcelShipping(): Client
+    {
+        return $this->getConfigurator()->buildParcelShipping($this->getLogger());
     }
 }

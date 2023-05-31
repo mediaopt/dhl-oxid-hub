@@ -39,7 +39,7 @@ class DHLAdapter
      */
     public function canPackstationBeSelected()
     {
-        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__standortsuche_packstation');
+        return (bool)\OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__standortsuche_packstation');
     }
 
     /**
@@ -47,7 +47,7 @@ class DHLAdapter
      */
     public function canPostfilialeBeSelected()
     {
-        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__standortsuche_postfiliale');
+        return (bool)\OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__standortsuche_postfiliale');
     }
 
     /**
@@ -55,7 +55,7 @@ class DHLAdapter
      */
     public function canPaketshopBeSelected()
     {
-        return (bool) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__standortsuche_paketshop');
+        return (bool)\OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__standortsuche_paketshop');
     }
 
     /**
@@ -70,7 +70,7 @@ class DHLAdapter
             throw new \RuntimeException($message);
         }
 
-        return (int) $maximumHits;
+        return (int)$maximumHits;
     }
 
     /**
@@ -110,7 +110,7 @@ class DHLAdapter
     }
 
     /**
-     * @param \OxidEsales\Eshop\Application\Model\User|null $user
+     * @param \OxidEsales\Eshop\Application\Model\User|null    $user
      * @param \OxidEsales\Eshop\Application\Model\Address|null $deliveryAddress
      * @return null
      */
@@ -127,7 +127,7 @@ class DHLAdapter
 
 
     /**
-     * @param \OxidEsales\Eshop\Application\Model\User|null $user
+     * @param \OxidEsales\Eshop\Application\Model\User|null    $user
      * @param \OxidEsales\Eshop\Application\Model\Address|null $deliveryAddress
      * @return bool
      * @throws \OxidEsales\Eshop\Core\Exception\ConnectionException
@@ -140,8 +140,8 @@ class DHLAdapter
     }
 
     /**
-     * @see mo_empfaengerserivces__configurator::getMapsApiKey()
      * @return string
+     * @see mo_empfaengerserivces__configurator::getMapsApiKey()
      */
     public function getGoogleMapsApiKey()
     {
@@ -183,7 +183,7 @@ class DHLAdapter
      */
     public function getPreparationDays()
     {
-        return (int) \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__wunschtag_preparation');
+        return (int)\OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__wunschtag_preparation');
     }
 
     /**
@@ -208,6 +208,14 @@ class DHLAdapter
     public function buildGKV()
     {
         return $this->getSdk()->buildGKV();
+    }
+
+    /**
+     * @return \Mediaopt\DHL\Api\ParcelShipping\Client
+     */
+    public function buildParcelShipping()
+    {
+        return $this->getSdk()->buildParcelShipping();
     }
 
     /**

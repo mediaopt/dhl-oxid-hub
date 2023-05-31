@@ -324,6 +324,7 @@ class Order extends Order_parent
             case MoDHLService::MO_DHL__PREMIUM:
             case MoDHLService::MO_DHL__PDDP:
             case MoDHLService::MO_DHL__ENDORSEMENT:
+            case MoDHLService::MO_DHL__NAMED_PERSON_ONLY:
                 $deliveryset = oxNew(DeliverySet::class);
                 $deliveryset->load($this->oxorder__oxdeltype->value);
                 return $deliveryset->moDHLUsesService($service);
