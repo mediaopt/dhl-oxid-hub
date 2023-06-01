@@ -5,6 +5,7 @@
 * NoNeighbourDelivery service added
 * NamedPersonOnly service added
 * fixed js-validation not working in flow theme with packstation on creating new addresses
+* print a receiver state name if provided (Warenpost International only) 
 
 ## 1.7.0
 * dont allow Packstation and Postfiliale as delivery address street names for regular addresses
