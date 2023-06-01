@@ -5,8 +5,9 @@ use Mediaopt\DHL\ServiceProvider\Timetable\PointInTime;
 use Mediaopt\DHL\ServiceProvider\Timetable\Time;
 use Mediaopt\DHL\ServiceProvider\Timetable\TimeInfo;
 use Mediaopt\DHL\ServiceProvider\Timetable\Timetable;
+use PhpUnit\Framework\TestCase;
 
-class TimetableTest extends PHPUnit_Framework_TestCase
+class TimetableTest extends TestCase
 {
 
     protected function generateRandomlyFilledTimetable()

@@ -4,8 +4,9 @@ use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Shipment\BillingNumber;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
+use PhpUnit\Framework\TestCase;
 
-class BillingNumberTest extends PHPUnit_Framework_TestCase
+class BillingNumberTest extends TestCase
 {
     /**
      * @var \Faker\Generator

@@ -8,9 +8,9 @@
 namespace sdk;
 
 use Mediaopt\DHL\Api\Credentials;
+use PhpUnit\Framework\TestCase;
 
-
-class CredentialsTest extends \PHPUnit_Framework_TestCase
+class CredentialsTest extends TestCase
 {
 
     public function testSandboxRestEndpoint()

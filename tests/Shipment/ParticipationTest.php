@@ -2,8 +2,9 @@
 
 
 use Mediaopt\DHL\Shipment\Participation;
+use PhpUnit\Framework\TestCase;
 
-class ParticipationTest extends PHPUnit_Framework_TestCase
+class ParticipationTest extends TestCase
 {
     public function testThatAParticipationNumberRepresentsItsActualStringInUppercase()
     {

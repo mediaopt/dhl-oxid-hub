@@ -3,11 +3,12 @@
 namespace sdk\ServiceProvider;
 
 use Mediaopt\DHL\ServiceProvider\Branch;
+use PhpUnit\Framework\TestCase;
 
 /**
  * @author  Mediaopt GmbH
  */
-class BranchTest extends \PHPUnit_Framework_TestCase
+class BranchTest extends TestCase
 {
     public function testThatABranchIsABranch()
     {

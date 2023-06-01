@@ -13,9 +13,9 @@ use Mediaopt\DHL\ServiceProvider\Timetable\PeriodOfTime;
 use Mediaopt\DHL\ServiceProvider\Timetable\Time;
 use Mediaopt\DHL\ServiceProvider\Timetable\TimeInfo;
 use Mediaopt\DHL\ServiceProvider\Timetable\Timetable;
+use PhpUnit\Framework\TestCase;
 
-
-class TimetableBuilderTest extends \PHPUnit_Framework_TestCase
+class TimetableBuilderTest extends TestCase
 {
 
     public function buildSample1()

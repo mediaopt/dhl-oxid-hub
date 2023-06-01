@@ -10,8 +10,9 @@ use Mediaopt\DHL\ServiceProvider\Paketshop;
 use Mediaopt\DHL\ServiceProvider\ServiceInformation;
 use Mediaopt\DHL\ServiceProvider\ServiceProviderList;
 use Mediaopt\DHL\ServiceProvider\Timetable\Timetable;
+use PhpUnit\Framework\TestCase;
 
-class ServiceProviderListTest extends PHPUnit_Framework_TestCase
+class ServiceProviderListTest extends TestCase
 {
     /**
      * @var int

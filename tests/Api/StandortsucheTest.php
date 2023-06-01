@@ -17,9 +17,9 @@ use Mediaopt\DHL\Exception\ServiceProviderException;
 use Mediaopt\DHL\ServiceProvider\Coordinates;
 use Monolog\Logger;
 use sdk\AddressCreationTrait;
+use PhpUnit\Framework\TestCase;
 
-
-class StandortsucheTest extends \PHPUnit_Framework_TestCase
+class StandortsucheTest extends TestCase
 {
 
     use AddressCreationTrait;
@@ -81,8 +81,9 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
     public function testThatNoServiceProviderIsFurtherAwayThan15KmInGermany()
     {
         $standortsuche = $this->buildStandortsuche();
-        $address = $this->buildAddress('', '', '56290', 'Uhler', '', 'DEU', 'DE');
+        $address = $this->buildAddress('Hauptstr.', '1', '56290', 'Uhler', '', 'DEU', 'DE');
         $serviceProviders = $standortsuche->getParcellocationByAddress($address);
+        $this->assertNotEmpty($serviceProviders->toArray());
         foreach ($serviceProviders->toArray() as $serviceProvider) {
             $this->assertLessThanOrEqual(15000, $serviceProvider->getLocation()->getDistance());
         }
@@ -91,8 +92,9 @@ class StandortsucheTest extends \PHPUnit_Framework_TestCase
     public function testThatNoServiceProviderIsFurtherAwayThan25KmOutsideOfGermany()
     {
         $standortsuche = $this->buildStandortsuche();
-        $address = $this->buildAddress('', '', '6481', 'Weixmannstall', '', 'at', 'AT');
+        $address = $this->buildAddress('', '', '6020', 'Innsbruck', '', 'at', 'AT');
         $serviceProviders = $standortsuche->getParcellocationByAddress($address);
+        $this->assertNotEmpty($serviceProviders->toArray());
         foreach ($serviceProviders->toArray() as $serviceProvider) {
             $this->assertLessThanOrEqual(25000, $serviceProvider->getLocation()->getDistance());
         }
