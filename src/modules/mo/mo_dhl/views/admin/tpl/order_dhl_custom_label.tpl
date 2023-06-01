@@ -178,6 +178,15 @@
                                     [{assign var="origin" value=$address->getOrigin()}]
                                     <tr>
                                         <td>
+                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_STATE'}]
+                                        </td>
+                                        <td>
+                                            <input type="text" name="data[receiver][state]"
+                                                   value="[{$origin->getState()}]">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
                                             [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_COUNTRY'}]
                                         </td>
                                         <td>
