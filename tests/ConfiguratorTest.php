@@ -2,8 +2,9 @@
 
 
 use Mediaopt\DHL\Api\Standortsuche;
+use PhpUnit\Framework\TestCase;
 
-class ConfiguratorTest extends PHPUnit_Framework_TestCase
+class ConfiguratorTest extends TestCase
 {
 
     protected function getConfiguratorMock()
@@ -18,6 +19,9 @@ class ConfiguratorTest extends PHPUnit_Framework_TestCase
                 'getSandboxPassword',
                 'getCustomerGKVLogin',
                 'getCustomerGKVPassword',
+                'getCustomerParcelShippingPassword',
+                'getCustomerParcelShippingUsername',
+                'getParcelShippingApiKey',
                 'getCustomerRetoureLogin',
                 'getCustomerRetourePassword',
                 'getStandortsucheKeyName',

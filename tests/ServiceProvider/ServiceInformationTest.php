@@ -11,9 +11,9 @@ namespace sdk\ServiceProvider;
 use Mediaopt\DHL\ServiceProvider\ServiceInformation;
 use Mediaopt\DHL\ServiceProvider\ServiceType;
 use Mediaopt\DHL\ServiceProvider\Timetable\Timetable;
+use PhpUnit\Framework\TestCase;
 
-
-class ServiceInformationTest extends \PHPUnit_Framework_TestCase
+class ServiceInformationTest extends TestCase
 {
 
     public function testConstructorInjection()

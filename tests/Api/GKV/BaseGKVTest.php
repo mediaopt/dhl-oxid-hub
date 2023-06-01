@@ -21,11 +21,12 @@ use Mediaopt\DHL\Shipment\BillingNumber;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Mediaopt GmbH
  */
-class BaseGKVTest extends \PHPUnit_Framework_TestCase
+class BaseGKVTest extends TestCase
 {
 
     /**

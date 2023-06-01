@@ -3,8 +3,9 @@
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Main;
+use PhpUnit\Framework\TestCase;
 
-class MainTest extends PHPUnit_Framework_TestCase
+class MainTest extends TestCase
 {
 
     public function testGetConfigurator()

@@ -7,14 +7,14 @@ use Mediaopt\DHL\Shipment\BillingNumber;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 use Mediaopt\DHL\Shipment\Shipment;
-
+use PhpUnit\Framework\TestCase;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
  * @copyright 2016 Mediaopt GmbH
  */
-class ShipmentTest extends PHPUnit_Framework_TestCase
+class ShipmentTest extends TestCase
 {
 
     protected function buildSampleOrder()

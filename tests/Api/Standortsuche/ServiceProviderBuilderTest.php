@@ -16,8 +16,9 @@ use Mediaopt\DHL\ServiceProvider\Packstation;
 use Mediaopt\DHL\ServiceProvider\Paketshop;
 use Mediaopt\DHL\ServiceProvider\ServiceType;
 use Mediaopt\DHL\ServiceProvider\Timetable\Timetable;
+use PhpUnit\Framework\TestCase;
 
-class ServiceProviderBuilderTest extends \PHPUnit_Framework_TestCase
+class ServiceProviderBuilderTest extends TestCase
 {
 
     public function buildSamplePackstation()

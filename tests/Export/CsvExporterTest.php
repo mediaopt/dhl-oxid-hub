@@ -11,13 +11,14 @@ use Mediaopt\DHL\Shipment\Contact;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 use Mediaopt\DHL\Shipment\Shipment;
+use PhpUnit\Framework\TestCase;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
  *
  * @copyright 2016 Mediaopt GmbH
  */
-class CsvExporterTest extends PHPUnit_Framework_TestCase
+class CsvExporterTest extends TestCase
 {
     const PROCESS_IDENTIFIERS = [
         Process::PAKET,
@@ -193,6 +194,7 @@ class CsvExporterTest extends PHPUnit_Framework_TestCase
 
     public function testSave()
     {
+        $this->expectNotToPerformAssertions();
         $exporter = new CsvExporter('UTF-8');
         $exporter->export([$this->buildSampleOrder(''), $this->buildSampleOrder('')]);
         $exporter->save();
@@ -220,6 +222,7 @@ class CsvExporterTest extends PHPUnit_Framework_TestCase
 
     public function testSaveWithWunschort()
     {
+        $this->expectNotToPerformAssertions();
         $orderWithWunschort = $this->buildSampleOrder('Wunschort');
         $exporter = new CsvExporter('UTF-8');
         $exporter->export([$orderWithWunschort]);
@@ -228,6 +231,7 @@ class CsvExporterTest extends PHPUnit_Framework_TestCase
 
     public function testSaveWithWunschnachbar()
     {
+        $this->expectNotToPerformAssertions();
         $orderWithWunschort = $this->buildSampleOrder('Wunschnachbar');
         $exporter = new CsvExporter('UTF-8');
         $exporter->export([$orderWithWunschort]);

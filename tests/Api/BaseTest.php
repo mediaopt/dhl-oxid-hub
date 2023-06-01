@@ -10,8 +10,9 @@ use GuzzleHttp\Stream\NullStream;
 use Mediaopt\DHL\Api\Credentials;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Exception\WebserviceException;
+use PhpUnit\Framework\TestCase;
 
-class BaseTest extends \PHPUnit_Framework_TestCase
+class BaseTest extends TestCase
 {
     public function testGetLogger()
     {

@@ -1,8 +1,9 @@
 <?php
 
 use Mediaopt\DHL\ServiceProvider\Timetable\TimeInfo;
+use PhpUnit\Framework\TestCase;
 
-class TimeInfoTest extends PHPUnit_Framework_TestCase
+class TimeInfoTest extends TestCase
 {
 
     public function testConstructionWithRandomTypes()

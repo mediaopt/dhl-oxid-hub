@@ -6,11 +6,12 @@
  */
 
 use Mediaopt\DHL\Shipment\Contact;
+use PhpUnit\Framework\TestCase;
 
 /**
  * @author  Mediaopt GmbH
  */
-class ContactTest extends \PHPUnit_Framework_TestCase
+class ContactTest extends TestCase
 {
     public function testConstructorInjection()
     {
