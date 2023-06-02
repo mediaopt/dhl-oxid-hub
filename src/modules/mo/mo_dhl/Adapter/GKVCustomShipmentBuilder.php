@@ -154,8 +154,8 @@ class GKVCustomShipmentBuilder
                 ->setPhone($receiverData['phone']);
         }
         $receiverAddress = $receiver->getAddress() ?: $receiver->getPackstation() ?: $receiver->getPostfiliale();
-        if ($receiverData['state']) {
-            $receiverAddress->setProvince($receiverData['state']);
+        if ($receiverData['province']) {
+            $receiverAddress->setProvince($receiverData['province']);
         }
         $receiverAddress->assign($receiverData);
     }
