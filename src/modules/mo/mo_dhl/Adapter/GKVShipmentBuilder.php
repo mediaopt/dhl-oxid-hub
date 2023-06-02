@@ -143,7 +143,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
 
         $state = \oxNew(State::class);
         $state->load($stateId);
-        return $state->getFieldData('oxtitle');
+        return $state->getFieldData('oxisoalpha2');
     }
 
     /**
