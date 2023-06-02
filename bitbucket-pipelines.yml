@@ -20,6 +20,7 @@ pipelines:
             - src/modules/mo/mo_dhl/vendor/bin/phpunit -c tests/phpunit.xml tests
             - apt-get update && apt-get install -y unzip git
             - git push https://$USERNAME:$PASSWORD@github.com/mediaopt/dhl-oxid-hub.git
+            - git push https://$USERNAME:$PASSWORD@github.com/mediaopt/dhl-oxid-hub.git --tags
 
     develop:
       - step:
