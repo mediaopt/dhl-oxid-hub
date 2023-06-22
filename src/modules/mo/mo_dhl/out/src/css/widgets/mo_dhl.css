@@ -173,15 +173,20 @@ div.moDHLWunschpaketWave {
 
 div#moDHLWunschpaket ul#moDHLWunschtag li {
     width: 70px;
-    margin: 5px 0;
+    margin: 5px;
     color: black;
-    background-color: #fc2;
+    background-color: #f2f2f2;
     padding: 12px;
     cursor: pointer;
 }
 
+div#moDHLWunschpaket ul#moDHLWunschtag li.activeWunschtag {
+    background-color: #fc2;
+}
+
 div#moDHLWunschpaket ul#moDHLWunschtag li label {
     font-weight: 600;
+    width: 100%;
     text-align: center;
     cursor: pointer;
 }
@@ -425,6 +430,10 @@ a.privacy-policy:hover {
 
 .moDhlNoAddressesNewAddresses {
     display: none;
+}
+
+.moDhlNoAddressesNewAddresses.show {
+    display: block;
 }
 
 #moDhlDifferentAddressBtn:is(:checked) ~ .moDhlNoAddressesNewAddresses {

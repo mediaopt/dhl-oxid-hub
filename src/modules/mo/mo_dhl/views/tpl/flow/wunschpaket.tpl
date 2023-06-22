@@ -125,3 +125,10 @@
         </div>
     [{/if}]
 </div>
+[{capture assign="moNoValidationForDhlDeliveryServices"}]
+    [{strip}]
+        $('#moDHLWunschpaket').find('input,select,textarea').jqBootstrapValidation('destroy');
+    [{/strip}]
+[{/capture}]
+
+[{oxscript add=$moNoValidationForDhlDeliveryServices}]

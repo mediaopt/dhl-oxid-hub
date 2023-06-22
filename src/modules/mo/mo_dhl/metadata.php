@@ -79,6 +79,11 @@ $aModule = [
             'file'     => 'views/blocks/user.tpl',
         ],
         [
+            'template' => 'form/user.tpl',
+            'block'    => 'user_shipping_address_form',
+            'file'     => 'views/blocks/user_shipping_address_form.tpl',
+        ],
+        [
             'template' => 'page/checkout/order.tpl',
             'block'    => 'shippingAndPayment',
             'file'     => 'views/blocks/checkout_order_shipping_and_payment.tpl',

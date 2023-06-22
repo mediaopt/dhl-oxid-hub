@@ -63,7 +63,10 @@
                 if ($(this).siblings('input').is(':disabled')) {
                     return;
                 }
-                mo_dhl__wunschpaket.toggle($(this).siblings("input"));
+                document.querySelectorAll('.activeWunschtag').forEach(element => {
+                    element.classList.remove('activeWunschtag');
+                });
+                this.closest('li').classList.add('activeWunschtag');
             });
             $wunschortCheckbox.change(function () {
                 if (!$wunschortCheckbox.prop('checked')) {
@@ -88,10 +91,9 @@
             });
             $wunschtagCheckbox.change(function () {
                 if (!$wunschtagCheckbox.prop('checked')) {
-                    $('#wunschtag\\:none').prop('checked', true);
+                    $('#wunschtag\\:none').next().click();
                 } else {
-                    $('#wunschtag\\:none').parent().next().children().eq(0).prop('checked', true);
-                    $wunschtagCheckbox.prop('checked', true);
+                    $('#wunschtag\\:none').parent().next().children().eq(0).next().click();
                 }
             });
             $('#showShipAddress').change(mo_DHL__Helper.debounce(mo_dhl__wunschpaket.fillInDay, 300));
@@ -102,23 +104,15 @@
 
             mo_dhl__wunschpaket.showOrHideWunschbox();
         },
-        toggle: function (radioButton) {
-            var isChecked = radioButton.is(":checked");
-            $("input[name='" + radioButton.prop("name") + "']").prop("checked", false);
-            radioButton.prop("checked", !isChecked);
-            if (radioButton.attr('id').indexOf('none') === -1) {
-                $('#' + radioButton.attr('name') + 'Checkbox').prop('checked', true);
-            } else {
-                $('#' + radioButton.attr('name') + 'Checkbox').prop('checked', false);
-            }
-        },
         preselectWunschtag: function (selectedDay) {
-            var $dayInput = $("input[name='moDHLWunschtag'][value='" + selectedDay + "']");
-            if (selectedDay && selectedDay.length > 0 && $dayInput) {
-                $dayInput.attr('checked', true);
-                $('#moDHLWunschtagCheckbox').prop('checked', true);
+            var dayInput = document.getElementById('wunschtag:' + selectedDay);
+            if (selectedDay && selectedDay.length > 0 && dayInput) {
+                dayInput.nextElementSibling?.click();
+                if (!document.querySelector('#moDHL--wunschtag-info input').checked) {
+                    $('#moDHL--wunschtag-info label').click();
+                }
             } else {
-                $('#wunschtag\\:none').prop('checked', true);
+                $('#wunschtag\\:none').click();
             }
         },
         moveWunschpaketBoxes: function () {
@@ -203,7 +197,10 @@
                     if ($(this).siblings('input').is(':disabled')) {
                         return;
                     }
-                    mo_dhl__wunschpaket.toggle($(this).siblings("input"));
+                    document.querySelectorAll('.activeWunschtag').forEach(element => {
+                        element.classList.remove('activeWunschtag');
+                    });
+                    this.closest('li').classList.add('activeWunschtag');
                 });
             }).fail(function () {
                 mo_dhl__wunschpaket.emptyDay();
