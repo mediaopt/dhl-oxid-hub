@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.7.2
+* print a receiver state name if provided (International only)
+
 ## 1.7.1
 * Introduced new REST API for Parcel Shipments (SOAP API is deprecated)
 * NoNeighbourDelivery service added
