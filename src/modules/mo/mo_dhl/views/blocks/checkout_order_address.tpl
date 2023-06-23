@@ -87,8 +87,8 @@
     [{/if}]
 [{elseif $oViewConf->moHasAncestorTheme('flow')}]
     [{if $oView->moDHLIsAWunschpaketServiceSelected()}]
-        <div class="row">
-            <div class="col-xs-12 col-md-12 moEmpfaengerserviceWunschpaketBox">
+        <div class="row moEmpfaengerserviceWunschpaketBox">
+            <div class="col-xs-12 col-md-12">
                 <div class="panel panel-default" id="moDHLCheckoutBox">
                     <div class="panel-heading">
                         <img class="moEmpfaengerserviceWunschpaketBox--image"
@@ -147,8 +147,8 @@
             </div>
         </div>
     [{elseif $oView->moDHLCanAWunschpaketServiceBeSelected()}]
-        <div class="row">
-            <div class="col-xs-12 col-md-12 moEmpfaengerserviceWunschpaketBox">
+        <div class="row moEmpfaengerserviceWunschpaketBox">
+            <div class="col-xs-12 col-md-12">
                 <div class="panel panel-default" id="moDHLCheckoutBox">
                     <div class="panel-heading">
                         <img class="moEmpfaengerserviceWunschpaketBox--image"
@@ -173,8 +173,8 @@
     [{/if}]
 [{elseif $oViewConf->moHasAncestorTheme('wave')}]
     [{if $oView->moDHLIsAWunschpaketServiceSelected()}]
-        <div class="row">
-            <div class="col-12 col-md-6 moEmpfaengerserviceWunschpaketBox">
+        <div class="row moEmpfaengerserviceWunschpaketBox">
+            <div class="col-12 col-md-6">
                 <div>
                     <div class="card" id="moDHLCheckoutBox">
                         <div class="card-header">
@@ -234,8 +234,8 @@
             </div>
         </div>
     [{elseif $oView->moDHLCanAWunschpaketServiceBeSelected()}]
-        <div class="row">
-            <div class="col-12 col-md-6 moEmpfaengerserviceWunschpaketBox">
+        <div class="row moEmpfaengerserviceWunschpaketBox">
+            <div class="col-12 col-md-6">
                 <div>
                     <div class="card" id="moDHLCheckoutBox">
                         <div class="card-header">
