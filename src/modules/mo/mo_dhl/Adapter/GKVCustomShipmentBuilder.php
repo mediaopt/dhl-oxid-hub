@@ -242,7 +242,7 @@ class GKVCustomShipmentBuilder
             $isActive = filter_var($servicesData['namedPersonOnly']['active'], FILTER_VALIDATE_BOOLEAN);
             $services->setNamedPersonOnly(new Serviceconfiguration($isActive));
         }
-        if ($process->supportsNamedPersonOnly()) {
+        if ($process->supportsSignedForByRecipient()) {
             $isActive = filter_var($servicesData['signedForByRecipient']['active'], FILTER_VALIDATE_BOOLEAN);
             $services->setSignedForByRecipient(new Serviceconfiguration($isActive));
         }
