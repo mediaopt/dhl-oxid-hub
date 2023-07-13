@@ -122,12 +122,13 @@
                 .val(germany)
                 .attr('disabled', 'disabled')
                 .selectpicker('refresh')
+                .jqBootstrapValidation('destroy')
                 .parent()
                 .append($hiddenInput)
             ;
         },
         loosenFixedCountry: function () {
-            $("[name='deladr[oxaddress__oxcountryid]']").removeAttr("disabled").selectpicker('refresh');
+            $("[name='deladr[oxaddress__oxcountryid]']").removeAttr("disabled").selectpicker('refresh').jqBootstrapValidation();
             $(".mo-hidden-deladr-country").remove();
         },
         addAddressChangeListener: function () {

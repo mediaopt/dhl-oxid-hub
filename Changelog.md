@@ -1,9 +1,16 @@
 # Changelog
 
+## 1.7.3
+* SignedForByRecipient service added
+
+## 1.7.2
+* print a receiver state name if provided (International only)
+
 ## 1.7.1
+* Introduced new REST API for Parcel Shipments (SOAP API is deprecated)
 * NoNeighbourDelivery service added
 * NamedPersonOnly service added
-* SignedForByRecipient service added
+* fixed js-validation not working in flow theme with packstation on creating new addresses
 
 ## 1.7.0
 * dont allow Packstation and Postfiliale as delivery address street names for regular addresses

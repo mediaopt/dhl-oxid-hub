@@ -1,8 +1,9 @@
 <?php
 
 use Mediaopt\DHL\Merchant\Ekp;
+use PhpUnit\Framework\TestCase;
 
-class EkpTest extends PHPUnit_Framework_TestCase
+class EkpTest extends TestCase
 {
     public function testThatTheEkpRepresentsItsActualString()
     {

@@ -11,8 +11,9 @@ use GuzzleHttp\Client;
 use Mediaopt\DHL\Api\Credentials;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Psr\Log\NullLogger;
+use PhpUnit\Framework\TestCase;
 
-class WunschpaketTest extends \PHPUnit_Framework_TestCase
+class WunschpaketTest extends TestCase
 {
 
     private $beforeChristmas;

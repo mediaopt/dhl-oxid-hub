@@ -9,8 +9,9 @@ namespace sdk\ServiceProvider;
 
 use Mediaopt\DHL\Exception\ServiceProviderException;
 use Mediaopt\DHL\ServiceProvider\ServiceType;
+use PhpUnit\Framework\TestCase;
 
-class ServiceTypeTest extends \PHPUnit_Framework_TestCase
+class ServiceTypeTest extends TestCase
 {
 
     public function testCreationOfServiceType()

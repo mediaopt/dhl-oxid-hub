@@ -9,8 +9,9 @@ namespace sdk;
 
 use Mediaopt\DHL\Address\Address;
 use Mediaopt\DHL\Address\Sender;
+use PhpUnit\Framework\TestCase;
 
-class SenderTest extends \PHPUnit_Framework_TestCase
+class SenderTest extends TestCase
 {
 
     public function testConstructorInjection()

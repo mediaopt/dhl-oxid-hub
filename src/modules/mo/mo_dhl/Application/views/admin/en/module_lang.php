@@ -72,6 +72,7 @@ $aLang = [
     'MO_DHL__CUSTOM_LABEL_STREETNUMBER'       => 'Street number',
     'MO_DHL__CUSTOM_LABEL_ZIP'                => 'Zip code',
     'MO_DHL__CUSTOM_LABEL_CITY'               => 'City',
+    'MO_DHL__CUSTOM_LABEL_STATE'              => 'State',
     'MO_DHL__CUSTOM_LABEL_COUNTRY'            => 'Country',
     'MO_DHL__CUSTOM_LABEL_PACKSTATION_NUMBER' => 'Packstation number',
     'MO_DHL__CUSTOM_LABEL_POSTFILIAL_NUMBER'  => 'Filial number',

@@ -58,6 +58,31 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
+    protected function getParcelShippingApiKey()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::PARCEL_SHIPPING_API_KEY;
+    }
+
+
+    /**
+     * @return string
+     */
+    protected function getCustomerParcelShippingUsername()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_PARCEL_SHIPPING_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomerParcelShippingPassword()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_PARCEL_SHIPPING_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
     protected function getCustomerRetoureLogin()
     {
         return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_RETOURE_USERNAME;

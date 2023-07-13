@@ -42,6 +42,7 @@ use Mediaopt\DHL\Shipment\BillingNumber;
 use OxidEsales\Eshop\Application\Model\OrderArticle;
 use OxidEsales\Eshop\Core\Registry;
 use Mediaopt\DHL\ServiceProvider\CountriesLanguages;
+use OxidEsales\Eshop\Application\Model\State;
 
 /**
  * For the full copyright and license information, refer to the accompanying LICENSE file.
@@ -128,6 +129,21 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             ->setContactPerson($order->moDHLGetAddressData('fname') . ' ' . $order->moDHLGetAddressData('lname'))
             ->setEmail($order->getFieldData('oxbillemail'))
             ->setPhone($order->moDHLGetAddressData('fon'));
+    }
+
+    /**
+     * @param string|null $stateId
+     * @return string|null
+     */
+    protected function getStateName(?string $stateId)
+    {
+        if (is_null($stateId)) {
+            return null;
+        }
+
+        $state = \oxNew(State::class);
+        $state->load($stateId);
+        return $state->getFieldData('oxisoalpha2');
     }
 
     /**
@@ -363,7 +379,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
             $order->moDHLGetAddressData('streetnr'),
             $order->moDHLGetAddressData('zip'),
             $this->convertSpecialChars($order->moDHLGetAddressData('city')),
-            null,
+            $this->getStateName($order->moDHLGetAddressData('stateid')) ?: null,
             $this->buildCountry($order->moDHLGetAddressData('countryid'))
         );
         return $address;

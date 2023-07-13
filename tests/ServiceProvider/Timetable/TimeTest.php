@@ -1,8 +1,9 @@
 <?php
 
 use Mediaopt\DHL\ServiceProvider\Timetable\Time;
+use PhpUnit\Framework\TestCase;
 
-class TimeTest extends PHPUnit_Framework_TestCase
+class TimeTest extends TestCase
 {
 
     protected function generateTime() {
