@@ -3,9 +3,9 @@
 
 ## Links 
 * https://www.dhl.de/de/geschaeftskunden/paket/versandsoftware/partnersysteme/oxid-esales.html
-* https://projects.mediaopt.de/projects/mopt-postp-ua/wiki/Wiki
+* https://github.com/mediaopt/dhl-oxid-hub/wiki/Post-&-DHL-Versand-Oxid-Modul
 
-## Generate Parcel Shipping API
+## Generate Parcel Shipping API (Module developers only)
 
 We use [Jane](https://github.com/janephp/janephp) to generate the Parcel Shipping API.
 In particular, we use the package [jane-php/open-api-3](https://packagist.org/packages/jane-php/open-api-3).
