@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.7.3
+* SignedForByRecipient service added
+
 ## 1.7.2
 * print a receiver state name if provided (International only)
 

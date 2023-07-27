@@ -51,6 +51,11 @@ class ShipmentService
     protected $NamedPersonOnly = null;
 
     /**
+     * @var Serviceconfiguration $SignedForByRecipient
+     */
+    protected $SignedForByRecipient = null;
+
+    /**
      * @var Serviceconfiguration $ReturnReceipt
      */
     protected $ReturnReceipt = null;
@@ -265,6 +270,24 @@ class ShipmentService
     public function setNamedPersonOnly($NamedPersonOnly)
     {
         $this->NamedPersonOnly = $NamedPersonOnly;
+        return $this;
+    }
+
+    /**
+     * @return Serviceconfiguration
+     */
+    public function getSignedForByRecipient()
+    {
+        return $this->SignedForByRecipient;
+    }
+
+    /**
+     * @param Serviceconfiguration $SignedForByRecipient
+     * @return ShipmentService
+     */
+    public function setSignedForByRecipient($SignedForByRecipient)
+    {
+        $this->SignedForByRecipient = $SignedForByRecipient;
         return $this;
     }
 

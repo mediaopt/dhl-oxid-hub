@@ -104,6 +104,7 @@ $aLang = [
     'MO_DHL__PREMIUM'                   => 'Service Delivery Type: Premium',
     'HELP_MO_DHL__PREMIUM'              => 'A package with Service Premium is preferred and always transported by the fastest route. Your package always takes the next possible flight or truck to the destination and gets priority status in the destination country. So it reaches its destination much faster.',
     'MO_DHL__NAMED_PERSON_ONLY'         => 'Service Named Person Only',
+    'MO_DHL__SIGNED_FOR_BY_RECIPIENT'   => 'Service Signed For By Recipient',
     'MO_DHL__PDDP'                      => 'PDDP (Postal Delivery Duty Paid)',
     'HELP_MO_DHL__PDDP'                 => 'Deutsche Post and sender handle import duties instead of consignee',
     'MO_DHL__ZOLLTARIF'                 => 'HS tariff number',

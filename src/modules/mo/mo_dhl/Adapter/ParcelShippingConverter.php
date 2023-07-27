@@ -651,6 +651,10 @@ class ParcelShippingConverter
             $services->setNoNeighbourDelivery(true);
             $initialized = true;
         }
+        if ($legacyServices->getSignedForByRecipient() !== null && $legacyServices->getSignedForByRecipient()->getActive()) {
+            $services->setSignedForByRecipient(true);
+            $initialized = true;
+        }
         if ($legacyServices->getParcelOutletRouting() !== null && $legacyServices->getParcelOutletRouting()->getActive()) {
             $services->setParcelOutletRouting($legacyServices->getParcelOutletRouting()->getDetails() ?: '');
             $initialized = true;
