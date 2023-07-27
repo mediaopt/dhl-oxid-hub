@@ -167,7 +167,7 @@ class GKV extends \SoapClient
             'authentication' => SOAP_AUTHENTICATION_BASIC,
             'classmap'       => self::$classmap,
         ];
-        $wsdl = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'GKV' . DIRECTORY_SEPARATOR . 'geschaeftskundenversand-api-3.4.0.wsdl';
+        $wsdl = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'GKV' . DIRECTORY_SEPARATOR . 'geschaeftskundenversand-api-3.5.0.wsdl';
         parent::__construct($wsdl, $options);
     }
 
