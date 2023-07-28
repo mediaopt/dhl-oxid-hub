@@ -22,7 +22,7 @@
         "ext-calendar": "*",
         "ext-iconv": "*",
         "ext-soap": "*",
-        "symfony/console": "^2.7||^3.1||^4.0",
+        "symfony/console": "^2.7||^3.1||^4.0||^5.0"",
         "jane-php/open-api-3": "^7.4",
         "php-http/curl-client": "^2.2",
         "nyholm/psr7": "^1.5"
