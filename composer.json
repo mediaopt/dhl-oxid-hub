@@ -8,6 +8,9 @@
     ],
     "license": "proprietary",
     "config": {
+        "platform": {
+            "php": "7.4.33"
+        },
         "prepend-autoloader": false,
         "vendor-dir": "src/modules/mo/mo_dhl/vendor",
         "allow-plugins": {
