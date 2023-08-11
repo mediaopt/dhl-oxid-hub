@@ -14,6 +14,7 @@ use Mediaopt\DHL\Address\Address;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
 use Mediaopt\DHL\Exception\ServiceProviderException;
+use Mediaopt\DHL\Exception\WebserviceException;
 use Mediaopt\DHL\ServiceProvider\Coordinates;
 use Monolog\Logger;
 use sdk\AddressCreationTrait;
@@ -81,7 +82,7 @@ class StandortsucheTest extends TestCase
     public function testThatNoServiceProviderIsFurtherAwayThan15KmInGermany()
     {
         $standortsuche = $this->buildStandortsuche();
-        $address = $this->buildAddress('Hauptstr.', '1', '56290', 'Uhler', '', 'DEU', 'DE');
+        $address = $this->buildAddress('Zum Uhlerkopf', '1', '56290', 'Uhler', '', 'DEU', 'DE');
         $serviceProviders = $standortsuche->getParcellocationByAddress($address);
         $this->assertNotEmpty($serviceProviders->toArray());
         foreach ($serviceProviders->toArray() as $serviceProvider) {
@@ -165,6 +166,7 @@ class StandortsucheTest extends TestCase
     public function testThatThereANoResultsInCaseOfAnEmptyAddress()
     {
         $emptyAddress = $this->buildAddress('', '', '', '', '', '');
-        $this->assertEmpty($this->buildStandortsuche()->getParcellocationByAddress($emptyAddress)->toArray());
+        $this->expectException(WebserviceException::class);
+        $this->buildStandortsuche()->getParcellocationByAddress($emptyAddress);
     }
 }
