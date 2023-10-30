@@ -671,12 +671,6 @@ class ParcelShippingConverter
             $services->setPremium(true);
             $initialized = true;
         }
-        if ($notification = $legacyShipmentOrder->getShipment()->getShipmentDetails()->getNotification()) {
-            $confirmation = new ShippingConfirmation();
-            $confirmation->setEmail($notification->getRecipientEmailAddress());
-            $services->setShippingConfirmation($confirmation);
-            $initialized = true;
-        }
 
         return $initialized ? $services : null;
     }
