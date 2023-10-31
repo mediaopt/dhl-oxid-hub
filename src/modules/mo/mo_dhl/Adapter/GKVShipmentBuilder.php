@@ -127,7 +127,7 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
     {
         return (new CommunicationType())
             ->setContactPerson($order->moDHLGetAddressData('fname') . ' ' . $order->moDHLGetAddressData('lname'))
-            ->setEmail($order->getFieldData('oxbillemail'))
+            ->setEmail($this->sendNotificationAllowed($order) ? $order->getFieldData('oxbillemail') : null)
             ->setPhone($order->moDHLGetAddressData('fon'));
     }
 
