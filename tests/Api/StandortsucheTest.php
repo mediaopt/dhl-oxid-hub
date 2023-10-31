@@ -93,7 +93,7 @@ class StandortsucheTest extends TestCase
     public function testThatNoServiceProviderIsFurtherAwayThan25KmOutsideOfGermany()
     {
         $standortsuche = $this->buildStandortsuche();
-        $address = $this->buildAddress('', '', '6020', 'Innsbruck', '', 'at', 'AT');
+        $address = $this->buildAddress('Ing.-Etzel-Straße', '', '6020', 'Innsbruck', '', 'at', 'AT');
         $serviceProviders = $standortsuche->getParcellocationByAddress($address);
         $this->assertNotEmpty($serviceProviders->toArray());
         foreach ($serviceProviders->toArray() as $serviceProvider) {
