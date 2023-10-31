@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.7.4
+* replaced deprecated shipping confirmation service in REST API
+
 ## 1.7.3
 * SignedForByRecipient service added
 
