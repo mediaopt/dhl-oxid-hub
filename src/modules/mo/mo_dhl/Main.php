@@ -164,4 +164,12 @@ class Main
     {
         return $this->getConfigurator()->buildParcelShipping($this->getLogger());
     }
+
+    /**
+     * @return Client
+     */
+    public function buildAuthentication(): Api\Authentication\Client
+    {
+        return $this->getConfigurator()->buildAuthentication($this->getLogger());
+    }
 }
