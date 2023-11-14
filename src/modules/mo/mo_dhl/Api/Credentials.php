@@ -191,6 +191,29 @@ class Credentials
     /**
      * @param string $username
      * @param string $password
+     * @param string $apiKey
+     * @return static
+     */
+    public static function createProductionAuthenticationCredentials($clientId, $clientSecret)
+    {
+        //todo 34741 prod endpoint
+        return new static('', $clientId, $clientSecret, null, true);
+    }
+
+    /**
+     * @param string $username
+     * @param string $password
+     * @param string $apiKey
+     * @return static
+     */
+    public static function createSandboxAuthenticationCredentials($clientId, $clientSecret)
+    {
+        return new static('https://api-eu.dhl.com/parcel/de/account/auth/ropc/v1', $clientId, $clientSecret, null, false);
+    }
+
+    /**
+     * @param string $username
+     * @param string $password
      * @return self
      */
     public static function createSandboxInternetmarkeEndpoint($username, $password)

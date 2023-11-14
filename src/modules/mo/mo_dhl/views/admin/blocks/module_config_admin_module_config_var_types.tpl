@@ -9,6 +9,9 @@
 [{elseif $module_var == 'mo_dhl__account_check'}]
     <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL_SAVE_AND_CHECK"}]"
            onClick="Javascript:document.module_configuration.fnc.value='moSaveAndCheckLogin'" [{$readonly}]>
+[{elseif $module_var == 'mo_dhl__authentication_check'}]
+    <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL_AUTHENTICATION"}]"
+            onClick="Javascript:document.module_configuration.fnc.value='moAuthentication'" [{$readonly}]>
     [{elseif $module_var == 'mo_dhl__internetmarke_check'}]
 <input type="submit" class="confinput" name="check" value="[{oxmultilang ident="MO_DHL_SAVE_AND_CHECK"}]"
        onClick="Javascript:document.module_configuration.fnc.value='moSaveAndCheckInternetmarkeLogin'" [{$readonly}]>

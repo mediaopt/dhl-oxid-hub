@@ -38,6 +38,7 @@ $aLang = [
     'MO_DHL__PAYMENTS_DHL'                         => 'DHL',
     'MO_DHL__EXCLUDED'                             => 'Excluded',
     'MO_DHL_SAVE_AND_CHECK'                        => 'Save and check credentials',
+    'MO_DHL_AUTHENTICATION'                        => 'Save and check authentication',
     'MO_DHL__NO_DELIVERYSET'                       => 'Please configure at least one shipping method to use the dhl services',
     'MO_DHL__CHECKING_DELIVERYSET'                 => 'Testing shipping method ',
     'MO_DHL__CORRECT_CREDENTIALS'                  => 'Credentials are corrent',

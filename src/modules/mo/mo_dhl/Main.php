@@ -166,10 +166,10 @@ class Main
     }
 
     /**
-     * @return Client
+     * @return Api\MyAccount\Client
      */
-    public function buildAuthentication(): Api\Authentication\Client
+    public function buildMyAccount(): Api\MyAccount\Client
     {
-        return $this->getConfigurator()->buildAuthentication($this->getLogger());
+        return $this->getConfigurator()->buildMyAccount($this->getLogger());
     }
 }

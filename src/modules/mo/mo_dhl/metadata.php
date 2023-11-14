@@ -252,6 +252,22 @@ $aModule = [
             'value' => 'false',
         ],
         [
+            'group' => 'mo_dhl__account',
+            'name'  => 'mo_dhl__authentication_client_id',
+            'type'  => 'str',
+        ],
+        [
+            'group' => 'mo_dhl__account',
+            'name'  => 'mo_dhl__authentication_client_secret',
+            'type'  => 'str',
+        ],
+        [
+            'group' => 'mo_dhl__account',
+            'name'  => 'mo_dhl__authentication_check',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
             'group' => 'mo_dhl__portokasse',
             'name'  => 'mo_dhl__portokasse_user',
             'type'  => 'str',

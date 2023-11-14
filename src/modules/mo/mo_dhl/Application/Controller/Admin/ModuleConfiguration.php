@@ -9,6 +9,7 @@ namespace Mediaopt\DHL\Application\Controller\Admin;
  */
 
 use Mediaopt\DHL\Adapter\ParcelShippingConverter;
+use Mediaopt\DHL\Api\Authentication\Model\TokenPostBody;
 use Mediaopt\DHL\Api\GKV;
 use Mediaopt\DHL\Api\GKV\CountryType;
 use Mediaopt\DHL\Api\GKV\NameType;
@@ -200,6 +201,29 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             $this->displayErrors($e);
         }
 
+    }
+
+    /**
+     */
+    public function moAuthentication()
+    {
+        try {
+            $this->save();
+            $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
+            $myAccount = $adapter->buildMyAccount();
+
+            $version = $myAccount->getVersion();
+            $userData = $myAccount->getMyAggregatedUserData(['lang' => 'en']);
+
+            debug($version);
+            debug($userData);
+            print_r($userData);
+            print_r($version);
+            //debug($version->getBody());
+
+        } catch (\Exception $e) {
+            $this->displayErrors($e);
+        }
     }
 
     /**

@@ -220,11 +220,11 @@ class DHLAdapter
 
 
     /**
-     * @return \Mediaopt\DHL\Api\Authentication\Client
+     * @return \Mediaopt\DHL\Api\MyAccount\Client
      */
-    public function buildAuthentication()
+    public function buildMyAccount()
     {
-        return $this->getSdk()->buildAuthentication();
+        return $this->getSdk()->buildMyAccount();
     }
 
     /**

@@ -6,9 +6,11 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Http\Client\Common\Plugin;
 use Http\Promise\Promise;
+use Mediaopt\DHL\Api\Authentication;
 use Mediaopt\DHL\Api\Credentials;
 use Mediaopt\DHL\Api\Internetmarke;
 use Mediaopt\DHL\Api\InternetmarkeRefund;
+use Mediaopt\DHL\Api\MyAccount;
 use Mediaopt\DHL\Api\ParcelShipping\Authentication\ApiKeyAuthentication;
 use Mediaopt\DHL\Api\ParcelShipping\Authentication\BasicAuthAuthentication;
 use Mediaopt\DHL\Api\ProdWSService;
@@ -92,6 +94,30 @@ abstract class Configurator
     /**
      * @return Credentials
      */
+    protected function buildAuthenticationCredentials(): Credentials
+    {
+        $clientId = $this->getAuthenticationClientId();
+        $clientSecret = $this->getAuthenticationClientSecret();
+        return $this->isProductionEnvironment()
+            ? Credentials::createProductionAuthenticationCredentials($clientId, $clientSecret)
+            : Credentials::createSandboxAuthenticationCredentials($clientId, $clientSecret);
+    }
+
+    /**
+     * @return Credentials
+     */
+    protected function buildAuthenticationUserCredentials(): Credentials
+    {
+        $username = $this->getAuthenticationUsername();
+        $password = $this->getAuthenticationPassword();
+        return $this->isProductionEnvironment()
+            ? Credentials::createProductionAuthenticationCredentials($username, $password)
+            : Credentials::createSandboxAuthenticationCredentials($username, $password);
+    }
+
+    /**
+     * @return Credentials
+     */
     protected function buildInternetmarkeCredentials()
     {
         return $this->isProductionEnvironment()
@@ -165,6 +191,26 @@ abstract class Configurator
      * @return string
      */
     abstract protected function getCustomerParcelShippingPassword();
+
+    /**
+     * @return string
+     */
+    abstract protected function getAuthenticationClientId();
+
+    /**
+     * @return string
+     */
+    abstract protected function getAuthenticationClientSecret();
+
+    /**
+     * @return string
+     */
+    abstract protected function getAuthenticationUsername();
+
+    /**
+     * @return string
+     */
+    abstract protected function getAuthenticationPassword();
 
     /**
      * @return string
@@ -348,6 +394,41 @@ abstract class Configurator
         ];
         $httpClient = new \Http\Client\Common\PluginClient($httpClient, $plugins);
         return \Mediaopt\DHL\Api\ParcelShipping\Client::create($httpClient);
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     * @return Api\MyAccount\Client
+     */
+    public function buildMyAccount(LoggerInterface  $logger): Api\MyAccount\Client
+    {
+        $token = $this->buildAuthenticationToken($logger) ;
+        $credentials = $this->buildAuthenticationCredentials();
+        $bearerAuthentication = new Authentication\Authentication\BearerAuthAuthentication($token);
+        $httpClient = \Http\Discovery\Psr18ClientDiscovery::find();
+        $uri = \Http\Discovery\Psr17FactoryDiscovery::findUriFactory()->createUri($credentials->getEndpoint());
+
+        $plugins = [
+            new \Http\Client\Common\Plugin\AddHostPlugin($uri),
+            new \Http\Client\Common\Plugin\AddPathPlugin($uri),
+            new \Jane\Component\OpenApiRuntime\Client\Plugin\AuthenticationRegistry([$bearerAuthentication]),
+            MyAccount::getMyAccountLoggingPlugin($logger),
+        ];
+        $httpClient = new \Http\Client\Common\PluginClient($httpClient, $plugins);
+
+        return \Mediaopt\DHL\Api\MyAccount\Client::create($httpClient);
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     * @return string
+     */
+    private function buildAuthenticationToken(LoggerInterface $logger): string
+    {
+        $credentials = $this->buildAuthenticationCredentials();
+        $userPass = $this->buildAuthenticationUserCredentials();
+        $authClient = Authentication\Client::create();
+        return Authentication::getToken($authClient, $credentials, $userPass);
     }
 
     /**

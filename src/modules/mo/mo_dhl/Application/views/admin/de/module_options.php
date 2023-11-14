@@ -16,6 +16,12 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__merchant_ekp'          => 'EKP',
     'HELP_SHOP_MODULE_mo_dhl__merchant_ekp'     => 'Die EKP ist Ihre DHL Kundennummer',
 
+    'SHOP_MODULE_mo_dhl__authentication_client_id'          => 'Client ID',
+    'HELP_SHOP_MODULE_mo_dhl__authentication_client_id'     => 'Ihr Client ID für der Account API.',
+    'SHOP_MODULE_mo_dhl__authentication_client_secret'      => 'Client Secret',
+    'HELP_SHOP_MODULE_mo_dhl__authentication_client_secret' => 'Ihr Client Secret für der Account API.',
+    'SHOP_MODULE_mo_dhl__authentication_check'              => '',
+
     'SHOP_MODULE_GROUP_mo_dhl__portokasse'         => 'Portokasse',
     'SHOP_MODULE_mo_dhl__portokasse_user'          => 'Portokasse Benutzername (für Internetmarke und Warenpost)',
     'HELP_SHOP_MODULE_mo_dhl__portokasse_user'     => 'Ihre E-Mail Adresse für die <a href="https://portokasse.deutschepost.de/">Portokasse</a>. Noch kein Kunde? Dann registrieren Sie sich <a href="https://portokasse.deutschepost.de/portokasse/#!/register/">hier</a>.',

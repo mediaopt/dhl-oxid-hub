@@ -66,6 +66,14 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const TEST_STANDORTSUCHE_API_PASSWORD = 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK';
 
+    const TEST_AUTHENTICATION_CLIENT_ID = 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK';
+
+    const TEST_AUTHENTICATION_CLIENT_SECRET = 'YdZnAljhgbcOXOKD';
+
+    const TEST_AUTHENTICATION_USERNAME = 'user-valid';
+
+    const TEST_AUTHENTICATION_PASSWORD = 'SandboxPasswort2023!';
+
     /**
      * @return mixed
      */
@@ -177,6 +185,47 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
         return $this->isProductionEnvironment()
             ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '')
             : self::TEST_PARCEL_SHIPPING_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAuthenticationClientId()
+    {
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__authentication_client_id') ?: '')
+            : self::TEST_AUTHENTICATION_CLIENT_ID;
+    }
+
+
+    /**
+     * @return string
+     */
+    protected function getAuthenticationClientSecret()
+    {
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__authentication_client_secret') ?: '')
+            : self::TEST_AUTHENTICATION_CLIENT_SECRET;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAuthenticationUsername()
+    {
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '')
+            : self::TEST_AUTHENTICATION_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAuthenticationPassword()
+    {
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '')
+            : self::TEST_AUTHENTICATION_PASSWORD;
     }
 
     /**

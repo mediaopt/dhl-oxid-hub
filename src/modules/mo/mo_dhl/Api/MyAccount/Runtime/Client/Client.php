@@ -38,6 +38,12 @@ abstract class Client
     }
     public function executeEndpoint(Endpoint $endpoint, string $fetch = self::FETCH_OBJECT)
     {
+        debug($endpoint->getUri());
+        debug($endpoint->getQueryString());
+        //debug($endpoint->getBody());
+        debug($endpoint->getAuthenticationScopes());
+        debug($endpoint->getHeaders());
+
         if (self::FETCH_RESPONSE === $fetch) {
             trigger_deprecation('jane-php/open-api-common', '7.3', 'Using %s::%s method with $fetch parameter equals to response is deprecated, use %s::%s instead.', __CLASS__, __METHOD__, __CLASS__, 'executeRawEndpoint');
             return $this->executeRawEndpoint($endpoint);
@@ -75,6 +81,7 @@ abstract class Client
             foreach ($endpoint->getAuthenticationScopes() as $scope) {
                 $scopes[] = $scope;
             }
+            debug($scopes);
             $request = $request->withHeader(AuthenticationRegistry::SCOPES_HEADER, $scopes);
         }
         return $this->httpClient->sendRequest($request);
