@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.5
+* use orderarticle title as fallback if article of orderarticle was deleted
+* unittest: get manifest for next week returns error code (greater 0)
+
 ## 1.7.4
 * replaced deprecated shipping confirmation service in REST API
 
