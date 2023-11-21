@@ -196,8 +196,7 @@ class Credentials
      */
     public static function createProductionAuthenticationCredentials($clientId, $clientSecret)
     {
-        //todo 34741 prod endpoint
-        return new static('', $clientId, $clientSecret, null, true);
+        return new static('https://api-eu.dhl.com/parcel/de/account/auth/ropc/v1', $clientId, $clientSecret, null, false);
     }
 
     /**
@@ -208,7 +207,23 @@ class Credentials
      */
     public static function createSandboxAuthenticationCredentials($clientId, $clientSecret)
     {
-        return new static('https://api-eu.dhl.com/parcel/de/account/auth/ropc/v1', $clientId, $clientSecret, null, false);
+        return new static('https://api-sandbox.dhl.com/parcel/de/account/auth/ropc/v1', $clientId, $clientSecret, null, true);
+    }
+
+    /**
+     * @return static
+     */
+    public static function createProductionMyAccountCredentials()
+    {
+        return new static('https://api-eu.dhl.com/parcel/de/account/myaccount/v1', null, null, null, false);
+    }
+
+    /**
+     * @return static
+     */
+    public static function createSandboxMyAccountCredentials()
+    {
+        return new static('https://api-sandbox.dhl.com/parcel/de/account/myaccount/v1', null, null, null, true);
     }
 
     /**

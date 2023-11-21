@@ -65,6 +65,6 @@ class GetMyAggregatedUserData extends \Mediaopt\DHL\Api\MyAccount\Runtime\Client
     }
     public function getAuthenticationScopes() : array
     {
-        return array('security_auth');
+        return array('bearerAuth');
     }
 }

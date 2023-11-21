@@ -118,6 +118,16 @@ abstract class Configurator
     /**
      * @return Credentials
      */
+    protected function buildMyAccountCredentials(): Credentials
+    {
+        return $this->isProductionEnvironment()
+            ? Credentials::createProductionMyAccountCredentials()
+            : Credentials::createSandboxMyAccountCredentials();
+    }
+
+    /**
+     * @return Credentials
+     */
     protected function buildInternetmarkeCredentials()
     {
         return $this->isProductionEnvironment()
@@ -403,7 +413,7 @@ abstract class Configurator
     public function buildMyAccount(LoggerInterface  $logger): Api\MyAccount\Client
     {
         $token = $this->buildAuthenticationToken($logger) ;
-        $credentials = $this->buildAuthenticationCredentials();
+        $credentials = $this->buildMyAccountCredentials();
         $bearerAuthentication = new Authentication\Authentication\BearerAuthAuthentication($token);
         $httpClient = \Http\Discovery\Psr18ClientDiscovery::find();
         $uri = \Http\Discovery\Psr17FactoryDiscovery::findUriFactory()->createUri($credentials->getEndpoint());
@@ -427,7 +437,13 @@ abstract class Configurator
     {
         $credentials = $this->buildAuthenticationCredentials();
         $userPass = $this->buildAuthenticationUserCredentials();
-        $authClient = Authentication\Client::create();
+        $httpClient = \Http\Discovery\Psr18ClientDiscovery::find();
+        $plugins = array();
+        $uri = \Http\Discovery\Psr17FactoryDiscovery::findUrlFactory()->createUri($credentials->getEndpoint());
+        $plugins[] = new \Http\Client\Common\Plugin\AddHostPlugin($uri);
+        $plugins[] = new \Http\Client\Common\Plugin\AddPathPlugin($uri);
+        $httpClient = new \Http\Client\Common\PluginClient($httpClient, $plugins);
+        $authClient = Authentication\Client::create($httpClient);
         return Authentication::getToken($authClient, $credentials, $userPass);
     }
 

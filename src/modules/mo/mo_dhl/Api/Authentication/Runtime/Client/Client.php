@@ -54,8 +54,6 @@ abstract class Client
         $queryString = $endpoint->getQueryString();
         $uriGlue = false === strpos($endpoint->getUri(), '?') ? '?' : '&';
         $uri = $queryString !== '' ? $endpoint->getUri() . $uriGlue . $queryString : $endpoint->getUri();
-        //todo 34741 how to provide url here?
-        $uri = 'https://api-sandbox.dhl.com/parcel/de/account/auth/ropc/v1' . $uri;
         $request = $this->requestFactory->createRequest($endpoint->getMethod(), $uri);
         if ($body) {
             if ($body instanceof StreamInterface) {

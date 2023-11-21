@@ -51,6 +51,6 @@ class GetVersion extends \Mediaopt\DHL\Api\MyAccount\Runtime\Client\BaseEndpoint
     }
     public function getAuthenticationScopes() : array
     {
-        return array('security_auth');
+        return array('bearerAuth');
     }
 }

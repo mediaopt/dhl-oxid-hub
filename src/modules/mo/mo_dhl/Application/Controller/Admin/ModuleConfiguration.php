@@ -211,15 +211,8 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             $this->save();
             $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
             $myAccount = $adapter->buildMyAccount();
-
+            $userData = $myAccount->getMyAggregatedUserData(['lang' => 'de']);
             $version = $myAccount->getVersion();
-            $userData = $myAccount->getMyAggregatedUserData(['lang' => 'en']);
-
-            debug($version);
-            debug($userData);
-            print_r($userData);
-            print_r($version);
-            //debug($version->getBody());
 
         } catch (\Exception $e) {
             $this->displayErrors($e);
