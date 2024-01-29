@@ -8,6 +8,7 @@ namespace Mediaopt\DHL\Application\Controller\Admin;
  * @copyright 2016 Mediaopt GmbH
  */
 
+use Mediaopt\DHL\Adapter\DHLAdapter;
 use Mediaopt\DHL\Adapter\ParcelShippingConverter;
 use Mediaopt\DHL\Api\Authentication\Model\TokenPostBody;
 use Mediaopt\DHL\Api\GKV;
@@ -25,6 +26,7 @@ use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderType;
 use Mediaopt\DHL\Api\GKV\Version;
 use Mediaopt\DHL\Api\Internetmarke;
+use Mediaopt\DHL\Api\MyAccount\Model\Detail;
 use Mediaopt\DHL\Api\ParcelShipping\Client;
 use Mediaopt\DHL\Application\Model\DeliverySetList;
 use Mediaopt\DHL\Controller\Admin\ErrorDisplayTrait;
@@ -53,6 +55,30 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     const SURCHARGE_SNIPPETS = [
         'mo_dhl__wunschtag_surcharge_text' => 'MO_DHL__WUNSCHTAG_COSTS',
     ];
+
+    /**
+     * @var string[]
+     */
+    const INTERNAL_PROCESSES = [
+        'PAKET'                  => 'DHL PAKET',
+        'PAKET_INTERNATIONAL'    => 'PAKET INTERNATIONAL',
+        'EUROPAKET'              => 'DHL EUROPAKET',
+        'WARENPOST'              => 'Warenpost',
+        'WARENPOST_INTERNATIONAL'=> 'Warenpost International',
+    ];
+
+    /**
+     * @var string[]
+     */
+    const INTERNAL_PROCESSES_INVERSE = [
+        'DHL PAKET'                 => 'PAKET',
+        'PAKET INTERNATIONAL'       => 'PAKET_INTERNATIONAL',
+        'DHL EUROPAKET'             => 'EUROPAKET',
+        'Warenpost'                 => 'WARENPOST',
+        'Warenpost International'   => 'WARENPOST_INTERNATIONAL',
+    ];
+
+    var $SHIPPING_METHODS = [];
 
     /**
      * @extend
@@ -178,7 +204,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     {
         try {
             $this->save();
-            $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
+            $adapter = new DHLAdapter();
             if (Registry::getConfig()->getConfigParam('mo_dhl__account_sandbox')) {
                 Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__CHECK_FOR_SANDBOX_NOT_POSSIBLE');
                 return;
@@ -204,15 +230,63 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     }
 
     /**
+     * @param Detail $detail
+     * @return bool
      */
-    public function moAuthentication()
+    public function checkForShippingAlreadyExist(Detail $detail): bool
+    {
+        if (count(array_keys($this->SHIPPING_METHODS)) === 0) {
+            $this->SHIPPING_METHODS = Registry::get(\OxidEsales\Eshop\Application\Model\DeliverySetList::class)->getDeliverySetList(null, null);
+        }
+
+        $shippingExist = false;
+
+        foreach($this->SHIPPING_METHODS as $key => $value) {
+            $shippingExist = $shippingExist || (self::INTERNAL_PROCESSES[$value->oxdeliveryset__mo_dhl_process->value] === $detail->getProduct()->getName());
+        }
+        return $shippingExist;
+    }
+
+    /**
+     * @param Detail $detail
+     * @return void
+     */
+    private function createNewShippingMethod(Detail $detail): void
+    {
+        if (!array_key_exists($detail->getProduct()->getName(), self::INTERNAL_PROCESSES_INVERSE)) {
+            return;
+        }
+        $oDelSet = oxNew(DeliverySet::class);
+        $aParams = [];
+        $aParams["oxdeliveryset__oxid"] = null;
+        $aParams["oxdeliveryset__oxtitle"] = $detail->getBookingText();
+        $aParams["oxdeliveryset__mo_dhl_process"] = self::INTERNAL_PROCESSES_INVERSE[$detail->getProduct()->getName()];
+        $aParams["oxdeliveryset__mo_dhl_participation"] = substr($detail->getBillingNumber(), -2);
+
+        $oDelSet->setLanguage(0);
+        $oDelSet->assign($aParams);
+        $oDelSet = Registry::getUtilsFile()->processFiles($oDelSet);
+        $oDelSet->save();
+    }
+
+    /**
+     */
+    public function moAuthentication(): void
     {
         try {
             $this->save();
-            $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
+            $adapter = new DHLAdapter();
             $myAccount = $adapter->buildMyAccount();
             $userData = $myAccount->getMyAggregatedUserData(['lang' => 'de']);
-            $version = $myAccount->getVersion();
+
+            $details = $userData->getShippingRights()->getDetails();
+            $size = count($details);
+
+            for ($i=0; $i<$size; $i++) {
+                if (!$this->checkForShippingAlreadyExist($details[$i])) {
+                    $this->createNewShippingMethod($details[$i]);
+                }
+            }
 
         } catch (\Exception $e) {
             $this->displayErrors($e);
@@ -225,7 +299,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     {
         try {
             $this->save();
-            $adapter = new \Mediaopt\DHL\Adapter\DHLAdapter();
+            $adapter = new DHLAdapter();
             $this->checkInternetmarke($adapter->buildInternetmarke());
         } catch (\Exception $e) {
             $this->displayErrors($e);
@@ -278,9 +352,9 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     }
 
     /**
-     * @param \Mediaopt\DHL\Adapter\DHLAdapter $adapter
+     * @param DHLAdapter $adapter
      */
-    private function checkWunschpaket(\Mediaopt\DHL\Adapter\DHLAdapter $adapter)
+    private function checkWunschpaket(DHLAdapter $adapter)
     {
         try {
             $days = $adapter->buildWunschpaket()->getPreferredDays('12045');
@@ -372,7 +446,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
 
     /**
      * @param \Mediaopt\DHL\Api\GKV                           $gkv
-     * @param \OxidEsales\Eshop\Application\Model\DeliverySet $deliveryset
+     * @param DeliverySet $deliveryset
      * @return Shipment
      */
     protected function createTestShipment(\Mediaopt\DHL\Api\GKV $gkv, $deliveryset): Shipment
