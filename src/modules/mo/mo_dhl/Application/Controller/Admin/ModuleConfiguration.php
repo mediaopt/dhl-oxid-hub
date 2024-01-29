@@ -257,11 +257,12 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             return;
         }
         $oDelSet = oxNew(DeliverySet::class);
-        $aParams = [];
-        $aParams["oxdeliveryset__oxid"] = null;
-        $aParams["oxdeliveryset__oxtitle"] = $detail->getBookingText();
-        $aParams["oxdeliveryset__mo_dhl_process"] = self::INTERNAL_PROCESSES_INVERSE[$detail->getProduct()->getName()];
-        $aParams["oxdeliveryset__mo_dhl_participation"] = substr($detail->getBillingNumber(), -2);
+        $aParams = [
+            "oxdeliveryset__oxid"                   => null,
+            "oxdeliveryset__oxtitle"                => $detail->getBookingText(),
+            "oxdeliveryset__mo_dhl_process"         => self::INTERNAL_PROCESSES_INVERSE[$detail->getProduct()->getName()],
+            "oxdeliveryset__mo_dhl_participation"   => substr($detail->getBillingNumber(), -2)
+        ];
 
         $oDelSet->setLanguage(0);
         $oDelSet->assign($aParams);
