@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.7.5
+* Account API implementation
+
 ## 1.7.4
 * replaced deprecated shipping confirmation service in REST API
 
