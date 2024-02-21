@@ -217,6 +217,38 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     }
 
     /**
+     * @return string
+     */
+    protected function getAuthenticationClientId()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_AUTHENTICATION_CLIENT_ID;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAuthenticationClientSecret()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_AUTHENTICATION_CLIENT_SECRET;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAuthenticationUsername()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_AUTHENTICATION_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAuthenticationPassword()
+    {
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_AUTHENTICATION_PASSWORD;
+    }
+
+    /**
      * @return bool
      */
     protected function isProductionEnvironment()
