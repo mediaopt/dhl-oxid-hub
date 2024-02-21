@@ -514,10 +514,9 @@ class GKVShipmentBuilder extends BaseShipmentBuilder
                 break;
             }
         }
-
-        if (empty($title)) {
-            $title = $orderArticle->getArticle()->getFieldData('oxtitle');
-        }
+        $title = $title
+            ?? $orderArticle->getArticle()->getFieldData('oxtitle')
+            ?? $orderArticle->getFieldData('oxtitle');
 
         return mb_substr($this->convertSpecialChars($title), 0, 50);
     }
