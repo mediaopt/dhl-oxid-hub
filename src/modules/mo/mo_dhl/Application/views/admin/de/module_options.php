@@ -17,9 +17,9 @@ $aLang = [
     'HELP_SHOP_MODULE_mo_dhl__merchant_ekp'     => 'Die EKP ist Ihre DHL Kundennummer',
 
     'SHOP_MODULE_mo_dhl__authentication_client_id'          => 'Client ID',
-    'HELP_SHOP_MODULE_mo_dhl__authentication_client_id'     => 'Ihr Client ID für der Account API.',
+    'HELP_SHOP_MODULE_mo_dhl__authentication_client_id'     => 'Ihre Client ID für der Account API.',
     'SHOP_MODULE_mo_dhl__authentication_client_secret'      => 'Client Secret',
-    'HELP_SHOP_MODULE_mo_dhl__authentication_client_secret' => 'Ihr Client Secret für der Account API.',
+    'HELP_SHOP_MODULE_mo_dhl__authentication_client_secret' => 'Ihre Client Secret für der Account API.',
     'SHOP_MODULE_mo_dhl__authentication_check'              => '',
 
     'SHOP_MODULE_GROUP_mo_dhl__portokasse'         => 'Portokasse',
