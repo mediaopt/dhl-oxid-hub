@@ -64,9 +64,7 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const STANDORTSUCHE_API_KEY_NAME = 'DHL-API-Key';
 
-    const TEST_STANDORTSUCHE_API_PASSWORD = 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK';
-
-    const TEST_AUTHENTICATION_CLIENT_ID = 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK';
+    const TEST_API_KEY_AND_SECRET_FOR_DEVELOPER_API = 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK';
 
     const TEST_AUTHENTICATION_CLIENT_SECRET = 'YdZnAljhgbcOXOKD';
 
@@ -125,17 +123,17 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getProdStandortsuchePassword()
+    protected function getProdApiKeyAndSecretForDeveloperAPI()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__prod_standortsuche_password') ?: '';
+        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__api_key_and_secret_for_developer_api') ?: '';
     }
 
     /**
      * @return string
      */
-    protected function getSandboxStandortsuchePassword()
+    protected function getSandboxApiKeyAndSecretForDeveloperAPI()
     {
-        return self::TEST_STANDORTSUCHE_API_PASSWORD;
+        return self::TEST_API_KEY_AND_SECRET_FOR_DEVELOPER_API;
     }
 
     /**
@@ -190,22 +188,9 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getAuthenticationClientId()
-    {
-        return $this->isProductionEnvironment()
-            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__authentication_client_id') ?: '')
-            : self::TEST_AUTHENTICATION_CLIENT_ID;
-    }
-
-
-    /**
-     * @return string
-     */
     protected function getAuthenticationClientSecret()
     {
-        return $this->isProductionEnvironment()
-            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__authentication_client_secret') ?: '')
-            : self::TEST_AUTHENTICATION_CLIENT_SECRET;
+        return self::TEST_AUTHENTICATION_CLIENT_SECRET;
     }
 
     /**

@@ -56,8 +56,8 @@ abstract class Configurator
     protected function buildStandortsucheCredentials($forceUseProd = false)
     {
         return $this->isProductionEnvironment() || $forceUseProd
-            ? Credentials::createStandortsucheEndpoint($this->getStandortsucheKeyName(), $this->getProdStandortsuchePassword())
-            : Credentials::createStandortsucheEndpoint($this->getStandortsucheKeyName(), $this->getSandboxStandortsuchePassword());
+            ? Credentials::createStandortsucheEndpoint($this->getStandortsucheKeyName(), $this->getProdApiKeyAndSecretForDeveloperAPI())
+            : Credentials::createStandortsucheEndpoint($this->getStandortsucheKeyName(), $this->getSandboxApiKeyAndSecretForDeveloperAPI());
     }
 
     /**
@@ -96,7 +96,7 @@ abstract class Configurator
      */
     protected function buildAuthenticationCredentials(): Credentials
     {
-        $clientId = $this->getAuthenticationClientId();
+        $clientId = $this->getProdApiKeyAndSecretForDeveloperAPI();
         $clientSecret = $this->getAuthenticationClientSecret();
         return $this->isProductionEnvironment()
             ? Credentials::createProductionAuthenticationCredentials($clientId, $clientSecret)
@@ -205,11 +205,6 @@ abstract class Configurator
     /**
      * @return string
      */
-    abstract protected function getAuthenticationClientId();
-
-    /**
-     * @return string
-     */
     abstract protected function getAuthenticationClientSecret();
 
     /**
@@ -305,12 +300,12 @@ abstract class Configurator
     /**
      * @return string
      */
-    abstract protected function getProdStandortsuchePassword();
+    abstract protected function getProdApiKeyAndSecretForDeveloperAPI();
 
     /**
      * @return string
      */
-    abstract protected function getSandboxStandortsuchePassword();
+    abstract protected function getSandboxApiKeyAndSecretForDeveloperAPI();
 
     /**
      * @return string

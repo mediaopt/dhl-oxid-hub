@@ -107,7 +107,7 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getProdStandortsuchePassword()
+    protected function getProdApiKeyAndSecretForDeveloperAPI()
     {
         return 'PROD_STANDORTSUCHE_API_PASSWORD';
     }
@@ -115,9 +115,9 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getSandboxStandortsuchePassword()
+    protected function getSandboxApiKeyAndSecretForDeveloperAPI()
     {
-        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_STANDORTSUCHE_API_PASSWORD;
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_API_KEY_AND_SECRET_FOR_DEVELOPER_API;
     }
 
     /**
@@ -214,14 +214,6 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
     protected function getCustomerProdWSMandantId()
     {
         return \Mediaopt\DHL\Adapter\DHLConfigurator::PRODWS_MANDANT_ID;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getAuthenticationClientId()
-    {
-        return \Mediaopt\DHL\Adapter\DHLConfigurator::TEST_AUTHENTICATION_CLIENT_ID;
     }
 
     /**
