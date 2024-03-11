@@ -23,7 +23,6 @@ class Install
      */
     public static function onActivate()
     {
-        static::addBootstrapLoader();
         static::ensureConfigVariableNameLength();
         static::addTables();
         static::addColumns();
@@ -77,6 +76,7 @@ class Install
      */
     protected static function getBootstrapLoaderStatement()
     {
+        return '';
         $comment = 'This line was automatically generated.';
         return "require_once __DIR__ . '/mo/mo_dhl/bootstrap.php'; // {$comment}";
     }
