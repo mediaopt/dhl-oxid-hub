@@ -230,21 +230,21 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     }
 
     /**
-     * @param Detail $detail
+     * @param String $detailName
      * @return bool
      */
-    public function checkForShippingAlreadyExist(Detail $detail): bool
+    public function checkForShippingAlreadyExist(String $detailName): bool
     {
-        if (count(array_keys($this->SHIPPING_METHODS)) === 0) {
+        if (count($this->SHIPPING_METHODS) === 0) {
             $this->SHIPPING_METHODS = Registry::get(\OxidEsales\Eshop\Application\Model\DeliverySetList::class)->getDeliverySetList(null, null);
         }
 
-        $shippingExist = false;
-
-        foreach($this->SHIPPING_METHODS as $key => $value) {
-            $shippingExist = $shippingExist || (self::INTERNAL_PROCESSES[$value->oxdeliveryset__mo_dhl_process->value] === $detail->getProduct()->getName());
-        }
-        return $shippingExist;
+        return (bool) array_filter(
+            $this->SHIPPING_METHODS,
+            fn($shippingMethod) =>
+            self::INTERNAL_PROCESSES[$shippingMethod->oxdeliveryset__mo_dhl_process->value] ===
+            $detailName
+        );
     }
 
     /**
@@ -281,13 +281,8 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             $userData = $myAccount->getMyAggregatedUserData(['lang' => 'de']);
 
             $details = $userData->getShippingRights()->getDetails();
-            $size = count($details);
 
-            for ($i=0; $i<$size; $i++) {
-                if (!$this->checkForShippingAlreadyExist($details[$i])) {
-                    $this->createNewShippingMethod($details[$i]);
-                }
-            }
+            array_map([$this, 'createNewShippingMethod'], array_filter($details, fn($detail) => !$this->checkForShippingAlreadyExist($detail->getProduct()->getName())));
 
         } catch (\Exception $e) {
             $this->displayErrors($e);
