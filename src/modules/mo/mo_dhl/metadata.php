@@ -511,11 +511,6 @@ $aModule = [
             'constraints' => 'DEU|AUT',
         ],
         [
-            'group' => 'mo_dhl__standortsuche',
-            'name'  => 'mo_dhl__api_key_and_secret_for_developer_api',
-            'type'  => 'str',
-        ],
-        [
             'group'       => 'mo_dhl__standortsuche',
             'name'        => 'mo_dhl__standortsuche_maximumHits',
             'type'        => 'select',

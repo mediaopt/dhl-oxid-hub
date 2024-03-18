@@ -97,8 +97,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retoure_receiver_country_AUT'     => 'Austria',
 
     'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Preferred delivery - Parcel shop finder',
-    'SHOP_MODULE_mo_dhl__api_key_and_secret_for_developer_api'         => 'Api key and api secret for developer API',
-    'HELP_SHOP_MODULE_mo_dhl__api_key_and_secret_for_developer_api'    => 'Please create a developer Account and an App. Activate MyAccountAPI and Location Finder Unified API.',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximum number of hits',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_1'         => '1',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_2'         => '2',

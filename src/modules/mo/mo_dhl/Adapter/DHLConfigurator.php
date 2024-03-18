@@ -64,9 +64,9 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const STANDORTSUCHE_API_KEY_NAME = 'DHL-API-Key';
 
-    const TEST_API_KEY_AND_SECRET_FOR_DEVELOPER_API = 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK';
+    const DHL_DEVELOPER_API_KEY = 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK';
 
-    const TEST_AUTHENTICATION_CLIENT_SECRET = 'YdZnAljhgbcOXOKD';
+    const DHL_DEVELOPER_API_SECRET = 'YdZnAljhgbcOXOKD';
 
     const TEST_AUTHENTICATION_USERNAME = 'user-valid';
 
@@ -123,17 +123,9 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getProdApiKeyAndSecretForDeveloperAPI()
+    protected function getStandortsuchePassword()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__api_key_and_secret_for_developer_api') ?: '';
-    }
-
-    /**
-     * @return string
-     */
-    protected function getSandboxApiKeyAndSecretForDeveloperAPI()
-    {
-        return self::TEST_API_KEY_AND_SECRET_FOR_DEVELOPER_API;
+        return self::DHL_DEVELOPER_API_KEY;
     }
 
     /**
@@ -188,9 +180,17 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
+    protected function getAuthenticationClientId()
+    {
+        return self::DHL_DEVELOPER_API_KEY;
+    }
+
+    /**
+     * @return string
+     */
     protected function getAuthenticationClientSecret()
     {
-        return self::TEST_AUTHENTICATION_CLIENT_SECRET;
+        return self::DHL_DEVELOPER_API_SECRET;
     }
 
     /**

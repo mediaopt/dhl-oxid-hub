@@ -96,8 +96,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retoure_receiver_country_AUT'     => 'Österreich',
 
     'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Wunschzustellung - Standortsuche',
-    'SHOP_MODULE_mo_dhl__api_key_and_secret_for_developer_api'         => 'API-Schlüssel und API-Geheimnis für die Entwickler-API',
-    'HELP_SHOP_MODULE_mo_dhl__api_key_and_secret_for_developer_api'    => 'Bitte erstellen Sie ein Entwicklerkonto und eine App. Aktivieren Sie MyAccountAPI und die einheitliche API für den Standortfinder.',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximale Trefferanzahl',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_1'         => '1',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_2'         => '2',
