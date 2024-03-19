@@ -109,7 +109,7 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getStandortsuchePassword()
     {
-        return 'PROD_STANDORTSUCHE_API_PASSWORD';
+        return \Mediaopt\DHL\Adapter\DHLConfigurator::DHL_DEVELOPER_API_KEY;
     }
 
     /**
