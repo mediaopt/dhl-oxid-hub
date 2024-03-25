@@ -47,7 +47,7 @@ class StandortsucheTest extends TestCase
      */
     public function buildSampleAddress()
     {
-        return $this->buildAddress('Elbestr.', '28', '12045', 'Berlin', '', 'DEU', 'DE');
+        return $this->buildAddress('Wilmersdorfer Str.', '94', '10629', 'Berlin', '', 'DEU', 'DE');
     }
 
     public function buildSampleAddressString()
