@@ -155,7 +155,7 @@ class StandortsucheTest extends TestCase
 
     public function testGettingEmptyResultOutsideGermany()
     {
-        $address = $this->buildAddress('', '', '1100', 'Wien', '', '');
+        $address = $this->buildAddress('', '', '75019', 'Paris', '', '');
         $list = $this->buildStandortsuche()->getParcellocationByAddress($address);
         $this->assertEmpty($list->toArray(), 'Got result for non german address: ' . implode(' ', $address->toArray()));
     }
