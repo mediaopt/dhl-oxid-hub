@@ -47,7 +47,7 @@ class StandortsucheTest extends TestCase
      */
     public function buildSampleAddress()
     {
-        return $this->buildAddress('Elbestr.', '28', '12045', 'Berlin', '', 'DEU', 'DE');
+        return $this->buildAddress('Wilmersdorfer Str.', '94', '10629', 'Berlin', '', 'DEU', 'DE');
     }
 
     public function buildSampleAddressString()
@@ -155,7 +155,7 @@ class StandortsucheTest extends TestCase
 
     public function testGettingEmptyResultOutsideGermany()
     {
-        $address = $this->buildAddress('', '', '1100', 'Wien', '', '');
+        $address = $this->buildAddress('', '', '75019', 'Paris', '', '');
         $list = $this->buildStandortsuche()->getParcellocationByAddress($address);
         $this->assertEmpty($list->toArray(), 'Got result for non german address: ' . implode(' ', $address->toArray()));
     }

@@ -50,14 +50,11 @@ abstract class Configurator
     }
 
     /**
-     * @param false $forceUseProd
      * @return Credentials
      */
-    protected function buildStandortsucheCredentials($forceUseProd = false)
+    protected function buildStandortsucheCredentials()
     {
-        return $this->isProductionEnvironment() || $forceUseProd
-            ? Credentials::createStandortsucheEndpoint($this->getStandortsucheKeyName(), $this->getProdStandortsuchePassword())
-            : Credentials::createStandortsucheEndpoint($this->getStandortsucheKeyName(), $this->getSandboxStandortsuchePassword());
+        return Credentials::createStandortsucheEndpoint($this->getStandortsucheKeyName(), $this->getStandortsuchePassword());
     }
 
     /**
@@ -305,12 +302,7 @@ abstract class Configurator
     /**
      * @return string
      */
-    abstract protected function getProdStandortsuchePassword();
-
-    /**
-     * @return string
-     */
-    abstract protected function getSandboxStandortsuchePassword();
+    abstract protected function getStandortsuchePassword();
 
     /**
      * @return string

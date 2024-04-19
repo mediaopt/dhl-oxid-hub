@@ -253,16 +253,6 @@ $aModule = [
         ],
         [
             'group' => 'mo_dhl__account',
-            'name'  => 'mo_dhl__authentication_client_id',
-            'type'  => 'str',
-        ],
-        [
-            'group' => 'mo_dhl__account',
-            'name'  => 'mo_dhl__authentication_client_secret',
-            'type'  => 'str',
-        ],
-        [
-            'group' => 'mo_dhl__account',
             'name'  => 'mo_dhl__authentication_check',
             'type'  => 'bool',
             'value' => 'false',
@@ -519,11 +509,6 @@ $aModule = [
             'type'        => 'select',
             'value'       => 'DEU',
             'constraints' => 'DEU|AUT',
-        ],
-        [
-            'group' => 'mo_dhl__standortsuche',
-            'name'  => 'mo_dhl__prod_standortsuche_password',
-            'type'  => 'str',
         ],
         [
             'group'       => 'mo_dhl__standortsuche',
