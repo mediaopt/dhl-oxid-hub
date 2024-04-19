@@ -431,7 +431,7 @@ abstract class Configurator
         $userPass = $this->buildAuthenticationUserCredentials();
         $httpClient = \Http\Discovery\Psr18ClientDiscovery::find();
         $plugins = array();
-        $uri = \Http\Discovery\Psr17FactoryDiscovery::findUrlFactory()->createUri($credentials->getEndpoint());
+        $uri = \Http\Discovery\Psr17FactoryDiscovery::findUriFactory()->createUri($credentials->getEndpoint());
         $plugins[] = new \Http\Client\Common\Plugin\AddHostPlugin($uri);
         $plugins[] = new \Http\Client\Common\Plugin\AddPathPlugin($uri);
         $httpClient = new \Http\Client\Common\PluginClient($httpClient, $plugins);
