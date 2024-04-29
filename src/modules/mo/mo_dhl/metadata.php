@@ -17,7 +17,7 @@ $aModule = [
         'en' => '<p>Enable features providing Post & Paket Delivery to your OXID shop.</p>' . '<p><a href="https://projects.mediaopt.de/projects/mopt-postp-ua/wiki" target="_blank">Handbook</a></p>',
     ],
     'thumbnail'   => 'logo.png',
-    'version'     => '1.7.5',
+    'version'     => '1.7.6',
     'author'      => '<a href="http://www.mediaopt.de" target="_blank">mediaopt.</a>',
     'url'         => 'http://www.mediaopt.de',
     'email'       => 'shopsoftware@deutschepost.de',
@@ -248,6 +248,12 @@ $aModule = [
         [
             'group' => 'mo_dhl__account',
             'name'  => 'mo_dhl__account_check',
+            'type'  => 'bool',
+            'value' => 'false',
+        ],
+        [
+            'group' => 'mo_dhl__account',
+            'name'  => 'mo_dhl__authentication_check',
             'type'  => 'bool',
             'value' => 'false',
         ],
@@ -503,11 +509,6 @@ $aModule = [
             'type'        => 'select',
             'value'       => 'DEU',
             'constraints' => 'DEU|AUT',
-        ],
-        [
-            'group' => 'mo_dhl__standortsuche',
-            'name'  => 'mo_dhl__prod_standortsuche_password',
-            'type'  => 'str',
         ],
         [
             'group'       => 'mo_dhl__standortsuche',

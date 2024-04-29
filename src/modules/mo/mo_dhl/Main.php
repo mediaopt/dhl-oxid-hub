@@ -164,4 +164,12 @@ class Main
     {
         return $this->getConfigurator()->buildParcelShipping($this->getLogger());
     }
+
+    /**
+     * @return Api\MyAccount\Client
+     */
+    public function buildMyAccount(): Api\MyAccount\Client
+    {
+        return $this->getConfigurator()->buildMyAccount($this->getLogger());
+    }
 }

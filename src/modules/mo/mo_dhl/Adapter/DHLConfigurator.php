@@ -64,7 +64,13 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const STANDORTSUCHE_API_KEY_NAME = 'DHL-API-Key';
 
-    const TEST_STANDORTSUCHE_API_PASSWORD = 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK';
+    const DHL_DEVELOPER_API_KEY = 'kAPjq3yHFgY6QD3sHEtv61dQCAgoXLyK';
+
+    const DHL_DEVELOPER_API_SECRET = 'YdZnAljhgbcOXOKD';
+
+    const TEST_AUTHENTICATION_USERNAME = 'user-valid';
+
+    const TEST_AUTHENTICATION_PASSWORD = 'SandboxPasswort2023!';
 
     /**
      * @return mixed
@@ -117,17 +123,9 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
     /**
      * @return string
      */
-    protected function getProdStandortsuchePassword()
+    protected function getStandortsuchePassword()
     {
-        return \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__prod_standortsuche_password') ?: '';
-    }
-
-    /**
-     * @return string
-     */
-    protected function getSandboxStandortsuchePassword()
-    {
-        return self::TEST_STANDORTSUCHE_API_PASSWORD;
+        return self::DHL_DEVELOPER_API_KEY;
     }
 
     /**
@@ -177,6 +175,42 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
         return $this->isProductionEnvironment()
             ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '')
             : self::TEST_PARCEL_SHIPPING_PASSWORD;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAuthenticationClientId()
+    {
+        return self::DHL_DEVELOPER_API_KEY;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAuthenticationClientSecret()
+    {
+        return self::DHL_DEVELOPER_API_SECRET;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAuthenticationUsername()
+    {
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_user') ?: '')
+            : self::TEST_AUTHENTICATION_USERNAME;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAuthenticationPassword()
+    {
+        return $this->isProductionEnvironment()
+            ? (\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('mo_dhl__account_password') ?: '')
+            : self::TEST_AUTHENTICATION_PASSWORD;
     }
 
     /**

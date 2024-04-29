@@ -17,6 +17,8 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__merchant_ekp'          => 'EKP',
     'HELP_SHOP_MODULE_mo_dhl__merchant_ekp'     => 'The EKP is your DHL customer number',
 
+    'SHOP_MODULE_mo_dhl__authentication_check'              => '',
+
     'SHOP_MODULE_GROUP_mo_dhl__portokasse'         => 'Portokasse',
     'SHOP_MODULE_mo_dhl__portokasse_user'          => 'Portokasse Username (for Internetmarke and Warenpost)',
     'HELP_SHOP_MODULE_mo_dhl__portokasse_user'     => 'Your E-Mail Adress for the <a href="https://portokasse.deutschepost.de/">Portokasse</a>. Not a customer yet? Then register <a href="https://portokasse.deutschepost.de/portokasse/#!/register/">here</a>.',
@@ -95,8 +97,6 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retoure_receiver_country_AUT'     => 'Austria',
 
     'SHOP_MODULE_GROUP_mo_dhl__standortsuche'                 => 'Preferred delivery - Parcel shop finder',
-    'SHOP_MODULE_mo_dhl__prod_standortsuche_password'         => 'DHL Location Finder Password',
-    'HELP_SHOP_MODULE_mo_dhl__prod_standortsuche_password'    => 'Your Password for the <a href="https://developer.dhl.com/api-reference/location-finder" target="_blank">DHL Location Finder API</a>.',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits'           => 'Maximum number of hits',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_1'         => '1',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_2'         => '2',

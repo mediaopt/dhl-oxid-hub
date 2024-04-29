@@ -218,6 +218,15 @@ class DHLAdapter
         return $this->getSdk()->buildParcelShipping();
     }
 
+
+    /**
+     * @return \Mediaopt\DHL\Api\MyAccount\Client
+     */
+    public function buildMyAccount()
+    {
+        return $this->getSdk()->buildMyAccount();
+    }
+
     /**
      * @return \Mediaopt\DHL\Api\Retoure
      */
