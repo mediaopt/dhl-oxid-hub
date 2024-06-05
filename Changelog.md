@@ -2,6 +2,7 @@
 
 ## 1.7.6
 * Account API implementation
+* remove api key for Standortsuche
 
 ## 1.7.5
 * use orderarticle title as fallback if article of orderarticle was deleted
