@@ -13,7 +13,7 @@ use OxidEsales\Eshop\Core\DatabaseProvider;
 /**
  * @author Mediaopt GmbH
  */
-class Category extends \OxidEsales\Eshop\Application\Model\Category
+class Category extends Category_parent
 {
 
     /**
