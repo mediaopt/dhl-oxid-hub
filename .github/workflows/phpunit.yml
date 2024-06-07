@@ -1,0 +1,36 @@
+name: PHP CI
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: calendar, soap
+          tools: composer
+
+      - name: Install dependencies
+        run: |
+          apt-get update && apt-get install -y unzip libxml2-dev
+          composer install
+        env:
+          COMPOSER_CACHE_DIR: ${{ github.workspace }}/.composer/cache
+
+      - name: Run tests
+        run: |
+          src/modules/mo/mo_dhl/vendor/bin/phpunit -c tests/phpunit.xml tests
