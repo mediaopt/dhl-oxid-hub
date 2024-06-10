@@ -1,4 +1,6 @@
 # Changelog
+## 1 7.7
+* fix category model inheritance
 
 ## 1.7.6
 * Account API implementation
