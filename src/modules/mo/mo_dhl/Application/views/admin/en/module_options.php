@@ -17,7 +17,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__merchant_ekp'          => 'EKP',
     'HELP_SHOP_MODULE_mo_dhl__merchant_ekp'     => 'The EKP is your DHL customer number',
 
-    'SHOP_MODULE_mo_dhl__authentication_check'              => '',
+    'SHOP_MODULE_mo_dhl__authentication_check' => '',
 
     'SHOP_MODULE_GROUP_mo_dhl__portokasse'         => 'Portokasse',
     'SHOP_MODULE_mo_dhl__portokasse_user'          => 'Portokasse Username (for Internetmarke and Warenpost)',
@@ -25,9 +25,10 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__portokasse_password'      => 'Portokasse Password',
     'HELP_SHOP_MODULE_mo_dhl__portokasse_password' => 'Your Password for the <a href="https://portokasse.deutschepost.de/">Portokasse</a>.',
 
-    'SHOP_MODULE_GROUP_mo_dhl__internetmarke'  => 'Internetmarke',
-    'SHOP_MODULE_mo_dhl__internetmarke_layout' => 'Layout ID for printing the Internetmarke',
-    'SHOP_MODULE_mo_dhl__internetmarke_check'  => '',
+    'SHOP_MODULE_GROUP_mo_dhl__internetmarke'       => 'Internetmarke',
+    'SHOP_MODULE_mo_dhl__internetmarke_layout'      => 'Layout ID for printing the Internetmarke',
+    'HELP_SHOP_MODULE_mo_dhl__internetmarke_layout' => 'Provide the ID of a print format, that was created in the INTERNETMARKE.',
+    'SHOP_MODULE_mo_dhl__internetmarke_check'       => '',
 
     'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Delivery',
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Allow only Codeable shipping addresses',
@@ -148,8 +149,8 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_48'        => '48',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_49'        => '49',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_50'        => '50',
-    'SHOP_MODULE_mo_dhl__standortsuche_googleMapsApiKey'      => 'API key',
-    'HELP_SHOP_MODULE_mo_dhl__standortsuche_googleMapsApiKey' => '<a target="_blank" rel="noopener noreferrer" href="https://developers.google.com/maps/documentation/javascript/get-api-key">Get an API key here</a>',
+    'SHOP_MODULE_mo_dhl__standortsuche_googleMapsApiKey'      => 'Google Maps JavaScript API key',
+    'HELP_SHOP_MODULE_mo_dhl__standortsuche_googleMapsApiKey' => '<a target="_blank" rel="noopener noreferrer" href="https://developers.google.com/maps/documentation/javascript/get-api-key">Get a Google Maps JavaScript API key here</a>',
     'SHOP_MODULE_mo_dhl__standortsuche_packstation'           => 'Packstation enabled',
     'SHOP_MODULE_mo_dhl__standortsuche_postfiliale'           => 'Postfiliale enabled',
     'SHOP_MODULE_mo_dhl__standortsuche_paketshop'             => 'Paketshop enabled',
@@ -219,9 +220,8 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retention_UNLIMITED'    => 'unlimited',
     'SHOP_MODULE_mo_dhl__logfiles'               => 'Log files',
 
-    'SHOP_MODULE_GROUP_mo_dhl__privacy'       => 'Privacy',
     'SHOP_MODULE_mo_dhl__privacy_policy'      => 'Privacy Policy',
-    'HELP_SHOP_MODULE_mo_dhl__privacy_policy' => 'We expect an idenifier of a CMS page',
+    'HELP_SHOP_MODULE_mo_dhl__privacy_policy' => 'A link to the privacy policy will be placed near the field for the preferred neighbor. Provide an identifier of a CMS page (e.g. oxsecurityinfo)',
 
     'SHOP_MODULE_mo_dhl__standortsuche_map_radius'      => 'Radius in meter for location searches',
     'HELP_SHOP_MODULE_mo_dhl__standortsuche_map_radius' => 'Giving an explicit radius can improve search results. Having 0 as value will ignore this field.',
