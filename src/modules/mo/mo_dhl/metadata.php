@@ -632,6 +632,12 @@ $aModule = [
             'value' => 'false',
         ],
         [
+            'group' => 'mo_dhl__wunschnachbar',
+            'name'  => 'mo_dhl__privacy_policy',
+            'type'  => 'str',
+            'value' => 'oxsecurityinfo',
+        ],
+        [
             'group'       => 'mo_dhl__logs',
             'name'        => 'mo_dhl__logLevel',
             'type'        => 'select',
@@ -650,12 +656,6 @@ $aModule = [
             'name'  => 'mo_dhl__logfiles',
             'type'  => 'bool',
             'value' => 'false',
-        ],
-        [
-            'group' => 'mo_dhl__privacy',
-            'name'  => 'mo_dhl__privacy_policy',
-            'type'  => 'str',
-            'value' => 'oxsecurityinfo',
         ],
     ],
 ];

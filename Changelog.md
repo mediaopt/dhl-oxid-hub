@@ -1,4 +1,7 @@
 # Changelog
+## develop
+* improved naming for DHL settings in Admin panel
+
 ## 1 7.7
 * fix category model inheritance
 
