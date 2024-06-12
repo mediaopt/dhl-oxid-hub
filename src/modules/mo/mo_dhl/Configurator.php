@@ -359,7 +359,7 @@ abstract class Configurator
      * @param LoggerInterface $logger
      * @return Api\ParcelShipping\Client
      */
-    public function buildParcelShipping(LoggerInterface $logger): \Mediaopt\DHL\Api\ParcelShipping\Client
+    public function buildParcelShipping(LoggerInterface $logger = null): \Mediaopt\DHL\Api\ParcelShipping\Client
     {
         $credentials = $this->buildParcelShippingCredentials();
 
@@ -368,7 +368,7 @@ abstract class Configurator
 
         $apiKeyAuthentication = new ApiKeyAuthentication($credentials->getAdditionalFields()['api-key']);
         $basicAuthentication = new BasicAuthAuthentication($credentials->getUsername(), $credentials->getPassword());
-        $loggingPlugin = new class($logger) implements Plugin {
+        $loggingPlugin = new class($logger ?: $this->buildLogger()) implements Plugin {
             private $logger;
 
             public function __construct(LoggerInterface $logger)
