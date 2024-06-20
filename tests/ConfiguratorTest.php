@@ -55,32 +55,6 @@ class ConfiguratorTest extends TestCase
         $this->assertInstanceOf(Standortsuche::class, $standortsuche);
     }
 
-    public function testSoapEndpointForProductionEnvironment()
-    {
-        $configuratorMock = $this->getConfiguratorMock();
-        $configuratorMock
-            ->expects($this->once())
-            ->method('isProductionEnvironment')
-            ->willReturn(true);
-
-        /** @var Standortsuche $standortsuche */
-        $standortsuche = $configuratorMock->buildGKV(new \Monolog\Logger(__CLASS__));
-        $this->assertContains('production', $standortsuche->getSoapCredentials()->getEndpoint());
-    }
-
-    public function testEndpointForSandboxEnvironment()
-    {
-        $configuratorMock = $this->getConfiguratorMock();
-        $configuratorMock
-            ->expects($this->once())
-            ->method('isProductionEnvironment')
-            ->willReturn(false);
-
-        /** @var Standortsuche $standortsuche */
-        $standortsuche = $configuratorMock->buildGKV(new \Monolog\Logger(__CLASS__));
-        $this->assertContains('sandbox', $standortsuche->getSoapCredentials()->getEndpoint());
-    }
-
     public function testThatTheLoggerUsesTheLogHandler()
     {
         $configuratorMock = $this->getConfiguratorMock();

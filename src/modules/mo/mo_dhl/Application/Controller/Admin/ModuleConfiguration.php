@@ -10,7 +10,6 @@ namespace Mediaopt\DHL\Application\Controller\Admin;
 
 use Mediaopt\DHL\Adapter\DHLAdapter;
 use Mediaopt\DHL\Adapter\ParcelShippingConverter;
-use Mediaopt\DHL\Api\GKV;
 use Mediaopt\DHL\Api\GKV\CountryType;
 use Mediaopt\DHL\Api\GKV\NameType;
 use Mediaopt\DHL\Api\GKV\CommunicationType;
@@ -131,6 +130,11 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         }
     }
 
+    protected function getEkp(): string
+    {
+        return Registry::getConfig()->getConfigParam('mo_dhl__merchant_ekp');
+    }
+
     /**
      * Converts Multiline text to simple array. Returns this array.
      *
@@ -186,16 +190,14 @@ class ModuleConfiguration extends ModuleConfiguration_parent
      */
     protected function moReviewEkp()
     {
-        $ekpVariable = 'mo_dhl__merchant_ekp';
-        $ekp = Registry::getConfig()->getConfigParam($ekpVariable);
-        if (empty($ekp)) {
+        if (!$ekp = $this->getEkp()) {
             return;
         }
 
         try {
             Ekp::build($ekp);
         } catch (\InvalidArgumentException $exception) {
-            Registry::getConfig()->saveShopConfVar('str', $ekpVariable, '', '', 'module:mo_dhl');
+            Registry::getConfig()->saveShopConfVar('str', 'mo_dhl__merchant_ekp', '', '', 'module:mo_dhl');
             Registry::get(UtilsView::class)->addErrorToDisplay('MO_DHL__EKP_ERROR');
         }
     }
@@ -220,10 +222,9 @@ class ModuleConfiguration extends ModuleConfiguration_parent
                 Registry::get(UtilsView::class)->addErrorToDisplay('MO_DHL__NO_DELIVERYSET');
                 return;
             }
-            $gkv = $adapter->buildGKV();
             $parcelShipping = $adapter->buildParcelShipping();
             foreach ($deliveries as $delivery) {
-                $this->checkShippingAPIs($gkv, $parcelShipping, $delivery);
+                $this->checkShippingAPIs($parcelShipping, $delivery);
             }
         } catch (\Exception $e) {
             $this->displayErrors($e);
@@ -378,12 +379,11 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     }
 
     /**
-     * @param GKV         $gkv
      * @param Client      $parcelShipping
      * @param DeliverySet $deliveryset
      * @throws \Exception
      */
-    private function checkShippingAPIs(GKV $gkv, Client $parcelShipping, $deliveryset)
+    private function checkShippingAPIs(Client $parcelShipping, $deliveryset)
     {
         $lang = Registry::getLang();
         Registry::get(UtilsView::class)->addErrorToDisplay($lang->translateString('MO_DHL__CHECKING_DELIVERYSET') . $deliveryset->oxdeliveryset__oxtitle->value);
@@ -395,44 +395,23 @@ class ModuleConfiguration extends ModuleConfiguration_parent
             if ($process->usesInternetMarke()) {
                 return;
             }
-            $shipment = $this->createTestShipment($gkv, $deliveryset);
+            $shipment = $this->createTestShipment($deliveryset);
             $shipmentOrder = new ValidateShipmentOrderType('123456', $shipment);
             $request = new ValidateShipmentOrderRequest(new Version(3, 4, 0), $shipmentOrder);
 
-            if (Registry::getConfig()->getConfigParam('mo_dhl__account_rest_api')) {
-                $converter = Registry::get(ParcelShippingConverter::class);
-                [$query, $request] = $converter->convertValidateShipmentOrderRequest($request);
-                $response = $parcelShipping->createOrders($request, $query, [], Client::FETCH_RESPONSE);
-                if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
-                    $payload = json_decode($response->getBody()->getContents(), true);
-                    if ($payload['status'] == 401) {
-                        Registry::get(UtilsView::class)->addErrorToDisplay('MO_DHL__LOGIN_FAILED');
-                        return;
-                    }
-                    foreach ($converter->extractErrorsFromResponsePayload($payload) as $error) {
-                        Registry::get(UtilsView::class)->addErrorToDisplay($error);
-                    }
+            $converter = Registry::get(ParcelShippingConverter::class);
+            [$query, $request] = $converter->convertValidateShipmentOrderRequest($request);
+            $response = $parcelShipping->createOrders($request, $query, [], Client::FETCH_RESPONSE);
+            if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
+                $payload = json_decode($response->getBody()->getContents(), true);
+                if ($payload['status'] == 401) {
+                    Registry::get(UtilsView::class)->addErrorToDisplay('MO_DHL__LOGIN_FAILED');
                     return;
                 }
-            } else {
-                $response = $gkv->validateShipment($request);
-                if ($response->getStatus()->getStatusCode() !== 0) {
-                    switch ($response->getStatus()->getStatusText()) {
-                        case 'login failed':
-                            Registry::get(UtilsView::class)->addErrorToDisplay('MO_DHL__LOGIN_FAILED');
-                            return;
-                        default:
-                            Registry::get(UtilsView::class)->addErrorToDisplay($response->getStatus()->getStatusText());
-                            if (!isset($response->getValidationState()[0])) {
-                                return;
-                            }
-                            $errors = array_unique($response->getValidationState()[0]->getStatus()->getStatusMessage());
-                            foreach ($errors as $error) {
-                                Registry::get(UtilsView::class)->addErrorToDisplay($error);
-                            }
-                            return;
-                    }
+                foreach ($converter->extractErrorsFromResponsePayload($payload) as $error) {
+                    Registry::get(UtilsView::class)->addErrorToDisplay($error);
                 }
+                return;
             }
         } catch (\RuntimeException $e) {
             $e = $e->getPrevious() ?: $e;
@@ -443,15 +422,14 @@ class ModuleConfiguration extends ModuleConfiguration_parent
     }
 
     /**
-     * @param GKV         $gkv
      * @param DeliverySet $deliveryset
      * @return Shipment
      */
-    protected function createTestShipment(GKV $gkv, $deliveryset): Shipment
+    protected function createTestShipment($deliveryset): Shipment
     {
         $process = Process::build($deliveryset->oxdeliveryset__mo_dhl_process->value);
         $receiverCountryCode = $process->isInternational() ? 'FR' : 'DE';
-        $ShipmentDetails = new ShipmentDetailsTypeType($process->getServiceIdentifier(), new BillingNumber(Ekp::build($gkv->getSoapCredentials()->getEkp()), $process, Participation::build($deliveryset->oxdeliveryset__mo_dhl_participation->value)), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(0.5));
+        $ShipmentDetails = new ShipmentDetailsTypeType($process->getServiceIdentifier(), new BillingNumber(Ekp::build($this->getEkp()), $process, Participation::build($deliveryset->oxdeliveryset__mo_dhl_participation->value)), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(0.5));
         $Receiver = (new ReceiverType('a b'))->setAddress(new ReceiverNativeAddressType(null, null, 'Elbestr.', '28/29', '12045', 'Berlin', null, new CountryType($receiverCountryCode)))->setCommunication($this->createTestCommunication());
         $Shipper = (new ShipperType(new NameType('a b', null, null), new NativeAddressTypeNew('Elbestr.', '28', '12045', 'Berlin', new CountryType('DE'))));
         $shipment = new Shipment($ShipmentDetails, $Shipper, $Receiver);

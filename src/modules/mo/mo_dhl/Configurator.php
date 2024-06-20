@@ -18,10 +18,8 @@ use Mediaopt\DHL\Api\Retoure;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Standortsuche\ServiceProviderBuilder;
 use Mediaopt\DHL\Api\Wunschpaket;
-use Mediaopt\DHL\Api\GKV;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Jane\Component\OpenApiRuntime\Client\AuthenticationPlugin;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -339,19 +337,6 @@ abstract class Configurator
             $this->buildRestCredentials(true),
             $logger ?: $this->buildLogger(),
             $client ?: $this->buildClient()
-        );
-    }
-
-    /**
-     * @param LoggerInterface|null $logger
-     * @return GKV
-     */
-    public function buildGKV(LoggerInterface $logger = null)
-    {
-        return new GKV(
-            $this->buildSoapCredentials(),
-            $this->buildCustomerGKVCredentials(),
-            $logger ?: $this->buildLogger()
         );
     }
 

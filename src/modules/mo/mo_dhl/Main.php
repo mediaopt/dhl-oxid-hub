@@ -3,7 +3,6 @@
 namespace Mediaopt\DHL;
 
 use GuzzleHttp\ClientInterface;
-use Mediaopt\DHL\Api\GKV;
 use Mediaopt\DHL\Api\Internetmarke;
 use Mediaopt\DHL\Api\InternetmarkeRefund;
 use Mediaopt\DHL\Api\ParcelShipping\Client;
@@ -115,14 +114,6 @@ class Main
     public function buildWunschpaket()
     {
         return $this->getConfigurator()->buildWunschpaket($this->getLogger(), $this->getClient());
-    }
-
-    /**
-     * @return GKV
-     */
-    public function buildGKV()
-    {
-        return $this->getConfigurator()->buildGKV($this->getLogger());
     }
 
     /**

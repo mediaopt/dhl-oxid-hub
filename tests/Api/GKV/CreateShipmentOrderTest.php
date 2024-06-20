@@ -26,7 +26,7 @@ class CreateShipmentOrderTest extends BaseGKVTest
     {
         $shipment = $this->createShipmentToGermany();
         $shipmentOrder = new ShipmentOrderType('123', $shipment);
-        $request = new CreateShipmentOrderRequest(new Version(3, 4, 0), $shipmentOrder);
+        $request = new CreateShipmentOrderRequest($this->createVersion(), $shipmentOrder);
         $converter = new ParcelShippingConverter();
         [$query, $request] = $converter->convertCreateShipmentOrderRequest($request);
         $response = $this->buildParcelShipping()->createOrders($request, $query, [], Client::FETCH_RESPONSE);
@@ -39,7 +39,7 @@ class CreateShipmentOrderTest extends BaseGKVTest
     {
         $shipment = $this->createShipmentToAustria();
         $shipmentOrder = new ShipmentOrderType('123', $shipment);
-        $request = new CreateShipmentOrderRequest(new Version(3, 4, 0), $shipmentOrder);
+        $request = new CreateShipmentOrderRequest($this->createVersion(), $shipmentOrder);
         $converter = new ParcelShippingConverter();
         [$query, $request] = $converter->convertCreateShipmentOrderRequest($request);
         $response = $this->buildParcelShipping()->createOrders($request, $query, [], Client::FETCH_RESPONSE);

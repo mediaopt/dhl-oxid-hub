@@ -320,13 +320,15 @@ class ParcelShippingConverter
     }
 
     /**
-     * @param array $payload
+     * @param array     $payload
+     * @param int|false $index   if specified only errors for the given index will be returned
      * @return string[]
      */
-    public function extractErrorsFromResponsePayload(array $payload): array
+    public function extractErrorsFromResponsePayload(array $payload, $index = false): array
     {
         $errors = [];
-        foreach ($payload['items'] ?? [] as $error) {
+        $items = $index !== false ? [$payload['items'][$index]] : $payload['items'];
+        foreach ($items as $error) {
             if (\array_key_exists('validationMessages', $error)) {
                 foreach ($error['validationMessages'] as $validationMessage) {
                     $errors[] = "{$validationMessage['validationMessage']} ({$validationMessage['property']})";
@@ -340,7 +342,7 @@ class ParcelShippingConverter
         if ($errors !== []) {
             return $errors;
         }
-        return \array_key_exists('detail', $payload) ? [$payload['detail']] : [];
+        return \array_key_exists('detail', $payload) && $index === false ? [$payload['detail']] : [];
     }
 
     /**
