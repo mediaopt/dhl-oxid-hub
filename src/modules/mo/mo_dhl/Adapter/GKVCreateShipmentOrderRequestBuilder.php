@@ -11,6 +11,7 @@ namespace Mediaopt\DHL\Adapter;
 use Mediaopt\DHL\Api\GKV\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\Serviceconfiguration;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
+use Mediaopt\DHL\Api\GKV\Version;
 use Mediaopt\DHL\Application\Model\Order;
 use OxidEsales\Eshop\Core\Registry;
 
@@ -30,8 +31,7 @@ class GKVCreateShipmentOrderRequestBuilder
     public function build(array $orderIds): CreateShipmentOrderRequest
     {
         $shipmentOrders = array_map([$this, 'buildShipmentOrder'], $orderIds);
-        $gkvClient = Registry::get(DHLAdapter::class)->buildGKV();
-        $request = new CreateShipmentOrderRequest($gkvClient->buildVersion(), $shipmentOrders);
+        $request = new CreateShipmentOrderRequest(new Version(3, 4, 0), $shipmentOrders);
         return $request->setCombinedPrinting(0)->setGroupProfileName(self::STANDARD_GRUPPENPROFIL);
     }
 

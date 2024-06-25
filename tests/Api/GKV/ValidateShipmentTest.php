@@ -9,10 +9,11 @@ namespace sdk\GKV;
 
 require_once 'BaseGKVTest.php';
 
+use Mediaopt\DHL\Adapter\ParcelShippingConverter;
 use Mediaopt\DHL\Api\GKV\CountryType;
 use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderType;
-use Mediaopt\DHL\Api\GKV\ValidateShipmentResponse;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * @author Mediaopt GmbH
@@ -25,9 +26,12 @@ class ValidateShipmentTest extends BaseGKVTest
         $shipment = $this->createShipmentToGermany();
         $shipmentOrder = new ValidateShipmentOrderType('123', $shipment);
         $request = new ValidateShipmentOrderRequest($this->createVersion(), $shipmentOrder);
-        $response = $this->buildGKV()->validateShipment($request);
-        $this->assertInstanceOf(ValidateShipmentResponse::class, $response);
-        $this->assertEquals(0, $response->getStatus()->getStatusCode(), $response->getStatus()->getStatusText());
+        $converter = new ParcelShippingConverter();
+        [$query, $request] = $converter->convertValidateShipmentOrderRequest($request);
+        $response = $this->buildParcelShipping()->createOrders($request, $query, [], \Mediaopt\DHL\Api\MyAccount\Runtime\Client\Client::FETCH_RESPONSE);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $payload = \json_decode($response->getBody(), true);
+        $this->assertEquals(200, $response->getStatusCode(), $payload['status']['detail']);
     }
 
     public function testValidateShipmentOutsideGermany()
@@ -36,10 +40,14 @@ class ValidateShipmentTest extends BaseGKVTest
         $shipment->getReceiver()->getAddress()->setOrigin(new CountryType('AT'));
         $shipmentOrder = new ValidateShipmentOrderType('123', $shipment);
         $request = new ValidateShipmentOrderRequest($this->createVersion(), $shipmentOrder);
-        $response = $this->buildGKV()->validateShipment($request);
-        $this->assertInstanceOf(ValidateShipmentResponse::class, $response);
-        $this->assertEquals(1101, $response->getStatus()->getStatusCode(), $response->getStatus()->getStatusText());
-        $this->assertContains('Das angegebene Produkt ist für das Land nicht verfügbar.', $response->getValidationState()[0]->getStatus()->getStatusMessage(), implode(', ', $response->getValidationState()[0]->getStatus()->getStatusMessage()));
+        $converter = new ParcelShippingConverter();
+        [$query, $request] = $converter->convertValidateShipmentOrderRequest($request);
+        $response = $this->buildParcelShipping()->createOrders($request, $query, [], \Mediaopt\DHL\Api\MyAccount\Runtime\Client\Client::FETCH_RESPONSE);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $body = $response->getBody()->getContents();
+        $payload = \json_decode($body, true);
+        $this->assertEquals(400, $response->getStatusCode(), $payload['status']['detail']);
+        $this->assertContains('The product entered is not available for this country.', $body);
     }
 
     public function testValidateShipmentForYesterday()
@@ -48,9 +56,13 @@ class ValidateShipmentTest extends BaseGKVTest
         $shipment->getShipmentDetails()->setShipmentDate((new \DateTime('-1 day'))->format('Y-m-d'));
         $shipmentOrder = new ValidateShipmentOrderType('123', $shipment);
         $request = new ValidateShipmentOrderRequest($this->createVersion(), $shipmentOrder);
-        $response = $this->buildGKV()->validateShipment($request);
-        $this->assertInstanceOf(ValidateShipmentResponse::class, $response);
-        $this->assertEquals(1101, $response->getStatus()->getStatusCode(), $response->getStatus()->getStatusText());
-        $this->assertContains('Bitte geben Sie ein gültiges Sendungsdatum an.', $response->getValidationState()[0]->getStatus()->getStatusMessage(), implode(', ', $response->getValidationState()[0]->getStatus()->getStatusMessage()));
+        $converter = new ParcelShippingConverter();
+        [$query, $request] = $converter->convertValidateShipmentOrderRequest($request);
+        $response = $this->buildParcelShipping()->createOrders($request, $query, [], \Mediaopt\DHL\Api\MyAccount\Runtime\Client\Client::FETCH_RESPONSE);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $body = $response->getBody()->getContents();
+        $payload = \json_decode($body, true);
+        $this->assertEquals(400, $response->getStatusCode(), $payload['status']['detail']);
+        $this->assertContains('Please enter a valid shipping date.', $body);
     }
 }

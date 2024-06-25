@@ -7,6 +7,7 @@
 
 namespace sdk\GKV;
 
+use Mediaopt\DHL\Api\GKV\CommunicationType;
 use Mediaopt\DHL\Api\GKV\CountryType;
 use Mediaopt\DHL\Api\GKV\NameType;
 use Mediaopt\DHL\Api\GKV\NativeAddressTypeNew;
@@ -30,11 +31,11 @@ class BaseGKVTest extends TestCase
 {
 
     /**
-     * @return \Mediaopt\DHL\Api\GKV
+     * @return \Mediaopt\DHL\Api\ParcelShipping\Client
      */
-    protected function buildGKV()
+    protected function buildParcelShipping()
     {
-        return (new \TestConfigurator())->buildGKV();
+        return (new \TestConfigurator())->buildParcelShipping();
     }
 
     /**
@@ -51,9 +52,10 @@ class BaseGKVTest extends TestCase
      */
     protected function createShipmentToGermany($product = 'V01PAK'): Shipment
     {
-        $gkv = $this->buildGKV();
-        $ShipmentDetails = new ShipmentDetailsTypeType($product, new BillingNumber(Ekp::build($gkv->getSoapCredentials()->getEkp()), Process::build(Process::PAKET), Participation::build('01')), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
-        $Receiver = (new ReceiverType('a b'))->setAddress(new ReceiverNativeAddressType(null, null, 'Elbestr.', '28/29', '12045', 'Berlin', null, new CountryType('DE')));
+        $ShipmentDetails = new ShipmentDetailsTypeType($product, new BillingNumber(Ekp::build('3333333333'), Process::build(Process::PAKET), Participation::build('01')), (new \DateTime())->format('Y-m-d'), new ShipmentItemType(12));
+        $Receiver = (new ReceiverType('a b'))
+            ->setAddress(new ReceiverNativeAddressType(null, null, 'Elbestr.', '28/29', '12045', 'Berlin', null, new CountryType('DE')))
+            ->setCommunication((new CommunicationType())->setContactPerson('a b')->setEmail('a@b.de')->setPhone('030123'));
         $Shipper = (new ShipperType(new NameType('a b', null, null), new NativeAddressTypeNew('Elbestr.', '28', '12045', 'Berlin', new CountryType('DE'))));
         $shipment = new Shipment($ShipmentDetails, $Shipper, $Receiver);
         return $shipment;

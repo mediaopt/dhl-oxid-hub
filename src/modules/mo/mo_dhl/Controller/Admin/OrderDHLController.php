@@ -4,16 +4,10 @@ namespace Mediaopt\DHL\Controller\Admin;
 
 use GuzzleHttp\Exception\ClientException;
 use Mediaopt\DHL\Adapter\DHLAdapter;
-use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
 use Mediaopt\DHL\Adapter\GKVCustomShipmentBuilder;
 use Mediaopt\DHL\Adapter\InternetmarkeRefundRetoureVouchersRequestBuilder;
 use Mediaopt\DHL\Adapter\InternetmarkeShoppingCartPDFRequestBuilder;
-use Mediaopt\DHL\Adapter\ParcelShippingConverter;
-use Mediaopt\DHL\Api\GKV\CreateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\CreateShipmentOrderResponse;
-use Mediaopt\DHL\Api\GKV\DeleteShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\DeleteShipmentOrderResponse;
-use Mediaopt\DHL\Api\GKV\StatusCode;
+use Mediaopt\DHL\Adapter\ParcelShippingRequestBuilder;
 use Mediaopt\DHL\Api\Internetmarke\ShoppingCartResponseType;
 use Mediaopt\DHL\Api\ParcelShipping\Client;
 use Mediaopt\DHL\Api\Wunschpaket;
@@ -88,11 +82,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
                 return;
             }
             $shipmentOrderRequest = $this->buildShipmentOrderRequest();
-            if ($this->usesParcelShippingAPI()) {
-                $this->createShipmentOrderWithParcelShipping($shipmentOrderRequest);
-            } else {
-                $this->createShipmentOrderWithGKV($shipmentOrderRequest);
-            }
+            $this->createShipmentOrderWithParcelShipping($shipmentOrderRequest);
         } catch (\Exception $e) {
             $this->displayErrors($e);
         }
@@ -155,13 +145,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
 
             $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($shipmentOrder));
             $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
-
-            if ($this->usesParcelShippingAPI()) {
-                $this->createShipmentOrderWithParcelShipping($request);
-            } else {
-                $this->createShipmentOrderWithGKV($request);
-            }
-
+            $this->createShipmentOrderWithParcelShipping($request);
         } catch (\Exception $e) {
             $this->displayErrors($e);
         }
@@ -201,10 +185,8 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             }
             if ($this->usesInternetmarke()) {
                 $this->refundInternetmarkeLabel($label);
-            } elseif ($this->usesParcelShippingAPI()) {
-                $this->deleteShipmentWithParcelShipping($label);
             } else {
-                $this->deleteShipmentWithGKV($label);
+                $this->deleteShipmentWithParcelShipping($label);
             }
         } catch (\Exception $e) {
             $this->displayErrors($e);
@@ -229,16 +211,6 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             $errors = $this->parseInternetmarkeException($e);
             $this->displayErrors($errors);
         }
-    }
-
-    /**
-     * @param string $shipmentNumber
-     * @return DeleteShipmentOrderResponse
-     */
-    public function callGKVDeleteShipment(string $shipmentNumber): DeleteShipmentOrderResponse
-    {
-        $gkvClient = Registry::get(DHLAdapter::class)->buildGKV();
-        return $gkvClient->deleteShipmentOrder(new DeleteShipmentOrderRequest($gkvClient->buildVersion(), $shipmentNumber));
     }
 
     /**
@@ -358,7 +330,6 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             Ekp::build($ekp);
             return $ekp;
         } catch (\InvalidArgumentException $exception) {
-            /** @noinspection PhpParamsInspection */
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__EKP_ERROR');
             return '';
         }
@@ -374,7 +345,6 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             Process::build($processIdentifier);
             return $processIdentifier;
         } catch (\InvalidArgumentException $exception) {
-            /** @noinspection PhpParamsInspection */
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PROCESS_IDENTIFIER_ERROR');
             return '';
         }
@@ -399,7 +369,6 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
                 return $participationNumber;
             }
         } catch (\InvalidArgumentException $exception) {
-            /** @noinspection PhpParamsInspection */
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PARTICIPATION_NUMBER_ERROR');
             return '';
         }
@@ -462,30 +431,6 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         return $lang->translateString($text);
     }
 
-    /**
-     * @param CreateShipmentOrderResponse $response
-     * @throws \Exception
-     */
-    protected function handleGKVCreationResponse(CreateShipmentOrderResponse $response)
-    {
-        $creationState = $response->getCreationState()[0];
-        $statusInformation = $creationState ? $creationState->getLabelData()->getStatus() : $response->getStatus();
-        $this->getOrder()->storeCreationStatus($statusInformation->getStatusText());
-        if ($errors = $statusInformation->getErrors()) {
-            $this->displayErrors($errors);
-            return;
-        }
-        $label = MoDHLLabel::fromOrderAndCreationState($this->getOrder(), $creationState);
-        $label->save();
-        if ($statusInformation->getStatusCode() === StatusCode::GKV_STATUS_OK && $statusInformation->getStatusText() === 'Weak validation error occured.') {
-            $errors = $statusInformation->getStatusMessage() ?: [];
-            array_unshift($errors, $statusInformation->getStatusText());
-            array_unshift($errors, 'MO_DHL__LABEL_CREATED_WITH_WEAK_VALIDATION_ERROR');
-            $errors = array_unique($errors);
-            $this->displayErrors($errors);
-        }
-    }
-
     protected function handleInternetmarkeCreationResponse(ShoppingCartResponseType $response)
     {
         $this->getOrder()->storeCreationStatus('ok');
@@ -500,7 +445,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     protected function handleParcelShippingPostResponse(ResponseInterface $response): void
     {
         $payload = \json_decode($response->getBody(), true);
-        $errors = Registry::get(ParcelShippingConverter::class)->extractErrorsFromResponsePayload($payload);
+        $errors = $this->extractErrorsFromResponsePayload($payload);
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             $this->getOrder()->storeCreationStatus($payload['status']['title']);
             $label = MoDHLLabel::fromOrderAndParcelShippingResponseItem($this->getOrder(), $payload['items'][0]);
@@ -515,31 +460,13 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @param MoDHLLabel                  $label
-     * @param DeleteShipmentOrderResponse $response
-     */
-    protected function handleGKVDeletionResponse(MoDHLLabel $label, DeleteShipmentOrderResponse $response)
-    {
-        $statusInformation = $response->getDeletionState() ? $response->getDeletionState()[0]->getStatus() : $response->getStatus();
-        if ($errors = $statusInformation->getErrors()) {
-            if ($statusInformation->getStatusCode() === StatusCode::GKV_STATUS_UNKNOWN_SHIPMENT) {
-                $label->delete();
-            }
-            $this->displayErrors($errors);
-            return;
-        }
-        $label->delete();
-    }
-
-
-    /**
-     * @return CreateShipmentOrderRequest
+     * @return array
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    protected function buildShipmentOrderRequest(): CreateShipmentOrderRequest
+    protected function buildShipmentOrderRequest(): array
     {
-        return Registry::get(GKVCreateShipmentOrderRequestBuilder::class)->build([$this->getOrder()->getId()]);
+        return Registry::get(ParcelShippingRequestBuilder::class)->build([$this->getOrder()->getId()]);
     }
 
     /**
@@ -548,14 +475,6 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     public function usesInternetmarke()
     {
         return $this->getProcess() && $this->getProcess()->usesInternetMarke();
-    }
-
-    /**
-     * @return bool
-     */
-    public function usesParcelShippingAPI()
-    {
-        return (bool)Registry::getConfig()->getConfigParam('mo_dhl__account_rest_api');
     }
 
     /**
@@ -595,24 +514,13 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @param CreateShipmentOrderRequest $request
+     * @param array $shipmentOrderRequest
      * @return void
      * @throws \Exception
      */
-    protected function createShipmentOrderWithGKV(CreateShipmentOrderRequest $request): void
+    protected function createShipmentOrderWithParcelShipping(array $shipmentOrderRequest): void
     {
-        $response = Registry::get(DHLAdapter::class)->buildGKV()->createShipmentOrder($request);
-        $this->handleGKVCreationResponse($response);
-    }
-
-    /**
-     * @param CreateShipmentOrderRequest $shipmentOrderRequest
-     * @return void
-     * @throws \Exception
-     */
-    protected function createShipmentOrderWithParcelShipping(CreateShipmentOrderRequest $shipmentOrderRequest): void
-    {
-        [$query, $shipmentOrderRequest] = Registry::get(ParcelShippingConverter::class)->convertCreateShipmentOrderRequest($shipmentOrderRequest);
+        [$query, $shipmentOrderRequest] = $shipmentOrderRequest;
         $response = Registry::get(DHLAdapter::class)
             ->buildParcelShipping()
             ->createOrders($shipmentOrderRequest, $query, [], Client::FETCH_RESPONSE);
@@ -627,7 +535,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $label->getFieldData('shipmentNumber');
         $response = Registry::get(DHLAdapter::class)
             ->buildParcelShipping()
-            ->ordersAccountDelete(['profile' => GKVCreateShipmentOrderRequestBuilder::STANDARD_GRUPPENPROFIL, 'shipment' => $label->getFieldData('shipmentNumber')], [], Client::FETCH_RESPONSE);
+            ->ordersAccountDelete(['profile' => ParcelShippingRequestBuilder::STANDARD_GRUPPENPROFIL, 'shipment' => $label->getFieldData('shipmentNumber')], [], Client::FETCH_RESPONSE);
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             $label->delete();
             return;
@@ -639,13 +547,5 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             return;
         }
         $this->displayErrors([$firstItem['sstatus']['detail']]);
-    }
-
-    /**
-     * @param MoDHLLabel $label
-     */
-    protected function deleteShipmentWithGKV(MoDHLLabel $label)
-    {
-        $this->handleGKVDeletionResponse($label, $this->callGKVDeleteShipment($label->getFieldData('shipmentNumber')));
     }
 }
