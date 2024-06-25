@@ -4,12 +4,10 @@ namespace Mediaopt\DHL\Controller\Admin;
 
 use GuzzleHttp\Exception\ClientException;
 use Mediaopt\DHL\Adapter\DHLAdapter;
-use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
 use Mediaopt\DHL\Adapter\GKVCustomShipmentBuilder;
 use Mediaopt\DHL\Adapter\InternetmarkeRefundRetoureVouchersRequestBuilder;
 use Mediaopt\DHL\Adapter\InternetmarkeShoppingCartPDFRequestBuilder;
-use Mediaopt\DHL\Adapter\ParcelShippingConverter;
-use Mediaopt\DHL\Api\GKV\CreateShipmentOrderRequest;
+use Mediaopt\DHL\Adapter\ParcelShippingRequestBuilder;
 use Mediaopt\DHL\Api\Internetmarke\ShoppingCartResponseType;
 use Mediaopt\DHL\Api\ParcelShipping\Client;
 use Mediaopt\DHL\Api\Wunschpaket;
@@ -447,7 +445,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     protected function handleParcelShippingPostResponse(ResponseInterface $response): void
     {
         $payload = \json_decode($response->getBody(), true);
-        $errors = Registry::get(ParcelShippingConverter::class)->extractErrorsFromResponsePayload($payload);
+        $errors = $this->extractErrorsFromResponsePayload($payload);
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             $this->getOrder()->storeCreationStatus($payload['status']['title']);
             $label = MoDHLLabel::fromOrderAndParcelShippingResponseItem($this->getOrder(), $payload['items'][0]);
@@ -462,13 +460,13 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @return CreateShipmentOrderRequest
+     * @return array
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
-    protected function buildShipmentOrderRequest(): CreateShipmentOrderRequest
+    protected function buildShipmentOrderRequest(): array
     {
-        return Registry::get(GKVCreateShipmentOrderRequestBuilder::class)->build([$this->getOrder()->getId()]);
+        return Registry::get(ParcelShippingRequestBuilder::class)->build([$this->getOrder()->getId()]);
     }
 
     /**
@@ -516,13 +514,13 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     }
 
     /**
-     * @param CreateShipmentOrderRequest $shipmentOrderRequest
+     * @param array $shipmentOrderRequest
      * @return void
      * @throws \Exception
      */
-    protected function createShipmentOrderWithParcelShipping(CreateShipmentOrderRequest $shipmentOrderRequest): void
+    protected function createShipmentOrderWithParcelShipping(array $shipmentOrderRequest): void
     {
-        [$query, $shipmentOrderRequest] = Registry::get(ParcelShippingConverter::class)->convertCreateShipmentOrderRequest($shipmentOrderRequest);
+        [$query, $shipmentOrderRequest] = $shipmentOrderRequest;
         $response = Registry::get(DHLAdapter::class)
             ->buildParcelShipping()
             ->createOrders($shipmentOrderRequest, $query, [], Client::FETCH_RESPONSE);
@@ -537,7 +535,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $label->getFieldData('shipmentNumber');
         $response = Registry::get(DHLAdapter::class)
             ->buildParcelShipping()
-            ->ordersAccountDelete(['profile' => GKVCreateShipmentOrderRequestBuilder::STANDARD_GRUPPENPROFIL, 'shipment' => $label->getFieldData('shipmentNumber')], [], Client::FETCH_RESPONSE);
+            ->ordersAccountDelete(['profile' => ParcelShippingRequestBuilder::STANDARD_GRUPPENPROFIL, 'shipment' => $label->getFieldData('shipmentNumber')], [], Client::FETCH_RESPONSE);
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             $label->delete();
             return;

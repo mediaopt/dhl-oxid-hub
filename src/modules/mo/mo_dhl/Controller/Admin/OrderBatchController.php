@@ -9,8 +9,7 @@ namespace Mediaopt\DHL\Controller\Admin;
  */
 
 use Mediaopt\DHL\Adapter\DHLAdapter;
-use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
-use Mediaopt\DHL\Adapter\ParcelShippingConverter;
+use Mediaopt\DHL\Adapter\ParcelShippingRequestBuilder;
 use Mediaopt\DHL\Api\ParcelShipping\Client;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Export\CsvExporter;
@@ -222,8 +221,7 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
      */
     protected function callCreation(array $orderIds)
     {
-        $request = Registry::get(GKVCreateShipmentOrderRequestBuilder::class)->build($orderIds);
-        [$query, $shipmentOrderRequest] = Registry::get(ParcelShippingConverter::class)->convertCreateShipmentOrderRequest($request);
+        [$query, $shipmentOrderRequest] = Registry::get(ParcelShippingRequestBuilder::class)->build($orderIds);
         $response = Registry::get(DHLAdapter::class)
             ->buildParcelShipping()
             ->createOrders($shipmentOrderRequest, $query, [], Client::FETCH_RESPONSE);
@@ -238,7 +236,7 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
     {
         $payload = \json_decode($response->getBody(), true);
         foreach ($payload['items'] as $index => $item) {
-            $errors = Registry::get(ParcelShippingConverter::class)->extractErrorsFromResponsePayload($payload, $index);
+            $errors = $this->extractErrorsFromResponsePayload($payload, $index);
             $order = \oxNew(Order::class);
             $order->load($orderIds[$index]);
             $order->storeCreationStatus($item['sstatus']['title']);
@@ -246,10 +244,11 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
                 $message = Registry::getLang()->translateString('MO_DHL__BATCH_ERROR_CREATION_ERROR');
                 $message = sprintf($message, $order->getFieldData('oxordernr'), implode(' ', $errors));
                 Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($message);
-                continue;
             }
-            $label = MoDHLLabel::fromOrderAndParcelShippingResponseItem($order, $item);
-            $label->save();
+            if ($item['sstatus']['statusCode'] >= 200 && $item['sstatus']['statusCode'] < 300) {
+                $label = MoDHLLabel::fromOrderAndParcelShippingResponseItem($order, $item);
+                $label->save();
+            }
         }
     }
 
