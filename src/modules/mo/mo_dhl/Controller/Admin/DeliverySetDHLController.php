@@ -95,7 +95,6 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
         try {
             Process::build($identifier);
         } catch (\InvalidArgumentException $exception) {
-            /** @noinspection PhpParamsInspection */
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PROCESS_IDENTIFIER_ERROR');
             throw $exception;
         }
@@ -113,7 +112,6 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
         try {
             Participation::build($participation);
         } catch (\InvalidArgumentException $exception) {
-            /** @noinspection PhpParamsInspection */
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__PARTICIPATION_NUMBER_ERROR');
             throw $exception;
         }
@@ -161,7 +159,7 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
     protected function getEndorsements()
     {
         return [
-            Registry::getLang()->translateString('MO_DHL__ENDORSEMENT_IMMEDIATE'),
+            Registry::getLang()->translateString('MO_DHL__ENDORSEMENT_RETURN'),
             Registry::getLang()->translateString('MO_DHL__ENDORSEMENT_ABANDONMENT'),
         ];
     }

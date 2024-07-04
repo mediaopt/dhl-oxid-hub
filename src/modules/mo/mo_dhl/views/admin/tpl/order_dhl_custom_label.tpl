@@ -53,148 +53,17 @@
                                         <b>[{oxmultilang ident='MO_DHL__CUSTOM_LABEL_RECEIVER'}]</b>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_NAME'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[receiver][name]"
-                                               value="[{$shipmentOrder.receiver.name}]">
-                                    </td>
-                                </tr>
-                                [{assign var="address" value=$shipmentOrder.receiver.address}]
-                                [{if $shipmentOrder.receiver.type == 'address'}]
-                                    [{assign var="communication" value=$shipmentOrder.receiver.communication}]
+                                [{foreach from=$shipmentOrder.receiver key="key" item="item"}]
                                     <tr>
                                         <td>
-                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_MAIL'}]
+                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_'|cat:$key|upper}]
                                         </td>
                                         <td>
-                                            <input type="text" name="data[receiver][email]"
-                                                   value="[{$communication->getEmail()}]">
+                                            <input type="text" name="data[receiver][[{$key}]]"
+                                                   value="[{$item}]">
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_PHONE'}]
-                                        </td>
-                                        <td>
-                                            <input type="text" name="data[receiver][phone]"
-                                                   value="[{$communication->getPhone()}]">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_COMPANY'}]
-                                        </td>
-                                        <td>
-                                            <input type="text" name="data[receiver][name2]"
-                                                   value="[{$address->getName2()}]">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_STREETNAME'}]
-                                        </td>
-                                        <td>
-                                            <input type="text" name="data[receiver][streetName]"
-                                                   value="[{$address->getStreetName()}]">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_STREETNUMBER'}]
-                                        </td>
-                                        <td>
-                                            <input type="text" name="data[receiver][streetNumber]"
-                                                   value="[{$address->getStreetNumber()}]">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_ADRESS_ADDITION'}]
-                                        </td>
-                                        <td>
-                                            <input type="text" name="data[receiver][name3]"
-                                                   value="[{$address->getName3()}]">
-                                        </td>
-                                    </tr>
-                                [{elseif $shipmentOrder.receiver.type == 'packstation'}]
-                                    <tr>
-                                        <td>
-                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_PACKSTATION_NUMBER'}]
-                                        </td>
-                                        <td>
-                                            <input type="text" name="data[receiver][packstationNumber]"
-                                                   value="[{$address->getPackstationNumber()}]">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_POST_NUMBER'}]
-                                        </td>
-                                        <td>
-                                            <input type="text" name="data[receiver][postNumber]"
-                                                   value="[{$address->getPostNumber()}]">
-                                        </td>
-                                    </tr>
-                                [{else}]
-                                    <tr>
-                                        <td>
-                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_POSTFILIAL_NUMBER'}]
-                                        </td>
-                                        <td>
-                                            <input type="text" name="data[receiver][postfilialNumber]"
-                                                   value="[{$address->getPostfilialNumber()}]">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_POST_NUMBER'}]
-                                        </td>
-                                        <td>
-                                            <input type="text" name="data[receiver][postNumber]"
-                                                   value="[{$address->getPostNumber()}]">
-                                        </td>
-                                    </tr>
-                                [{/if}]
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_ZIP'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[receiver][zip]" value="[{$address->getZip()}]">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_CITY'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[receiver][city]" value="[{$address->getCity()}]">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_STATE'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[receiver][province]"
-                                               value="[{$address->getProvince()}]">
-                                    </td>
-                                </tr>
-                                [{if $shipmentOrder.receiver.type == 'address'}]
-                                    [{assign var="origin" value=$address->getOrigin()}]
-                                    <tr>
-                                        <td>
-                                            [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_COUNTRY'}]
-                                        </td>
-                                        <td>
-                                            <input type="text" name="data[receiver][country]"
-                                                   value="[{$origin->getCountryIsoCode()}]">
-                                        </td>
-                                    </tr>
-                                [{/if}]
+                                [{/foreach}]
                             </table>
                         </td>
                     </tr>
@@ -207,79 +76,17 @@
                                         <b>[{oxmultilang ident='MO_DHL__CUSTOM_LABEL_SHIPPER'}]</b>
                                     </td>
                                 </tr>
-                                [{assign var="name" value=$shipmentOrder.shipper.name}]
+                                [{foreach from=$shipmentOrder.shipper key="key" item="item"}]
                                 <tr>
                                     <td>
-                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__sender_line1'}]
+                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_'|cat:$key|upper}]
                                     </td>
                                     <td>
-                                        <input type="text" name="data[shipper][name1]"
-                                               value="[{$name->getName1()}]">
+                                        <input type="text" name="data[shipper][[{$key}]]"
+                                               value="[{$item}]">
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__sender_line2'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[shipper][name2]"
-                                               value="[{$name->getName2()}]">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__sender_line3'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[shipper][name3]"
-                                               value="[{$name->getName3()}]">
-                                    </td>
-                                </tr>
-                                [{assign var="address" value=$shipmentOrder.shipper.address}]
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_STREETNAME'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[shipper][streetName]"
-                                               value="[{$address->getStreetName()}]">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_STREETNUMBER'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[shipper][streetNumber]"
-                                               value="[{$address->getStreetNumber()}]">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_ZIP'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[shipper][zip]" value="[{$address->getZip()}]">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_CITY'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[shipper][city]" value="[{$address->getCity()}]">
-                                    </td>
-                                </tr>
-                                [{assign var="origin" value=$address->getOrigin()}]
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_COUNTRY'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[shipper][country]"
-                                               value="[{$origin->getCountryIsoCode()}]">
-                                    </td>
-                                </tr>
+                                [{/foreach}]
                             </table>
                         </td>
                     </tr>
@@ -292,81 +99,17 @@
                                         <b>[{oxmultilang ident='MO_DHL__CUSTOM_LABEL_RETURN_RECEIVER'}]</b>
                                     </td>
                                 </tr>
-                                [{assign var="name" value=$shipmentOrder.returnReceiver.name}]
+                                [{foreach from=$shipmentOrder.services.dhlRetoure.address key="key" item="item"}]
                                 <tr>
                                     <td>
-                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__retoure_receiver_line1'}]
+                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_'|cat:$key|upper}]
                                     </td>
                                     <td>
-                                        <input type="text" name="data[returnReceiver][name1]"
-                                               value="[{$name->getName1()}]">
+                                        <input type="text" name="data[services][dhlRetoure][address][[{$key}]]"
+                                               value="[{$item}]">
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__retoure_receiver_line2'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[returnReceiver][name2]"
-                                               value="[{$name->getName2()}]">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='SHOP_MODULE_mo_dhl__retoure_receiver_line3'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[returnReceiver][name3]"
-                                               value="[{$name->getName3()}]">
-                                    </td>
-                                </tr>
-                                [{assign var="address" value=$shipmentOrder.returnReceiver.address}]
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_STREETNAME'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[returnReceiver][streetName]"
-                                               value="[{$address->getStreetName()}]">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_STREETNUMBER'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[returnReceiver][streetNumber]"
-                                               value="[{$address->getStreetNumber()}]">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_ZIP'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[returnReceiver][zip]"
-                                               value="[{$address->getZip()}]">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_CITY'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[returnReceiver][city]"
-                                               value="[{$address->getCity()}]">
-                                    </td>
-                                </tr>
-                                [{assign var="origin" value=$address->getOrigin()}]
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__CUSTOM_LABEL_COUNTRY'}]
-                                    </td>
-                                    <td>
-                                        <input type="text" name="data[returnReceiver][country]"
-                                               value="[{$origin->getCountryIsoCode()}]">
-                                    </td>
-                                </tr>
+                                [{/foreach}]
                             </table>
                         </td>
                     </tr>
@@ -380,15 +123,14 @@
                                     </td>
                                 </tr>
                                 [{if $process->supportsParcelOutletRouting()}]
-                                [{assign var="service" value=$shipmentOrder.services.parcelOutletRouting}]
                                 <tr>
                                     <td>
                                         [{oxmultilang ident='SHOP_MODULE_mo_dhl__filialrouting_active'}]
                                     </td>
                                     <td>
-                                        <input type="hidden" name="data[services][parcelOutletRouting]" value="false">
+                                        <input type="hidden" name="data[services][parcelOutletRouting][active]" value="false">
                                         <input type="checkbox" name="data[services][parcelOutletRouting][active]"
-                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                               value="1" [{if $shipmentOrder.services.parcelOutletRouting}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 <tr>
@@ -397,7 +139,7 @@
                                     </td>
                                     <td>
                                         <input type="text" name="data[services][parcelOutletRouting][details]"
-                                               value="[{$service->getDetails()}]">
+                                               value="[{$shipmentOrder.services.parcelOutletRouting}]">
                                     </td>
                                 </tr>
                                 [{/if}]
@@ -410,7 +152,7 @@
                                     <td>
                                         <input type="hidden" name="data[services][bulkyGoods][active]" value="false">
                                         <input type="checkbox" name="data[services][bulkyGoods][active]"
-                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                               value="1" [{if $service}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]
@@ -423,7 +165,7 @@
                                     <td>
                                         <input type="hidden" name="data[services][additionalInsurance][active]" value="false">
                                         <input type="checkbox" name="data[services][additionalInsurance][active]"
-                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                               value="1" [{if $service}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 <tr>
@@ -432,7 +174,7 @@
                                     </td>
                                     <td>
                                         <input type="text" name="data[services][additionalInsurance][insuranceAmount]"
-                                               value="[{$service->getInsuranceAmount()}]">
+                                               value="[{$service}]">
                                     </td>
                                 </tr>
                                 [{/if}]
@@ -445,7 +187,7 @@
                                     <td>
                                         <input type="hidden" name="data[services][cashOnDelivery][active]" value="false">
                                         <input type="checkbox" name="data[services][cashOnDelivery][active]"
-                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                               value="1" [{if $service}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 <tr>
@@ -453,15 +195,15 @@
                                         [{oxmultilang ident='MO_DHL__CASH_ON_DELIVERY'}]
                                     </td>
                                     <td>
-                                        <input type="text" name="data[services][cashOnDelivery][codAmount]"
-                                               value="[{$service->getCodAmount()}]">
+                                        <input type="text" name="data[services][cashOnDelivery][amount]"
+                                               value="[{$service}]">
                                     </td>
                                 </tr>
                                 [{/if}]
                                 [{if $process->supportsIdentCheck()}]
                                 [{assign var="service" value=$shipmentOrder.services.identCheck}]
-                                [{if $service && $service->getActive()}]
-                                    [{assign var="identDetails" value=$service->getIdent()}]
+                                [{if $service}]
+                                    [{assign var="identDetails" value=$service}]
                                 [{/if}]
                                 <tr>
                                     <td>
@@ -470,7 +212,7 @@
                                     <td>
                                         <input type="hidden" name="data[services][identCheck][active]" value="false">
                                         <input type="checkbox" name="data[services][identCheck][active]"
-                                               value="1" [{if $service && $service->getActive()}]checked[{/if}]>
+                                               value="1" [{if $service}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 <tr>
@@ -478,8 +220,8 @@
                                         [{oxmultilang ident='LAST_NAME'}] [{oxmultilang ident='MO_DHL__FOR_IDENT_CHECK'}]
                                     </td>
                                     <td>
-                                        <input type="text" name="data[services][identCheck][surname]"
-                                               value="[{if $identDetails}][{$identDetails->getSurname()}][{/if}]">
+                                        <input type="text" name="data[services][identCheck][lastName]"
+                                               value="[{if $identDetails}][{$identDetails->getLastName()}][{/if}]">
                                     </td>
                                 </tr>
                                 <tr>
@@ -487,8 +229,8 @@
                                         [{oxmultilang ident='FIRST_NAME'}] [{oxmultilang ident='MO_DHL__FOR_IDENT_CHECK'}]
                                     </td>
                                     <td>
-                                        <input type="text" name="data[services][identCheck][givenName]"
-                                               value="[{if $identDetails}][{$identDetails->getGivenName()}][{/if}]">
+                                        <input type="text" name="data[services][identCheck][firstName]"
+                                               value="[{if $identDetails}][{$identDetails->getFirstName()}][{/if}]">
                                     </td>
                                 </tr>
                                 <tr>
@@ -497,7 +239,7 @@
                                     </td>
                                     <td>
                                         <input type="text" name="data[services][identCheck][dateOfBirth]"
-                                               value="[{if $identDetails}][{$identDetails->getDateOfBirth()}][{/if}]">
+                                               value="[{if $identDetails && $identDetails->isInitialized('dateOfBirth')}][{$identDetails->getDateOfBirth()}][{/if}]">
                                     </td>
                                 </tr>
                                 <tr>
@@ -507,8 +249,8 @@
                                     <td>
                                         <select name="data[services][identCheck][minimumAge]">
                                             <option value="">-</option>
-                                            <option value="16" [{if $identDetails && $identDetails->getMinimumAge() === 'A16'}] selected[{/if}]>16</option>
-                                            <option value="18" [{if $identDetails && $identDetails->getMinimumAge() === 'A18'}] selected[{/if}]>18</option>
+                                            <option value="16" [{if $identDetails && $identDetails->isInitialized('minimumAge') && $identDetails->getMinimumAge() === 'A16'}] selected[{/if}]>16</option>
+                                            <option value="18" [{if $identDetails && $identDetails->isInitialized('minimumAge') && $identDetails->getMinimumAge() === 'A18'}] selected[{/if}]>18</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -522,8 +264,8 @@
                                     <td>
                                         <select name="data[services][visualAgeCheck]">
                                             <option value="">-</option>
-                                            <option value="16" [{if $service && $service->getActive() && $service->getType() === 'A16'}] selected[{/if}]>16</option>
-                                            <option value="18" [{if $service && $service->getActive() && $service->getType() === 'A18'}] selected[{/if}]>18</option>
+                                            <option value="16" [{if $service === 'A16'}] selected[{/if}]>16</option>
+                                            <option value="18" [{if $service === 'A18'}] selected[{/if}]>18</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -537,7 +279,7 @@
                                         <input type="hidden" name="data[services][printOnlyIfCodeable][active]"
                                                value="false">
                                         <input type="checkbox" name="data[services][printOnlyIfCodeable][active]"
-                                               [{if $service->getActive()}]checked[{/if}]>
+                                               [{if $service}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{if $process->supportsDHLRetoure()}]
@@ -546,10 +288,10 @@
                                         [{oxmultilang ident='SHOP_MODULE_mo_dhl__beilegerretoure_active'}]
                                     </td>
                                     <td>
-                                        <input type="hidden" name="data[services][beilegerretoure][active]"
+                                        <input type="hidden" name="data[services][dhlRetoure][active]"
                                                value="false">
-                                        <input type="checkbox" name="data[services][beilegerretoure][active]"
-                                               [{if $shipmentOrder.services.beilegerretoure}]checked[{/if}]>
+                                        <input type="checkbox" name="data[services][dhlRetoure][active]"
+                                               [{if $shipmentOrder.services.dhlRetoure}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]
@@ -563,7 +305,7 @@
                                         <input type="hidden" name="data[services][noNeighbourDelivery][active]"
                                                value="false">
                                         <input type="checkbox" name="data[services][noNeighbourDelivery][active]"
-                                               [{if $shipmentOrder.services.noNeighbourDelivery->getActive()}]checked[{/if}]>
+                                               [{if $shipmentOrder.services.noNeighbourDelivery}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]
@@ -576,7 +318,7 @@
                                         <input type="hidden" name="data[services][namedPersonOnly][active]"
                                                value="false">
                                         <input type="checkbox" name="data[services][namedPersonOnly][active]"
-                                               [{if $shipmentOrder.services.namedPersonOnly->getActive()}]checked[{/if}]>
+                                               [{if $shipmentOrder.services.namedPersonOnly}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]
@@ -589,7 +331,7 @@
                                         <input type="hidden" name="data[services][signedForByRecipient][active]"
                                                value="false">
                                         <input type="checkbox" name="data[services][signedForByRecipient][active]"
-                                               [{if $shipmentOrder.services.signedForByRecipient->getActive()}]checked[{/if}]>
+                                               [{if $shipmentOrder.services.signedForByRecipient}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]
@@ -602,7 +344,7 @@
                                     <td>
                                         <input type="hidden" name="data[services][pddp][active]" value="false">
                                         <input type="checkbox" name="data[services][pddp][active]"
-                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                               value="1" [{if $service}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]
@@ -615,20 +357,7 @@
                                     <td>
                                         <input type="hidden" name="data[services][cdp][active]" value="false">
                                         <input class="deliverySettings" type="checkbox" name="data[services][cdp][active]"
-                                               value="1" [{if $service->getActive()}]checked[{/if}]>
-                                    </td>
-                                </tr>
-                                [{/if}]
-                                [{if $process->supportsEconomy()}]
-                                [{assign var="service" value=$shipmentOrder.services.economy}]
-                                <tr>
-                                    <td>
-                                        [{oxmultilang ident='MO_DHL__ECONOMY'}]
-                                    </td>
-                                    <td>
-                                        <input type="hidden" name="data[services][economy][active]" value="false">
-                                        <input class="deliverySettings" type="checkbox" name="data[services][economy][active]"
-                                               value="1" [{if $service->getActive()}]checked[{/if}]>
+                                               value="1" [{if $service}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]
@@ -641,7 +370,7 @@
                                         <td>
                                             <input type="hidden" name="data[services][premium][active]" value="false">
                                             <input class="deliverySettings" type="checkbox" name="data[services][premium][active]"
-                                                   value="1" [{if $service->getActive()}]checked[{/if}]>
+                                                   value="1" [{if $service}]checked[{/if}]>
                                         </td>
                                     </tr>
                                 [{/if}]
@@ -653,8 +382,8 @@
                                     </td>
                                     <td>
                                         <select name="data[services][endorsement]">
-                                            <option value="IMMEDIATE" [{if $service && $service->getActive() && $service->getType() === 'IMMEDIATE'}] selected[{/if}]>[{oxmultilang ident='MO_DHL__ENDORSEMENT_IMMEDIATE'}]</option>
-                                            <option value="ABANDONMENT" [{if $service && $service->getActive() && $service->getType() === 'ABANDONMENT'}] selected[{/if}]>[{oxmultilang ident='MO_DHL__ENDORSEMENT_ABANDONMENT'}]</option>
+                                            <option value="RETURN" [{if $service === 'RETURN'}] selected[{/if}]>[{oxmultilang ident='MO_DHL__ENDORSEMENT_RETURN'}]</option>
+                                            <option value="ABANDON" [{if $service === 'ABANDON'}] selected[{/if}]>[{oxmultilang ident='MO_DHL__ENDORSEMENT_ABANDONMENT'}]</option>
                                         </select>
                                     </td>
                                 </tr>

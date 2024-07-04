@@ -277,7 +277,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         }
         if ($process->supportsEndorsement()) {
             $abandonment = (bool)($order->moDHLUsesService(MoDHLService::MO_DHL__ENDORSEMENT));
-            $services->setEndorsement($abandonment ? 'ABANDON' : 'RETURN');
+            $services->setEndorsement($abandonment ? MoDHLService::MO_DHL__ENDORSEMENT_ABANDONMENT : MoDHLService::MO_DHL__ENDORSEMENT_RETURN);
             $initialized = true;
         }
         if ($process->supportsPDDP() && $order->moDHLUsesService(MoDHLService::MO_DHL__PDDP)) {

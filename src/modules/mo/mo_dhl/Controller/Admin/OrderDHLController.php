@@ -4,12 +4,13 @@ namespace Mediaopt\DHL\Controller\Admin;
 
 use GuzzleHttp\Exception\ClientException;
 use Mediaopt\DHL\Adapter\DHLAdapter;
-use Mediaopt\DHL\Adapter\GKVCustomShipmentBuilder;
 use Mediaopt\DHL\Adapter\InternetmarkeRefundRetoureVouchersRequestBuilder;
 use Mediaopt\DHL\Adapter\InternetmarkeShoppingCartPDFRequestBuilder;
+use Mediaopt\DHL\Adapter\ParcelShippingCustomRequestBuilder;
 use Mediaopt\DHL\Adapter\ParcelShippingRequestBuilder;
 use Mediaopt\DHL\Api\Internetmarke\ShoppingCartResponseType;
 use Mediaopt\DHL\Api\ParcelShipping\Client;
+use Mediaopt\DHL\Api\ParcelShipping\Model\ShipmentOrderRequest;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Model\MoDHLInternetmarkeRefund;
@@ -136,16 +137,18 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     public function createCustomLabel()
     {
         try {
-            $request = $this->buildShipmentOrderRequest();
-            $shipmentOrder = $request->getShipmentOrder()[0];
+            /** @var $request ShipmentOrderRequest */
+            [$query, $request] = $this->buildShipmentOrderRequest();
+            $shipmentOrder = $request->getShipments()[0];
             $data = Registry::getConfig()->getRequestParameter('data');
 
-            $customShipmentBuilder = new GKVCustomShipmentBuilder();
+            $customShipmentBuilder = new ParcelShippingCustomRequestBuilder();
             $customShipmentBuilder->applyCustomDataToShipmentOrder($shipmentOrder, $data, $this->getOrder());
+            $customShipmentBuilder->applyCustomDataToQuery($query, $data);
 
-            $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($shipmentOrder));
+            $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($query, $shipmentOrder));
             $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
-            $this->createShipmentOrderWithParcelShipping($request);
+            $this->createShipmentOrderWithParcelShipping([$query, $request]);
         } catch (\Exception $e) {
             $this->displayErrors($e);
         }
@@ -160,9 +163,11 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
      */
     public function prepareCustomLabel()
     {
-        $shipmentOrder = $this->buildShipmentOrderRequest()->getShipmentOrder()[0];
-        $customShipmentBuilder = new GKVCustomShipmentBuilder();
-        $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($shipmentOrder));
+        /** @var $request ShipmentOrderRequest */
+        [$query, $request] = $this->buildShipmentOrderRequest();
+        $shipment = $request->getShipments()[0];
+        $customShipmentBuilder = new ParcelShippingCustomRequestBuilder();
+        $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($query, $shipment));
         $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
     }
 

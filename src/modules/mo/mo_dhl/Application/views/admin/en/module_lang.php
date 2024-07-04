@@ -113,7 +113,7 @@ $aLang = [
 
     'MO_DHL__ENDORSEMENT'                              => 'Endorsement',
     'HELP_MO_DHL__ENDORSEMENT'                         => 'This service defines the handling of parcels that cannot be delivered. This service is only relevant for DHL Paket International.',
-    'MO_DHL__ENDORSEMENT_IMMEDIATE'                    => 'Sending back to sender',
+    'MO_DHL__ENDORSEMENT_RETURN'                       => 'Sending back to sender',
     'MO_DHL__ENDORSEMENT_ABANDONMENT'                  => 'Abandonment of parcel at the hands of sender (free of charge)',
     'MO_DHL__LABEL_CREATED_WITH_WEAK_VALIDATION_ERROR' => 'While processing the request a weak error occured. The request was still processed successfully.',
 

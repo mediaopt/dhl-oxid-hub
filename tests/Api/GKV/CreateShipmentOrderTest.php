@@ -12,7 +12,6 @@ require_once 'BaseGKVTest.php';
 use Mediaopt\DHL\Adapter\ParcelShippingConverter;
 use Mediaopt\DHL\Api\GKV\CreateShipmentOrderRequest;
 use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
-use Mediaopt\DHL\Api\GKV\Version;
 use Mediaopt\DHL\Api\MyAccount\Runtime\Client\Client;
 use Psr\Http\Message\ResponseInterface;
 
