@@ -5,29 +5,28 @@
  * @copyright 2019 Mediaopt GmbH
  */
 
-namespace sdk\GKV;
+namespace sdk\ParcelShipping;
 
-require_once 'BaseGKVTest.php';
+require_once 'BaseParcelShippingTest.php';
 
-use Mediaopt\DHL\Adapter\ParcelShippingConverter;
-use Mediaopt\DHL\Api\GKV\CountryType;
-use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderRequest;
-use Mediaopt\DHL\Api\GKV\ValidateShipmentOrderType;
+use Mediaopt\DHL\Adapter\ParcelShippingRequestBuilder;
+use Mediaopt\DHL\Api\ParcelShipping\Model\ShipmentOrderRequest;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @author Mediaopt GmbH
  */
-class ValidateShipmentTest extends BaseGKVTest
+class ValidateShipmentTest extends BaseParcelShippingTest
 {
 
     public function testValidateShipment()
     {
         $shipment = $this->createShipmentToGermany();
-        $shipmentOrder = new ValidateShipmentOrderType('123', $shipment);
-        $request = new ValidateShipmentOrderRequest($this->createVersion(), $shipmentOrder);
-        $converter = new ParcelShippingConverter();
-        [$query, $request] = $converter->convertValidateShipmentOrderRequest($request);
+        $request = new ShipmentOrderRequest();
+        $request->setShipments([$shipment]);
+        $request->setProfile(ParcelShippingRequestBuilder::STANDARD_GRUPPENPROFIL);
+        $query = $this->buildQueryParams();
+        $query['validate'] = true;
         $response = $this->buildParcelShipping()->createOrders($request, $query, [], \Mediaopt\DHL\Api\MyAccount\Runtime\Client\Client::FETCH_RESPONSE);
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $payload = \json_decode($response->getBody(), true);
@@ -36,12 +35,12 @@ class ValidateShipmentTest extends BaseGKVTest
 
     public function testValidateShipmentOutsideGermany()
     {
-        $shipment = $this->createShipmentToGermany();
-        $shipment->getReceiver()->getAddress()->setOrigin(new CountryType('AT'));
-        $shipmentOrder = new ValidateShipmentOrderType('123', $shipment);
-        $request = new ValidateShipmentOrderRequest($this->createVersion(), $shipmentOrder);
-        $converter = new ParcelShippingConverter();
-        [$query, $request] = $converter->convertValidateShipmentOrderRequest($request);
+        $shipment = $this->createShipmentToAustria();
+        $request = new ShipmentOrderRequest();
+        $request->setShipments([$shipment]);
+        $request->setProfile(ParcelShippingRequestBuilder::STANDARD_GRUPPENPROFIL);
+        $query = $this->buildQueryParams();
+        $query['validate'] = true;
         $response = $this->buildParcelShipping()->createOrders($request, $query, [], \Mediaopt\DHL\Api\MyAccount\Runtime\Client\Client::FETCH_RESPONSE);
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $body = $response->getBody()->getContents();
@@ -53,11 +52,12 @@ class ValidateShipmentTest extends BaseGKVTest
     public function testValidateShipmentForYesterday()
     {
         $shipment = $this->createShipmentToGermany();
-        $shipment->getShipmentDetails()->setShipmentDate((new \DateTime('-1 day'))->format('Y-m-d'));
-        $shipmentOrder = new ValidateShipmentOrderType('123', $shipment);
-        $request = new ValidateShipmentOrderRequest($this->createVersion(), $shipmentOrder);
-        $converter = new ParcelShippingConverter();
-        [$query, $request] = $converter->convertValidateShipmentOrderRequest($request);
+        $shipment->setShipDate((new \DateTime('-1 day')));
+        $request = new ShipmentOrderRequest();
+        $request->setShipments([$shipment]);
+        $request->setProfile(ParcelShippingRequestBuilder::STANDARD_GRUPPENPROFIL);
+        $query = $this->buildQueryParams();
+        $query['validate'] = true;
         $response = $this->buildParcelShipping()->createOrders($request, $query, [], \Mediaopt\DHL\Api\MyAccount\Runtime\Client\Client::FETCH_RESPONSE);
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $body = $response->getBody()->getContents();

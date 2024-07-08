@@ -5,14 +5,14 @@
  * @copyright 2019 Mediaopt GmbH
  */
 
-namespace sdk\GKV;
+namespace sdk\ParcelShipping;
 
-require_once 'BaseGKVTest.php';
+require_once 'BaseParcelShippingTest.php';
 
 /**
  * @author Mediaopt GmbH
  */
-class GetLabelTest extends BaseGKVTest
+class GetLabelTest extends BaseParcelShippingTest
 {
 
     public function testGetLabelForIncorrectShipment()
