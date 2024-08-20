@@ -169,6 +169,7 @@ class ParcelShippingCustomRequestBuilder
                 $address->{"set" . ucfirst($key)}($value);
             }
             $retoure->setReturnAddress($address);
+            $services->setDhlRetoure($retoure);
         }
         if ($process->supportsBulkyGood() && filter_var($servicesData['bulkyGoods']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setBulkyGoods(true);
