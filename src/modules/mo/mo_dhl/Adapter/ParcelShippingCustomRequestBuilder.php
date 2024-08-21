@@ -229,7 +229,6 @@ class ParcelShippingCustomRequestBuilder
      */
     protected function extractIdent($identCheckData): VASIdentCheck
     {
-        var_dump($identCheckData);
         $identCheck = (new VASIdentCheck())
             ->setFirstName($identCheckData['firstName'])
             ->setLastName($identCheckData['lastName']);
