@@ -314,7 +314,9 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
     protected function createIdent(Order $order): VASIdentCheck
     {
         $identCheck = new VASIdentCheck();
-        $identCheck->setDateOfBirth(new \DateTime($order->getFieldData('mo_dhl_ident_check_birthday')));
+        if ($birthday = $order->getFieldData('mo_dhl_ident_check_birthday')) {
+            $identCheck->setDateOfBirth(new \DateTime($birthday));
+        }
         $identCheck->setFirstName($order->moDHLGetAddressData('fname'));
         $identCheck->setLastName($order->moDHLGetAddressData('lname'));
         $identCheck->setMinimumAge(

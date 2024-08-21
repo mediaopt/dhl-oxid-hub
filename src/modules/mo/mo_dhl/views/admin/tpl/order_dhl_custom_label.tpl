@@ -239,7 +239,10 @@
                                     </td>
                                     <td>
                                         <input type="text" name="data[services][identCheck][dateOfBirth]"
-                                               value="[{if $identDetails && $identDetails->isInitialized('dateOfBirth')}][{$identDetails->getDateOfBirth()}][{/if}]">
+                                               value="[{strip}][{if $identDetails && $identDetails->isInitialized('dateOfBirth')}]
+                                                    [{assign var="bday" value=$identDetails->getDateOfBirth()}]
+                                                     [{$bday->format("d.m.Y")}]
+                                                 [{/if}][{/strip}]">
                                     </td>
                                 </tr>
                                 <tr>
