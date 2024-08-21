@@ -294,7 +294,7 @@
                                         <input type="hidden" name="data[services][dhlRetoure][active]"
                                                value="false">
                                         <input type="checkbox" name="data[services][dhlRetoure][active]"
-                                               [{if $shipmentOrder.services.dhlRetoure}]checked[{/if}]>
+                                               [{if $shipmentOrder.services.dhlRetoure.active}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 [{/if}]

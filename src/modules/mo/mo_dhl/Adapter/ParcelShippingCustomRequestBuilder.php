@@ -38,7 +38,7 @@ class ParcelShippingCustomRequestBuilder
     {
         $shipper = $shipment->getShipper();
         $services = $shipment->getServices();
-        $returnReceiver = $services->isInitialized('dhlRetoure') ? $services->getDhlRetoure()->getReturnAddress() : null;
+        $returnReceiver = $services->isInitialized('dhlRetoure') ? $services->getDhlRetoure()->getReturnAddress() : oxNew(ParcelShippingRequestBuilder::class)->buildReturnReceiver();
         return [
             'weight'   => array_merge([
                 'total' => ['weight' => $shipment->getDetails()->getWeight()->getValue(), 'title' => Registry::getLang()->translateString('GENERAL_ATALL')],
@@ -57,8 +57,8 @@ class ParcelShippingCustomRequestBuilder
             'services' => [
                 'parcelOutletRouting'  => $services->isInitialized('parcelOutletRouting') ? $services->getParcelOutletRouting() : null,
                 'printOnlyIfCodeable'  => $query['mustEncode'],
-                'dhlRetoure'           => $services->isInitialized('dhlRetoure') ? [
-                    'active'  => (bool)$services->getDhlRetoure()->getBillingNumber(),
+                'dhlRetoure'           => [
+                    'active'  => $services->isInitialized('dhlRetoure') && $services->getDhlRetoure()->getBillingNumber(),
                     'address' => [
                         'name1'         => $returnReceiver->getName1(),
                         'name2'         => $returnReceiver->isInitialized('name2') ? $returnReceiver->getName2() : '',
@@ -69,7 +69,7 @@ class ParcelShippingCustomRequestBuilder
                         'city'          => $returnReceiver->getCity(),
                         'country'       => $returnReceiver->getCountry(),
                     ]
-                ] : null,
+                ],
                 'bulkyGoods'           => $services->isInitialized('bulkyGoods') && $services->getBulkyGoods(),
                 'additionalInsurance'  => $services->isInitialized('additionalInsurance') ? $services->getAdditionalInsurance()->getValue() : null,
                 'identCheck'           => $services->isInitialized('identCheck') ? $services->getIdentCheck() : null,

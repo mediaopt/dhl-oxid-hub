@@ -334,7 +334,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
     /**
      * @return ContactAddress
      */
-    protected function buildReturnReceiver(): ContactAddress
+    public function buildReturnReceiver(): ContactAddress
     {
         $config = Registry::getConfig();
         if ($config->getShopConfVar('mo_dhl__retoure_receiver_use_sender')) {
