@@ -187,7 +187,7 @@
                                     <td>
                                         <input type="hidden" name="data[services][cashOnDelivery][active]" value="false">
                                         <input type="checkbox" name="data[services][cashOnDelivery][active]"
-                                               value="1" [{if $service}]checked[{/if}]>
+                                               value="1" [{if $service.active}]checked[{/if}]>
                                     </td>
                                 </tr>
                                 <tr>
@@ -195,8 +195,8 @@
                                         [{oxmultilang ident='MO_DHL__CASH_ON_DELIVERY'}]
                                     </td>
                                     <td>
-                                        <input type="text" name="data[services][cashOnDelivery][amount]"
-                                               value="[{$service}]">
+                                        <input type="text" name="data[services][cashOnDelivery][codAmount]"
+                                               value="[{$service.codAmount}]">
                                     </td>
                                 </tr>
                                 [{/if}]

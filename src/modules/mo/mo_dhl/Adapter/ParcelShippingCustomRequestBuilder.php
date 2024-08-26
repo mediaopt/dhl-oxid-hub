@@ -34,11 +34,12 @@ class ParcelShippingCustomRequestBuilder
      * @param Shipment $shipment
      * @return array
      */
-    public function toCustomizableParametersArray($query, Shipment $shipment): array
+    public function toCustomizableParametersArray($query, Shipment $shipment, $order): array
     {
         $shipper = $shipment->getShipper();
         $services = $shipment->getServices();
         $returnReceiver = $services->isInitialized('dhlRetoure') ? $services->getDhlRetoure()->getReturnAddress() : oxNew(ParcelShippingRequestBuilder::class)->buildReturnReceiver();
+        $codAmount = $services->isInitialized('cashOnDelivery') ? $services->getCashOnDelivery()->getAmount() : oxNew(ParcelShippingRequestBuilder::class)->createCashOnDelivery($order)->getAmount();
         return [
             'weight'   => array_merge([
                 'total' => ['weight' => $shipment->getDetails()->getWeight()->getValue(), 'title' => Registry::getLang()->translateString('GENERAL_ATALL')],
@@ -73,7 +74,10 @@ class ParcelShippingCustomRequestBuilder
                 'bulkyGoods'           => $services->isInitialized('bulkyGoods') && $services->getBulkyGoods(),
                 'additionalInsurance'  => $services->isInitialized('additionalInsurance') ? $services->getAdditionalInsurance()->getValue() : null,
                 'identCheck'           => $services->isInitialized('identCheck') ? $services->getIdentCheck() : null,
-                'cashOnDelivery'       => $services->isInitialized('cashOnDelivery') ? $services->getCashOnDelivery()->getAmount()->getValue() : null,
+                'cashOnDelivery'       => [
+                    'active' => $services->isInitialized('cashOnDelivery'),
+                    'codAmount' => $codAmount->getValue(),
+                ],
                 'visualAgeCheck'       => $services->isInitialized('visualCheckOfAge') ? $services->getVisualCheckOfAge() : null,
                 'pddp'                 => $services->isInitialized('postalDeliveryDutyPaid') && $services->getPostalDeliveryDutyPaid(),
                 'cdp'                  => $services->isInitialized('closestDropPoint') && $services->getClosestDropPoint(),
@@ -179,16 +183,10 @@ class ParcelShippingCustomRequestBuilder
             $services->setAdditionalInsurance($this->createValue($details));
         }
         if ($process->supportsCashOnDelivery() && filter_var($servicesData['cashOnDelivery']['active'], FILTER_VALIDATE_BOOLEAN)) {
-            $details = $servicesData['cashOnDelivery']['codAmount'] ?? null;
-            $customerReference = Registry::getLang()->translateString('GENERAL_ORDERNUM') . ' ' . $order->getFieldData('oxordernr');
-            $bankAccount = new BankAccount();
-            $bankAccount->setAccountHolder(Registry::getConfig()->getShopConfVar('mo_dhl__cod_accountOwner'));
-            $bankAccount->setBankName(Registry::getConfig()->getShopConfVar('mo_dhl__cod_bankName'));
-            $bankAccount->setIban(Registry::getConfig()->getShopConfVar('mo_dhl__cod_iban'));
-            $cashOnDelivery = new VASCashOnDelivery();
-            $cashOnDelivery->setAmount($this->createValue($details));
-            $cashOnDelivery->setBankAccount($bankAccount);
-            $cashOnDelivery->setTransferNote1($customerReference);
+            $cashOnDelivery = oxNew(ParcelShippingRequestBuilder::class)->createCashOnDelivery($order);
+            if ($details = $servicesData['cashOnDelivery']['codAmount'] ?? null) {
+                $cashOnDelivery->setAmount($this->createValue($details));
+            }
             $services->setCashOnDelivery($cashOnDelivery);
         }
         if ($process->supportsIdentCheck() && filter_var($servicesData['identCheck']['active'], FILTER_VALIDATE_BOOLEAN)) {

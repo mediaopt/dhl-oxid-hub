@@ -146,7 +146,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             $customShipmentBuilder->applyCustomDataToShipmentOrder($shipmentOrder, $data, $this->getOrder());
             $customShipmentBuilder->applyCustomDataToQuery($query, $data);
 
-            $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($query, $shipmentOrder));
+            $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($query, $shipmentOrder, $this->getOrder()));
             $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
             $this->createShipmentOrderWithParcelShipping([$query, $request]);
         } catch (\Exception $e) {
@@ -167,7 +167,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         [$query, $request] = $this->buildShipmentOrderRequest();
         $shipment = $request->getShipments()[0];
         $customShipmentBuilder = new ParcelShippingCustomRequestBuilder();
-        $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($query, $shipment));
+        $this->addTplParam('shipmentOrder', $customShipmentBuilder->toCustomizableParametersArray($query, $shipment, $this->getOrder()));
         $this->setTemplateName('mo_dhl__order_dhl_custom_label.tpl');
     }
 

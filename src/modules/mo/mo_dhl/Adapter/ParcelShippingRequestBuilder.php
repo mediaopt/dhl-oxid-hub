@@ -250,15 +250,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
             $initialized = true;
         }
         if ($process->supportsCashOnDelivery() && $order->moDHLUsesService(MoDHLService::MO_DHL__CASH_ON_DELIVERY)) {
-            $customerReference = Registry::getLang()->translateString('GENERAL_ORDERNUM') . ' ' . $order->getFieldData('oxordernr');
-            $bankAccount = new BankAccount();
-            $bankAccount->setAccountHolder(Registry::getConfig()->getShopConfVar('mo_dhl__cod_accountOwner'));
-            $bankAccount->setBankName(Registry::getConfig()->getShopConfVar('mo_dhl__cod_bankName'));
-            $bankAccount->setIban(Registry::getConfig()->getShopConfVar('mo_dhl__cod_iban'));
-            $cashOnDelivery = new VASCashOnDelivery();
-            $cashOnDelivery->setAmount($this->createValue($this->getEURPrice($order, $order->oxorder__oxtotalordersum->value)));
-            $cashOnDelivery->setBankAccount($bankAccount);
-            $cashOnDelivery->setTransferNote1($customerReference);
+            $cashOnDelivery = $this->createCashOnDelivery($order);
             $services->setCashOnDelivery($cashOnDelivery);
             $initialized = true;
         }
@@ -560,5 +552,23 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
             'combine'     => false,
             'mustEncode'  => (bool) Registry::getConfig()->getShopConfVar('mo_dhl__only_with_leitcode'),
         ];
+    }
+
+    /**
+     * @param Order $order
+     * @return VASCashOnDelivery
+     */
+    public function createCashOnDelivery(Order $order): VASCashOnDelivery
+    {
+        $customerReference = Registry::getLang()->translateString('GENERAL_ORDERNUM') . ' ' . $order->getFieldData('oxordernr');
+        $bankAccount = new BankAccount();
+        $bankAccount->setAccountHolder(Registry::getConfig()->getShopConfVar('mo_dhl__cod_accountOwner'));
+        $bankAccount->setBankName(Registry::getConfig()->getShopConfVar('mo_dhl__cod_bankName'));
+        $bankAccount->setIban(Registry::getConfig()->getShopConfVar('mo_dhl__cod_iban'));
+        $cashOnDelivery = new VASCashOnDelivery();
+        $cashOnDelivery->setAmount($this->createValue($this->getEURPrice($order, $order->oxorder__oxtotalordersum->value)));
+        $cashOnDelivery->setBankAccount($bankAccount);
+        $cashOnDelivery->setTransferNote1($customerReference);
+        return $cashOnDelivery;
     }
 }
