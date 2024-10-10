@@ -65,12 +65,12 @@ class MoDHLService
     /**
      * @var string
      */
-    const MO_DHL__ENDORSEMENT_IMMEDIATE = 'IMMEDIATE';
+    const MO_DHL__ENDORSEMENT_RETURN = 'RETURN';
 
     /**
      * @var string
      */
-    const MO_DHL__ENDORSEMENT_ABANDONMENT = 'ABANDONMENT';
+    const MO_DHL__ENDORSEMENT_ABANDONMENT = 'ABANDON';
     /**
      * @var string
      */

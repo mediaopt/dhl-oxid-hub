@@ -3,7 +3,6 @@
 
 namespace Mediaopt\DHL\Controller\Admin;
 
-use Mediaopt\DHL\Api\GKV\StatusElement;
 use OxidEsales\Eshop\Core\Registry;
 
 trait ErrorDisplayTrait
@@ -25,12 +24,37 @@ trait ErrorDisplayTrait
                 if ($error instanceof \Exception) {
                     $lang = Registry::getLang();
                     $error = sprintf($lang->translateString('MO_DHL__ERROR_PRINT_FORMAT'), $lang->translateString($error->getMessage()), $error->getLine(), $error->getFile());
-                } elseif ($error instanceof StatusElement) {
-                    $error = $error->getStatusElement() . ': ' . $error->getStatusMessage();
                 }
                 $utilsView->addErrorToDisplay($error);
                 $error = $nextError;
             }
         }
+    }
+
+
+    /**
+     * @param array     $payload
+     * @param int|false $index   if specified only errors for the given index will be returned
+     * @return string[]
+     */
+    public function extractErrorsFromResponsePayload(array $payload, $index = false): array
+    {
+        $errors = [];
+        $items = $index !== false ? [$payload['items'][$index]] : $payload['items'];
+        foreach ($items as $error) {
+            if (\array_key_exists('validationMessages', $error)) {
+                foreach ($error['validationMessages'] as $validationMessage) {
+                    $errors[] = "{$validationMessage['validationMessage']} ({$validationMessage['property']})";
+                }
+                continue;
+            }
+            if (\array_key_exists('message', $error)) {
+                $errors[] = "{$error['message']} ({$error['propertyPath']})";
+            }
+        }
+        if ($errors !== []) {
+            return $errors;
+        }
+        return \array_key_exists('detail', $payload) && $index === false ? [$payload['detail']] : [];
     }
 }
