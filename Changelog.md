@@ -1,5 +1,6 @@
 # Changelog
-## develop
+## 1.8.0
+* removed deprecated SOAP API integration
 * improved naming for DHL settings in Admin panel
 
 ## 1 7.7
