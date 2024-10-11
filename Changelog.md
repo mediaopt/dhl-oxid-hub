@@ -2,6 +2,8 @@
 ## 1.8.0
 * removed deprecated SOAP API integration
 * improved naming for DHL settings in Admin panel
+* added LICENSE file
+* updated sandbox credentials
 
 ## 1 7.7
 * fix category model inheritance
