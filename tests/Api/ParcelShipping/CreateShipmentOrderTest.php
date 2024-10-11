@@ -30,7 +30,7 @@ class CreateShipmentOrderTest extends BaseParcelShippingTest
         $response = $this->buildParcelShipping()->createOrders($request, $query, [], Client::FETCH_RESPONSE);
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $payload = \json_decode($response->getBody(), true);
-        $this->assertEquals(200, $response->getStatusCode(), $payload['status']['detail']);
+        $this->assertEquals(200, $response->getStatusCode(), $payload['status']['detail'] ?? $payload['detail']);
     }
 
     public function testCreateShipmentOutsideGermany()
@@ -44,7 +44,7 @@ class CreateShipmentOrderTest extends BaseParcelShippingTest
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $body = $response->getBody()->getContents();
         $payload = \json_decode($body, true);
-        $this->assertEquals(400, $response->getStatusCode(), $payload['status']['detail']);
+        $this->assertEquals(400, $response->getStatusCode(), $payload['status']['detail'] ?? $payload['detail']);
         $this->assertContains('The product entered is not available for this country.', $body);
     }
 
