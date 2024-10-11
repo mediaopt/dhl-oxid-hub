@@ -2,7 +2,6 @@
 
 namespace Mediaopt\DHL\Adapter;
 
-use Mediaopt\DHL\Api\GKV\ShipmentOrderType;
 use Mediaopt\DHL\Api\Internetmarke\CreateShopOrderIdRequest;
 use Mediaopt\DHL\Api\Internetmarke\ShoppingCartPDFPosition;
 use Mediaopt\DHL\Api\Internetmarke\ShoppingCartPDFRequestType;
@@ -42,7 +41,7 @@ class InternetmarkeShoppingCartPDFRequestBuilder
 
     /**
      * @param string $orderId
-     * @return ShipmentOrderType
+     * @return ShoppingCartPDFPosition
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */

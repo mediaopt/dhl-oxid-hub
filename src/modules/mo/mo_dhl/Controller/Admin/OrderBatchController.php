@@ -9,8 +9,8 @@ namespace Mediaopt\DHL\Controller\Admin;
  */
 
 use Mediaopt\DHL\Adapter\DHLAdapter;
-use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
-use Mediaopt\DHL\Api\GKV\CreateShipmentOrderResponse;
+use Mediaopt\DHL\Adapter\ParcelShippingRequestBuilder;
+use Mediaopt\DHL\Api\ParcelShipping\Client;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Export\CsvExporter;
 use Mediaopt\DHL\Model\MoDHLLabel;
@@ -19,6 +19,7 @@ use Mediaopt\DHL\Shipment\Process;
 use Mediaopt\DHL\Shipment\RetoureRequest;
 use Mediaopt\DHL\Shipment\Shipment;
 use OxidEsales\Eshop\Core\Registry;
+use Psr\Http\Message\ResponseInterface;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -29,6 +30,9 @@ use OxidEsales\Eshop\Core\Registry;
  */
 class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admin\OrderList
 {
+
+    use ErrorDisplayTrait;
+
     /**
      * @var string
      */
@@ -184,7 +188,7 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
             $this->createIntermarkeLabels($splittedOrderIds[Process::INTERNETMARKE]);
         }
         if (array_key_exists('default', $splittedOrderIds)) {
-            $this->handleCreationResponse($this->callCreation($splittedOrderIds['default']));
+            $this->handleCreationResponse($splittedOrderIds['default'], $this->callCreation($splittedOrderIds['default']));
         }
     }
 
@@ -211,35 +215,40 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
 
     /**
      * @param string[] $orderIds
-     * @return CreateShipmentOrderResponse
+     * @return ResponseInterface
      * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
      * @throws \OxidEsales\Eshop\Core\Exception\SystemComponentException
      */
     protected function callCreation(array $orderIds)
     {
-        $request = Registry::get(GKVCreateShipmentOrderRequestBuilder::class)->build($orderIds);
-        return Registry::get(DHLAdapter::class)->buildGKV()->createShipmentOrder($request);
+        [$query, $shipmentOrderRequest] = Registry::get(ParcelShippingRequestBuilder::class)->build($orderIds);
+        $response = Registry::get(DHLAdapter::class)
+            ->buildParcelShipping()
+            ->createOrders($shipmentOrderRequest, $query, [], Client::FETCH_RESPONSE);
+        return $response;
     }
 
     /**
-     * @param CreateShipmentOrderResponse $response
+     * @param ResponseInterface $response
      * @throws \Exception
      */
-    protected function handleCreationResponse(CreateShipmentOrderResponse $response)
+    protected function handleCreationResponse(array $orderIds, ResponseInterface $response)
     {
-        foreach ($response->getCreationState() as $creationState) {
-            $statusInformation = $creationState->getLabelData()->getStatus();
+        $payload = \json_decode($response->getBody(), true);
+        foreach ($payload['items'] as $index => $item) {
+            $errors = $this->extractErrorsFromResponsePayload($payload, $index);
             $order = \oxNew(Order::class);
-            $order->load($creationState->getSequenceNumber());
-            $order->storeCreationStatus($statusInformation->getStatusText());
-            if ($errors = $statusInformation->getErrors()) {
+            $order->load($orderIds[$index]);
+            $order->storeCreationStatus($item['sstatus']['title']);
+            if ($errors) {
                 $message = Registry::getLang()->translateString('MO_DHL__BATCH_ERROR_CREATION_ERROR');
                 $message = sprintf($message, $order->getFieldData('oxordernr'), implode(' ', $errors));
                 Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($message);
-                continue;
             }
-            $label = MoDHLLabel::fromOrderAndCreationState($order, $creationState);
-            $label->save();
+            if ($item['sstatus']['statusCode'] >= 200 && $item['sstatus']['statusCode'] < 300) {
+                $label = MoDHLLabel::fromOrderAndParcelShippingResponseItem($order, $item);
+                $label->save();
+            }
         }
     }
 
@@ -302,7 +311,6 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         $key = 'MO_DHL__EXPORT_ORDERS_WITHOUT_BILLING_NUMBER';
         $translation = Registry::getLang()->translateString($key);
         $message = sprintf($translation, implode(', ', $idsOfOrdersWithoutBillingNumber));
-        /** @noinspection PhpParamsInspection */
         Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay($message);
         return true;
     }

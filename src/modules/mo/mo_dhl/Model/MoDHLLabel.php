@@ -8,7 +8,6 @@
 namespace Mediaopt\DHL\Model;
 
 
-use Mediaopt\DHL\Api\GKV\CreationState;
 use Mediaopt\DHL\Api\Internetmarke\ShoppingCartResponseType;
 use Mediaopt\DHL\Api\Retoure\RetoureResponse;
 use OxidEsales\Eshop\Application\Model\Order;
@@ -53,27 +52,6 @@ class MoDHLLabel extends BaseModel
     {
         parent::__construct();
         $this->init();
-    }
-
-    /**
-     * @param Order         $order
-     * @param CreationState $creationState
-     * @return MoDHLLabel
-     */
-    public static function fromOrderAndCreationState(Order $order, CreationState $creationState)
-    {
-        $label = new self();
-        $label->assign([
-            'oxshopid'             => $order->getShopId(),
-            'orderId'              => $order->getId(),
-            'type'                 => self::TYPE_DELIVERY,
-            'shipmentNumber'       => $creationState->getShipmentNumber(),
-            'returnShipmentNumber' => $creationState->getReturnShipmentNumber(),
-            'labelUrl'             => $creationState->getLabelData()->getLabelUrl(),
-            'returnLabelUrl'       => $creationState->getLabelData()->getReturnLabelUrl(),
-            'exportLabelUrl'       => $creationState->getLabelData()->getExportLabelUrl(),
-        ]);
-        return $label;
     }
 
     /**

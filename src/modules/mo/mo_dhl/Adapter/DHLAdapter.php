@@ -8,7 +8,6 @@ namespace Mediaopt\DHL\Adapter;
  * @copyright 2016 Mediaopt GmbH
  */
 
-use Mediaopt\DHL\Api\GKV;
 use Mediaopt\DHL\Api\Standortsuche;
 use Mediaopt\DHL\Api\Wunschpaket;
 use Mediaopt\DHL\Main;
@@ -200,14 +199,6 @@ class DHLAdapter
     public function buildStandortsuche()
     {
         return $this->getSdk()->buildStandortsuche();
-    }
-
-    /**
-     * @return GKV
-     */
-    public function buildGKV()
-    {
-        return $this->getSdk()->buildGKV();
     }
 
     /**

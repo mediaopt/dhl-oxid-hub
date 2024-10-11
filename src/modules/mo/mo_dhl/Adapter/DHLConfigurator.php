@@ -36,9 +36,9 @@ class DHLConfigurator extends \Mediaopt\DHL\Configurator
 
     const TEST_GKV_USERNAME = '2222222222_01';
 
-    const TEST_GKV_PASSWORD = 'pass';
+    const TEST_GKV_PASSWORD = 'SandboxPasswort2023!';
 
-    const TEST_PARCEL_SHIPPING_USERNAME = 'sandy_sandbox';
+    const TEST_PARCEL_SHIPPING_USERNAME = 'user-valid';
 
     const TEST_PARCEL_SHIPPING_PASSWORD = self::TEST_GKV_PASSWORD;
 

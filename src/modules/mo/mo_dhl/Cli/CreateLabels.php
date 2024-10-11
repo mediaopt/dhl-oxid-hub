@@ -9,11 +9,10 @@ namespace Mediaopt\DHL\Cli;
 
 
 use Mediaopt\DHL\Adapter\DHLAdapter;
-use Mediaopt\DHL\Adapter\GKVCreateShipmentOrderRequestBuilder;
-use Mediaopt\DHL\Adapter\ParcelShippingConverter;
-use Mediaopt\DHL\Api\GKV\CreateShipmentOrderRequest;
+use Mediaopt\DHL\Adapter\ParcelShippingRequestBuilder;
 use Mediaopt\DHL\Api\ParcelShipping\Client;
 use Mediaopt\DHL\Application\Model\Order;
+use Mediaopt\DHL\Controller\Admin\ErrorDisplayTrait;
 use Mediaopt\DHL\Model\MoDHLLabel;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
@@ -27,6 +26,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CreateLabels extends Command
 {
+
+    use ErrorDisplayTrait;
 
     /**
      * @var OutputInterface
@@ -58,68 +59,44 @@ class CreateLabels extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->output = $output;
-        foreach ($input->getOption('status') as $status) {
-            if (!in_array($status, $this->getOrderStatus())) {
-                $this->output->writeln($this->translate('%s is not an allowed order status status. Please use one of %s', [$status, implode(', ', $this->getOrderStatus())]));
-                return;
+        try {
+            $this->output = $output;
+            foreach ($input->getOption('status') as $status) {
+                if (!in_array($status, $this->getOrderStatus())) {
+                    $this->output->writeln($this->translate('%s is not an allowed order status status. Please use one of %s', [$status, implode(', ', $this->getOrderStatus())]));
+                    return self::FAILURE;
+                }
             }
+            if (!$orderIds = $this->getOrderIds($input->getOption('paid'), $input->getOption('status'))) {
+                return self::SUCCESS;
+            }
+            $request = Registry::get(ParcelShippingRequestBuilder::class)->build($orderIds);
+
+            $this->createWithParcelShipping($orderIds, $request);
+        } catch (\Exception $e) {
+            $this->output->writeln($e->getMessage());
+            return self::FAILURE;
         }
-        if (!$orderIds = $this->getOrderIds($input->getOption('paid'), $input->getOption('status'))) {
-            return;
-        }
-        $request = Registry::get(GKVCreateShipmentOrderRequestBuilder::class)->build($orderIds);
-        if (Registry::getConfig()->getConfigParam('mo_dhl__account_rest_api')) {
-            $this->createWithParcelShipping($request);
-        } else {
-            $this->createWithGKV($request);
-        }
+        return self::SUCCESS;
     }
 
-    /**
-     * @param CreateShipmentOrderRequest $request
-     * @throws \Exception
-     */
-    protected function createWithParcelShipping(CreateShipmentOrderRequest $request)
+    protected function createWithParcelShipping(array $orderIds, array $request)
     {
-        [$query, $request] = Registry::get(ParcelShippingConverter::class)->convertCreateShipmentOrderRequest($request);
+        [$query, $request] = $request;
         $response = Registry::get(DHLAdapter::class)->buildParcelShipping()->createOrders($request, $query, [], Client::FETCH_RESPONSE);
         $payload = \json_decode($response->getBody(), true);
         $createdLabels = 0;
-        foreach ($payload['items'] as $item) {
+        foreach ($payload['items'] as $index => $item) {
             $statusInformation = $item['sstatus'];
             $order = \oxNew(Order::class);
-            $order->load($item['shipmentRefNo']);
+            $order->load($orderIds[$index]);
             $order->storeCreationStatus($statusInformation['title']);
-            if ($detail = $statusInformation['detail']) {
-                $this->output->writeln($this->translate('MO_DHL__BATCH_ERROR_CREATION_ERROR', [$order->getFieldData('oxordernr'), $detail]));
+            if ($item['sstatus']['statusCode'] < 200 || $item['sstatus']['statusCode'] >= 300) {
+                $errors = $this->extractErrorsFromResponsePayload($payload, $index);
+                $this->output->writeln($this->translate('MO_DHL__BATCH_ERROR_CREATION_ERROR', [$order->getFieldData('oxordernr'), implode("\n", $errors)]));
                 continue;
             }
             $label = MoDHLLabel::fromOrderAndParcelShippingResponseItem($order, $item);
-            $label->save();
-            $createdLabels++;
-        }
-        $this->output->writeln($this->translate('MO_DHL__BATCH_LABELS_CREATED', [$createdLabels]));
-    }
-
-    /**
-     * @param CreateShipmentOrderRequest $request
-     * @throws \Exception
-     */
-    protected function createWithGKV(CreateShipmentOrderRequest $request)
-    {
-        $response = Registry::get(DHLAdapter::class)->buildGKV()->createShipmentOrder($request);
-        $createdLabels = 0;
-        foreach ($response->getCreationState() as $creationState) {
-            $statusInformation = $creationState->getLabelData()->getStatus();
-            $order = \oxNew(Order::class);
-            $order->load($creationState->getSequenceNumber());
-            $order->storeCreationStatus($statusInformation->getStatusText());
-            if ($errors = $statusInformation->getErrors()) {
-                $this->output->writeln($this->translate('MO_DHL__BATCH_ERROR_CREATION_ERROR', [$order->getFieldData('oxordernr'), implode(' ', $errors)]));
-                continue;
-            }
-            $label = MoDHLLabel::fromOrderAndCreationState($order, $creationState);
             $label->save();
             $createdLabels++;
         }

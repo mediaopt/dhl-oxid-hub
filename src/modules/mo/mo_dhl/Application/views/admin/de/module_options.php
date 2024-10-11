@@ -24,9 +24,10 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__portokasse_password'      => 'Portokasse Passwort',
     'HELP_SHOP_MODULE_mo_dhl__portokasse_password' => 'Ihr Passwort für die <a href="https://portokasse.deutschepost.de/">Portokasse</a>.',
 
-    'SHOP_MODULE_GROUP_mo_dhl__internetmarke'  => 'Internetmarke',
-    'SHOP_MODULE_mo_dhl__internetmarke_layout' => 'Layout ID für den Druck der Internetmarken',
-    'SHOP_MODULE_mo_dhl__internetmarke_check'  => '',
+    'SHOP_MODULE_GROUP_mo_dhl__internetmarke'       => 'Internetmarke',
+    'SHOP_MODULE_mo_dhl__internetmarke_layout'      => 'Layout ID für den Druck der Internetmarken',
+    'HELP_SHOP_MODULE_mo_dhl__internetmarke_layout' => 'Geben Sie die ID des Druckformats an, welches in der INTERNETMARKE angelegt wurde.',
+    'SHOP_MODULE_mo_dhl__internetmarke_check'       => '',
 
     'SHOP_MODULE_GROUP_mo_dhl__delivery'          => 'Versand',
     'SHOP_MODULE_mo_dhl__only_with_leitcode'      => 'Nur leitcodierbare Adressen zulassen',
@@ -147,8 +148,8 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_48'        => '48',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_49'        => '49',
     'SHOP_MODULE_mo_dhl__standortsuche_maximumHits_50'        => '50',
-    'SHOP_MODULE_mo_dhl__standortsuche_googleMapsApiKey'      => 'API-Schlüssel',
-    'HELP_SHOP_MODULE_mo_dhl__standortsuche_googleMapsApiKey' => 'Sie können einen API-Schlüssel <a target="_blank" rel="noopener noreferrer" href="https://developers.google.com/maps/documentation/javascript/get-api-key">hier anfordern</a>.',
+    'SHOP_MODULE_mo_dhl__standortsuche_googleMapsApiKey'      => 'Google Maps JavaScript API-Schlüssel',
+    'HELP_SHOP_MODULE_mo_dhl__standortsuche_googleMapsApiKey' => 'Sie können einen Google Maps JavaScript API-Schlüssel <a target="_blank" rel="noopener noreferrer" href="https://developers.google.com/maps/documentation/javascript/get-api-key">hier anfordern</a>.',
     'SHOP_MODULE_mo_dhl__standortsuche_packstation'           => 'Packstation wählbar',
     'SHOP_MODULE_mo_dhl__standortsuche_postfiliale'           => 'Postfiliale wählbar',
     'SHOP_MODULE_mo_dhl__standortsuche_paketshop'             => 'Paketshop wählbar',
@@ -218,9 +219,8 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__retention_UNLIMITED'    => 'unbegrenzt',
     'SHOP_MODULE_mo_dhl__logfiles'               => 'Logdateien',
 
-    'SHOP_MODULE_GROUP_mo_dhl__privacy'       => 'Datenschutz',
     'SHOP_MODULE_mo_dhl__privacy_policy'      => 'Datenschutzerklärung',
-    'HELP_SHOP_MODULE_mo_dhl__privacy_policy' => 'Wir erwarten einen Bezeichner eine CMS-Seite.',
+    'HELP_SHOP_MODULE_mo_dhl__privacy_policy' => 'Ein Link zur Datenschutzerklärung wird neben dem Feld für die Option Nachbar im Wunschzustellung_block angezeigt. Geben Sie einen Bezeichner einer CMS-Seite an (z.B. oxsecurityinfo).',
 
     'SHOP_MODULE_mo_dhl__standortsuche_map_radius'      => 'Radius in Metern für Standortsuche',
     'HELP_SHOP_MODULE_mo_dhl__standortsuche_map_radius' => 'Einen expliziten Suchradius anzugeben kann die Suchergebnisse verbessern. Bei einem Radius von 0 wird dieser nicht verwendet.',

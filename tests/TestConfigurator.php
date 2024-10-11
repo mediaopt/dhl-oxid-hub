@@ -117,7 +117,7 @@ class TestConfigurator extends \Mediaopt\DHL\Configurator
      */
     protected function getEkp()
     {
-        return '2222222222';
+        return '3333333333';
     }
 
     /**
