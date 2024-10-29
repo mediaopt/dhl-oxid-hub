@@ -81,7 +81,10 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         $shipment->setProduct($this->getProcess($order)->getServiceIdentifier());
         $customerReference = Registry::getLang()->translateString('GENERAL_ORDERNUM') . ' ' . $order->getFieldData('oxordernr');
         $shipment->setRefNo($customerReference);
-        $shipment->setServices($this->buildService($order));
+        if ($builtService = $this->buildService($order)) {
+            $shipment->setServices($builtService);
+        }
+
         $shipment->setShipDate($this->buildShipmentDate());
         return $shipment;
     }
@@ -311,10 +314,9 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         }
         $identCheck->setFirstName($order->moDHLGetAddressData('fname'));
         $identCheck->setLastName($order->moDHLGetAddressData('lname'));
-        $identCheck->setMinimumAge(
-            Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
-                ? 'A' . Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')
-                : null);
+        if($minimumAge = Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')) {
+            $identCheck->setMinimumAge('A' . $minimumAge);
+        }
         if ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK18)) {
             $identCheck->setMinimumAge('A18');
         } elseif ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK16) && !$identCheck->getMinimumAge()) {
