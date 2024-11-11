@@ -225,12 +225,6 @@ $aModule = [
         ],
         [
             'group' => 'mo_dhl__account',
-            'name'  => 'mo_dhl__account_rest_api',
-            'type'  => 'bool',
-            'value' => 'true',
-        ],
-        [
-            'group' => 'mo_dhl__account',
             'name'  => 'mo_dhl__account_user',
             'type'  => 'str',
         ],

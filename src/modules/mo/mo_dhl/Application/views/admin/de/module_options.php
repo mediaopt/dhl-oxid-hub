@@ -6,8 +6,6 @@ $aLang = [
     'SHOP_MODULE_GROUP_mo_dhl__account'         => 'Zugangsdaten',
     'SHOP_MODULE_mo_dhl__account_sandbox'       => 'Nutze Testing-Webservice',
     'HELP_SHOP_MODULE_mo_dhl__account_sandbox'  => 'Nutze den Testing-Webservice von DHL anstatt des Productive-Webservice. In diesem Fall müssen Sie unten die Zugangsdaten zu Ihrem <a href="https://entwickler.dhl.de" target="_blank" rel="noopener noreferrer">DHL-Entwickler-Portal</a>-Account angeben.',
-    'SHOP_MODULE_mo_dhl__account_rest_api'      => 'Nutze neue REST-API',
-    'HELP_SHOP_MODULE_mo_dhl__account_rest_api' => 'Anstelle der veralteten GKV-API wird die neue REST-API verwendet.',
     'SHOP_MODULE_mo_dhl__account_user'          => 'Benutzername',
     'HELP_SHOP_MODULE_mo_dhl__account_user'     => 'Ihr Benutzername für das <a href="https://www.dhl-geschaeftskundenportal.de" target="_blank" rel="noopener noreferrer">DHL Geschäftskundenportal</a>. Hierbei ist die korrekte Groß- und Kleinschreibung zu beachten. Noch kein Kunde? Dann registrieren Sie sich <a href="https://www.dhl.de/de/geschaeftskunden/paket/kunde-werden/angebot-dhl-geschaeftskunden-online.html" target="_blank" rel="noopener noreferrer">hier</a>.',
     'SHOP_MODULE_mo_dhl__account_password'      => 'Passwort',
