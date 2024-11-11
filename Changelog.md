@@ -1,4 +1,8 @@
 # Changelog
+## 1.8.1
+* remove unused module setting for REST API usage
+* check for existence before setting values in parcel shipping requests
+
 ## 1.8.0
 * removed deprecated SOAP API integration
 * improved naming for DHL settings in Admin panel
