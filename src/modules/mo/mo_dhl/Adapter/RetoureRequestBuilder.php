@@ -29,7 +29,8 @@ class RetoureRequestBuilder
             ->setReceiverId($this->buildReceiverId($order->getFieldData('oxbillcountryid')))
             ->setSenderAddress($this->buildSenderAddress($order))
             ->setEmail($order->getFieldData('oxbillemail'))
-            ->setTelephoneNumber($order->moDHLGetAddressData('fon'));
+            ->setTelephoneNumber($order->moDHLGetAddressData('fon'))
+            ->setWeightInGrams(array_sum(array_map([$this, 'getWeightInGrams'], $order->getOrderArticles()->getArray())));
         $country = $this->buildCountry($order->getFieldData('oxbillcountryid'));
 
         if (!in_array($country->getCountryISOCode(), Country::EU_COUNTRIES_LIST)) {
@@ -112,11 +113,21 @@ class RetoureRequestBuilder
             $positions[] = (new CustomsDocumentPosition())
                 ->setPositionDescription(substr($orderArticle->getArticle()->getFieldData('oxtitle'), 0, 50))
                 ->setCount($count)
-                ->setWeightInGrams($orderArticle->getFieldData('oxweight') * 1000.0 * $count)
+                ->setWeightInGrams($this->getWeightInGrams($orderArticle))
                 ->setValues($orderArticle->getPrice()->getPrice() * $count)
                 ->setArticleReference($orderArticle->getArticle()->getId());
         }
 
         return $positions;
+    }
+
+    /**
+     * @param OrderArticle $orderArticle
+     * @return float
+     */
+    public function getWeightInGrams(OrderArticle $orderArticle): float
+    {
+        var_dump($orderArticle);
+        return $orderArticle->getFieldData('oxweight') * 1000.0 * $orderArticle->getFieldData('oxamount');
     }
 }
