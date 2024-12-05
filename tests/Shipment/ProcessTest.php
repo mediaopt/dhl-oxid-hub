@@ -18,14 +18,14 @@ class ProcessTest extends TestCase
         'V86PARCEL',
         'V87PARCEL',
         'V82PARCEL',
-        'V62WP',
+        'V62KP',
     ];
 
     const PROCESS_IDENTIFIERS = [
         Process::PAKET,
         Process::PAKET_INTERNATIONAL,
         Process::EUROPAKET,
-        Process::WARENPOST,
+        Process::KLEINPAKET,
     ];
 
     const ADDITIONAL_SERVICE_IDENTIFIERS = [
@@ -105,17 +105,17 @@ class ProcessTest extends TestCase
         $this->assertEmpty(Process::getProcessesSupportingService('UNKNOWN_SERVICE'));
     }
 
-    public function testThatWarenpostSupportsCertainServices()
+    public function testThatKleinpaketSupportsCertainServices()
     {
-        $warenpost = Process::build(Process::WARENPOST);
-        $this->assertTrue($warenpost->supportsGoGreen());
-        $this->assertTrue($warenpost->supportsPreferredLocation());
-        $this->assertTrue($warenpost->supportsPreferredNeighbour());
+        $kleinpaket = Process::build(Process::KLEINPAKET);
+        $this->assertTrue($kleinpaket->supportsGoGreen());
+        $this->assertTrue($kleinpaket->supportsPreferredLocation());
+        $this->assertTrue($kleinpaket->supportsPreferredNeighbour());
     }
 
-    public function testThatWarenpostDoesNotSupportCertainServices()
+    public function testThatKleinpaketDoesNotSupportCertainServices()
     {
-        $warenpost = Process::build(Process::WARENPOST);
-        $this->assertFalse($warenpost->supportsPreferredDay());
+        $kleinpaket = Process::build(Process::KLEINPAKET);
+        $this->assertFalse($kleinpaket->supportsPreferredDay());
     }
 }

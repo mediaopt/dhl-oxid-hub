@@ -17,7 +17,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__authentication_check'              => '',
 
     'SHOP_MODULE_GROUP_mo_dhl__portokasse'         => 'Portokasse',
-    'SHOP_MODULE_mo_dhl__portokasse_user'          => 'Portokasse Benutzername (für Internetmarke und Warenpost)',
+    'SHOP_MODULE_mo_dhl__portokasse_user'          => 'Portokasse Benutzername (für Internetmarke)',
     'HELP_SHOP_MODULE_mo_dhl__portokasse_user'     => 'Ihre E-Mail Adresse für die <a href="https://portokasse.deutschepost.de/">Portokasse</a>. Noch kein Kunde? Dann registrieren Sie sich <a href="https://portokasse.deutschepost.de/portokasse/#!/register/">hier</a>.',
     'SHOP_MODULE_mo_dhl__portokasse_password'      => 'Portokasse Passwort',
     'HELP_SHOP_MODULE_mo_dhl__portokasse_password' => 'Ihr Passwort für die <a href="https://portokasse.deutschepost.de/">Portokasse</a>.',

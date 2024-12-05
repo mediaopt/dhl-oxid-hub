@@ -45,7 +45,7 @@ class BaseParcelShippingTest extends TestCase
      * @param string $product
      * @return Shipment
      */
-    protected function createShipmentToGermany($product = 'V01PAK'): Shipment
+    protected function createShipmentToGermany($product = 'V62KP'): Shipment
     {
         $receiver = [
             'name1'         => 'a b',
@@ -65,11 +65,11 @@ class BaseParcelShippingTest extends TestCase
         $shipmentDetails = new ShipmentDetails();
         $weight = new Weight();
         $weight->setUom('kg');
-        $weight->setValue(12);
+        $weight->setValue(0.8);
         $shipmentDetails->setWeight($weight);
         $shipment->setDetails($shipmentDetails);
         $shipment->setCreationSoftware(CsvExporter::CREATOR_TAG);
-        $shipment->setBillingNumber(new BillingNumber(Ekp::build('3333333333'), Process::build(Process::PAKET), Participation::build('01')));
+        $shipment->setBillingNumber(new BillingNumber(Ekp::build('3333333333'), Process::build(Process::KLEINPAKET), Participation::build('01')));
         $shipment->setProduct($product);
         $shipment->setRefNo('Bestellnr. 123');
         $shipment->setShipDate((new \DateTime()));
