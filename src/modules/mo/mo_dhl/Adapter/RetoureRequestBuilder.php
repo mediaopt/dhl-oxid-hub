@@ -127,7 +127,6 @@ class RetoureRequestBuilder
      */
     public function getWeightInGrams(OrderArticle $orderArticle): float
     {
-        var_dump($orderArticle);
         return $orderArticle->getFieldData('oxweight') * 1000.0 * $orderArticle->getFieldData('oxamount');
     }
 }
