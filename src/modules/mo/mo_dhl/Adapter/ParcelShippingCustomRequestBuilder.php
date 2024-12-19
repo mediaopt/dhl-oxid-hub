@@ -37,7 +37,7 @@ class ParcelShippingCustomRequestBuilder
     public function toCustomizableParametersArray($query, Shipment $shipment, $order): array
     {
         $shipper = $shipment->getShipper();
-        $services = $shipment->getServices();
+        $services = $shipment->isInitialized('services') ? $shipment->getServices() : new VAS();
         $returnReceiver = $services->isInitialized('dhlRetoure') ? $services->getDhlRetoure()->getReturnAddress() : oxNew(ParcelShippingRequestBuilder::class)->buildReturnReceiver();
         $codAmount = $services->isInitialized('cashOnDelivery') ? $services->getCashOnDelivery()->getAmount() : oxNew(ParcelShippingRequestBuilder::class)->createCashOnDelivery($order)->getAmount();
         return [
