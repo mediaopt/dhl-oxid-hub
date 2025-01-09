@@ -58,7 +58,14 @@ class BaseParcelShippingTest extends TestCase
             'addressHouse'  => '28/29',
             'country'       => 'DEU',
         ];
-        $shipper = (new Shipper())->setName1('a b')->setAddressStreet('Elbestr.')->setAddressHouse('28')->setPostalCode('12045')->setCity('Berlin')->setCountry('DEU');
+        $shipper = [
+            'name1'         => 'a b',
+            'addressStreet' => 'Elbestr.',
+            'addressHouse'  => '28',
+            'postalCode'    => '12045',
+            'city'          => 'Berlin',
+            'country'       => 'DEU',
+        ];
         $shipment = new Shipment();
         $shipment->setShipper($shipper);
         $shipment->setConsignee($receiver);

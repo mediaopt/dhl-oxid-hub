@@ -421,13 +421,14 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         $receiverCountryCode = $process->isInternational() ? 'FRA' : 'DEU';
 
         $shipment = new \Mediaopt\DHL\Api\ParcelShipping\Model\Shipment();
-        $shipper = (new Shipper())
-            ->setName1('a b')
-            ->setCity('Berlin')
-            ->setPostalCode('12045')
-            ->setAddressStreet('Elbestr.')
-            ->setAddressHouse('28/29')
-            ->setCountry('DEU');
+        $shipper = [
+            'name1'         => 'a b',
+            'addressStreet' => 'Elbestr.',
+            'addressHouse'  => '28',
+            'postalCode'    => '12045',
+            'city'          => 'Berlin',
+            'country'       => 'DEU',
+        ];
         $shipment->setShipper($shipper);
         $shipment->setConsignee([
             'name1'         => 'a b',

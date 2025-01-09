@@ -44,16 +44,7 @@ class ParcelShippingCustomRequestBuilder
             'weight'   => array_merge([
                 'total' => ['weight' => $shipment->getDetails()->getWeight()->getValue(), 'title' => Registry::getLang()->translateString('GENERAL_ATALL')],
             ], $this->getExportItemWeights($shipment)),
-            'shipper'  => [
-                'name1'         => $shipper->getName1(),
-                'name2'         => $shipper->isInitialized('name2') ? $shipper->getName2() : '',
-                'name3'         => $shipper->isInitialized('name3') ? $shipper->getName3() : '',
-                'addressStreet' => $shipper->getAddressStreet(),
-                'addressHouse'  => $shipper->getAddressHouse(),
-                'postalCode'    => $shipper->getPostalCode(),
-                'city'          => $shipper->getCity(),
-                'country'       => $shipper->getCountry(),
-            ],
+            'shipper'  => $shipper,
             'receiver' => $shipment->getConsignee(),
             'services' => [
                 'parcelOutletRouting'  => $services->isInitialized('parcelOutletRouting') ? $services->getParcelOutletRouting() : null,
@@ -133,13 +124,8 @@ class ParcelShippingCustomRequestBuilder
      */
     protected function useCustomShipper(Shipment $shipment, array $shipperData)
     {
-        $shipper = new Shipper();
-        foreach (array_filter($shipperData) as $key => $value) {
-            $shipper->{"set" . ucfirst($key)}($value);
-        }
-        $shipment->setShipper($shipper);
+        $shipment->setShipper($shipperData);
     }
-
 
     /**
      * @param Shipment $shipment
