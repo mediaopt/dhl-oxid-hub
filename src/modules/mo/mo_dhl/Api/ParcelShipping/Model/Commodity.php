@@ -13,7 +13,7 @@ class Commodity extends \ArrayObject
         return array_key_exists($property, $this->initialized);
     }
     /**
-     * 
+     * A text that describes the commodity item. Only the first 50 characters of the description text is printed on the customs declaration form CN23.
      *
      * @var string
      */
@@ -49,7 +49,7 @@ class Commodity extends \ArrayObject
      */
     protected $itemWeight;
     /**
-     * 
+     * A text that describes the commodity item. Only the first 50 characters of the description text is printed on the customs declaration form CN23.
      *
      * @return string
      */
@@ -58,7 +58,7 @@ class Commodity extends \ArrayObject
         return $this->itemDescription;
     }
     /**
-     * 
+     * A text that describes the commodity item. Only the first 50 characters of the description text is printed on the customs declaration form CN23.
      *
      * @param string $itemDescription
      *

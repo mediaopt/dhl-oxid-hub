@@ -18,11 +18,11 @@ class ShipmentNormalizer implements DenormalizerInterface, NormalizerInterface, 
     use NormalizerAwareTrait;
     use CheckArray;
     use ValidatorTrait;
-    public function supportsDenormalization($data, $type, $format = null) : bool
+    public function supportsDenormalization($data, $type, $format = null, array $context = array()) : bool
     {
         return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Shipment';
     }
-    public function supportsNormalization($data, $format = null) : bool
+    public function supportsNormalization($data, $format = null, array $context = array()) : bool
     {
         return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Shipment';
     }
@@ -66,7 +66,7 @@ class ShipmentNormalizer implements DenormalizerInterface, NormalizerInterface, 
             unset($data['shipDate']);
         }
         if (\array_key_exists('shipper', $data)) {
-            $object->setShipper($this->denormalizer->denormalize($data['shipper'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Shipper', 'json', $context));
+            $object->setShipper($data['shipper']);
             unset($data['shipper']);
         }
         if (\array_key_exists('consignee', $data)) {
@@ -121,7 +121,7 @@ class ShipmentNormalizer implements DenormalizerInterface, NormalizerInterface, 
             $data['shipDate'] = $object->getShipDate()->format('Y-m-d');
         }
         if ($object->isInitialized('shipper') && null !== $object->getShipper()) {
-            $data['shipper'] = $this->normalizer->normalize($object->getShipper(), 'json', $context);
+            $data['shipper'] = $object->getShipper();
         }
         if ($object->isInitialized('consignee') && null !== $object->getConsignee()) {
             $values = array();
@@ -145,5 +145,9 @@ class ShipmentNormalizer implements DenormalizerInterface, NormalizerInterface, 
             }
         }
         return $data;
+    }
+    public function getSupportedTypes(?string $format = null) : array
+    {
+        return array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Shipment' => false);
     }
 }

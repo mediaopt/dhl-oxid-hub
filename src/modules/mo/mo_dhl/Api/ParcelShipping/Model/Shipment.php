@@ -18,7 +18,8 @@ class Shipment extends \ArrayObject
     * V01PAK: DHL PAKET;
     * V53WPAK: DHL PAKET International;
     * V54EPAK: DHL Europaket;
-    * V62WP: Warenpost;
+    * V62WP: Warenpost (will be replaced by DHL Kleinpaket from 1.1.2025);
+    * V62KP: DHL Kleinpaket;
     * V66WPI: Warenpost International
     *
     * @var string
@@ -55,15 +56,15 @@ class Shipment extends \ArrayObject
      */
     protected $shipDate;
     /**
-     * Shipper information, including contact information, address. Alternatively, a predefined shipper reference can be used.
+     * Shipper information, including contact information and address. Alternatively, a predefined shipper reference can be used.
      *
-     * @var Shipper
+     * @var mixed
      */
     protected $shipper;
     /**
      * Consignee address information. Either a doorstep address (contact address) including contact information or a droppoint address. One of packstation (parcel locker), or post office (postfiliale/retail shop).
      *
-     * @var mixed[]
+     * @var array<string, mixed>
      */
     protected $consignee;
     /**
@@ -90,7 +91,8 @@ class Shipment extends \ArrayObject
     * V01PAK: DHL PAKET;
     * V53WPAK: DHL PAKET International;
     * V54EPAK: DHL Europaket;
-    * V62WP: Warenpost;
+    * V62WP: Warenpost (will be replaced by DHL Kleinpaket from 1.1.2025);
+    * V62KP: DHL Kleinpaket;
     * V66WPI: Warenpost International
     *
     * @return string
@@ -105,7 +107,8 @@ class Shipment extends \ArrayObject
     * V01PAK: DHL PAKET;
     * V53WPAK: DHL PAKET International;
     * V54EPAK: DHL Europaket;
-    * V62WP: Warenpost;
+    * V62WP: Warenpost (will be replaced by DHL Kleinpaket from 1.1.2025);
+    * V62KP: DHL Kleinpaket;
     * V66WPI: Warenpost International
     *
     * @param string $product
@@ -229,22 +232,22 @@ class Shipment extends \ArrayObject
         return $this;
     }
     /**
-     * Shipper information, including contact information, address. Alternatively, a predefined shipper reference can be used.
+     * Shipper information, including contact information and address. Alternatively, a predefined shipper reference can be used.
      *
-     * @return Shipper
+     * @return mixed
      */
-    public function getShipper() : Shipper
+    public function getShipper()
     {
         return $this->shipper;
     }
     /**
-     * Shipper information, including contact information, address. Alternatively, a predefined shipper reference can be used.
+     * Shipper information, including contact information and address. Alternatively, a predefined shipper reference can be used.
      *
-     * @param Shipper $shipper
+     * @param mixed $shipper
      *
      * @return self
      */
-    public function setShipper(Shipper $shipper) : self
+    public function setShipper($shipper) : self
     {
         $this->initialized['shipper'] = true;
         $this->shipper = $shipper;
@@ -253,7 +256,7 @@ class Shipment extends \ArrayObject
     /**
      * Consignee address information. Either a doorstep address (contact address) including contact information or a droppoint address. One of packstation (parcel locker), or post office (postfiliale/retail shop).
      *
-     * @return mixed[]
+     * @return array<string, mixed>
      */
     public function getConsignee() : iterable
     {
@@ -262,7 +265,7 @@ class Shipment extends \ArrayObject
     /**
      * Consignee address information. Either a doorstep address (contact address) including contact information or a droppoint address. One of packstation (parcel locker), or post office (postfiliale/retail shop).
      *
-     * @param mixed[] $consignee
+     * @param array<string, mixed> $consignee
      *
      * @return self
      */

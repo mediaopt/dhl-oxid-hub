@@ -55,9 +55,15 @@ class CustomsDetails extends \ArrayObject
      */
     protected $hasElectronicExportNotification;
     /**
-     * Currency and numeric value.
+     * 
      *
-     * @var Value
+     * @var string
+     */
+    protected $mRN;
+    /**
+     * Postal charges that have been charged to the recipient. The information must match the information on the invoice. Postal charges are added to the customs value which is the basis for the calculation of import duties. Since 1.1.2021 this information is mandatory according to requirements of the Universal Postal Union. The currency of the postal charges is used throughout the customs declaration form. The currency details of the individual goods items are overwritten by the currency details of the postal charges.
+     *
+     * @var CustomsDetailsPostalCharges
      */
     protected $postalCharges;
     /**
@@ -66,6 +72,18 @@ class CustomsDetails extends \ArrayObject
      * @var string
      */
     protected $officeOfOrigin;
+    /**
+     * Optional. The customs reference is used by customs authorities to identify economics operators an/or other persons involved. With the given reference, granted authorizations and/or relevant processes in customs clearance an/or taxation can be taken into account. Aka Zoll-Nummer or EORI-Number but dependent on destination.
+     *
+     * @var string
+     */
+    protected $shipperCustomsRef;
+    /**
+     * Optional. The customs reference is used by customs authorities to identify economics operators an/or other persons involved. With the given reference, granted authorizations and/or relevant processes in customs clearance an/or taxation can be taken into account. Aka Zoll-Nummer or EORI-Number but dependent on destination.
+     *
+     * @var string
+     */
+    protected $consigneeCustomsRef;
     /**
      * Commodity types in that package
      *
@@ -227,22 +245,44 @@ class CustomsDetails extends \ArrayObject
         return $this;
     }
     /**
-     * Currency and numeric value.
+     * 
      *
-     * @return Value
+     * @return string
      */
-    public function getPostalCharges() : Value
+    public function getMRN() : string
+    {
+        return $this->mRN;
+    }
+    /**
+     * 
+     *
+     * @param string $mRN
+     *
+     * @return self
+     */
+    public function setMRN(string $mRN) : self
+    {
+        $this->initialized['mRN'] = true;
+        $this->mRN = $mRN;
+        return $this;
+    }
+    /**
+     * Postal charges that have been charged to the recipient. The information must match the information on the invoice. Postal charges are added to the customs value which is the basis for the calculation of import duties. Since 1.1.2021 this information is mandatory according to requirements of the Universal Postal Union. The currency of the postal charges is used throughout the customs declaration form. The currency details of the individual goods items are overwritten by the currency details of the postal charges.
+     *
+     * @return CustomsDetailsPostalCharges
+     */
+    public function getPostalCharges() : CustomsDetailsPostalCharges
     {
         return $this->postalCharges;
     }
     /**
-     * Currency and numeric value.
+     * Postal charges that have been charged to the recipient. The information must match the information on the invoice. Postal charges are added to the customs value which is the basis for the calculation of import duties. Since 1.1.2021 this information is mandatory according to requirements of the Universal Postal Union. The currency of the postal charges is used throughout the customs declaration form. The currency details of the individual goods items are overwritten by the currency details of the postal charges.
      *
-     * @param Value $postalCharges
+     * @param CustomsDetailsPostalCharges $postalCharges
      *
      * @return self
      */
-    public function setPostalCharges(Value $postalCharges) : self
+    public function setPostalCharges(CustomsDetailsPostalCharges $postalCharges) : self
     {
         $this->initialized['postalCharges'] = true;
         $this->postalCharges = $postalCharges;
@@ -268,6 +308,50 @@ class CustomsDetails extends \ArrayObject
     {
         $this->initialized['officeOfOrigin'] = true;
         $this->officeOfOrigin = $officeOfOrigin;
+        return $this;
+    }
+    /**
+     * Optional. The customs reference is used by customs authorities to identify economics operators an/or other persons involved. With the given reference, granted authorizations and/or relevant processes in customs clearance an/or taxation can be taken into account. Aka Zoll-Nummer or EORI-Number but dependent on destination.
+     *
+     * @return string
+     */
+    public function getShipperCustomsRef() : string
+    {
+        return $this->shipperCustomsRef;
+    }
+    /**
+     * Optional. The customs reference is used by customs authorities to identify economics operators an/or other persons involved. With the given reference, granted authorizations and/or relevant processes in customs clearance an/or taxation can be taken into account. Aka Zoll-Nummer or EORI-Number but dependent on destination.
+     *
+     * @param string $shipperCustomsRef
+     *
+     * @return self
+     */
+    public function setShipperCustomsRef(string $shipperCustomsRef) : self
+    {
+        $this->initialized['shipperCustomsRef'] = true;
+        $this->shipperCustomsRef = $shipperCustomsRef;
+        return $this;
+    }
+    /**
+     * Optional. The customs reference is used by customs authorities to identify economics operators an/or other persons involved. With the given reference, granted authorizations and/or relevant processes in customs clearance an/or taxation can be taken into account. Aka Zoll-Nummer or EORI-Number but dependent on destination.
+     *
+     * @return string
+     */
+    public function getConsigneeCustomsRef() : string
+    {
+        return $this->consigneeCustomsRef;
+    }
+    /**
+     * Optional. The customs reference is used by customs authorities to identify economics operators an/or other persons involved. With the given reference, granted authorizations and/or relevant processes in customs clearance an/or taxation can be taken into account. Aka Zoll-Nummer or EORI-Number but dependent on destination.
+     *
+     * @param string $consigneeCustomsRef
+     *
+     * @return self
+     */
+    public function setConsigneeCustomsRef(string $consigneeCustomsRef) : self
+    {
+        $this->initialized['consigneeCustomsRef'] = true;
+        $this->consigneeCustomsRef = $consigneeCustomsRef;
         return $this;
     }
     /**

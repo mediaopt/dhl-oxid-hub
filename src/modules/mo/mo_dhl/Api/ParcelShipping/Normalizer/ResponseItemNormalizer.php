@@ -18,11 +18,11 @@ class ResponseItemNormalizer implements DenormalizerInterface, NormalizerInterfa
     use NormalizerAwareTrait;
     use CheckArray;
     use ValidatorTrait;
-    public function supportsDenormalization($data, $type, $format = null) : bool
+    public function supportsDenormalization($data, $type, $format = null, array $context = array()) : bool
     {
         return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ResponseItem';
     }
-    public function supportsNormalization($data, $format = null) : bool
+    public function supportsNormalization($data, $format = null, array $context = array()) : bool
     {
         return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ResponseItem';
     }
@@ -44,6 +44,10 @@ class ResponseItemNormalizer implements DenormalizerInterface, NormalizerInterfa
         if (\array_key_exists('shipmentNo', $data)) {
             $object->setShipmentNo($data['shipmentNo']);
             unset($data['shipmentNo']);
+        }
+        if (\array_key_exists('routingCode', $data)) {
+            $object->setRoutingCode($data['routingCode']);
+            unset($data['routingCode']);
         }
         if (\array_key_exists('returnShipmentNo', $data)) {
             $object->setReturnShipmentNo($data['returnShipmentNo']);
@@ -97,6 +101,9 @@ class ResponseItemNormalizer implements DenormalizerInterface, NormalizerInterfa
         if ($object->isInitialized('shipmentNo') && null !== $object->getShipmentNo()) {
             $data['shipmentNo'] = $object->getShipmentNo();
         }
+        if ($object->isInitialized('routingCode') && null !== $object->getRoutingCode()) {
+            $data['routingCode'] = $object->getRoutingCode();
+        }
         if ($object->isInitialized('returnShipmentNo') && null !== $object->getReturnShipmentNo()) {
             $data['returnShipmentNo'] = $object->getReturnShipmentNo();
         }
@@ -129,5 +136,9 @@ class ResponseItemNormalizer implements DenormalizerInterface, NormalizerInterfa
             }
         }
         return $data;
+    }
+    public function getSupportedTypes(?string $format = null) : array
+    {
+        return array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ResponseItem' => false);
     }
 }

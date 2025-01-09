@@ -25,12 +25,6 @@ class VAS extends \ArrayObject
      */
     protected $preferredLocation;
     /**
-     * An email notification to the recipient that is sent at the time the shipment is closed. It can be send to multiple emails. This service is about to be deprecated. Please use DHL Parcel Notification instead. To use the DHL Parcel Notification you enter the e-mail address of the consignee in the section of the consignee. The notification will be sent automatically.
-     *
-     * @var ShippingConfirmation
-     */
-    protected $shippingConfirmation;
-    /**
      * if used it will trigger checking the age of recipient
      *
      * @var string
@@ -168,28 +162,6 @@ class VAS extends \ArrayObject
     {
         $this->initialized['preferredLocation'] = true;
         $this->preferredLocation = $preferredLocation;
-        return $this;
-    }
-    /**
-     * An email notification to the recipient that is sent at the time the shipment is closed. It can be send to multiple emails. This service is about to be deprecated. Please use DHL Parcel Notification instead. To use the DHL Parcel Notification you enter the e-mail address of the consignee in the section of the consignee. The notification will be sent automatically.
-     *
-     * @return ShippingConfirmation
-     */
-    public function getShippingConfirmation() : ShippingConfirmation
-    {
-        return $this->shippingConfirmation;
-    }
-    /**
-     * An email notification to the recipient that is sent at the time the shipment is closed. It can be send to multiple emails. This service is about to be deprecated. Please use DHL Parcel Notification instead. To use the DHL Parcel Notification you enter the e-mail address of the consignee in the section of the consignee. The notification will be sent automatically.
-     *
-     * @param ShippingConfirmation $shippingConfirmation
-     *
-     * @return self
-     */
-    public function setShippingConfirmation(ShippingConfirmation $shippingConfirmation) : self
-    {
-        $this->initialized['shippingConfirmation'] = true;
-        $this->shippingConfirmation = $shippingConfirmation;
         return $this;
     }
     /**
