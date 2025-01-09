@@ -29,9 +29,9 @@ class Process
     const EUROPAKET = 'EUROPAKET';
 
     /**
-     * @var string Warenpost national
+     * @var string DHL Kleinpaket
      */
-    const WARENPOST = 'WARENPOST';
+    const KLEINPAKET = 'KLEINPAKET';
 
     /**
      * string Internetmarke
@@ -180,7 +180,7 @@ class Process
             self::SERVICE_GO_GREEN,
             self::SERVICE_ADDITIONAL_INSURANCE,
         ],
-        self::WARENPOST => [
+        self::KLEINPAKET => [
             self::SERVICE_PREFERRED_NEIGHBOUR,
             self::SERVICE_PREFERRED_LOCATION,
             self::SERVICE_NOTIFICATION,
@@ -258,7 +258,7 @@ class Process
             self::PAKET                        => '01',
             self::PAKET_INTERNATIONAL          => '53',
             self::EUROPAKET                    => '54',
-            self::WARENPOST                    => '62',
+            self::KLEINPAKET                    => '62',
             self::WARENPOST_INTERNATIONAL      => '66',
             self::RETOURE_FUER_PAKET           => '07',
         ];
@@ -428,7 +428,7 @@ class Process
             self::PAKET                        => 'V01PAK',
             self::PAKET_INTERNATIONAL          => 'V53WPAK',
             self::EUROPAKET                    => 'V54EPAK',
-            self::WARENPOST                    => 'V62WP',
+            self::KLEINPAKET                   => 'V62KP',
             self::WARENPOST_INTERNATIONAL      => 'V66WPI',
             self::RETOURE_FUER_PAKET           => 'V01PAK',
         ];
@@ -480,7 +480,7 @@ class Process
             'PAKET'                  => 'DHL Paket',
             'PAKET_INTERNATIONAL'    => 'DHL Paket International',
             'EUROPAKET'              => 'DHL Europaket (B2B)',
-            'WARENPOST'              => 'Warenpost national',
+            'KLEINPAKET'             => 'DHL Kleinpaket',
             'INTERNETMARKE'          => 'Internetmarke',
             'WARENPOST_INTERNATIONAL'=> 'Warenpost International',
         ];

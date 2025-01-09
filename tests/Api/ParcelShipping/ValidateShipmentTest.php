@@ -30,7 +30,7 @@ class ValidateShipmentTest extends BaseParcelShippingTest
         $response = $this->buildParcelShipping()->createOrders($request, $query, [], \Mediaopt\DHL\Api\MyAccount\Runtime\Client\Client::FETCH_RESPONSE);
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $payload = \json_decode($response->getBody(), true);
-        $this->assertEquals(200, $response->getStatusCode(), $payload['status']['detail'] ?? $payload['detail']);
+        $this->assertEquals(200, $response->getStatusCode(), $payload['items'][0]['validationMessages'][0]['validationMessage'] ?? $payload['status']['detail'] ?? $payload['detail']);
     }
 
     public function testValidateShipmentOutsideGermany()

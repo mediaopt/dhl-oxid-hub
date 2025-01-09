@@ -56,7 +56,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         'PAKET'                   => 'DHL PAKET',
         'PAKET_INTERNATIONAL'     => 'PAKET INTERNATIONAL',
         'EUROPAKET'               => 'DHL EUROPAKET',
-        'WARENPOST'               => 'Warenpost',
+        'KLEINPAKET'              => 'DHL Kleinpaket',
         'WARENPOST_INTERNATIONAL' => 'Warenpost International',
     ];
 
@@ -67,7 +67,7 @@ class ModuleConfiguration extends ModuleConfiguration_parent
         'DHL PAKET'               => 'PAKET',
         'PAKET INTERNATIONAL'     => 'PAKET_INTERNATIONAL',
         'DHL EUROPAKET'           => 'EUROPAKET',
-        'Warenpost'               => 'WARENPOST',
+        'DHL Kleinpaket'               => 'KLEINPAKET',
         'Warenpost International' => 'WARENPOST_INTERNATIONAL',
     ];
 
