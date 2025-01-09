@@ -18,11 +18,11 @@ class ShipmentManifestingRequestNormalizer implements DenormalizerInterface, Nor
     use NormalizerAwareTrait;
     use CheckArray;
     use ValidatorTrait;
-    public function supportsDenormalization($data, $type, $format = null) : bool
+    public function supportsDenormalization($data, $type, $format = null, array $context = array()) : bool
     {
         return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ShipmentManifestingRequest';
     }
-    public function supportsNormalization($data, $format = null) : bool
+    public function supportsNormalization($data, $format = null, array $context = array()) : bool
     {
         return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ShipmentManifestingRequest';
     }
@@ -87,5 +87,9 @@ class ShipmentManifestingRequestNormalizer implements DenormalizerInterface, Nor
             }
         }
         return $data;
+    }
+    public function getSupportedTypes(?string $format = null) : array
+    {
+        return array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ShipmentManifestingRequest' => false);
     }
 }

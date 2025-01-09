@@ -18,11 +18,11 @@ class RequestStatusNormalizer implements DenormalizerInterface, NormalizerInterf
     use NormalizerAwareTrait;
     use CheckArray;
     use ValidatorTrait;
-    public function supportsDenormalization($data, $type, $format = null) : bool
+    public function supportsDenormalization($data, $type, $format = null, array $context = array()) : bool
     {
         return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus';
     }
-    public function supportsNormalization($data, $format = null) : bool
+    public function supportsNormalization($data, $format = null, array $context = array()) : bool
     {
         return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus';
     }
@@ -49,6 +49,10 @@ class RequestStatusNormalizer implements DenormalizerInterface, NormalizerInterf
             $object->setStatusCode($data['statusCode']);
             unset($data['statusCode']);
         }
+        if (\array_key_exists('status', $data)) {
+            $object->setStatus($data['status']);
+            unset($data['status']);
+        }
         if (\array_key_exists('instance', $data)) {
             $object->setInstance($data['instance']);
             unset($data['instance']);
@@ -72,6 +76,9 @@ class RequestStatusNormalizer implements DenormalizerInterface, NormalizerInterf
         $data = array();
         $data['title'] = $object->getTitle();
         $data['statusCode'] = $object->getStatusCode();
+        if ($object->isInitialized('status') && null !== $object->getStatus()) {
+            $data['status'] = $object->getStatus();
+        }
         if ($object->isInitialized('instance') && null !== $object->getInstance()) {
             $data['instance'] = $object->getInstance();
         }
@@ -84,5 +91,9 @@ class RequestStatusNormalizer implements DenormalizerInterface, NormalizerInterf
             }
         }
         return $data;
+    }
+    public function getSupportedTypes(?string $format = null) : array
+    {
+        return array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus' => false);
     }
 }

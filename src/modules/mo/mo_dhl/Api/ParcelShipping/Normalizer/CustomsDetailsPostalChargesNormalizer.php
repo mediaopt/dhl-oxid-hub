@@ -12,19 +12,19 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-class ShippingConfirmationNormalizer implements DenormalizerInterface, NormalizerInterface, DenormalizerAwareInterface, NormalizerAwareInterface
+class CustomsDetailsPostalChargesNormalizer implements DenormalizerInterface, NormalizerInterface, DenormalizerAwareInterface, NormalizerAwareInterface
 {
     use DenormalizerAwareTrait;
     use NormalizerAwareTrait;
     use CheckArray;
     use ValidatorTrait;
-    public function supportsDenormalization($data, $type, $format = null) : bool
+    public function supportsDenormalization($data, $type, $format = null, array $context = array()) : bool
     {
-        return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ShippingConfirmation';
+        return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\CustomsDetailsPostalCharges';
     }
-    public function supportsNormalization($data, $format = null) : bool
+    public function supportsNormalization($data, $format = null, array $context = array()) : bool
     {
-        return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ShippingConfirmation';
+        return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\CustomsDetailsPostalCharges';
     }
     /**
      * @return mixed
@@ -37,13 +37,20 @@ class ShippingConfirmationNormalizer implements DenormalizerInterface, Normalize
         if (isset($data['$recursiveRef'])) {
             return new Reference($data['$recursiveRef'], $context['document-origin']);
         }
-        $object = new \Mediaopt\DHL\Api\ParcelShipping\Model\ShippingConfirmation();
+        $object = new \Mediaopt\DHL\Api\ParcelShipping\Model\CustomsDetailsPostalCharges();
+        if (\array_key_exists('value', $data) && \is_int($data['value'])) {
+            $data['value'] = (double) $data['value'];
+        }
         if (null === $data || false === \is_array($data)) {
             return $object;
         }
-        if (\array_key_exists('email', $data)) {
-            $object->setEmail($data['email']);
-            unset($data['email']);
+        if (\array_key_exists('currency', $data)) {
+            $object->setCurrency($data['currency']);
+            unset($data['currency']);
+        }
+        if (\array_key_exists('value', $data)) {
+            $object->setValue($data['value']);
+            unset($data['value']);
         }
         foreach ($data as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
@@ -58,12 +65,17 @@ class ShippingConfirmationNormalizer implements DenormalizerInterface, Normalize
     public function normalize($object, $format = null, array $context = array())
     {
         $data = array();
-        $data['email'] = $object->getEmail();
+        $data['currency'] = $object->getCurrency();
+        $data['value'] = $object->getValue();
         foreach ($object as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
                 $data[$key] = $value;
             }
         }
         return $data;
+    }
+    public function getSupportedTypes(?string $format = null) : array
+    {
+        return array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\CustomsDetailsPostalCharges' => false);
     }
 }
