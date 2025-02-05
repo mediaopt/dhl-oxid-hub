@@ -1,6 +1,6 @@
 # Changelog
 ## 1.8.2
-* allow custom label for no services
+* bugfix: handle custom label when no service was active
 
 ## 1.8.1
 * remove unused module setting for REST API usage
