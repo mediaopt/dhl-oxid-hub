@@ -37,7 +37,7 @@ class ParcelShippingCustomRequestBuilder
     public function toCustomizableParametersArray($query, Shipment $shipment, $order): array
     {
         $shipper = $shipment->getShipper();
-        $services = $shipment->getServices();
+        $services = $shipment->isInitialized('services') ? $shipment->getServices() : new VAS();
         $returnReceiver = $services->isInitialized('dhlRetoure') ? $services->getDhlRetoure()->getReturnAddress() : oxNew(ParcelShippingRequestBuilder::class)->buildReturnReceiver();
         $codAmount = $services->isInitialized('cashOnDelivery') ? $services->getCashOnDelivery()->getAmount() : oxNew(ParcelShippingRequestBuilder::class)->createCashOnDelivery($order)->getAmount();
         return [
@@ -159,9 +159,11 @@ class ParcelShippingCustomRequestBuilder
     {
         $process = $this->getProcess($order);
         $services = new VAS();
+        $initialised = false;
         if ($process->supportsParcelOutletRouting() && filter_var($servicesData['parcelOutletRouting']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $details = $servicesData['parcelOutletRouting']['details'] ?: '';
             $services->setParcelOutletRouting($details);
+            $initialised = true;
         }
 
         if ($process->supportsDHLRetoure() && filter_var($servicesData['dhlRetoure']['active'], FILTER_VALIDATE_BOOLEAN)) {
@@ -174,13 +176,16 @@ class ParcelShippingCustomRequestBuilder
             }
             $retoure->setReturnAddress($address);
             $services->setDhlRetoure($retoure);
+            $initialised = true;
         }
         if ($process->supportsBulkyGood() && filter_var($servicesData['bulkyGoods']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setBulkyGoods(true);
+            $initialised = true;
         }
         if ($process->supportsAdditionalInsurance() && filter_var($servicesData['additionalInsurance']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $details = $servicesData['additionalInsurance']['insuranceAmount'] ?? null;
             $services->setAdditionalInsurance($this->createValue($details));
+            $initialised = true;
         }
         if ($process->supportsCashOnDelivery() && filter_var($servicesData['cashOnDelivery']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $cashOnDelivery = oxNew(ParcelShippingRequestBuilder::class)->createCashOnDelivery($order);
@@ -188,36 +193,48 @@ class ParcelShippingCustomRequestBuilder
                 $cashOnDelivery->setAmount($this->createValue($details));
             }
             $services->setCashOnDelivery($cashOnDelivery);
+            $initialised = true;
         }
         if ($process->supportsIdentCheck() && filter_var($servicesData['identCheck']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setIdentCheck($this->extractIdent($servicesData['identCheck']));
+            $initialised = true;
         }
         elseif ($process->supportsVisualAgeCheck() && $ageCheck = $servicesData['visualAgeCheck'] ?? null) {
                 $services->setVisualCheckOfAge('A' . $ageCheck);
+            $initialised = true;
         }
         if ($process->supportsPDDP() && filter_var($servicesData['pddp']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setPostalDeliveryDutyPaid(true);
+            $initialised = true;
         }
         if ($process->supportsCDP() && filter_var($servicesData['cdp']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setClosestDropPoint(true);
+            $initialised = true;
         }
         if ($process->supportsPremium() && filter_var($servicesData['premium']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setPremium(true);
+            $initialised = true;
         }
         if ($process->supportsEndorsement()) {
             $endorsement = $servicesData['endorsement'] ?? MoDHLService::MO_DHL__ENDORSEMENT_RETURN;
             $services->setEndorsement($endorsement);
+            $initialised = true;
         }
         if ($process->supportsNoNeighbourDelivery() && filter_var($servicesData['noNeighbourDelivery']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setNoNeighbourDelivery(true);
+            $initialised = true;
         }
         if ($process->supportsNamedPersonOnly() && filter_var($servicesData['namedPersonOnly']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setNamedPersonOnly(true);
+            $initialised = true;
         }
         if ($process->supportsSignedForByRecipient() && filter_var($servicesData['signedForByRecipient']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setSignedForByRecipient(true);
+            $initialised = true;
         }
-        $shipment->setServices($services);
+        if ($initialised) {
+            $shipment->setServices($services);
+        }
     }
 
     /**
