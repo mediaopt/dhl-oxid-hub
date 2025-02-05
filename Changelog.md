@@ -1,4 +1,7 @@
 # Changelog
+## 1.8.2
+* allow custom label for no services
+
 ## 1.8.1
 * remove unused module setting for REST API usage
 * check for existence before setting values in parcel shipping requests
