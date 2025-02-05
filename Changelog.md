@@ -1,4 +1,7 @@
 # Changelog
+## 1.8.2
+* bugfix: handle custom label when no service was active
+
 ## 1.8.1
 * remove unused module setting for REST API usage
 * check for existence before setting values in parcel shipping requests
