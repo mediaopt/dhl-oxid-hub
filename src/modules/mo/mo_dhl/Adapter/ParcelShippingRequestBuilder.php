@@ -507,7 +507,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         $articleId = $orderArticle->getArticle()->getId();
         $articleModel = oxNew(\OxidEsales\EshopCommunity\Application\Model\Article::class);
 
-        $title = '';
+        $title = null;
         foreach ($receiverLanguages as $languageId) {
             $articleModel->loadInLang($languageId, $articleId);
             $title = $articleModel->getFieldData('oxtitle');
