@@ -301,6 +301,9 @@ class Shipment extends \ArrayObject
      */
     public function getServices() : VAS
     {
+        if ($this->services === null) {
+            return new VAS();
+        }
         return $this->services;
     }
     /**
