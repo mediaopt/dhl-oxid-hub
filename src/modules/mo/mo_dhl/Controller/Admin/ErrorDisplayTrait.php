@@ -57,4 +57,32 @@ trait ErrorDisplayTrait
         }
         return \array_key_exists('detail', $payload) && $index === false ? [$payload['detail']] : [];
     }
+
+    /**
+     * @return array
+     */
+    public function getLanguageHeader(): array
+    {
+        $langToLocale = [
+            'de' => 'de-DE',
+            'en' => 'en-US',
+        ];
+
+        $header['Accept-Language'] = $langToLocale['de'];
+
+        try {
+            $lang = Registry::getConfig()->getActiveView()->getViewData();
+            $adminLangId = $lang['adminlang'];
+
+            $adminLangArray = Registry::getLang()->getAdminTplLanguageArray();
+            $langAbbr = $adminLangArray[$adminLangId]->abbr;
+
+            $header['Accept-Language'] = $langToLocale[$langAbbr];
+        } catch (\Exception $e) {
+            $this->displayErrors($e);
+            return $header;
+        }
+
+        return $header;
+    }
 }

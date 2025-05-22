@@ -528,7 +528,7 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         [$query, $shipmentOrderRequest] = $shipmentOrderRequest;
         $response = Registry::get(DHLAdapter::class)
             ->buildParcelShipping()
-            ->createOrders($shipmentOrderRequest, $query, [], Client::FETCH_RESPONSE);
+            ->createOrders($shipmentOrderRequest, $query, $this->getLanguageHeader(), Client::FETCH_RESPONSE);
         $this->handleParcelShippingPostResponse($response);
     }
 
@@ -540,7 +540,14 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
         $label->getFieldData('shipmentNumber');
         $response = Registry::get(DHLAdapter::class)
             ->buildParcelShipping()
-            ->ordersAccountDelete(['profile' => ParcelShippingRequestBuilder::STANDARD_GRUPPENPROFIL, 'shipment' => $label->getFieldData('shipmentNumber')], [], Client::FETCH_RESPONSE);
+            ->ordersAccountDelete(
+                [
+                    'profile' => ParcelShippingRequestBuilder::STANDARD_GRUPPENPROFIL,
+                    'shipment' => $label->getFieldData('shipmentNumber')
+                ],
+                $this->getLanguageHeader(),
+                Client::FETCH_RESPONSE
+            );
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             $label->delete();
             return;
