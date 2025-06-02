@@ -1,4 +1,9 @@
 # Changelog
+## 1.8.3
+* bugfix: service returns null
+* bugfix: title not set on labels
+* feature: correct languages for error messages
+
 ## 1.8.2
 * bugfix: handle custom label when no service was active
 
