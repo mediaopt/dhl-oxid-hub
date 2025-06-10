@@ -224,7 +224,7 @@ class OrderBatchController extends \OxidEsales\Eshop\Application\Controller\Admi
         [$query, $shipmentOrderRequest] = Registry::get(ParcelShippingRequestBuilder::class)->build($orderIds);
         $response = Registry::get(DHLAdapter::class)
             ->buildParcelShipping()
-            ->createOrders($shipmentOrderRequest, $query, [], Client::FETCH_RESPONSE);
+            ->createOrders($shipmentOrderRequest, $query, $this->getLanguageHeader(), Client::FETCH_RESPONSE);
         return $response;
     }
 
