@@ -28,7 +28,15 @@ class Install
         static::addColumns();
         static::alterColumns();
         static::ensureDocumentsFolderExists();
+        static::changeWarenpostToKleinpaket();
         static::cleanUp();
+    }
+
+    public static function changeWarenpostToKleinpaket()
+    {
+        $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb();
+        $db->execute("UPDATE oxorder SET MO_DHL_PROCESS = 'KLEINPAKET' WHERE MO_DHL_PROCESS = 'WARENPOST'");
+        $db->execute("UPDATE oxdeliveryset SET MO_DHL_PROCESS = 'KLEINPAKET' WHERE MO_DHL_PROCESS = 'WARENPOST'");
     }
 
     protected static function ensureDocumentsFolderExists()

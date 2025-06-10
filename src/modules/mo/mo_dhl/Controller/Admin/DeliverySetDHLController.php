@@ -8,6 +8,7 @@
 namespace Mediaopt\DHL\Controller\Admin;
 
 
+use Mediaopt\DHL\Install;
 use Mediaopt\DHL\Model\MoDHLInternetmarkeProductList;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
@@ -33,6 +34,11 @@ class DeliverySetDHLController extends \OxidEsales\Eshop\Application\Controller\
         if (isset($id) && $id != "-1") {
             $deliverySet = oxNew(\OxidEsales\Eshop\Application\Model\DeliverySet::class);
             $deliverySet->load($id);
+            if ($deliverySet->getFieldData('mo_dhl_process') === 'WARENPOST') {
+                Install::changeWarenpostToKleinpaket();
+                $deliverySet->oxdeliveryset__mo_dhl_process->setValue(Process::KLEINPAKET);
+                $deliverySet->load($id);
+            }
             $this->addTplParam("edit", $deliverySet);
             if ($deliverySet->isDerived()) {
                 $this->addTplParam('readonly', true);
