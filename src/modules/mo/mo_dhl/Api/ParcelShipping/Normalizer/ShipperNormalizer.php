@@ -18,11 +18,11 @@ class ShipperNormalizer implements DenormalizerInterface, NormalizerInterface, D
     use NormalizerAwareTrait;
     use CheckArray;
     use ValidatorTrait;
-    public function supportsDenormalization($data, $type, $format = null) : bool
+    public function supportsDenormalization($data, $type, $format = null, array $context = array()) : bool
     {
         return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Shipper';
     }
-    public function supportsNormalization($data, $format = null) : bool
+    public function supportsNormalization($data, $format = null, array $context = array()) : bool
     {
         return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Shipper';
     }
@@ -81,10 +81,6 @@ class ShipperNormalizer implements DenormalizerInterface, NormalizerInterface, D
             $object->setEmail($data['email']);
             unset($data['email']);
         }
-        if (\array_key_exists('shipperRef', $data)) {
-            $object->setShipperRef($data['shipperRef']);
-            unset($data['shipperRef']);
-        }
         foreach ($data as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
                 $object[$key] = $value;
@@ -120,14 +116,15 @@ class ShipperNormalizer implements DenormalizerInterface, NormalizerInterface, D
         if ($object->isInitialized('email') && null !== $object->getEmail()) {
             $data['email'] = $object->getEmail();
         }
-        if ($object->isInitialized('shipperRef') && null !== $object->getShipperRef()) {
-            $data['shipperRef'] = $object->getShipperRef();
-        }
         foreach ($object as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
                 $data[$key] = $value;
             }
         }
         return $data;
+    }
+    public function getSupportedTypes(?string $format = null) : array
+    {
+        return array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Shipper' => false);
     }
 }

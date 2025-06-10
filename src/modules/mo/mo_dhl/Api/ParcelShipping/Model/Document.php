@@ -37,7 +37,7 @@ class Document extends \ArrayObject
      */
     protected $fileFormat;
     /**
-     * The print format used
+     * The print format used. Customs documents and cash on delivery documents can only be returned in format A4.
      *
      * @var string
      */
@@ -131,7 +131,7 @@ class Document extends \ArrayObject
         return $this;
     }
     /**
-     * The print format used
+     * The print format used. Customs documents and cash on delivery documents can only be returned in format A4.
      *
      * @return string
      */
@@ -140,7 +140,7 @@ class Document extends \ArrayObject
         return $this->printFormat;
     }
     /**
-     * The print format used
+     * The print format used. Customs documents and cash on delivery documents can only be returned in format A4.
      *
      * @param string $printFormat
      *

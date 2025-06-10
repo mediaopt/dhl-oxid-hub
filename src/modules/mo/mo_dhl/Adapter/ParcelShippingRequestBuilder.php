@@ -75,7 +75,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         $shipment->setDetails($this->buildShipmentDetails($order));
         $shipment->setCreationSoftware(CsvExporter::CREATOR_TAG);
         if ($this->isInternational($order)) {
-            $shipment->setCustoms( $this->buildExportDocument($order));
+            $shipment->setCustoms($this->buildExportDocument($order));
         }
         $shipment->setBillingNumber($this->buildAccountNumber($order));
         $shipment->setProduct($this->getProcess($order)->getServiceIdentifier());
@@ -241,10 +241,10 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         if ($order->moDHLUsesService(MoDHLService::MO_DHL__IDENT_CHECK) && $process->supportsIdentCheck()) {
             $services->setIdentCheck($this->createIdent($order));
             $initialized = true;
-        } elseif ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK18) && $process->supportsVisualAgeCheck()) {
+        } else if ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK18) && $process->supportsVisualAgeCheck()) {
             $services->setVisualCheckOfAge('A18');
             $initialized = true;
-        } elseif ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK16) && $process->supportsVisualAgeCheck()) {
+        } else if ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK16) && $process->supportsVisualAgeCheck()) {
             $services->setVisualCheckOfAge('A16');
             $initialized = true;
         }
@@ -314,12 +314,12 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         }
         $identCheck->setFirstName($order->moDHLGetAddressData('fname'));
         $identCheck->setLastName($order->moDHLGetAddressData('lname'));
-        if($minimumAge = Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')) {
+        if ($minimumAge = Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')) {
             $identCheck->setMinimumAge('A' . $minimumAge);
         }
         if ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK18)) {
             $identCheck->setMinimumAge('A18');
-        } elseif ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK16) && !$identCheck->getMinimumAge()) {
+        } else if ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK16) && !$identCheck->getMinimumAge()) {
             $identCheck->setMinimumAge('A16');
         }
         return $identCheck;
@@ -363,22 +363,23 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         return $returnReceiver;
     }
 
-    protected function buildShipper(): Shipper
+    protected function buildShipper(): array
     {
         $config = Registry::getConfig();
-        $shipper = new Shipper();
-        $shipper->setName1($this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line1')));
+        $shipper = [
+            'name1'         => $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line1')),
+            'city'          => $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')),
+            'postalCode'    => $config->getShopConfVar('mo_dhl__sender_zip'),
+            'addressStreet' => $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_street')),
+            'addressHouse'  => $config->getShopConfVar('mo_dhl__sender_street_number'),
+            'country'       => $config->getShopConfVar('mo_dhl__sender_country'),
+        ];
         if ($name2 = $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line2'))) {
-            $shipper->setName2($name2);
+            $shipper['name2'] = $name2;
         }
         if ($name3 = $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line3'))) {
-            $shipper->setName3($name3);
+            $shipper['name3'] = $name3;
         }
-        $shipper->setCity($this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')));
-        $shipper->setPostalCode($config->getShopConfVar('mo_dhl__sender_zip'));
-        $shipper->setAddressStreet($this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_street')));
-        $shipper->setAddressHouse($config->getShopConfVar('mo_dhl__sender_street_number'));
-        $shipper->setCountry($config->getShopConfVar('mo_dhl__sender_country'));
         return $shipper;
     }
 
@@ -552,7 +553,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         return [
             'includeDocs' => 'URL',
             'combine'     => false,
-            'mustEncode'  => (bool) Registry::getConfig()->getShopConfVar('mo_dhl__only_with_leitcode'),
+            'mustEncode'  => (bool)Registry::getConfig()->getShopConfVar('mo_dhl__only_with_leitcode'),
         ];
     }
 

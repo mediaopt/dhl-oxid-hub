@@ -19,11 +19,17 @@ class RequestStatus extends \ArrayObject
      */
     protected $title;
     /**
-     * The status code of the response. Usually, but not necessarliy the HTTP status code.
+     * The status code of the response. Usually, but not necessarliy the HTTP status code. Same as attribut "status" but deprecated. Do not use. Will be removed in the next major version.
      *
      * @var int
      */
     protected $statusCode;
+    /**
+     * The status code of the response. Usually, but not necessarliy the HTTP status code.
+     *
+     * @var int
+     */
+    protected $status;
     /**
      * A URI reference that identifies the specific occurrence of the problem.
      *
@@ -59,7 +65,7 @@ class RequestStatus extends \ArrayObject
         return $this;
     }
     /**
-     * The status code of the response. Usually, but not necessarliy the HTTP status code.
+     * The status code of the response. Usually, but not necessarliy the HTTP status code. Same as attribut "status" but deprecated. Do not use. Will be removed in the next major version.
      *
      * @return int
      */
@@ -68,7 +74,7 @@ class RequestStatus extends \ArrayObject
         return $this->statusCode;
     }
     /**
-     * The status code of the response. Usually, but not necessarliy the HTTP status code.
+     * The status code of the response. Usually, but not necessarliy the HTTP status code. Same as attribut "status" but deprecated. Do not use. Will be removed in the next major version.
      *
      * @param int $statusCode
      *
@@ -78,6 +84,28 @@ class RequestStatus extends \ArrayObject
     {
         $this->initialized['statusCode'] = true;
         $this->statusCode = $statusCode;
+        return $this;
+    }
+    /**
+     * The status code of the response. Usually, but not necessarliy the HTTP status code.
+     *
+     * @return int
+     */
+    public function getStatus() : int
+    {
+        return $this->status;
+    }
+    /**
+     * The status code of the response. Usually, but not necessarliy the HTTP status code.
+     *
+     * @param int $status
+     *
+     * @return self
+     */
+    public function setStatus(int $status) : self
+    {
+        $this->initialized['status'] = true;
+        $this->status = $status;
         return $this;
     }
     /**
