@@ -30,6 +30,26 @@ class ParcelShippingCustomRequestBuilder
 {
 
     /**
+     * @param array $array
+     * @param string $key
+     * @param string $newKey
+     * @param mixed $newValue
+     * @return array
+     */
+    private function insert_after(array $array, string $key, string $newKey, mixed $newValue): array
+    {
+        $keys = array_keys($array);
+        $index = array_search($key, $keys);
+        if ($index === false) {
+            return $array + [$newKey => $newValue];
+        }
+        $pos = $index + 1;
+        return array_slice($array, 0, $pos, true)
+            + [$newKey => $newValue]
+            + array_slice($array, $pos, null, true);
+    }
+
+    /**
      * @param array    $query
      * @param Shipment $shipment
      * @return array
@@ -40,6 +60,11 @@ class ParcelShippingCustomRequestBuilder
         $services = $shipment->isInitialized('services') ? $shipment->getServices() : new VAS();
         $returnReceiver = $services->isInitialized('dhlRetoure') ? $services->getDhlRetoure()->getReturnAddress() : oxNew(ParcelShippingRequestBuilder::class)->buildReturnReceiver();
         $codAmount = $services->isInitialized('cashOnDelivery') ? $services->getCashOnDelivery()->getAmount() : oxNew(ParcelShippingRequestBuilder::class)->createCashOnDelivery($order)->getAmount();
+        $receiver = $shipment->getConsignee();
+        if (array_key_exists('name3', $receiver) === false) {
+            // make sure that name3 (additional info) is always available and on the correct position
+            $receiver = $this->insert_after($receiver, 'name2', 'name3', '');
+        }
         return [
             'weight'   => array_merge([
                 'total' => ['weight' => $shipment->getDetails()->getWeight()->getValue(), 'title' => Registry::getLang()->translateString('GENERAL_ATALL')],
@@ -54,7 +79,7 @@ class ParcelShippingCustomRequestBuilder
                 'city'          => $shipper->getCity(),
                 'country'       => $shipper->getCountry(),
             ],
-            'receiver' => $shipment->getConsignee(),
+            'receiver' => $receiver,
             'services' => [
                 'parcelOutletRouting'  => $services->isInitialized('parcelOutletRouting') ? $services->getParcelOutletRouting() : null,
                 'printOnlyIfCodeable'  => $query['mustEncode'],
