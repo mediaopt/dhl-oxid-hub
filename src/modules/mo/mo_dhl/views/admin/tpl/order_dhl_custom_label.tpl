@@ -60,7 +60,7 @@
                                         </td>
                                         <td>
                                             <input type="text" name="data[receiver][[{$key}]]"
-                                                   value="[{$item}]">
+                                                    value="[{$item|replace:"\"":"&quot;"}]">
                                         </td>
                                     </tr>
                                 [{/foreach}]
@@ -83,7 +83,7 @@
                                     </td>
                                     <td>
                                         <input type="text" name="data[shipper][[{$key}]]"
-                                               value="[{$item}]">
+                                               value="[{$item|replace:"\"":"&quot;"}]">
                                     </td>
                                 </tr>
                                 [{/foreach}]
@@ -106,7 +106,7 @@
                                     </td>
                                     <td>
                                         <input type="text" name="data[services][dhlRetoure][address][[{$key}]]"
-                                               value="[{$item}]">
+                                               value="[{$item|replace:"\"":"&quot;"}]">
                                     </td>
                                 </tr>
                                 [{/foreach}]
