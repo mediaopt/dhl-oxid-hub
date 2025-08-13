@@ -141,6 +141,10 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
             [$query, $request] = $this->buildShipmentOrderRequest();
             $shipmentOrder = $request->getShipments()[0];
             $data = Registry::getConfig()->getRequestParameter('data');
+            if ($data['receiver']['name3'] === '') // unset name3 if empty to not cause errors in the API
+            {
+                unset($data['receiver']['name3']);
+            }
 
             $customShipmentBuilder = new ParcelShippingCustomRequestBuilder();
             $customShipmentBuilder->applyCustomDataToShipmentOrder($shipmentOrder, $data, $this->getOrder());

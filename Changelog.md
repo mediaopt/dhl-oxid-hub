@@ -1,4 +1,9 @@
 # Changelog
+## 1.8.4
+* Always have additional info field in label generation
+* make label name more clear
+* escape double-quotes in values to not break html
+
 ## 1.8.3
 * bugfix: service returns null
 * bugfix: title not set on labels
