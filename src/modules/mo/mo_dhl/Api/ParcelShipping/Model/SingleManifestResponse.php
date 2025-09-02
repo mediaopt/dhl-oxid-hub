@@ -27,9 +27,21 @@ class SingleManifestResponse extends \ArrayObject
     /**
      * 
      *
-     * @var GetManifestData
+     * @var Document[]
      */
     protected $manifest;
+    /**
+     * 
+     *
+     * @var BillingNoToSheetNo[]
+     */
+    protected $sheetNo;
+    /**
+     * 
+     *
+     * @var ShipmentNoToSheetNo[]
+     */
+    protected $items;
     /**
      * General status description for the attached response or response item.
      *
@@ -77,23 +89,67 @@ class SingleManifestResponse extends \ArrayObject
     /**
      * 
      *
-     * @return GetManifestData
+     * @return Document[]
      */
-    public function getManifest() : GetManifestData
+    public function getManifest() : array
     {
         return $this->manifest;
     }
     /**
      * 
      *
-     * @param GetManifestData $manifest
+     * @param Document[] $manifest
      *
      * @return self
      */
-    public function setManifest(GetManifestData $manifest) : self
+    public function setManifest(array $manifest) : self
     {
         $this->initialized['manifest'] = true;
         $this->manifest = $manifest;
+        return $this;
+    }
+    /**
+     * 
+     *
+     * @return BillingNoToSheetNo[]
+     */
+    public function getSheetNo() : array
+    {
+        return $this->sheetNo;
+    }
+    /**
+     * 
+     *
+     * @param BillingNoToSheetNo[] $sheetNo
+     *
+     * @return self
+     */
+    public function setSheetNo(array $sheetNo) : self
+    {
+        $this->initialized['sheetNo'] = true;
+        $this->sheetNo = $sheetNo;
+        return $this;
+    }
+    /**
+     * 
+     *
+     * @return ShipmentNoToSheetNo[]
+     */
+    public function getItems() : array
+    {
+        return $this->items;
+    }
+    /**
+     * 
+     *
+     * @param ShipmentNoToSheetNo[] $items
+     *
+     * @return self
+     */
+    public function setItems(array $items) : self
+    {
+        $this->initialized['items'] = true;
+        $this->items = $items;
         return $this;
     }
 }

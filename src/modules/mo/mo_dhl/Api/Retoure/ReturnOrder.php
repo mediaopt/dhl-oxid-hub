@@ -1,4 +1,5 @@
 <?php
+
 namespace Mediaopt\DHL\Api\Retoure;
 
 /**
@@ -6,276 +7,301 @@ namespace Mediaopt\DHL\Api\Retoure;
  */
 class ReturnOrder extends SwaggerModel
 {
-	/**
-	 * @var string
-	 * @required
-	 */
-	protected $receiverId;
+    /**
+     * @var string
+     * @required
+     */
+    protected $receiverId;
 
-	/**
-	 * @var string
-	 */
-	protected $customerReference = '';
+    /**
+     * @var string
+     */
+    protected $customerReference = '';
 
-	/**
-	 * @var string
-	 */
-	protected $shipmentReference = '';
+    /**
+     * @var string
+     */
+    protected $shipmentReference = '';
 
-	/**
-	 * @var SimpleAddress
-	 * @required
-	 */
-	protected $senderAddress;
+    /**
+     * @var SimpleAddress
+     * @required
+     */
+    protected $senderAddress;
 
-	/**
-	 * @var string
-	 */
-	protected $email = '';
+    /**
+     * @var string
+     */
+    protected $email = '';
 
-	/**
-	 * @var string
-	 */
-	protected $telephoneNumber = '';
+    /**
+     * @var string
+     */
+    protected $telephoneNumber = '';
 
-	/**
-	 * @var integer
-	 */
-	protected $weightInGrams = 0;
+    /**
+     * @var integer
+     */
+    protected $weightInGrams = 0;
 
-	/**
-	 * @var float
-	 */
-	protected $value = 0.0;
+    /**
+     * @var float
+     */
+    protected $value = 0.0;
 
-	/**
-	 * @var CustomsDocument
-	 */
-	protected $customsDocument;
+    /**
+     * @var CustomsDocument
+     */
+    protected $customsDocument;
 
-	/**
-	 * The type of document(s) to return in the response':' The SHIPMENT_LABEL only, the QR_LABEL or BOTH.
-	 * @var string
-	 */
-	protected $returnDocumentType = '';
+    /**
+     * The type of document(s) to return in the response':' The SHIPMENT_LABEL only, the QR_LABEL or BOTH.
+     *
+     * @var string
+     */
+    protected $returnDocumentType = '';
 
-
-	/**
-	 * @return string
-	 */
-	public function getReceiverId()
-	{
-		return $this->receiverId;
-	}
-
-
-	/**
-	 * @param string $receiverId
-	 *
-	 * @return $this
-	 */
-	public function setReceiverId($receiverId)
-	{
-		$this->receiverId = $receiverId;
-
-		return $this;
-	}
+    /**
+     * @var VAS
+     */
+    protected $services;
+    
+    /**
+     * @return string
+     */
+    public function getReceiverId()
+    {
+        return $this->receiverId;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getCustomerReference()
-	{
-		return $this->customerReference;
-	}
+    /**
+     * @param string $receiverId
+     *
+     * @return $this
+     */
+    public function setReceiverId($receiverId)
+    {
+        $this->receiverId = $receiverId;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $customerReference
-	 *
-	 * @return $this
-	 */
-	public function setCustomerReference($customerReference)
-	{
-		$this->customerReference = $customerReference;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getCustomerReference()
+    {
+        return $this->customerReference;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getShipmentReference()
-	{
-		return $this->shipmentReference;
-	}
+    /**
+     * @param string $customerReference
+     *
+     * @return $this
+     */
+    public function setCustomerReference($customerReference)
+    {
+        $this->customerReference = $customerReference;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $shipmentReference
-	 *
-	 * @return $this
-	 */
-	public function setShipmentReference($shipmentReference)
-	{
-		$this->shipmentReference = $shipmentReference;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getShipmentReference()
+    {
+        return $this->shipmentReference;
+    }
 
 
-	/**
-	 * @return SimpleAddress
-	 */
-	public function getSenderAddress()
-	{
-		return $this->senderAddress;
-	}
+    /**
+     * @param string $shipmentReference
+     *
+     * @return $this
+     */
+    public function setShipmentReference($shipmentReference)
+    {
+        $this->shipmentReference = $shipmentReference;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param SimpleAddress $senderAddress
-	 *
-	 * @return $this
-	 */
-	public function setSenderAddress(SimpleAddress $senderAddress)
-	{
-		$this->senderAddress = $senderAddress;
-
-		return $this;
-	}
+    /**
+     * @return SimpleAddress
+     */
+    public function getSenderAddress()
+    {
+        return $this->senderAddress;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getEmail()
-	{
-		return $this->email;
-	}
+    /**
+     * @param SimpleAddress $senderAddress
+     *
+     * @return $this
+     */
+    public function setSenderAddress(SimpleAddress $senderAddress)
+    {
+        $this->senderAddress = $senderAddress;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $email
-	 *
-	 * @return $this
-	 */
-	public function setEmail($email)
-	{
-		$this->email = $email;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getTelephoneNumber()
-	{
-		return $this->telephoneNumber;
-	}
+    /**
+     * @param string $email
+     *
+     * @return $this
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $telephoneNumber
-	 *
-	 * @return $this
-	 */
-	public function setTelephoneNumber($telephoneNumber)
-	{
-		$this->telephoneNumber = $telephoneNumber;
-
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getTelephoneNumber()
+    {
+        return $this->telephoneNumber;
+    }
 
 
-	/**
-	 * @return integer
-	 */
-	public function getWeightInGrams()
-	{
-		return $this->weightInGrams;
-	}
+    /**
+     * @param string $telephoneNumber
+     *
+     * @return $this
+     */
+    public function setTelephoneNumber($telephoneNumber)
+    {
+        $this->telephoneNumber = $telephoneNumber;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param integer $weightInGrams
-	 *
-	 * @return $this
-	 */
-	public function setWeightInGrams($weightInGrams)
-	{
-		$this->weightInGrams = $weightInGrams;
-
-		return $this;
-	}
+    /**
+     * @return integer
+     */
+    public function getWeightInGrams()
+    {
+        return $this->weightInGrams;
+    }
 
 
-	/**
-	 * @return float
-	 */
-	public function getValue()
-	{
-		return $this->value;
-	}
+    /**
+     * @param integer $weightInGrams
+     *
+     * @return $this
+     */
+    public function setWeightInGrams($weightInGrams)
+    {
+        $this->weightInGrams = $weightInGrams;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param float $value
-	 *
-	 * @return $this
-	 */
-	public function setValue($value)
-	{
-		$this->value = $value;
-
-		return $this;
-	}
+    /**
+     * @return float
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
 
 
-	/**
-	 * @return CustomsDocument
-	 */
-	public function getCustomsDocument()
-	{
-		return $this->customsDocument;
-	}
+    /**
+     * @param float $value
+     *
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param CustomsDocument $customsDocument
-	 *
-	 * @return $this
-	 */
-	public function setCustomsDocument(CustomsDocument $customsDocument)
-	{
-		$this->customsDocument = $customsDocument;
-
-		return $this;
-	}
+    /**
+     * @return CustomsDocument
+     */
+    public function getCustomsDocument()
+    {
+        return $this->customsDocument;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getReturnDocumentType()
-	{
-		return $this->returnDocumentType;
-	}
+    /**
+     * @param CustomsDocument $customsDocument
+     *
+     * @return $this
+     */
+    public function setCustomsDocument(CustomsDocument $customsDocument)
+    {
+        $this->customsDocument = $customsDocument;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param string $returnDocumentType
-	 *
-	 * @return $this
-	 */
-	public function setReturnDocumentType($returnDocumentType)
-	{
-		$this->returnDocumentType = $returnDocumentType;
+    /**
+     * @return string
+     */
+    public function getReturnDocumentType()
+    {
+        return $this->returnDocumentType;
+    }
 
-		return $this;
-	}
+
+    /**
+     * @param string $returnDocumentType
+     *
+     * @return $this
+     */
+    public function setReturnDocumentType($returnDocumentType)
+    {
+        $this->returnDocumentType = $returnDocumentType;
+
+        return $this;
+    }
+
+    /**
+     * @return VAS
+     */
+    public function getServices()
+    {
+        return $this->services;
+    }
+
+    /**
+     * @param VAS $services
+     *
+     * @return $this
+     */
+    public function setServices(VAS $services)
+    {
+        $this->services = $services;
+
+        return $this;
+    }
 }

@@ -299,6 +299,21 @@
                                 </tr>
                                 [{/if}]
 
+                                [{if $process->supportsGoGreenPlus()}]
+                                    [{assign var="service" value=$shipmentOrder.services.goGreenPlus}]
+                                    <tr>
+                                        <td>
+                                            [{oxmultilang ident='SHOP_MODULE_mo_dhl__go_green_plus_active'}]
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="data[services][goGreenPlus][active]"
+                                                   value="false">
+                                            <input type="checkbox" name="data[services][goGreenPlus][active]"
+                                                   [{if $service}]checked[{/if}]>
+                                        </td>
+                                    </tr>
+                                [{/if}]
+
                                 [{if $process->supportsNoNeighbourDelivery()}]
                                 <tr>
                                     <td>

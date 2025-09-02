@@ -19,6 +19,18 @@ class ResponseItem extends \ArrayObject
      */
     protected $shipmentNo;
     /**
+     * Routing code of the consignee address
+     *
+     * @var string
+     */
+    protected $routingCode;
+    /**
+     * Routing code of the return address
+     *
+     * @var string
+     */
+    protected $returnRoutingCode;
+    /**
      * 
      *
      * @var string
@@ -37,25 +49,25 @@ class ResponseItem extends \ArrayObject
      */
     protected $shipmentRefNo;
     /**
-     * Encoded document. All types of labels and documents. 
+     * Encoded document. All types of labels and documents.
      *
      * @var Document
      */
     protected $label;
     /**
-     * Encoded document. All types of labels and documents. 
+     * Encoded document. All types of labels and documents.
      *
      * @var Document
      */
     protected $returnLabel;
     /**
-     * Encoded document. All types of labels and documents. 
+     * Encoded document. All types of labels and documents.
      *
      * @var Document
      */
     protected $customsDoc;
     /**
-     * Encoded document. All types of labels and documents. 
+     * Encoded document. All types of labels and documents.
      *
      * @var Document
      */
@@ -86,6 +98,50 @@ class ResponseItem extends \ArrayObject
     {
         $this->initialized['shipmentNo'] = true;
         $this->shipmentNo = $shipmentNo;
+        return $this;
+    }
+    /**
+     * Routing code of the consignee address
+     *
+     * @return string
+     */
+    public function getRoutingCode() : string
+    {
+        return $this->routingCode;
+    }
+    /**
+     * Routing code of the consignee address
+     *
+     * @param string $routingCode
+     *
+     * @return self
+     */
+    public function setRoutingCode(string $routingCode) : self
+    {
+        $this->initialized['routingCode'] = true;
+        $this->routingCode = $routingCode;
+        return $this;
+    }
+    /**
+     * Routing code of the return address
+     *
+     * @return string
+     */
+    public function getReturnRoutingCode() : string
+    {
+        return $this->returnRoutingCode;
+    }
+    /**
+     * Routing code of the return address
+     *
+     * @param string $returnRoutingCode
+     *
+     * @return self
+     */
+    public function setReturnRoutingCode(string $returnRoutingCode) : self
+    {
+        $this->initialized['returnRoutingCode'] = true;
+        $this->returnRoutingCode = $returnRoutingCode;
         return $this;
     }
     /**
@@ -155,7 +211,7 @@ class ResponseItem extends \ArrayObject
         return $this;
     }
     /**
-     * Encoded document. All types of labels and documents. 
+     * Encoded document. All types of labels and documents.
      *
      * @return Document
      */
@@ -164,7 +220,7 @@ class ResponseItem extends \ArrayObject
         return $this->label;
     }
     /**
-     * Encoded document. All types of labels and documents. 
+     * Encoded document. All types of labels and documents.
      *
      * @param Document $label
      *
@@ -177,7 +233,7 @@ class ResponseItem extends \ArrayObject
         return $this;
     }
     /**
-     * Encoded document. All types of labels and documents. 
+     * Encoded document. All types of labels and documents.
      *
      * @return Document
      */
@@ -186,7 +242,7 @@ class ResponseItem extends \ArrayObject
         return $this->returnLabel;
     }
     /**
-     * Encoded document. All types of labels and documents. 
+     * Encoded document. All types of labels and documents.
      *
      * @param Document $returnLabel
      *
@@ -199,7 +255,7 @@ class ResponseItem extends \ArrayObject
         return $this;
     }
     /**
-     * Encoded document. All types of labels and documents. 
+     * Encoded document. All types of labels and documents.
      *
      * @return Document
      */
@@ -208,7 +264,7 @@ class ResponseItem extends \ArrayObject
         return $this->customsDoc;
     }
     /**
-     * Encoded document. All types of labels and documents. 
+     * Encoded document. All types of labels and documents.
      *
      * @param Document $customsDoc
      *
@@ -221,7 +277,7 @@ class ResponseItem extends \ArrayObject
         return $this;
     }
     /**
-     * Encoded document. All types of labels and documents. 
+     * Encoded document. All types of labels and documents.
      *
      * @return Document
      */
@@ -230,7 +286,7 @@ class ResponseItem extends \ArrayObject
         return $this->codLabel;
     }
     /**
-     * Encoded document. All types of labels and documents. 
+     * Encoded document. All types of labels and documents.
      *
      * @param Document $codLabel
      *

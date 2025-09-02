@@ -42,7 +42,8 @@ $aLang = [
     'HELP_SHOP_MODULE_mo_dhl__packing_weight_absolute'   => 'Fester Gewichtsaufschlag in Kilogramm für Verpackungsmaterial, wenn die automatische Gewichtsberechnung aktiviert ist.',
 
     'SHOP_MODULE_GROUP_mo_dhl__services'                       => 'Versand - Services',
-    'SHOP_MODULE_mo_dhl__go_green_program'                     => 'GoGreen Programm',
+    'SHOP_MODULE_mo_dhl__go_green_program'                     => 'GoGreen-Programm',
+    'SHOP_MODULE_mo_dhl__go_green_plus_active'                 => 'GoGreen Plus aktiv',
     'HELP_SHOP_MODULE_mo_dhl__go_green_program'                => 'Zeigt im Frontend an, dass für den Versand mit DHL GoGreen bzw. DHL GoGreen Plus versendet wird. Bitte aktivieren Sie dieses Feld nur, wenn für den Versand GoGreen bzw. GoGreen Plus aktiviert ist.',
     'SHOP_MODULE_mo_dhl__go_green_program_NONE'                => 'Keines',
     'SHOP_MODULE_mo_dhl__go_green_program_GO_GREEN'            => 'GoGreen',

@@ -19,7 +19,7 @@ class LabelDataResponse extends \ArrayObject
      */
     protected $status;
     /**
-     * For consistency, response is a single element array.
+     * If the request contains a multi element array (e.g. multiple shipments), then the order of the items in the response corresponds to the order of the items in the request. For consistency, if the request contains only one item then the response contains a single element array.
      *
      * @var ResponseItem[]
      */
@@ -47,7 +47,7 @@ class LabelDataResponse extends \ArrayObject
         return $this;
     }
     /**
-     * For consistency, response is a single element array.
+     * If the request contains a multi element array (e.g. multiple shipments), then the order of the items in the response corresponds to the order of the items in the request. For consistency, if the request contains only one item then the response contains a single element array.
      *
      * @return ResponseItem[]
      */
@@ -56,7 +56,7 @@ class LabelDataResponse extends \ArrayObject
         return $this->items;
     }
     /**
-     * For consistency, response is a single element array.
+     * If the request contains a multi element array (e.g. multiple shipments), then the order of the items in the response corresponds to the order of the items in the request. For consistency, if the request contains only one item then the response contains a single element array.
      *
      * @param ResponseItem[] $items
      *

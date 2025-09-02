@@ -173,7 +173,6 @@ class Process
         self::PAKET_INTERNATIONAL => [
             self::SERVICE_NOTIFICATION,
             self::SERVICE_GO_GREEN,
-            self::SERVICE_GO_GREEN_PLUS,
             self::SERVICE_ADDITIONAL_INSURANCE,
             self::SERVICE_BULKY_GOOD,
             self::SERVICE_PDDP,
@@ -185,7 +184,6 @@ class Process
         self::EUROPAKET => [
             self::SERVICE_NOTIFICATION,
             self::SERVICE_GO_GREEN,
-            self::SERVICE_GO_GREEN_PLUS,
             self::SERVICE_ADDITIONAL_INSURANCE,
         ],
         self::KLEINPAKET => [
@@ -197,11 +195,9 @@ class Process
             self::SERVICE_PARCEL_OUTLET_ROUTING,
             self::SERVICE_DHL_RETOURE,
         ],
-        self::INTERNETMARKE => [
-        ],
+        self::INTERNETMARKE => [],
         self::WARENPOST_INTERNATIONAL => [
             self::SERVICE_GO_GREEN,
-            self::SERVICE_GO_GREEN_PLUS,
             self::SERVICE_PREMIUM,
         ]
     ];

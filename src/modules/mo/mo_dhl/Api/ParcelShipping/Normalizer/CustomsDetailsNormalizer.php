@@ -18,11 +18,11 @@ class CustomsDetailsNormalizer implements DenormalizerInterface, NormalizerInter
     use NormalizerAwareTrait;
     use CheckArray;
     use ValidatorTrait;
-    public function supportsDenormalization($data, $type, $format = null) : bool
+    public function supportsDenormalization($data, $type, $format = null, array $context = array()) : bool
     {
         return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\CustomsDetails';
     }
-    public function supportsNormalization($data, $format = null) : bool
+    public function supportsNormalization($data, $format = null, array $context = array()) : bool
     {
         return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\CustomsDetails';
     }
@@ -69,13 +69,25 @@ class CustomsDetailsNormalizer implements DenormalizerInterface, NormalizerInter
             $object->setHasElectronicExportNotification($data['hasElectronicExportNotification']);
             unset($data['hasElectronicExportNotification']);
         }
+        if (\array_key_exists('MRN', $data)) {
+            $object->setMRN($data['MRN']);
+            unset($data['MRN']);
+        }
         if (\array_key_exists('postalCharges', $data)) {
-            $object->setPostalCharges($this->denormalizer->denormalize($data['postalCharges'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\Value', 'json', $context));
+            $object->setPostalCharges($this->denormalizer->denormalize($data['postalCharges'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\CustomsDetailsPostalCharges', 'json', $context));
             unset($data['postalCharges']);
         }
         if (\array_key_exists('officeOfOrigin', $data)) {
             $object->setOfficeOfOrigin($data['officeOfOrigin']);
             unset($data['officeOfOrigin']);
+        }
+        if (\array_key_exists('shipperCustomsRef', $data)) {
+            $object->setShipperCustomsRef($data['shipperCustomsRef']);
+            unset($data['shipperCustomsRef']);
+        }
+        if (\array_key_exists('consigneeCustomsRef', $data)) {
+            $object->setConsigneeCustomsRef($data['consigneeCustomsRef']);
+            unset($data['consigneeCustomsRef']);
         }
         if (\array_key_exists('items', $data)) {
             $values = array();
@@ -117,11 +129,18 @@ class CustomsDetailsNormalizer implements DenormalizerInterface, NormalizerInter
         if ($object->isInitialized('hasElectronicExportNotification') && null !== $object->getHasElectronicExportNotification()) {
             $data['hasElectronicExportNotification'] = $object->getHasElectronicExportNotification();
         }
-        if ($object->isInitialized('postalCharges') && null !== $object->getPostalCharges()) {
-            $data['postalCharges'] = $this->normalizer->normalize($object->getPostalCharges(), 'json', $context);
+        if ($object->isInitialized('mRN') && null !== $object->getMRN()) {
+            $data['MRN'] = $object->getMRN();
         }
+        $data['postalCharges'] = $this->normalizer->normalize($object->getPostalCharges(), 'json', $context);
         if ($object->isInitialized('officeOfOrigin') && null !== $object->getOfficeOfOrigin()) {
             $data['officeOfOrigin'] = $object->getOfficeOfOrigin();
+        }
+        if ($object->isInitialized('shipperCustomsRef') && null !== $object->getShipperCustomsRef()) {
+            $data['shipperCustomsRef'] = $object->getShipperCustomsRef();
+        }
+        if ($object->isInitialized('consigneeCustomsRef') && null !== $object->getConsigneeCustomsRef()) {
+            $data['consigneeCustomsRef'] = $object->getConsigneeCustomsRef();
         }
         $values = array();
         foreach ($object->getItems() as $value) {
@@ -134,5 +153,9 @@ class CustomsDetailsNormalizer implements DenormalizerInterface, NormalizerInter
             }
         }
         return $data;
+    }
+    public function getSupportedTypes(?string $format = null) : array
+    {
+        return array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\CustomsDetails' => false);
     }
 }

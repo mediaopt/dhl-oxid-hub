@@ -6,6 +6,7 @@ use Mediaopt\DHL\Api\ParcelShipping\Model\BankAccount;
 use Mediaopt\DHL\Api\ParcelShipping\Model\Commodity;
 use Mediaopt\DHL\Api\ParcelShipping\Model\ContactAddress;
 use Mediaopt\DHL\Api\ParcelShipping\Model\CustomsDetails;
+use Mediaopt\DHL\Api\ParcelShipping\Model\CustomsDetailsPostalCharges;
 use Mediaopt\DHL\Api\ParcelShipping\Model\Shipment;
 use Mediaopt\DHL\Api\ParcelShipping\Model\ShipmentDetails;
 use Mediaopt\DHL\Api\ParcelShipping\Model\ShipmentOrderRequest;
@@ -18,6 +19,7 @@ use Mediaopt\DHL\Api\ParcelShipping\Model\VASIdentCheck;
 use Mediaopt\DHL\Api\ParcelShipping\Model\Weight;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Export\CsvExporter;
+use Mediaopt\DHL\Model\MoDHLGoGreenProgram;
 use Mediaopt\DHL\Model\MoDHLNotificationMode;
 use Mediaopt\DHL\Model\MoDHLService;
 use Mediaopt\DHL\ServiceProvider\Branch;
@@ -75,7 +77,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         $shipment->setDetails($this->buildShipmentDetails($order));
         $shipment->setCreationSoftware(CsvExporter::CREATOR_TAG);
         if ($this->isInternational($order)) {
-            $shipment->setCustoms( $this->buildExportDocument($order));
+            $shipment->setCustoms($this->buildExportDocument($order));
         }
         $shipment->setBillingNumber($this->buildAccountNumber($order));
         $shipment->setProduct($this->getProcess($order)->getServiceIdentifier());
@@ -121,7 +123,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
                 'name'       => $name,
                 'country'    => $this->buildCountry($order->moDHLGetAddressData('countryid')),
             ]);
-        } else if (Branch::isFiliale($order->moDHLGetAddressData('street'))) {
+        } elseif (Branch::isFiliale($order->moDHLGetAddressData('street'))) {
             return array_filter([
                 'city'       => $order->moDHLGetAddressData('city'),
                 'name'       => $name,
@@ -238,6 +240,10 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
             $services->setParcelOutletRouting($altEmail);
             $initialized = true;
         }
+        if ($process->supportsGoGreenPlus() && Registry::getConfig()->getShopConfVar('mo_dhl__go_green_program') == MoDHLGoGreenProgram::GO_GREEN_PLUS) {
+            $services->setGoGreenPlus(true);
+            $initialized = true;
+        }
         if ($order->moDHLUsesService(MoDHLService::MO_DHL__IDENT_CHECK) && $process->supportsIdentCheck()) {
             $services->setIdentCheck($this->createIdent($order));
             $initialized = true;
@@ -295,6 +301,9 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
             $dhlRetoure = new VASDhlRetoure();
             $dhlRetoure->setBillingNumber($returnAccountNumber);
             $dhlRetoure->setReturnAddress($this->buildReturnReceiver());
+            if ($services->isInitialized('goGreenPlus')) {
+                $dhlRetoure->setGoGreenPlus($services->getGoGreenPlus());
+            }
             $services->setDhlRetoure($dhlRetoure);
             $initialized = true;
         }
@@ -314,7 +323,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         }
         $identCheck->setFirstName($order->moDHLGetAddressData('fname'));
         $identCheck->setLastName($order->moDHLGetAddressData('lname'));
-        if($minimumAge = Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')) {
+        if ($minimumAge = Registry::getConfig()->getShopConfVar('mo_dhl__ident_check_min_age')) {
             $identCheck->setMinimumAge('A' . $minimumAge);
         }
         if ($order->moDHLUsesService(MoDHLService::MO_DHL__VISUAL_AGE_CHECK18)) {
@@ -433,22 +442,22 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
 
         $customsDetails = new CustomsDetails();
         $customsDetails->setExportType('COMMERCIAL_GOODS');
-        $customsDetails->setPostalCharges($this->createValue($this->getEURPrice($order, $order->oxorder__oxdelcost->value)));
+        $customsDetails->setPostalCharges($this->createPostalCharges($order));
         $customsDetails->setItems($exportDocuments);
         $customsDetails->setOfficeOfOrigin($this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')));
         return $customsDetails;
-
     }
 
     /**
-     * @param string $isoalpha3
-     * @return false|string
-     * @throws \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException
+     * @param Order $order
+     * @return CustomsDetailsPostalCharges
      */
-    protected function getIsoalpha2FromIsoalpha3($isoalpha3)
+    protected function createPostalCharges(Order $order): CustomsDetailsPostalCharges
     {
-        return \OxidEsales\Eshop\Core\DatabaseProvider::getDb()
-            ->getOne('SELECT OXISOALPHA2 from oxcountry where OXISOALPHA3 = ? ', [$isoalpha3]);
+        $charges = new CustomsDetailsPostalCharges();
+        $charges->setCurrency('EUR');
+        $charges->setValue($this->getEURPrice($order, $order->oxorder__oxdelcost->value));
+        return $charges;
     }
 
     /**
@@ -552,7 +561,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         return [
             'includeDocs' => 'URL',
             'combine'     => false,
-            'mustEncode'  => (bool) Registry::getConfig()->getShopConfVar('mo_dhl__only_with_leitcode'),
+            'mustEncode'  => (bool)Registry::getConfig()->getShopConfVar('mo_dhl__only_with_leitcode'),
         ];
     }
 

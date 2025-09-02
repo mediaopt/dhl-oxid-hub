@@ -18,11 +18,11 @@ class VASNormalizer implements DenormalizerInterface, NormalizerInterface, Denor
     use NormalizerAwareTrait;
     use CheckArray;
     use ValidatorTrait;
-    public function supportsDenormalization($data, $type, $format = null) : bool
+    public function supportsDenormalization($data, $type, $format = null, array $context = array()) : bool
     {
         return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VAS';
     }
-    public function supportsNormalization($data, $format = null) : bool
+    public function supportsNormalization($data, $format = null, array $context = array()) : bool
     {
         return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VAS';
     }
@@ -48,10 +48,6 @@ class VASNormalizer implements DenormalizerInterface, NormalizerInterface, Denor
         if (\array_key_exists('preferredLocation', $data)) {
             $object->setPreferredLocation($data['preferredLocation']);
             unset($data['preferredLocation']);
-        }
-        if (\array_key_exists('shippingConfirmation', $data)) {
-            $object->setShippingConfirmation($this->denormalizer->denormalize($data['shippingConfirmation'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ShippingConfirmation', 'json', $context));
-            unset($data['shippingConfirmation']);
         }
         if (\array_key_exists('visualCheckOfAge', $data)) {
             $object->setVisualCheckOfAge($data['visualCheckOfAge']);
@@ -109,6 +105,10 @@ class VASNormalizer implements DenormalizerInterface, NormalizerInterface, Denor
             $object->setParcelOutletRouting($data['parcelOutletRouting']);
             unset($data['parcelOutletRouting']);
         }
+        if (\array_key_exists('goGreenPlus', $data)) {
+            $object->setGoGreenPlus($data['goGreenPlus']);
+            unset($data['goGreenPlus']);
+        }
         if (\array_key_exists('dhlRetoure', $data)) {
             $object->setDhlRetoure($this->denormalizer->denormalize($data['dhlRetoure'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASDhlRetoure', 'json', $context));
             unset($data['dhlRetoure']);
@@ -135,9 +135,6 @@ class VASNormalizer implements DenormalizerInterface, NormalizerInterface, Denor
         }
         if ($object->isInitialized('preferredLocation') && null !== $object->getPreferredLocation()) {
             $data['preferredLocation'] = $object->getPreferredLocation();
-        }
-        if ($object->isInitialized('shippingConfirmation') && null !== $object->getShippingConfirmation()) {
-            $data['shippingConfirmation'] = $this->normalizer->normalize($object->getShippingConfirmation(), 'json', $context);
         }
         if ($object->isInitialized('visualCheckOfAge') && null !== $object->getVisualCheckOfAge()) {
             $data['visualCheckOfAge'] = $object->getVisualCheckOfAge();
@@ -181,6 +178,9 @@ class VASNormalizer implements DenormalizerInterface, NormalizerInterface, Denor
         if ($object->isInitialized('parcelOutletRouting') && null !== $object->getParcelOutletRouting()) {
             $data['parcelOutletRouting'] = $object->getParcelOutletRouting();
         }
+        if ($object->isInitialized('goGreenPlus') && null !== $object->getGoGreenPlus()) {
+            $data['goGreenPlus'] = $object->getGoGreenPlus();
+        }
         if ($object->isInitialized('dhlRetoure') && null !== $object->getDhlRetoure()) {
             $data['dhlRetoure'] = $this->normalizer->normalize($object->getDhlRetoure(), 'json', $context);
         }
@@ -193,5 +193,9 @@ class VASNormalizer implements DenormalizerInterface, NormalizerInterface, Denor
             }
         }
         return $data;
+    }
+    public function getSupportedTypes(?string $format = null) : array
+    {
+        return array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VAS' => false);
     }
 }

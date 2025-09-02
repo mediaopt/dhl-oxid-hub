@@ -25,7 +25,7 @@ class VASCashOnDelivery extends \ArrayObject
      */
     protected $bankAccount;
     /**
-     * 
+     * Reference to bank account details. Account references are maintained in customer settings in Post & DHL business customer portal under Ship -> Settings -> Cash on delivery. Please note, that the default account reference is used if the provided account reference does not exist in your customer settings!
      *
      * @var string
      */
@@ -87,7 +87,7 @@ class VASCashOnDelivery extends \ArrayObject
         return $this;
     }
     /**
-     * 
+     * Reference to bank account details. Account references are maintained in customer settings in Post & DHL business customer portal under Ship -> Settings -> Cash on delivery. Please note, that the default account reference is used if the provided account reference does not exist in your customer settings!
      *
      * @return string
      */
@@ -96,7 +96,7 @@ class VASCashOnDelivery extends \ArrayObject
         return $this->accountReference;
     }
     /**
-     * 
+     * Reference to bank account details. Account references are maintained in customer settings in Post & DHL business customer portal under Ship -> Settings -> Cash on delivery. Please note, that the default account reference is used if the provided account reference does not exist in your customer settings!
      *
      * @param string $accountReference
      *
