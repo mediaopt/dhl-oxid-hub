@@ -14,7 +14,7 @@ $aLang = [
     'SHOP_MODULE_mo_dhl__merchant_ekp'          => 'EKP',
     'HELP_SHOP_MODULE_mo_dhl__merchant_ekp'     => 'Die EKP ist Ihre DHL Kundennummer',
 
-    'SHOP_MODULE_mo_dhl__authentication_check'              => '',
+    'SHOP_MODULE_mo_dhl__authentication_check' => '',
 
     'SHOP_MODULE_GROUP_mo_dhl__portokasse'         => 'Portokasse',
     'SHOP_MODULE_mo_dhl__portokasse_user'          => 'Portokasse Benutzername (für Internetmarke)',
@@ -42,8 +42,11 @@ $aLang = [
     'HELP_SHOP_MODULE_mo_dhl__packing_weight_absolute'   => 'Fester Gewichtsaufschlag in Kilogramm für Verpackungsmaterial, wenn die automatische Gewichtsberechnung aktiviert ist.',
 
     'SHOP_MODULE_GROUP_mo_dhl__services'                       => 'Versand - Services',
-    'SHOP_MODULE_mo_dhl__go_green_active'                      => 'GoGreen',
-    'HELP_SHOP_MODULE_mo_dhl__go_green_active'                 => 'Zeigt im Frontend an, dass für den Versand mit DHL GoGreen verwendet wird. Bitte aktivieren Sie dieses Feld nur, wenn für den Versand GoGreen aktiviert ist.',
+    'SHOP_MODULE_mo_dhl__go_green_program'                     => 'GoGreen Programm',
+    'HELP_SHOP_MODULE_mo_dhl__go_green_program'                => 'Zeigt im Frontend an, dass für den Versand mit DHL GoGreen bzw. DHL GoGreen Plus versendet wird. Bitte aktivieren Sie dieses Feld nur, wenn für den Versand GoGreen bzw. GoGreen Plus aktiviert ist.',
+    'SHOP_MODULE_mo_dhl__go_green_program_NONE'                => 'Keines',
+    'SHOP_MODULE_mo_dhl__go_green_program_GO_GREEN'            => 'GoGreen',
+    'SHOP_MODULE_mo_dhl__go_green_program_GO_GREEN_PLUS'       => 'GoGreen Plus',
     'SHOP_MODULE_mo_dhl__no_neighbour_delivery_active'         => 'Keine Nachbarschaftszustellung',
     'SHOP_MODULE_mo_dhl__filialrouting_active'                 => 'Filialrouting',
     'HELP_SHOP_MODULE_mo_dhl__filialrouting_active'            => 'Durch Aktivierung wird eine Sendung bei Unzustellbarkeit (z.B. Empfänger nicht ermittelbar) automatisch in die nächstgelegene Postfiliale weitergeleitet.',

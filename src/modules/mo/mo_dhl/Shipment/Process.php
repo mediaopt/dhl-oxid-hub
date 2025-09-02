@@ -86,6 +86,11 @@ class Process
     /**
      * @var string
      */
+    const SERVICE_GO_GREEN_PLUS = "SERVICE_GO_GREEN_PLUS";
+
+    /**
+     * @var string
+     */
     const SERVICE_PARCEL_OUTLET_ROUTING = "SERVICE_PARCEL_OUTLET_ROUTING";
 
     /**
@@ -153,6 +158,7 @@ class Process
             self::SERVICE_NOTIFICATION,
             self::SERVICE_PREFERRED_DAY,
             self::SERVICE_GO_GREEN,
+            self::SERVICE_GO_GREEN_PLUS,
             self::SERVICE_PARCEL_OUTLET_ROUTING,
             self::SERVICE_DHL_RETOURE,
             self::SERVICE_VISUAL_AGE_CHECK,
@@ -167,6 +173,7 @@ class Process
         self::PAKET_INTERNATIONAL => [
             self::SERVICE_NOTIFICATION,
             self::SERVICE_GO_GREEN,
+            self::SERVICE_GO_GREEN_PLUS,
             self::SERVICE_ADDITIONAL_INSURANCE,
             self::SERVICE_BULKY_GOOD,
             self::SERVICE_PDDP,
@@ -178,6 +185,7 @@ class Process
         self::EUROPAKET => [
             self::SERVICE_NOTIFICATION,
             self::SERVICE_GO_GREEN,
+            self::SERVICE_GO_GREEN_PLUS,
             self::SERVICE_ADDITIONAL_INSURANCE,
         ],
         self::KLEINPAKET => [
@@ -185,6 +193,7 @@ class Process
             self::SERVICE_PREFERRED_LOCATION,
             self::SERVICE_NOTIFICATION,
             self::SERVICE_GO_GREEN,
+            self::SERVICE_GO_GREEN_PLUS,
             self::SERVICE_PARCEL_OUTLET_ROUTING,
             self::SERVICE_DHL_RETOURE,
         ],
@@ -192,6 +201,7 @@ class Process
         ],
         self::WARENPOST_INTERNATIONAL => [
             self::SERVICE_GO_GREEN,
+            self::SERVICE_GO_GREEN_PLUS,
             self::SERVICE_PREMIUM,
         ]
     ];
@@ -316,6 +326,14 @@ class Process
     public function supportsGoGreen()
     {
         return in_array(self::SERVICE_GO_GREEN, self::SUPPORTED_SERVICES[$this->identifier]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsGoGreenPlus()
+    {
+        return in_array(self::SERVICE_GO_GREEN_PLUS, self::SUPPORTED_SERVICES[$this->identifier]);
     }
 
     /**
