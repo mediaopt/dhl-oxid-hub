@@ -1,0 +1,7 @@
+#orderShipping:lang(de) .panel-body::after {
+    content: url(/modules/mo/mo_dhl/out/src/img/DHL_GG-Plus_KNV_rgb.svg);
+}
+
+#orderShipping .panel-body::after {
+    content: url(/modules/mo/mo_dhl/out/src/img/DHL_GG-Plus_CNS_rgb.svg);
+}

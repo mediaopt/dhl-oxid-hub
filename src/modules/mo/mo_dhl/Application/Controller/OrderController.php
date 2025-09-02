@@ -28,7 +28,6 @@ class OrderController extends OrderController_parent
         parent::init();
         $atLeastOneServiceHasBeenDisabled = $this->moDHLUpdateWunschpaketTags();
         if ($atLeastOneServiceHasBeenDisabled) {
-            /** @noinspection PhpParamsInspection */
             Registry::get(\OxidEsales\Eshop\Core\UtilsView::class)->addErrorToDisplay('MO_DHL__DISABLED_SERVICE_ERROR');
         }
     }
@@ -132,9 +131,21 @@ class OrderController extends OrderController_parent
     public function moDHLShowGoGreenLogo()
     {
         $shipSet = $this->getShipSet();
-        return Registry::getConfig()->getShopConfVar('mo_dhl__go_green_active')
+        return Registry::getConfig()->getShopConfVar('mo_dhl__go_green_program') == 'GO_GREEN'
             && !$shipSet->oxdeliveryset__mo_dhl_excluded->value
             && $shipSet->oxdeliveryset__mo_dhl_process->value
             && Process::build($shipSet->oxdeliveryset__mo_dhl_process->value)->supportsGoGreen();
+    }
+
+    /**
+     * @return bool
+     */
+    public function moDHLShowGoGreenPlusLogo()
+    {
+        $shipSet = $this->getShipSet();
+        return Registry::getConfig()->getShopConfVar('mo_dhl__go_green_program') == 'GO_GREEN_PLUS'
+            && !$shipSet->oxdeliveryset__mo_dhl_excluded->value
+            && $shipSet->oxdeliveryset__mo_dhl_process->value
+            && Process::build($shipSet->oxdeliveryset__mo_dhl_process->value)->supportsGoGreenPlus();
     }
 }

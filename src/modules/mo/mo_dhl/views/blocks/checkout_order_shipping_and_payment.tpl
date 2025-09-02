@@ -2,3 +2,6 @@
 [{if $oView->moDHLShowGoGreenLogo()}]
     [{oxstyle include=$oViewConf->getModuleUrl("mo_dhl", "out/src/css/widgets/mo_gogreen.css")}]
 [{/if}]
+[{if $oView->moDHLShowGoGreenPlusLogo()}]
+    [{oxstyle include=$oViewConf->getModuleUrl("mo_dhl", "out/src/css/widgets/mo_gogreen_plus.css")}]
+[{/if}]
