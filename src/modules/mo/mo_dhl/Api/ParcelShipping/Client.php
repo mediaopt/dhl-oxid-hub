@@ -26,12 +26,12 @@ class Client extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Client\Client
      *     @var string $token Identifies PDF document and requested print settings for download.
      * }
      * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
-     * @param array $accept Accept content header application/pdf|application/json|application/problem+json
+     * @param array $accept Accept content header application/pdf|application/problem+json
      * @throws \Mediaopt\DHL\Api\ParcelShipping\Exception\GetLabelNotFoundException
      * @throws \Mediaopt\DHL\Api\ParcelShipping\Exception\GetLabelTooManyRequestsException
      * @throws \Mediaopt\DHL\Api\ParcelShipping\Exception\GetLabelInternalServerErrorException
      *
-     * @return null|\Mediaopt\DHL\Api\ParcelShipping\Model\LabelDataResponse|\Psr\Http\Message\ResponseInterface
+     * @return null|\Psr\Http\Message\ResponseInterface
      */
     public function getLabel(array $queryParameters = array(), string $fetch = self::FETCH_OBJECT, array $accept = array())
     {
@@ -66,19 +66,19 @@ class Client extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Client\Client
         return $this->executeEndpoint(new \Mediaopt\DHL\Api\ParcelShipping\Endpoint\GetManifests($queryParameters, $headerParameters, $accept), $fetch);
     }
     /**
-    * Shipments are normally ''closed out'' at a fixed time of the day (such as 6 pm, configured by EKP/account) for the date provided as shipDate in the create call. 
-    <br />This call allows forcing the closeout for sets of shipments earlier. This will also override the original shipDate. Afterwards, the shipment cannot be changed and the shipment labels cannot be queried anymore (however they may remain cached for limited duration). 
-    Calling closeout repeatedly for the same shipments will result in HTTP 400 for the second call. HTTP 400 will also be returned if the automatic closeout happened prior to the call. It is however possible to add new shipments, they will be manifested as well and be part of the day's manifest. 
-    <br />Note on billing: The manifesting step has billing implications. Some products (Warenpost, Parcel International partially) are billed based on the shipment data available to DHL at the end of the day. All other products (including DHL Paket Standard) are billed based on production data. For more details, please contact your account representative. 
+    * Shipments are normally ''closed out'' at a fixed time of the day (such as 6 pm, configured by EKP/account) for the date provided as shipDate in the create call.
+    <br />This call allows forcing the closeout for sets of shipments earlier. This will also override the original shipDate. Afterwards, the shipment cannot be changed and the shipment labels cannot be queried anymore (however they may remain cached for limited duration).
+    Once a shipment has been closed, then calling closeout for the same shipment will result in a warning. The same warning will also be returned if the automatic closeout happened prior to the call. It is however possible to add new shipments, they will be manifested as well and be part of the day's manifest.
+    <br />Note on billing: The manifesting step has billing implications. Some products (Parcel International partially) are billed based on the shipment data available to DHL at the end of the day. All other products (including DHL Paket Standard) are billed based on production data. For more details, please contact your account representative.
     
     #### Request
-    It's changing the status of the shipment, so parameters are provided in the body. 
-    * ''profile'' attribute - defines the user group profile. A user group is permitted to specific billing numbers. Shipments are only closed out if they belong to a billing number that the user group profile is entitled to use. This attribute is mandatory. Please use the standard user group profile ''STANDARD_GRUPPENPROFIL'' if no dedicated user group profile is available. 
-    * ''billingNumber'' attribute - defines the billing number for which shipments shall be closed out. If a billing number is set, then only the shipments of that billing number are closed out. In that case no list of specific shipment numbers needs to be passed. 
-    * ''shipmentNumbers'' attribute - lists the specific shipping numbers of the shipments that shall be closed out. 
-    If all shipments shall be closed, the query parameter ''all'' needs to be set to ''true''. In that case neither a billing number nor a list of shipment numbers need to be passed in the request body. 
+    It's changing the status of the shipment, so parameters are provided in the body or as query parameter.
+    * ''profile'' attribute (request body parameter) - defines the user group profile. A user group is permitted to specific billing numbers. Shipments are only closed out if they belong to a billing number that the user group profile is entitled to use. This attribute is mandatory. Please use the standard user group profile ''STANDARD_GRUPPENPROFIL'' if no dedicated user group profile is available.
+    * ''billingNumber'' attribute (query parameter) - defines the billing number for which shipments shall be closed out. If a billing number is set, then only the shipments of that billing number are closed out. In that case no list of specific shipment numbers needs to be passed.
+    * ''shipmentNumbers'' attribute (request body parameter) - lists the specific shipping numbers of the shipments that shall be closed out.
+    If all shipments shall be closed, the query parameter ''all'' needs to be set to ''true''. In that case neither a billing number nor a list of shipment numbers need to be passed in the request.
     
-    #### Response 
+    #### Response
     * Closing status for each shipment
     *
     * @param \Mediaopt\DHL\Api\ParcelShipping\Model\ShipmentManifestingRequest $requestBody 
@@ -194,23 +194,23 @@ class Client extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Client\Client
         return $this->executeEndpoint(new \Mediaopt\DHL\Api\ParcelShipping\Endpoint\GetOrder($queryParameters, $headerParameters, $accept), $fetch);
     }
     /**
-    * This request is used to create one or more shipments and return corresponding shipment tracking numbers, labels, and documentation. Up to 30 shipments can be created in a single call. 
-    #### Request 
-    The selected products and corresponding billing numbers, as well as the desired services and package details are required to create a shipment. Each shipment can have a dedicated shipper address. The example request body contains sample values for most services. 
-    #### Response 
+    * This request is used to create one or more shipments and return corresponding shipment tracking numbers, labels, and documentation. Up to 30 shipments can be created in a single call.
+    #### Request
+    The selected products and corresponding billing numbers, as well as the desired services and package details are required to create a shipment. Each shipment can have a dedicated shipper address. The example request body contains sample values for most services.
+    #### Response
     The request will return shipment tracking numbers and the applicable labels for each shipment. If multiple shipments have been included, an HTTP 207 response (multistatus) is returned and holds detailed status for each shipment. Other standard HTTP response codes (401, 500, 400, 200, 429) are possible, too. Labels can be either provided as part of the response (base64 encoded for PDF, text for ZPL) or via URL link for view and download. Note that the format settings per query parameters apply to the shipping label. It may also apply to other labels included, depending on the configuration of your account. Label paper for return shipments can be specified separately since a different printer may be used here. If requesting labels to be provided as URL for separate download, the URLs can be shared.
-    #### Validation  
-    It is recommended to validate the request first prior to shipment creation by setting the `validate` query parameter to `true`. Especially, during development and test, it is recommended to perform this validation. This functionality supports both 
-    * JSON schema validation (against this API description). During development and test, it is recommended to do this validation. JSON schema is available for local validation 
+    #### Validation
+    It is recommended to validate the request first prior to shipment creation by setting the `validate` query parameter to `true`. Especially, during development and test, it is recommended to perform this validation. This functionality supports both
+    * JSON schema validation (against this API description). During development and test, it is recommended to do this validation. JSON schema is available for local validation
     * Dry run against the DHL backend
     
-    If this succeeds, actual shipment creation will also succeed. 
+    If this succeeds, actual shipment creation will also succeed.
     *
     * @param \Mediaopt\DHL\Api\ParcelShipping\Model\ShipmentOrderRequest $requestBody 
     * @param array $queryParameters {
-    *     @var bool $validate If provided and set to `true`, the input document will be: 
-    * validated against JSON schema (/orders/ endpoint) at the API layer. In case of errors, HTTP 400 and details will be returned. 
-    * validated against the DHL backend. 
+    *     @var bool $validate If provided and set to `true`, the input document will be:
+    * validated against JSON schema (/orders/ endpoint) at the API layer. In case of errors, HTTP 400 and details will be returned.
+    * validated against the DHL backend.
     
     In that case, no state changes are happening, no data is stored, shipments neither deleted nor created, no labels being returned. The call will return a status (200, 400) for each shipment element.
     *     @var bool $mustEncode Legacy name **printOnlyIfCodable**. If set to *true*, labels will only be created if an address is encodable. This is only relevant for German consignee addresses. If set to false or left out, addresses, that are not encodable will be printed even though you receive a warning.
@@ -234,7 +234,7 @@ class Client extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Client\Client
     * 100x70mm
     
     Please use the different formats as follows. If you do not set the parameter the settings of DHL costumer portal account will be used as default.
-    *     @var string $retourePrintFormat **Defines** the print medium for the return shipping label. This parameter is only usable, if you do not use **combined printing**. The different option vary from standard paper sizes DIN A4 and DIN A5 to specific label print formats. 
+    *     @var string $retourePrintFormat **Defines** the print medium for the return shipping label. This parameter is only usable, if you do not use **combined printing**. The different option vary from standard paper sizes DIN A4 and DIN A5 to specific label print formats.
     
     Specific laser print formats using DIN A5 blanks are:
     * 910-300-600(-oz) (105 x 205mm)
@@ -273,7 +273,7 @@ class Client extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Client\Client
         if (null === $httpClient) {
             $httpClient = \Http\Discovery\Psr18ClientDiscovery::find();
             $plugins = array();
-            $uri = \Http\Discovery\Psr17FactoryDiscovery::findUrlFactory()->createUri('https://api-eu.dhl.com/parcel/de/shipping/v2');
+            $uri = \Http\Discovery\Psr17FactoryDiscovery::findUriFactory()->createUri('https://api-eu.dhl.com/parcel/de/shipping/v2');
             $plugins[] = new \Http\Client\Common\Plugin\AddHostPlugin($uri);
             $plugins[] = new \Http\Client\Common\Plugin\AddPathPlugin($uri);
             if (count($additionalPlugins) > 0) {

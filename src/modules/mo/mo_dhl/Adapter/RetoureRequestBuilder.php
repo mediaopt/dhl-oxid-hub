@@ -9,7 +9,9 @@ use Mediaopt\DHL\Api\Retoure\CustomsDocument;
 use Mediaopt\DHL\Api\Retoure\CustomsDocumentPosition;
 use Mediaopt\DHL\Api\Retoure\ReturnOrder;
 use Mediaopt\DHL\Api\Retoure\SimpleAddress;
+use Mediaopt\DHL\Api\Retoure\VAS;
 use Mediaopt\DHL\Application\Model\Order;
+use Mediaopt\DHL\Model\MoDHLGoGreenProgram;
 use OxidEsales\Eshop\Application\Model\OrderArticle;
 use OxidEsales\Eshop\Core\Registry;
 
@@ -30,8 +32,12 @@ class RetoureRequestBuilder
             ->setSenderAddress($this->buildSenderAddress($order))
             ->setEmail($order->getFieldData('oxbillemail'))
             ->setTelephoneNumber($order->moDHLGetAddressData('fon'));
-        $country = $this->buildCountry($order->getFieldData('oxbillcountryid'));
 
+        if ($vas = $this->buildVas()) {
+            $returnOrder->setServices($vas);
+        }
+
+        $country = $this->buildCountry($order->getFieldData('oxbillcountryid'));
         if (!in_array($country->getCountryISOCode(), Country::EU_COUNTRIES_LIST)) {
             $returnOrder->setCustomsDocument($this->buildCustomsDocument($order));
         }
@@ -55,7 +61,7 @@ class RetoureRequestBuilder
     }
 
     /**
-     * @param  Order $order
+     * @param Order $order
      * @return SimpleAddress
      */
     protected function buildSenderAddress(Order $order)
@@ -87,7 +93,7 @@ class RetoureRequestBuilder
     }
 
     /**
-     * @param  Order $order
+     * @param Order $order
      * @return CustomsDocument
      */
     protected function buildCustomsDocument(Order $order)
@@ -100,7 +106,7 @@ class RetoureRequestBuilder
     }
 
     /**
-     * @param  Order $order
+     * @param Order $order
      * @return CustomsDocumentPosition[]
      */
     protected function buildPositions(Order $order)
@@ -118,5 +124,18 @@ class RetoureRequestBuilder
         }
 
         return $positions;
+    }
+
+
+    /**
+     * @return VAS|null
+     */
+    protected function buildVas()
+    {
+        if (Registry::getConfig()->getShopConfVar('mo_dhl__go_green_program') == MoDHLGoGreenProgram::GO_GREEN_PLUS) {
+            return (new VAS())->setGoGreenPlus(true);
+        }
+
+        return null;
     }
 }

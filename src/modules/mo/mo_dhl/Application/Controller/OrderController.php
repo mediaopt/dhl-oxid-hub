@@ -8,6 +8,7 @@ namespace Mediaopt\DHL\Application\Controller;
  * @copyright 2016 Mediaopt GmbH
  */
 
+use Mediaopt\DHL\Model\MoDHLGoGreenProgram;
 use Mediaopt\DHL\Shipment\Process;
 use OxidEsales\Eshop\Core\Registry;
 
@@ -131,7 +132,7 @@ class OrderController extends OrderController_parent
     public function moDHLShowGoGreenLogo()
     {
         $shipSet = $this->getShipSet();
-        return Registry::getConfig()->getShopConfVar('mo_dhl__go_green_program') == 'GO_GREEN'
+        return Registry::getConfig()->getShopConfVar('mo_dhl__go_green_program') == MoDHLGoGreenProgram::GO_GREEN
             && !$shipSet->oxdeliveryset__mo_dhl_excluded->value
             && $shipSet->oxdeliveryset__mo_dhl_process->value
             && Process::build($shipSet->oxdeliveryset__mo_dhl_process->value)->supportsGoGreen();
@@ -143,7 +144,7 @@ class OrderController extends OrderController_parent
     public function moDHLShowGoGreenPlusLogo()
     {
         $shipSet = $this->getShipSet();
-        return Registry::getConfig()->getShopConfVar('mo_dhl__go_green_program') == 'GO_GREEN_PLUS'
+        return Registry::getConfig()->getShopConfVar('mo_dhl__go_green_program') == MoDHLGoGreenProgram::GO_GREEN_PLUS
             && !$shipSet->oxdeliveryset__mo_dhl_excluded->value
             && $shipSet->oxdeliveryset__mo_dhl_process->value
             && Process::build($shipSet->oxdeliveryset__mo_dhl_process->value)->supportsGoGreenPlus();

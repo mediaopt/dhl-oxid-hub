@@ -31,7 +31,7 @@ class ContactAddress extends \ArrayObject
      */
     protected $name3;
     /**
-     * An optional, additional line of address. It's only usable for a few countries, e.g. Belgium. It is positioned below name3 on the label.
+     * An optional, additional line of address. It is printed on the shipping label for international shipments to the following countries only BEL, CZE, NLD. It is positioned below name3 on the label.
      *
      * @var string
      */
@@ -49,13 +49,13 @@ class ContactAddress extends \ArrayObject
      */
     protected $addressHouse;
     /**
-     * Additional information that is positioned either behind or below addressStreet on the label. If it is printed and where exactly depends on the country.
+     * Additional information that is positioned either behind or below addressStreet on international shipment labels. Where exactly it is printed on the label depends on the country.
      *
      * @var string
      */
     protected $additionalAddressInformation1;
     /**
-     * Additional information that is positioned either behind or below addressStreet on the label. If it is printed and where exactly depends on the country.
+     * Additional information that is positioned either behind or below addressStreet on international shipment labels. It is printed on shipping labels to the following countries only AUT, CHN, DNK, GBR, HRV, LTU, PRT, ROU, RUS. Where exactly it is printed on the label depends on the country.
      *
      * @var string
      */
@@ -169,7 +169,7 @@ class ContactAddress extends \ArrayObject
         return $this;
     }
     /**
-     * An optional, additional line of address. It's only usable for a few countries, e.g. Belgium. It is positioned below name3 on the label.
+     * An optional, additional line of address. It is printed on the shipping label for international shipments to the following countries only BEL, CZE, NLD. It is positioned below name3 on the label.
      *
      * @return string
      */
@@ -178,7 +178,7 @@ class ContactAddress extends \ArrayObject
         return $this->dispatchingInformation;
     }
     /**
-     * An optional, additional line of address. It's only usable for a few countries, e.g. Belgium. It is positioned below name3 on the label.
+     * An optional, additional line of address. It is printed on the shipping label for international shipments to the following countries only BEL, CZE, NLD. It is positioned below name3 on the label.
      *
      * @param string $dispatchingInformation
      *
@@ -235,7 +235,7 @@ class ContactAddress extends \ArrayObject
         return $this;
     }
     /**
-     * Additional information that is positioned either behind or below addressStreet on the label. If it is printed and where exactly depends on the country.
+     * Additional information that is positioned either behind or below addressStreet on international shipment labels. Where exactly it is printed on the label depends on the country.
      *
      * @return string
      */
@@ -244,7 +244,7 @@ class ContactAddress extends \ArrayObject
         return $this->additionalAddressInformation1;
     }
     /**
-     * Additional information that is positioned either behind or below addressStreet on the label. If it is printed and where exactly depends on the country.
+     * Additional information that is positioned either behind or below addressStreet on international shipment labels. Where exactly it is printed on the label depends on the country.
      *
      * @param string $additionalAddressInformation1
      *
@@ -257,7 +257,7 @@ class ContactAddress extends \ArrayObject
         return $this;
     }
     /**
-     * Additional information that is positioned either behind or below addressStreet on the label. If it is printed and where exactly depends on the country.
+     * Additional information that is positioned either behind or below addressStreet on international shipment labels. It is printed on shipping labels to the following countries only AUT, CHN, DNK, GBR, HRV, LTU, PRT, ROU, RUS. Where exactly it is printed on the label depends on the country.
      *
      * @return string
      */
@@ -266,7 +266,7 @@ class ContactAddress extends \ArrayObject
         return $this->additionalAddressInformation2;
     }
     /**
-     * Additional information that is positioned either behind or below addressStreet on the label. If it is printed and where exactly depends on the country.
+     * Additional information that is positioned either behind or below addressStreet on international shipment labels. It is printed on shipping labels to the following countries only AUT, CHN, DNK, GBR, HRV, LTU, PRT, ROU, RUS. Where exactly it is printed on the label depends on the country.
      *
      * @param string $additionalAddressInformation2
      *

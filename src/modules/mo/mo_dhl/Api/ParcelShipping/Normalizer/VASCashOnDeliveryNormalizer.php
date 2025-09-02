@@ -18,11 +18,11 @@ class VASCashOnDeliveryNormalizer implements DenormalizerInterface, NormalizerIn
     use NormalizerAwareTrait;
     use CheckArray;
     use ValidatorTrait;
-    public function supportsDenormalization($data, $type, $format = null) : bool
+    public function supportsDenormalization($data, $type, $format = null, array $context = array()) : bool
     {
         return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASCashOnDelivery';
     }
-    public function supportsNormalization($data, $format = null) : bool
+    public function supportsNormalization($data, $format = null, array $context = array()) : bool
     {
         return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASCashOnDelivery';
     }
@@ -83,9 +83,7 @@ class VASCashOnDeliveryNormalizer implements DenormalizerInterface, NormalizerIn
         if ($object->isInitialized('accountReference') && null !== $object->getAccountReference()) {
             $data['accountReference'] = $object->getAccountReference();
         }
-        if ($object->isInitialized('transferNote1') && null !== $object->getTransferNote1()) {
-            $data['transferNote1'] = $object->getTransferNote1();
-        }
+        $data['transferNote1'] = $object->getTransferNote1();
         if ($object->isInitialized('transferNote2') && null !== $object->getTransferNote2()) {
             $data['transferNote2'] = $object->getTransferNote2();
         }
@@ -95,5 +93,9 @@ class VASCashOnDeliveryNormalizer implements DenormalizerInterface, NormalizerIn
             }
         }
         return $data;
+    }
+    public function getSupportedTypes(?string $format = null) : array
+    {
+        return array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASCashOnDelivery' => false);
     }
 }

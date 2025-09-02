@@ -31,6 +31,12 @@ class VASDhlRetoure extends \ArrayObject
      */
     protected $returnAddress;
     /**
+     * GoGreen Plus enables sustainable shipping by investing in measures to reduce greenhouse gas emissions at DHL.
+     *
+     * @var bool
+     */
+    protected $goGreenPlus;
+    /**
      * 
      *
      * @return string
@@ -94,6 +100,28 @@ class VASDhlRetoure extends \ArrayObject
     {
         $this->initialized['returnAddress'] = true;
         $this->returnAddress = $returnAddress;
+        return $this;
+    }
+    /**
+     * GoGreen Plus enables sustainable shipping by investing in measures to reduce greenhouse gas emissions at DHL.
+     *
+     * @return bool
+     */
+    public function getGoGreenPlus() : bool
+    {
+        return $this->goGreenPlus;
+    }
+    /**
+     * GoGreen Plus enables sustainable shipping by investing in measures to reduce greenhouse gas emissions at DHL.
+     *
+     * @param bool $goGreenPlus
+     *
+     * @return self
+     */
+    public function setGoGreenPlus(bool $goGreenPlus) : self
+    {
+        $this->initialized['goGreenPlus'] = true;
+        $this->goGreenPlus = $goGreenPlus;
         return $this;
     }
 }

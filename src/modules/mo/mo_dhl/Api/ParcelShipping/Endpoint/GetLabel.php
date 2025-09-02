@@ -11,7 +11,7 @@ class GetLabel extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Client\BaseEndpo
      * @param array $queryParameters {
      *     @var string $token Identifies PDF document and requested print settings for download.
      * }
-     * @param array $accept Accept content header application/pdf|application/json|application/problem+json
+     * @param array $accept Accept content header application/pdf|application/problem+json
      */
     public function __construct(array $queryParameters = array(), array $accept = array())
     {
@@ -34,7 +34,7 @@ class GetLabel extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Client\BaseEndpo
     public function getExtraHeaders() : array
     {
         if (empty($this->accept)) {
-            return array('Accept' => array('application/pdf', 'application/json', 'application/problem+json'));
+            return array('Accept' => array('application/pdf', 'application/problem+json'));
         }
         return $this->accept;
     }
@@ -54,25 +54,26 @@ class GetLabel extends \Mediaopt\DHL\Api\ParcelShipping\Runtime\Client\BaseEndpo
      * @throws \Mediaopt\DHL\Api\ParcelShipping\Exception\GetLabelTooManyRequestsException
      * @throws \Mediaopt\DHL\Api\ParcelShipping\Exception\GetLabelInternalServerErrorException
      *
-     * @return null|\Mediaopt\DHL\Api\ParcelShipping\Model\LabelDataResponse
+     * @return null
      */
-    protected function transformResponseBody(string $body, int $status, \Symfony\Component\Serializer\SerializerInterface $serializer, ?string $contentType = null)
+    protected function transformResponseBody(\Psr\Http\Message\ResponseInterface $response, \Symfony\Component\Serializer\SerializerInterface $serializer, ?string $contentType = null)
     {
-        if (is_null($contentType) === false && (200 === $status && mb_strpos($contentType, 'application/json') !== false)) {
-            return $serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\LabelDataResponse', 'json');
+        $status = $response->getStatusCode();
+        $body = (string) $response->getBody();
+        if (200 === $status) {
         }
         if (is_null($contentType) === false && (404 === $status && mb_strpos($contentType, 'application/problem+json') !== false)) {
-            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\GetLabelNotFoundException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'));
+            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\GetLabelNotFoundException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'), $response);
         }
         if (is_null($contentType) === false && (429 === $status && mb_strpos($contentType, 'application/problem+json') !== false)) {
-            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\GetLabelTooManyRequestsException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'));
+            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\GetLabelTooManyRequestsException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'), $response);
         }
         if (is_null($contentType) === false && (500 === $status && mb_strpos($contentType, 'application/problem+json') !== false)) {
-            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\GetLabelInternalServerErrorException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'));
+            throw new \Mediaopt\DHL\Api\ParcelShipping\Exception\GetLabelInternalServerErrorException($serializer->deserialize($body, 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\RequestStatus', 'json'), $response);
         }
     }
     public function getAuthenticationScopes() : array
     {
-        return array();
+        return array('ApiKey', 'BasicAuth', 'OAuth2');
     }
 }

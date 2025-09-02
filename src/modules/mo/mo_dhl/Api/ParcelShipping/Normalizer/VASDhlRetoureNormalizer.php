@@ -18,11 +18,11 @@ class VASDhlRetoureNormalizer implements DenormalizerInterface, NormalizerInterf
     use NormalizerAwareTrait;
     use CheckArray;
     use ValidatorTrait;
-    public function supportsDenormalization($data, $type, $format = null) : bool
+    public function supportsDenormalization($data, $type, $format = null, array $context = array()) : bool
     {
         return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASDhlRetoure';
     }
-    public function supportsNormalization($data, $format = null) : bool
+    public function supportsNormalization($data, $format = null, array $context = array()) : bool
     {
         return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASDhlRetoure';
     }
@@ -53,6 +53,10 @@ class VASDhlRetoureNormalizer implements DenormalizerInterface, NormalizerInterf
             $object->setReturnAddress($this->denormalizer->denormalize($data['returnAddress'], 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\ContactAddress', 'json', $context));
             unset($data['returnAddress']);
         }
+        if (\array_key_exists('goGreenPlus', $data)) {
+            $object->setGoGreenPlus($data['goGreenPlus']);
+            unset($data['goGreenPlus']);
+        }
         foreach ($data as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
                 $object[$key] = $value;
@@ -73,11 +77,18 @@ class VASDhlRetoureNormalizer implements DenormalizerInterface, NormalizerInterf
         if ($object->isInitialized('returnAddress') && null !== $object->getReturnAddress()) {
             $data['returnAddress'] = $this->normalizer->normalize($object->getReturnAddress(), 'json', $context);
         }
+        if ($object->isInitialized('goGreenPlus') && null !== $object->getGoGreenPlus()) {
+            $data['goGreenPlus'] = $object->getGoGreenPlus();
+        }
         foreach ($object as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
                 $data[$key] = $value;
             }
         }
         return $data;
+    }
+    public function getSupportedTypes(?string $format = null) : array
+    {
+        return array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASDhlRetoure' => false);
     }
 }

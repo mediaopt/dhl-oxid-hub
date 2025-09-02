@@ -73,12 +73,6 @@ class Shipper extends \ArrayObject
      */
     protected $email;
     /**
-     * Contains a reference to the Shipper data configured in GKP(GeschÃ¤ftskundenportal - Business Costumer Portal). Can be used instead of a detailed shipper address. The shipper reference can be used to print a company logo which is configured in GKP onto the label.
-     *
-     * @var string
-     */
-    protected $shipperRef;
-    /**
      * Name1. Line 1 of name information
      *
      * @return string
@@ -296,28 +290,6 @@ class Shipper extends \ArrayObject
     {
         $this->initialized['email'] = true;
         $this->email = $email;
-        return $this;
-    }
-    /**
-     * Contains a reference to the Shipper data configured in GKP(GeschÃ¤ftskundenportal - Business Costumer Portal). Can be used instead of a detailed shipper address. The shipper reference can be used to print a company logo which is configured in GKP onto the label.
-     *
-     * @return string
-     */
-    public function getShipperRef() : string
-    {
-        return $this->shipperRef;
-    }
-    /**
-     * Contains a reference to the Shipper data configured in GKP(GeschÃ¤ftskundenportal - Business Costumer Portal). Can be used instead of a detailed shipper address. The shipper reference can be used to print a company logo which is configured in GKP onto the label.
-     *
-     * @param string $shipperRef
-     *
-     * @return self
-     */
-    public function setShipperRef(string $shipperRef) : self
-    {
-        $this->initialized['shipperRef'] = true;
-        $this->shipperRef = $shipperRef;
         return $this;
     }
 }

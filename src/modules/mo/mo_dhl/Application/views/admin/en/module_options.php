@@ -44,6 +44,7 @@ $aLang = [
 
     'SHOP_MODULE_GROUP_mo_dhl__services'                       => 'Delivery - Services',
     'SHOP_MODULE_mo_dhl__go_green_program'                     => 'GoGreen Program',
+    'SHOP_MODULE_mo_dhl__go_green_plus_active'                 => 'GoGreen Plus active',
     'HELP_SHOP_MODULE_mo_dhl__go_green_program'                => 'Displays that GoGreen or GoGreenPlus is used for the DHL deliveries. Activate this option only, if GoGreen or GoGreen Plus is activated for the deliveries.',
     'SHOP_MODULE_mo_dhl__go_green_program_NONE'                => 'None',
     'SHOP_MODULE_mo_dhl__go_green_program_GO_GREEN'            => 'GoGreen',

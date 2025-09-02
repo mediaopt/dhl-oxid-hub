@@ -7,15 +7,12 @@
 
 namespace Mediaopt\DHL\Adapter;
 
-
-use Mediaopt\DHL\Api\ParcelShipping\Model\BankAccount;
 use Mediaopt\DHL\Api\ParcelShipping\Model\Commodity;
 use Mediaopt\DHL\Api\ParcelShipping\Model\ContactAddress;
 use Mediaopt\DHL\Api\ParcelShipping\Model\Shipment;
 use Mediaopt\DHL\Api\ParcelShipping\Model\Shipper;
 use Mediaopt\DHL\Api\ParcelShipping\Model\Value;
 use Mediaopt\DHL\Api\ParcelShipping\Model\VAS;
-use Mediaopt\DHL\Api\ParcelShipping\Model\VASCashOnDelivery;
 use Mediaopt\DHL\Api\ParcelShipping\Model\VASDhlRetoure;
 use Mediaopt\DHL\Api\ParcelShipping\Model\VASIdentCheck;
 use Mediaopt\DHL\Application\Model\Order;
@@ -30,13 +27,13 @@ class ParcelShippingCustomRequestBuilder
 {
 
     /**
-     * @param array $array
+     * @param array  $array
      * @param string $key
      * @param string $newKey
-     * @param mixed $newValue
+     * @param mixed  $newValue
      * @return array
      */
-    private function insert_after(array $array, string $key, string $newKey, mixed $newValue): array
+    protected function insertAfter(array $array, string $key, string $newKey, $newValue): array
     {
         $keys = array_keys($array);
         $index = array_search($key, $keys);
@@ -52,18 +49,23 @@ class ParcelShippingCustomRequestBuilder
     /**
      * @param array    $query
      * @param Shipment $shipment
+     * @param Order    $order
      * @return array
      */
-    public function toCustomizableParametersArray($query, Shipment $shipment, $order): array
+    public function toCustomizableParametersArray($query, Shipment $shipment, Order $order): array
     {
         $shipper = $shipment->getShipper();
         $services = $shipment->isInitialized('services') ? $shipment->getServices() : new VAS();
-        $returnReceiver = $services->isInitialized('dhlRetoure') ? $services->getDhlRetoure()->getReturnAddress() : oxNew(ParcelShippingRequestBuilder::class)->buildReturnReceiver();
-        $codAmount = $services->isInitialized('cashOnDelivery') ? $services->getCashOnDelivery()->getAmount() : oxNew(ParcelShippingRequestBuilder::class)->createCashOnDelivery($order)->getAmount();
+        $returnReceiver = $services->isInitialized('dhlRetoure')
+            ? $services->getDhlRetoure()->getReturnAddress()
+            : oxNew(ParcelShippingRequestBuilder::class)->buildReturnReceiver();
+        $codAmount = $services->isInitialized('cashOnDelivery')
+            ? $services->getCashOnDelivery()->getAmount()
+            : oxNew(ParcelShippingRequestBuilder::class)->createCashOnDelivery($order)->getAmount();
         $receiver = $shipment->getConsignee();
         if (array_key_exists('name3', $receiver) === false) {
             // make sure that name3 (additional info) is always available and on the correct position
-            $receiver = $this->insert_after($receiver, 'name2', 'name3', '');
+            $receiver = $this->insertAfter($receiver, 'name2', 'name3', '');
         }
         return [
             'weight'   => array_merge([
@@ -94,13 +96,16 @@ class ParcelShippingCustomRequestBuilder
                         'postalCode'    => $returnReceiver->getPostalCode(),
                         'city'          => $returnReceiver->getCity(),
                         'country'       => $returnReceiver->getCountry(),
-                    ]
+                    ],
                 ],
+                'goGreenPlus'          => $services->isInitialized('goGreenPlus') ? $services->getGoGreenPlus() : null,
                 'bulkyGoods'           => $services->isInitialized('bulkyGoods') && $services->getBulkyGoods(),
-                'additionalInsurance'  => $services->isInitialized('additionalInsurance') ? $services->getAdditionalInsurance()->getValue() : null,
+                'additionalInsurance'  => $services->isInitialized('additionalInsurance')
+                    ? $services->getAdditionalInsurance()->getValue()
+                    : null,
                 'identCheck'           => $services->isInitialized('identCheck') ? $services->getIdentCheck() : null,
                 'cashOnDelivery'       => [
-                    'active' => $services->isInitialized('cashOnDelivery'),
+                    'active'    => $services->isInitialized('cashOnDelivery'),
                     'codAmount' => $codAmount->getValue(),
                 ],
                 'visualAgeCheck'       => $services->isInitialized('visualCheckOfAge') ? $services->getVisualCheckOfAge() : null,
@@ -184,33 +189,41 @@ class ParcelShippingCustomRequestBuilder
     {
         $process = $this->getProcess($order);
         $services = new VAS();
-        $initialised = false;
+        $initialized = false;
         if ($process->supportsParcelOutletRouting() && filter_var($servicesData['parcelOutletRouting']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $details = $servicesData['parcelOutletRouting']['details'] ?: '';
             $services->setParcelOutletRouting($details);
-            $initialised = true;
+            $initialized = true;
+        }
+
+        if ($process->supportsGoGreenPlus()) {
+            $services->setGoGreenPlus(filter_var($servicesData['goGreenPlus']['active'], FILTER_VALIDATE_BOOLEAN));
+            $initialized = true;
         }
 
         if ($process->supportsDHLRetoure() && filter_var($servicesData['dhlRetoure']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $accountNumber = Registry::get(ParcelShippingRequestBuilder::class)->buildReturnAccountNumber($order);
             $retoure = new VASDhlRetoure();
             $retoure->setBillingNumber($accountNumber);
+            if ($services->isInitialized('goGreenPlus')) {
+                $retoure->setGoGreenPlus($services->getGoGreenPlus());
+            }
             $address = new ContactAddress();
             foreach (array_filter($servicesData['dhlRetoure']['address']) as $key => $value) {
                 $address->{"set" . ucfirst($key)}($value);
             }
             $retoure->setReturnAddress($address);
             $services->setDhlRetoure($retoure);
-            $initialised = true;
+            $initialized = true;
         }
         if ($process->supportsBulkyGood() && filter_var($servicesData['bulkyGoods']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setBulkyGoods(true);
-            $initialised = true;
+            $initialized = true;
         }
         if ($process->supportsAdditionalInsurance() && filter_var($servicesData['additionalInsurance']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $details = $servicesData['additionalInsurance']['insuranceAmount'] ?? null;
             $services->setAdditionalInsurance($this->createValue($details));
-            $initialised = true;
+            $initialized = true;
         }
         if ($process->supportsCashOnDelivery() && filter_var($servicesData['cashOnDelivery']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $cashOnDelivery = oxNew(ParcelShippingRequestBuilder::class)->createCashOnDelivery($order);
@@ -218,46 +231,45 @@ class ParcelShippingCustomRequestBuilder
                 $cashOnDelivery->setAmount($this->createValue($details));
             }
             $services->setCashOnDelivery($cashOnDelivery);
-            $initialised = true;
+            $initialized = true;
         }
         if ($process->supportsIdentCheck() && filter_var($servicesData['identCheck']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setIdentCheck($this->extractIdent($servicesData['identCheck']));
-            $initialised = true;
-        }
-        elseif ($process->supportsVisualAgeCheck() && $ageCheck = $servicesData['visualAgeCheck'] ?? null) {
-                $services->setVisualCheckOfAge('A' . $ageCheck);
-            $initialised = true;
+            $initialized = true;
+        } elseif ($process->supportsVisualAgeCheck() && $ageCheck = $servicesData['visualAgeCheck'] ?? null) {
+            $services->setVisualCheckOfAge('A' . $ageCheck);
+            $initialized = true;
         }
         if ($process->supportsPDDP() && filter_var($servicesData['pddp']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setPostalDeliveryDutyPaid(true);
-            $initialised = true;
+            $initialized = true;
         }
         if ($process->supportsCDP() && filter_var($servicesData['cdp']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setClosestDropPoint(true);
-            $initialised = true;
+            $initialized = true;
         }
         if ($process->supportsPremium() && filter_var($servicesData['premium']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setPremium(true);
-            $initialised = true;
+            $initialized = true;
         }
         if ($process->supportsEndorsement()) {
             $endorsement = $servicesData['endorsement'] ?? MoDHLService::MO_DHL__ENDORSEMENT_RETURN;
             $services->setEndorsement($endorsement);
-            $initialised = true;
+            $initialized = true;
         }
         if ($process->supportsNoNeighbourDelivery() && filter_var($servicesData['noNeighbourDelivery']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setNoNeighbourDelivery(true);
-            $initialised = true;
+            $initialized = true;
         }
         if ($process->supportsNamedPersonOnly() && filter_var($servicesData['namedPersonOnly']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setNamedPersonOnly(true);
-            $initialised = true;
+            $initialized = true;
         }
         if ($process->supportsSignedForByRecipient() && filter_var($servicesData['signedForByRecipient']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setSignedForByRecipient(true);
-            $initialised = true;
+            $initialized = true;
         }
-        if ($initialised) {
+        if ($initialized) {
             $shipment->setServices($services);
         }
     }

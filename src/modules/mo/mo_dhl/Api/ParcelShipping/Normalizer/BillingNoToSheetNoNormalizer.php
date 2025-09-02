@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-class VASIdentCheckNormalizer implements DenormalizerInterface, NormalizerInterface, DenormalizerAwareInterface, NormalizerAwareInterface
+class BillingNoToSheetNoNormalizer implements DenormalizerInterface, NormalizerInterface, DenormalizerAwareInterface, NormalizerAwareInterface
 {
     use DenormalizerAwareTrait;
     use NormalizerAwareTrait;
@@ -20,11 +20,11 @@ class VASIdentCheckNormalizer implements DenormalizerInterface, NormalizerInterf
     use ValidatorTrait;
     public function supportsDenormalization($data, $type, $format = null, array $context = array()) : bool
     {
-        return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASIdentCheck';
+        return $type === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\BillingNoToSheetNo';
     }
     public function supportsNormalization($data, $format = null, array $context = array()) : bool
     {
-        return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASIdentCheck';
+        return is_object($data) && get_class($data) === 'Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\BillingNoToSheetNo';
     }
     /**
      * @return mixed
@@ -37,25 +37,17 @@ class VASIdentCheckNormalizer implements DenormalizerInterface, NormalizerInterf
         if (isset($data['$recursiveRef'])) {
             return new Reference($data['$recursiveRef'], $context['document-origin']);
         }
-        $object = new \Mediaopt\DHL\Api\ParcelShipping\Model\VASIdentCheck();
+        $object = new \Mediaopt\DHL\Api\ParcelShipping\Model\BillingNoToSheetNo();
         if (null === $data || false === \is_array($data)) {
             return $object;
         }
-        if (\array_key_exists('firstName', $data)) {
-            $object->setFirstName($data['firstName']);
-            unset($data['firstName']);
+        if (\array_key_exists('billingNumber', $data)) {
+            $object->setBillingNumber($data['billingNumber']);
+            unset($data['billingNumber']);
         }
-        if (\array_key_exists('lastName', $data)) {
-            $object->setLastName($data['lastName']);
-            unset($data['lastName']);
-        }
-        if (\array_key_exists('dateOfBirth', $data)) {
-            $object->setDateOfBirth(\DateTime::createFromFormat('Y-m-d', $data['dateOfBirth'])->setTime(0, 0, 0));
-            unset($data['dateOfBirth']);
-        }
-        if (\array_key_exists('minimumAge', $data)) {
-            $object->setMinimumAge($data['minimumAge']);
-            unset($data['minimumAge']);
+        if (\array_key_exists('sheetNo', $data)) {
+            $object->setSheetNo($data['sheetNo']);
+            unset($data['sheetNo']);
         }
         foreach ($data as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
@@ -70,13 +62,11 @@ class VASIdentCheckNormalizer implements DenormalizerInterface, NormalizerInterf
     public function normalize($object, $format = null, array $context = array())
     {
         $data = array();
-        $data['firstName'] = $object->getFirstName();
-        $data['lastName'] = $object->getLastName();
-        if ($object->isInitialized('dateOfBirth') && null !== $object->getDateOfBirth()) {
-            $data['dateOfBirth'] = $object->getDateOfBirth()->format('Y-m-d');
+        if ($object->isInitialized('billingNumber') && null !== $object->getBillingNumber()) {
+            $data['billingNumber'] = $object->getBillingNumber();
         }
-        if ($object->isInitialized('minimumAge') && null !== $object->getMinimumAge()) {
-            $data['minimumAge'] = $object->getMinimumAge();
+        if ($object->isInitialized('sheetNo') && null !== $object->getSheetNo()) {
+            $data['sheetNo'] = $object->getSheetNo();
         }
         foreach ($object as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
@@ -87,6 +77,6 @@ class VASIdentCheckNormalizer implements DenormalizerInterface, NormalizerInterf
     }
     public function getSupportedTypes(?string $format = null) : array
     {
-        return array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\VASIdentCheck' => false);
+        return array('Mediaopt\\DHL\\Api\\ParcelShipping\\Model\\BillingNoToSheetNo' => false);
     }
 }
