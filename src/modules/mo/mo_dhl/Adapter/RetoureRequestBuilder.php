@@ -33,7 +33,7 @@ class RetoureRequestBuilder
             ->setEmail($order->getFieldData('oxbillemail'))
             ->setTelephoneNumber($order->moDHLGetAddressData('fon'));
 
-        if ($vas = $this->buildVas()) {
+        if ($vas = $this->buildVas($order)) {
             $returnOrder->setServices($vas);
         }
 
@@ -130,9 +130,9 @@ class RetoureRequestBuilder
     /**
      * @return VAS|null
      */
-    protected function buildVas()
+    protected function buildVas(Order $order)
     {
-        if (Registry::getConfig()->getShopConfVar('mo_dhl__go_green_program') == MoDHLGoGreenProgram::GO_GREEN_PLUS) {
+        if ($order->getFieldData('MO_DHL_GO_GREEN_PROGRAM') == MoDHLGoGreenProgram::GO_GREEN_PLUS) {
             return (new VAS())->setGoGreenPlus(true);
         }
 

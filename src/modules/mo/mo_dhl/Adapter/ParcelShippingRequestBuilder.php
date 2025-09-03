@@ -240,7 +240,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
             $services->setParcelOutletRouting($altEmail);
             $initialized = true;
         }
-        if ($process->supportsGoGreenPlus() && Registry::getConfig()->getShopConfVar('mo_dhl__go_green_program') == MoDHLGoGreenProgram::GO_GREEN_PLUS) {
+        if ($process->supportsGoGreenPlus() && $order->getFieldData('MO_DHL_GO_GREEN_PROGRAM') == MoDHLGoGreenProgram::GO_GREEN_PLUS) {
             $services->setGoGreenPlus(true);
             $initialized = true;
         }

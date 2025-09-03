@@ -171,6 +171,7 @@ class Install
             + self::addColumn('oxorder', 'MO_DHL_LAST_LABEL_CREATION_STATUS', 'VARCHAR(100)')
             + self::addColumn('oxorder', 'MO_DHL_ALLOW_NOTIFICATION', 'TINYINT(1) NOT NULL DEFAULT 0')
             + self::addColumn('oxorder', 'MO_DHL_IDENT_CHECK_BIRTHDAY', 'VARCHAR(10)');
+            + self::addColumn('oxorder', 'MO_DHL_GO_GREEN_PROGRAM', 'VARCHAR(16) NOT NULL DEFAULT "NONE"');
         $country = self::addColumn('oxcountry', 'MO_DHL_RETOURE_RECEIVER_ID', 'VARCHAR(32)');
         $labels = self::addColumn('mo_dhl_labels', 'type', 'ENUM("delivery", "retoure") DEFAULT "delivery"')
             + self::addColumn('mo_dhl_labels', 'qrLabelUrl', 'VARCHAR(512)');
