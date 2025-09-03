@@ -167,19 +167,22 @@ class Order extends Order_parent
         $participation = $this->getDelSet()->oxdeliveryset__mo_dhl_participation->rawValue;
         $allowNotification = $this->moDHLGetNotificationAllowance();
         $birthday = $this->moDHLGetBirthday();
+        $goGreenProgram = \OxidEsales\Eshop\Core\Registry::getConfig()->getShopConfVar('mo_dhl__go_green_program');
 
         $this->oxorder__mo_dhl_ekp = \oxNew(Field::class, $ekp, Field::T_RAW);
         $this->oxorder__mo_dhl_process = \oxNew(Field::class, $process, Field::T_RAW);
         $this->oxorder__mo_dhl_participation = \oxNew(Field::class, $participation, Field::T_RAW);
         $this->oxorder__mo_dhl_allow_notification = \oxNew(Field::class, $allowNotification);
         $this->oxorder__mo_dhl_ident_check_birthday = \oxNew(Field::class, $birthday);
+        $this->oxorder__mo_dhl_go_green_program = \oxNew(Field::class, $goGreenProgram);
         $db = \OxidEsales\Eshop\Core\DatabaseProvider::getDb(\OxidEsales\Eshop\Core\DatabaseProvider::FETCH_MODE_ASSOC);
         $query = ' UPDATE oxorder SET 
                     MO_DHL_EKP = ?,
                     MO_DHL_PARTICIPATION = ?,
                     MO_DHL_PROCESS = ?,
                     MO_DHL_ALLOW_NOTIFICATION = ?,
-                    MO_DHL_IDENT_CHECK_BIRTHDAY = ?
+                    MO_DHL_IDENT_CHECK_BIRTHDAY = ?,
+                    MO_DHL_GO_GREEN_PROGRAM = ?
                     WHERE OXID = ?';
         $db->execute($query, [
             $ekp,
@@ -187,6 +190,7 @@ class Order extends Order_parent
             $process,
             $allowNotification,
             $birthday,
+            $goGreenProgram,
             $this->getId(),
         ]);
 
@@ -250,7 +254,10 @@ class Order extends Order_parent
     {
         if ($this->moDHLRetoureLabel === null) {
             $labels = $this->moDHLGetLabels();
-            $this->moDHLRetoureLabel = reset(array_filter($labels->getArray(), function ($label) {return $label->isRetoure();}));
+            $retoureLabels = array_filter($labels->getArray(), function ($label) {
+                return $label->isRetoure();
+            });
+            $this->moDHLRetoureLabel = reset($retoureLabels);
         }
         return $this->moDHLRetoureLabel;
 }
