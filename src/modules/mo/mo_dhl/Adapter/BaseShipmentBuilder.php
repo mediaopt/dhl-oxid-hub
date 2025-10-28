@@ -154,18 +154,13 @@ class BaseShipmentBuilder
      */
     protected function getReturnParticipation(Order $order, VASDhlRetoure $retoure)
     {
-        if ($retoure->isInitialized('goGreenPlus')) {
-            return Participation::build($retoure->getGoGreenPlus() ? '03' : '01');
+        if ($retoure->isInitialized('goGreenPlus') && $retoure->getGoGreenPlus()) {
+            return Participation::build('03');
         }
-        switch ((string)$order->getFieldData('MO_DHL_GO_GREEN_PROGRAM')) {
-            case MoDHLGoGreenProgram::GO_GREEN_PLUS:
-                return Participation::build('03');
-            case MoDHLGoGreenProgram::GO_GREEN:
-                return Participation::build('02');
-            default:
-            case MoDHLGoGreenProgram::NONE:
-                return Participation::build('01');
+        if ($order->getFieldData('MO_DHL_GO_GREEN_PROGRAM') == MoDHLGoGreenProgram::GO_GREEN) {
+            return Participation::build('02');
         }
+        return Participation::build('01');
     }
 
     /**
