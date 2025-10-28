@@ -112,8 +112,8 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
      */
     protected function buildReceiver($order): array
     {
-        $name = $this->convertSpecialChars($order->moDHLGetAddressData('fname'))
-            . ' ' . $this->convertSpecialChars($order->moDHLGetAddressData('lname'));
+        $name = self::convertSpecialChars($order->moDHLGetAddressData('fname'))
+            . ' ' . self::convertSpecialChars($order->moDHLGetAddressData('lname'));
         if (Branch::isPackstation($order->moDHLGetAddressData('street'))) {
             return array_filter([
                 'city'       => $order->moDHLGetAddressData('city'),
@@ -123,7 +123,9 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
                 'name'       => $name,
                 'country'    => $this->buildCountry($order->moDHLGetAddressData('countryid')),
             ]);
-        } elseif (Branch::isFiliale($order->moDHLGetAddressData('street'))) {
+        }
+
+        if (Branch::isFiliale($order->moDHLGetAddressData('street'))) {
             return array_filter([
                 'city'       => $order->moDHLGetAddressData('city'),
                 'name'       => $name,
@@ -132,26 +134,26 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
                 'postNumber' => $order->moDHLGetAddressData('addinfo'),
                 'country'    => $this->buildCountry($order->moDHLGetAddressData('countryid')),
             ]);
-        } else {
-            return array_filter([
-                'name1'         => $name,
-                'name2'         => $order->moDHLGetAddressData('company')
-                    ? $this->convertSpecialChars($order->moDHLGetAddressData('company'))
-                    : null,
-                'name3'         => $order->moDHLGetAddressData('addinfo')
-                    ? $this->convertSpecialChars($order->moDHLGetAddressData('addinfo'))
-                    : null,
-                'state'         => $this->getStateName($order->moDHLGetAddressData('stateid')) ?: null,
-                'contactName'   => $name,
-                'phone'         => $order->moDHLGetAddressData('fon'),
-                'email'         => $this->sendNotificationAllowed($order) ? $order->getFieldData('oxbillemail') : null,
-                'city'          => $this->convertSpecialChars($order->moDHLGetAddressData('city')),
-                'postalCode'    => $order->moDHLGetAddressData('zip'),
-                'addressStreet' => $this->convertSpecialChars($order->moDHLGetAddressData('street')),
-                'addressHouse'  => $order->moDHLGetAddressData('streetnr'),
-                'country'       => $this->buildCountry($order->moDHLGetAddressData('countryid')),
-            ]);
         }
+
+        return array_filter([
+            'name1'         => $name,
+            'name2'         => $order->moDHLGetAddressData('company')
+                ? self::convertSpecialChars($order->moDHLGetAddressData('company'))
+                : null,
+            'name3'         => $order->moDHLGetAddressData('addinfo')
+                ? self::convertSpecialChars($order->moDHLGetAddressData('addinfo'))
+                : null,
+            'state'         => $this->getStateName($order->moDHLGetAddressData('stateid')) ?: null,
+            'contactName'   => $name,
+            'phone'         => $order->moDHLGetAddressData('fon'),
+            'email'         => $this->sendNotificationAllowed($order) ? $order->getFieldData('oxbillemail') : null,
+            'city'          => self::convertSpecialChars($order->moDHLGetAddressData('city')),
+            'postalCode'    => $order->moDHLGetAddressData('zip'),
+            'addressStreet' => self::convertSpecialChars($order->moDHLGetAddressData('street')),
+            'addressHouse'  => $order->moDHLGetAddressData('streetnr'),
+            'country'       => $this->buildCountry($order->moDHLGetAddressData('countryid')),
+        ]);
     }
 
     /**
@@ -190,15 +192,16 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
     }
 
     /**
-     * @param Order $order
+     * @param Order         $order
+     * @param VASDhlRetoure $retoure
      * @return BillingNumber|null
      */
-    public function buildReturnAccountNumber(Order $order)
+    public function buildReturnAccountNumber(Order $order, VASDhlRetoure $retoure)
     {
         if (!$this->getReturnProcess($order)) {
             return null;
         }
-        return new BillingNumber($this->getEkp($order), $this->getReturnProcess($order), $this->getParticipation($order));
+        return new BillingNumber($this->getEkp($order), $this->getReturnProcess($order), $this->getReturnParticipation($order, $retoure));
     }
 
     /**
@@ -278,7 +281,8 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         }
         if ($process->supportsEndorsement()) {
             $abandonment = (bool)($order->moDHLUsesService(MoDHLService::MO_DHL__ENDORSEMENT));
-            $services->setEndorsement($abandonment ? MoDHLService::MO_DHL__ENDORSEMENT_ABANDONMENT : MoDHLService::MO_DHL__ENDORSEMENT_RETURN);
+            $services->setEndorsement($abandonment ? MoDHLService::MO_DHL__ENDORSEMENT_ABANDONMENT
+                : MoDHLService::MO_DHL__ENDORSEMENT_RETURN);
             $initialized = true;
         }
         if ($process->supportsPDDP() && $order->moDHLUsesService(MoDHLService::MO_DHL__PDDP)) {
@@ -297,15 +301,18 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
             $services->setSignedForByRecipient(true);
             $initialized = true;
         }
-        if (Registry::getConfig()->getShopConfVar('mo_dhl__beilegerretoure_active') && $this->getProcess($order)->supportsDHLRetoure() && $returnAccountNumber = $this->buildReturnAccountNumber($order)) {
+        if (Registry::getConfig()->getShopConfVar('mo_dhl__beilegerretoure_active') && $this->getProcess($order)->supportsDHLRetoure()) {
             $dhlRetoure = new VASDhlRetoure();
-            $dhlRetoure->setBillingNumber($returnAccountNumber);
             $dhlRetoure->setReturnAddress($this->buildReturnReceiver());
             if ($services->isInitialized('goGreenPlus')) {
                 $dhlRetoure->setGoGreenPlus($services->getGoGreenPlus());
             }
-            $services->setDhlRetoure($dhlRetoure);
-            $initialized = true;
+
+            if ($returnAccountNumber = $this->buildReturnAccountNumber($order, $dhlRetoure)) {
+                $dhlRetoure->setBillingNumber($returnAccountNumber);
+                $services->setDhlRetoure($dhlRetoure);
+                $initialized = true;
+            }
         }
 
         return $initialized ? $services : null;
@@ -342,31 +349,31 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         $config = Registry::getConfig();
         if ($config->getShopConfVar('mo_dhl__retoure_receiver_use_sender')) {
             $returnReceiver = new ContactAddress();
-            $returnReceiver->setName1($this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line1')));
-            if ($name2 = $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line2'))) {
+            $returnReceiver->setName1(self::convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line1')));
+            if ($name2 = self::convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line2'))) {
                 $returnReceiver->setName2($name2);
             }
-            if ($name3 = $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line3'))) {
+            if ($name3 = self::convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line3'))) {
                 $returnReceiver->setName3($name3);
             }
-            $returnReceiver->setCity($this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')));
+            $returnReceiver->setCity(self::convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')));
             $returnReceiver->setPostalCode($config->getShopConfVar('mo_dhl__sender_zip'));
-            $returnReceiver->setAddressStreet($this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_street')));
+            $returnReceiver->setAddressStreet(self::convertSpecialChars($config->getShopConfVar('mo_dhl__sender_street')));
             $returnReceiver->setAddressHouse($config->getShopConfVar('mo_dhl__sender_street_number'));
             $returnReceiver->setCountry($config->getShopConfVar('mo_dhl__sender_country'));
             return $returnReceiver;
         }
         $returnReceiver = new ContactAddress();
-        $returnReceiver->setName1($this->convertSpecialChars($config->getShopConfVar('mo_dhl__retoure_receiver_line1')));
-        if ($name2 = $this->convertSpecialChars($config->getShopConfVar('mo_dhl__retoure_receiver_line2'))) {
+        $returnReceiver->setName1(self::convertSpecialChars($config->getShopConfVar('mo_dhl__retoure_receiver_line1')));
+        if ($name2 = self::convertSpecialChars($config->getShopConfVar('mo_dhl__retoure_receiver_line2'))) {
             $returnReceiver->setName2($name2);
         }
-        if ($name3 = $this->convertSpecialChars($config->getShopConfVar('mo_dhl__retoure_receiver_line3'))) {
+        if ($name3 = self::convertSpecialChars($config->getShopConfVar('mo_dhl__retoure_receiver_line3'))) {
             $returnReceiver->setName3($name3);
         }
-        $returnReceiver->setCity($this->convertSpecialChars($config->getShopConfVar('mo_dhl__retoure_receiver_city')));
+        $returnReceiver->setCity(self::convertSpecialChars($config->getShopConfVar('mo_dhl__retoure_receiver_city')));
         $returnReceiver->setPostalCode($config->getShopConfVar('mo_dhl__retoure_receiver_zip'));
-        $returnReceiver->setAddressStreet($this->convertSpecialChars($config->getShopConfVar('mo_dhl__retoure_receiver_street')));
+        $returnReceiver->setAddressStreet(self::convertSpecialChars($config->getShopConfVar('mo_dhl__retoure_receiver_street')));
         $returnReceiver->setAddressHouse($config->getShopConfVar('mo_dhl__retoure_receiver_street_number'));
         $returnReceiver->setCountry($config->getShopConfVar('mo_dhl__retoure_receiver_country'));
         return $returnReceiver;
@@ -376,16 +383,16 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
     {
         $config = Registry::getConfig();
         $shipper = new Shipper();
-        $shipper->setName1($this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line1')));
-        if ($name2 = $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line2'))) {
+        $shipper->setName1(self::convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line1')));
+        if ($name2 = self::convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line2'))) {
             $shipper->setName2($name2);
         }
-        if ($name3 = $this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line3'))) {
+        if ($name3 = self::convertSpecialChars($config->getShopConfVar('mo_dhl__sender_line3'))) {
             $shipper->setName3($name3);
         }
-        $shipper->setCity($this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')));
+        $shipper->setCity(self::convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')));
         $shipper->setPostalCode($config->getShopConfVar('mo_dhl__sender_zip'));
-        $shipper->setAddressStreet($this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_street')));
+        $shipper->setAddressStreet(self::convertSpecialChars($config->getShopConfVar('mo_dhl__sender_street')));
         $shipper->setAddressHouse($config->getShopConfVar('mo_dhl__sender_street_number'));
         $shipper->setCountry($config->getShopConfVar('mo_dhl__sender_country'));
         return $shipper;
@@ -444,7 +451,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
         $customsDetails->setExportType('COMMERCIAL_GOODS');
         $customsDetails->setPostalCharges($this->createPostalCharges($order));
         $customsDetails->setItems($exportDocuments);
-        $customsDetails->setOfficeOfOrigin($this->convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')));
+        $customsDetails->setOfficeOfOrigin(self::convertSpecialChars($config->getShopConfVar('mo_dhl__sender_city')));
         return $customsDetails;
     }
 
@@ -528,7 +535,7 @@ class ParcelShippingRequestBuilder extends BaseShipmentBuilder
             ?? $orderArticle->getArticle()->getFieldData('oxtitle')
             ?? $orderArticle->getFieldData('oxtitle');
 
-        return mb_substr($this->convertSpecialChars($title), 0, 50);
+        return mb_substr(self::convertSpecialChars($title), 0, 50);
     }
 
     /**

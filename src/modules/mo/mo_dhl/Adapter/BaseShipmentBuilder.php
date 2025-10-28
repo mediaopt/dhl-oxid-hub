@@ -7,8 +7,10 @@
 
 namespace Mediaopt\DHL\Adapter;
 
+use Mediaopt\DHL\Api\ParcelShipping\Model\VASDhlRetoure;
 use Mediaopt\DHL\Application\Model\Order;
 use Mediaopt\DHL\Merchant\Ekp;
+use Mediaopt\DHL\Model\MoDHLGoGreenProgram;
 use Mediaopt\DHL\Shipment\Participation;
 use Mediaopt\DHL\Shipment\Process;
 use OxidEsales\Eshop\Core\Registry;
@@ -107,7 +109,8 @@ class BaseShipmentBuilder
     protected function getProcess(Order $order)
     {
         try {
-            $identifier = $order->oxorder__mo_dhl_process->rawValue ?: $this->deliverySetToProcessIdentifier[$order->oxorder__oxdeltype->rawValue];
+            $identifier = $order->oxorder__mo_dhl_process->rawValue
+                ?: $this->deliverySetToProcessIdentifier[$order->oxorder__oxdeltype->rawValue];
             return Process::build($identifier);
         } catch (\InvalidArgumentException $exception) {
             return null;
@@ -121,7 +124,8 @@ class BaseShipmentBuilder
     protected function getReturnProcess(Order $order)
     {
         try {
-            $identifier = $order->oxorder__mo_dhl_process->rawValue ?: $this->deliverySetToProcessIdentifier[$order->oxorder__oxdeltype->rawValue];
+            $identifier = $order->oxorder__mo_dhl_process->rawValue
+                ?: $this->deliverySetToProcessIdentifier[$order->oxorder__oxdeltype->rawValue];
             return Process::buildForRetoure($identifier);
         } catch (\InvalidArgumentException $exception) {
             return null;
@@ -135,7 +139,8 @@ class BaseShipmentBuilder
     protected function getParticipation(Order $order)
     {
         try {
-            $number = $order->oxorder__mo_dhl_participation->rawValue ?: $this->deliverySetToParticipationNumber[$order->oxorder__oxdeltype->rawValue];
+            $number = $order->oxorder__mo_dhl_participation->rawValue
+                ?: $this->deliverySetToParticipationNumber[$order->oxorder__oxdeltype->rawValue];
             return Participation::build($number);
         } catch (\InvalidArgumentException $exception) {
             return null;
@@ -143,7 +148,28 @@ class BaseShipmentBuilder
     }
 
     /**
-     * @param OrderArticle $orderArticle
+     * @param Order         $order
+     * @param VASDhlRetoure $retoure
+     * @return Participation|null
+     */
+    protected function getReturnParticipation(Order $order, VASDhlRetoure $retoure)
+    {
+        if ($retoure->isInitialized('goGreenPlus')) {
+            return Participation::build($retoure->getGoGreenPlus() ? '03' : '01');
+        }
+        switch ((string)$order->getFieldData('MO_DHL_GO_GREEN_PROGRAM')) {
+            case MoDHLGoGreenProgram::GO_GREEN_PLUS:
+                return Participation::build('03');
+            case MoDHLGoGreenProgram::GO_GREEN:
+                return Participation::build('02');
+            default:
+            case MoDHLGoGreenProgram::NONE:
+                return Participation::build('01');
+        }
+    }
+
+    /**
+     * @param OrderArticle                  $orderArticle
      * @param \OxidEsales\Eshop\Core\Config $config
      * @return float|mixed
      */
@@ -151,7 +177,9 @@ class BaseShipmentBuilder
     {
         /** @var OrderArticle $orderArticle */
         $articleWeight = $config->getShopConfVar('mo_dhl__calculate_weight')
-            ? (float) ($orderArticle->getArticle() ? $orderArticle->getArticle()->getFieldData('oxweight') : $orderArticle->getFieldData('oxweight'))
+            ? (float)($orderArticle->getArticle()
+                ? $orderArticle->getArticle()->getFieldData('oxweight')
+                : $orderArticle->getFieldData('oxweight'))
             : (float)$config->getShopConfVar('mo_dhl__default_weight');
         if ($articleWeight < self::MO_DHL__MIN_WEIGHT_FOR_ORDERITEMS) {
             $articleWeight = max(self::MO_DHL__MIN_WEIGHT_FOR_ORDERITEMS, (float)$config->getShopConfVar('mo_dhl__default_weight'));

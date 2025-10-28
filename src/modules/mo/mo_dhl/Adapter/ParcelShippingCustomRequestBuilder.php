@@ -202,9 +202,7 @@ class ParcelShippingCustomRequestBuilder
         }
 
         if ($process->supportsDHLRetoure() && filter_var($servicesData['dhlRetoure']['active'], FILTER_VALIDATE_BOOLEAN)) {
-            $accountNumber = Registry::get(ParcelShippingRequestBuilder::class)->buildReturnAccountNumber($order);
             $retoure = new VASDhlRetoure();
-            $retoure->setBillingNumber($accountNumber);
             if ($services->isInitialized('goGreenPlus')) {
                 $retoure->setGoGreenPlus($services->getGoGreenPlus());
             }
@@ -213,8 +211,12 @@ class ParcelShippingCustomRequestBuilder
                 $address->{"set" . ucfirst($key)}($value);
             }
             $retoure->setReturnAddress($address);
-            $services->setDhlRetoure($retoure);
-            $initialized = true;
+
+            if ($accountNumber = Registry::get(ParcelShippingRequestBuilder::class)->buildReturnAccountNumber($order, $retoure)) {
+                $retoure->setBillingNumber($accountNumber);
+                $services->setDhlRetoure($retoure);
+                $initialized = true;
+            }
         }
         if ($process->supportsBulkyGood() && filter_var($servicesData['bulkyGoods']['active'], FILTER_VALIDATE_BOOLEAN)) {
             $services->setBulkyGoods(true);
