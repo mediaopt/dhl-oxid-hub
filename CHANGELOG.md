@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.9.0] - 2025-11-05
 * Introduced GoGreen Plus program
 * Updated Parcel Shipping API to 2.1.13
 
