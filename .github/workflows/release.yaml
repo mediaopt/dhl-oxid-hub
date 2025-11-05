@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git configuration
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+
+      - name: Rebase main onto develop
+        run: |
+          git fetch origin
+          git checkout main
+          git rebase origin/develop
+          git push origin main --force
+
+      - name: Release Version
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          
+          # Update files
+          sed -i "s/\"version\": \"[^\"]*\",/\"version\": \"$VERSION\",/" project.json
+          sed -i "s/\[Unreleased\]/[$VERSION] - $(date +%Y-%m-%d)/" CHANGELOG.md
+          git add project.json CHANGELOG.md
+          
+          # Commit and tag the new version
+          git commit -m "Release $VERSION"
+          git tag -a "$VERSION" -m "Release $VERSION"
+          git push origin main --tags
+
+      - name: Rebase develop onto main
+        run: |
+          git checkout develop
+          git rebase origin/main
+          git push origin develop --force
