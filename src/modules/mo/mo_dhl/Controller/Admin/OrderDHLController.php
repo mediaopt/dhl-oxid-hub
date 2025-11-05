@@ -12,6 +12,7 @@ use Mediaopt\DHL\Api\Internetmarke\ShoppingCartResponseType;
 use Mediaopt\DHL\Api\ParcelShipping\Client;
 use Mediaopt\DHL\Api\ParcelShipping\Model\ShipmentOrderRequest;
 use Mediaopt\DHL\Api\Wunschpaket;
+use Mediaopt\DHL\Install;
 use Mediaopt\DHL\Merchant\Ekp;
 use Mediaopt\DHL\Model\MoDHLInternetmarkeRefund;
 use Mediaopt\DHL\Model\MoDHLLabel;
@@ -269,6 +270,11 @@ class OrderDHLController extends \OxidEsales\Eshop\Application\Controller\Admin\
     protected function getProcess()
     {
         if ($processNr = $this->getOrder()->oxorder__mo_dhl_process->rawValue) {
+            if ($processNr === 'WARENPOST') {
+                Install::changeWarenpostToKleinpaket();
+                $this->order->oxorder__mo_dhl_process->setValue('KLEINPAKET');
+                $processNr = 'KLEINPAKET';
+            }
             return Process::build($processNr);
         }
         return null;
