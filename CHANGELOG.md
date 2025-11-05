@@ -1,4 +1,7 @@
 # Changelog
+
+## [Unreleased]
+
 ## 1.8.4
 * Always have additional info field in label generation
 * make label name more clear
