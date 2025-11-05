@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+* Introduced GoGreen Plus program
+* Updated Parcel Shipping API to 2.1.13
 
 ## 1.8.4
 * Always have additional info field in label generation
