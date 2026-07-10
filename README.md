@@ -1,3 +1,12 @@
+> [!WARNING]
+> 
+> This plugin is no longer supported. If you require assistance, please contact **support@mediaopt.de**
+> to discuss possible support options for your request.
+>
+> Dieses Plugin wird nicht mehr unterstützt. Falls Sie Unterstützung benötigen,
+> kontaktieren Sie bitte **support@mediaopt.de**, um mögliche Angebote für Ihre Anfrage zu besprechen.
+
+
 # Post & DHL Versand Oxid Modul
 Über die Deutsche Post & DHL Integration in Oxid können Versandscheine manuell oder automatisch aus dem Oxid Backend erzeugt werden. Im Checkout Ihres Onlineshops können Ihre Kunden mehrere Empfängerservices auswählen und so ganz flexibel ihren Versand steuern.
 
